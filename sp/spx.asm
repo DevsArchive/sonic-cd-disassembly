@@ -16,259 +16,259 @@
 
 	org	SPX
 File_R11A:
-	dc.b	'R11A__.MMD;1', 0		; Palmtree Panic Act 1 present
+	dc.b	"R11A__.MMD;1", 0		; Palmtree Panic Act 1 present
 File_R11B:
-	dc.b	'R11B__.MMD;1', 0		; Palmtree Panic Act 1 past
+	dc.b	"R11B__.MMD;1", 0		; Palmtree Panic Act 1 past
 File_R11C:
-	dc.b	'R11C__.MMD;1', 0		; Palmtree Panic Act 1 good future
+	dc.b	"R11C__.MMD;1", 0		; Palmtree Panic Act 1 good future
 File_R11D:
-	dc.b	'R11D__.MMD;1', 0		; Palmtree Panic Act 1 bad future
+	dc.b	"R11D__.MMD;1", 0		; Palmtree Panic Act 1 bad future
 File_MDInit:
-	dc.b	'MDINIT.MMD;1', 0		; Mega Drive initialization
+	dc.b	"MDINIT.MMD;1", 0		; Mega Drive initialization
 File_SoundTest:
-	dc.b	'SOSEL_.MMD;1', 0		; Sound test
+	dc.b	"SOSEL_.MMD;1", 0		; Sound test
 File_StageSelect:
-	dc.b	'STSEL_.MMD;1', 0		; Stage select
+	dc.b	"STSEL_.MMD;1", 0		; Stage select
 File_R12A:
-	dc.b	'R12A__.MMD;1', 0		; Palmtree Panic Act 2 present
+	dc.b	"R12A__.MMD;1", 0		; Palmtree Panic Act 2 present
 File_R12B:
-	dc.b	'R12B__.MMD;1', 0		; Palmtree Panic Act 2 past
+	dc.b	"R12B__.MMD;1", 0		; Palmtree Panic Act 2 past
 File_R12C:
-	dc.b	'R12C__.MMD;1', 0		; Palmtree Panic Act 2 good future
+	dc.b	"R12C__.MMD;1", 0		; Palmtree Panic Act 2 good future
 File_R12D:
-	dc.b	'R12D__.MMD;1', 0		; Palmtree Panic Act 2 bad future
+	dc.b	"R12D__.MMD;1", 0		; Palmtree Panic Act 2 bad future
 File_TitleMain:
-	dc.b	'TITLEM.MMD;1', 0		; Title screen (Main CPU)
+	dc.b	"TITLEM.MMD;1", 0		; Title screen (Main CPU)
 File_TitleSub:
-	dc.b	'TITLES.BIN;1', 0		; Title screen (Sub CPU)
+	dc.b	"TITLES.BIN;1", 0		; Title screen (Sub CPU)
 File_Warp:
-	dc.b	'WARP__.MMD;1', 0		; Warp sequence
+	dc.b	"WARP__.MMD;1", 0		; Warp sequence
 File_TimeAttackMain:
-	dc.b	'ATTACK.MMD;1', 0		; Time attack (Main CPU)
+	dc.b	"ATTACK.MMD;1", 0		; Time attack (Main CPU)
 File_TimeAttackSub:
-	dc.b	'ATTACK.BIN;1', 0		; Time attack (Main CPU)
+	dc.b	"ATTACK.BIN;1", 0		; Time attack (Main CPU)
 File_IPX:
-	dc.b	'IPX___.MMD;1', 0		; Main program
+	dc.b	"IPX___.MMD;1", 0		; Main program
 File_PencilTestData:
-	dc.b	'PTEST.STM;1 ', 0		; Pencil test FMV data
+	dc.b	"PTEST.STM;1 ", 0		; Pencil test FMV data
 File_OpeningData:
-	dc.b	'OPN.STM;1   ', 0		; Opening FMV data
+	dc.b	"OPN.STM;1   ", 0		; Opening FMV data
 File_BadEndData:
-	dc.b	'BADEND.STM;1', 0		; Bad ending FMV data
+	dc.b	"BADEND.STM;1", 0		; Bad ending FMV data
 File_GoodEndData:
-	dc.b	'GOODEND.STM;1', 0		; Good ending FMV data
+	dc.b	"GOODEND.STM;1", 0		; Good ending FMV data
 File_OpeningMain:
-	dc.b	'OPEN_M.MMD;1', 0		; Opening FMV (Main CPU)
+	dc.b	"OPEN_M.MMD;1", 0		; Opening FMV (Main CPU)
 File_OpeningSub:
-	dc.b	'OPEN_S.BIN;1', 0		; Opening FMV (Sub CPU)
+	dc.b	"OPEN_S.BIN;1", 0		; Opening FMV (Sub CPU)
 File_CominSoon:
-	dc.b	'COME__.MMD;1', 0		; "Comin' Soon" screen
+	dc.b	"COME__.MMD;1", 0		; "Comin' Soon" screen
 File_DAGardenMain:
-	dc.b	'PLANET_M.MMD;1', 0		; D.A. Garden (Main CPU)
+	dc.b	"PLANET_M.MMD;1", 0		; D.A. Garden (Main CPU)
 File_DAGardenSub:
-	dc.b	'PLANET_S.BIN;1', 0		; D.A. Garden (Sub CPU)
+	dc.b	"PLANET_S.BIN;1", 0		; D.A. Garden (Sub CPU)
 File_R31A:
-	dc.b	'R31A__.MMD;1', 0		; Collision Chaos Act 1 present
+	dc.b	"R31A__.MMD;1", 0		; Collision Chaos Act 1 present
 File_R31B:
-	dc.b	'R31B__.MMD;1', 0		; Collision Chaos Act 1 past
+	dc.b	"R31B__.MMD;1", 0		; Collision Chaos Act 1 past
 File_R31C:
-	dc.b	'R31C__.MMD;1', 0		; Collision Chaos Act 1 good future
+	dc.b	"R31C__.MMD;1", 0		; Collision Chaos Act 1 good future
 File_R31D:
-	dc.b	'R31D__.MMD;1', 0		; Collision Chaos Act 1 bad future
+	dc.b	"R31D__.MMD;1", 0		; Collision Chaos Act 1 bad future
 File_R32A:
-	dc.b	'R32A__.MMD;1', 0		; Collision Chaos Act 2 present
+	dc.b	"R32A__.MMD;1", 0		; Collision Chaos Act 2 present
 File_R32B:
-	dc.b	'R32B__.MMD;1', 0		; Collision Chaos Act 2 past
+	dc.b	"R32B__.MMD;1", 0		; Collision Chaos Act 2 past
 File_R32C:
-	dc.b	'R32C__.MMD;1', 0		; Collision Chaos Act 2 good future
+	dc.b	"R32C__.MMD;1", 0		; Collision Chaos Act 2 good future
 File_R32D:
-	dc.b	'R32D__.MMD;1', 0		; Collision Chaos Act 2 bad future
+	dc.b	"R32D__.MMD;1", 0		; Collision Chaos Act 2 bad future
 File_R33C:
-	dc.b	'R33C__.MMD;1', 0		; Collision Chaos Act 3 good future
+	dc.b	"R33C__.MMD;1", 0		; Collision Chaos Act 3 good future
 File_R33D:
-	dc.b	'R33D__.MMD;1', 0		; Collision Chaos Act 3 bad future
+	dc.b	"R33D__.MMD;1", 0		; Collision Chaos Act 3 bad future
 File_R13C:
-	dc.b	'R13C__.MMD;1', 0		; Palmtree Panic Act 3 good future
+	dc.b	"R13C__.MMD;1", 0		; Palmtree Panic Act 3 good future
 File_R13D:
-	dc.b	'R13D__.MMD;1', 0		; Palmtree Panic Act 3 bad future
+	dc.b	"R13D__.MMD;1", 0		; Palmtree Panic Act 3 bad future
 File_R41A:
-	dc.b	'R41A__.MMD;1', 0		; Tidal Tempest Act 1 present
+	dc.b	"R41A__.MMD;1", 0		; Tidal Tempest Act 1 present
 File_R41B:
-	dc.b	'R41B__.MMD;1', 0		; Tidal Tempest Act 1 past
+	dc.b	"R41B__.MMD;1", 0		; Tidal Tempest Act 1 past
 File_R41C:
-	dc.b	'R41C__.MMD;1', 0		; Tidal Tempest Act 1 good future
+	dc.b	"R41C__.MMD;1", 0		; Tidal Tempest Act 1 good future
 File_R41D:
-	dc.b	'R41D__.MMD;1', 0		; Tidal Tempest Act 1 bad future
+	dc.b	"R41D__.MMD;1", 0		; Tidal Tempest Act 1 bad future
 File_R42A:
-	dc.b	'R42A__.MMD;1', 0		; Tidal Tempest Act 2 present
+	dc.b	"R42A__.MMD;1", 0		; Tidal Tempest Act 2 present
 File_R42B:
-	dc.b	'R42B__.MMD;1', 0		; Tidal Tempest Act 2 past
+	dc.b	"R42B__.MMD;1", 0		; Tidal Tempest Act 2 past
 File_R42C:
-	dc.b	'R42C__.MMD;1', 0		; Tidal Tempest Act 2 good future
+	dc.b	"R42C__.MMD;1", 0		; Tidal Tempest Act 2 good future
 File_R42D:
-	dc.b	'R42D__.MMD;1', 0		; Tidal Tempest Act 2 bad future
+	dc.b	"R42D__.MMD;1", 0		; Tidal Tempest Act 2 bad future
 File_R43C:
-	dc.b	'R43C__.MMD;1', 0		; Tidal Tempest Act 3 good future
+	dc.b	"R43C__.MMD;1", 0		; Tidal Tempest Act 3 good future
 File_R43D:
-	dc.b	'R43D__.MMD;1', 0		; Tidal Tempest Act 3 bad future
+	dc.b	"R43D__.MMD;1", 0		; Tidal Tempest Act 3 bad future
 File_R51A:
-	dc.b	'R51A__.MMD;1', 0		; Quartz Quadrant Act 1 present
+	dc.b	"R51A__.MMD;1", 0		; Quartz Quadrant Act 1 present
 File_R51B:
-	dc.b	'R51B__.MMD;1', 0		; Quartz Quadrant Act 1 past
+	dc.b	"R51B__.MMD;1", 0		; Quartz Quadrant Act 1 past
 File_R51C:
-	dc.b	'R51C__.MMD;1', 0		; Quartz Quadrant Act 1 good future
+	dc.b	"R51C__.MMD;1", 0		; Quartz Quadrant Act 1 good future
 File_R51D:
-	dc.b	'R51D__.MMD;1', 0		; Quartz Quadrant Act 1 bad future
+	dc.b	"R51D__.MMD;1", 0		; Quartz Quadrant Act 1 bad future
 File_R52A:
-	dc.b	'R52A__.MMD;1', 0		; Quartz Quadrant Act 2 present
+	dc.b	"R52A__.MMD;1", 0		; Quartz Quadrant Act 2 present
 File_R52B:
-	dc.b	'R52B__.MMD;1', 0		; Quartz Quadrant Act 2 past
+	dc.b	"R52B__.MMD;1", 0		; Quartz Quadrant Act 2 past
 File_R52C:
-	dc.b	'R52C__.MMD;1', 0		; Quartz Quadrant Act 2 good future
+	dc.b	"R52C__.MMD;1", 0		; Quartz Quadrant Act 2 good future
 File_R52D:
-	dc.b	'R52D__.MMD;1', 0		; Quartz Quadrant Act 2 bad future
+	dc.b	"R52D__.MMD;1", 0		; Quartz Quadrant Act 2 bad future
 File_R53C:
-	dc.b	'R53C__.MMD;1', 0		; Quartz Quadrant Act 3 good future
+	dc.b	"R53C__.MMD;1", 0		; Quartz Quadrant Act 3 good future
 File_R53D:
-	dc.b	'R53D__.MMD;1', 0		; Quartz Quadrant Act 3 bad future
+	dc.b	"R53D__.MMD;1", 0		; Quartz Quadrant Act 3 bad future
 File_R61A:
-	dc.b	'R61A__.MMD;1', 0		; Wacky Workbench Act 1 present
+	dc.b	"R61A__.MMD;1", 0		; Wacky Workbench Act 1 present
 File_R61B:
-	dc.b	'R61B__.MMD;1', 0		; Wacky Workbench Act 1 past
+	dc.b	"R61B__.MMD;1", 0		; Wacky Workbench Act 1 past
 File_R61C:
-	dc.b	'R61C__.MMD;1', 0		; Wacky Workbench Act 1 good future
+	dc.b	"R61C__.MMD;1", 0		; Wacky Workbench Act 1 good future
 File_R61D:
-	dc.b	'R61D__.MMD;1', 0		; Wacky Workbench Act 1 bad future
+	dc.b	"R61D__.MMD;1", 0		; Wacky Workbench Act 1 bad future
 File_R62A:
-	dc.b	'R62A__.MMD;1', 0		; Wacky Workbench Act 2 present
+	dc.b	"R62A__.MMD;1", 0		; Wacky Workbench Act 2 present
 File_R62B:
-	dc.b	'R62B__.MMD;1', 0		; Wacky Workbench Act 2 past
+	dc.b	"R62B__.MMD;1", 0		; Wacky Workbench Act 2 past
 File_R62C:
-	dc.b	'R62C__.MMD;1', 0		; Wacky Workbench Act 2 good future
+	dc.b	"R62C__.MMD;1", 0		; Wacky Workbench Act 2 good future
 File_R62D:
-	dc.b	'R62D__.MMD;1', 0		; Wacky Workbench Act 2 bad future
+	dc.b	"R62D__.MMD;1", 0		; Wacky Workbench Act 2 bad future
 File_R63C:
-	dc.b	'R63C__.MMD;1', 0		; Wacky Workbench Act 3 good future
+	dc.b	"R63C__.MMD;1", 0		; Wacky Workbench Act 3 good future
 File_R63D:
-	dc.b	'R63D__.MMD;1', 0		; Wacky Workbench Act 3 bad future
+	dc.b	"R63D__.MMD;1", 0		; Wacky Workbench Act 3 bad future
 File_R71A:
-	dc.b	'R71A__.MMD;1', 0		; Stardust Speedway Act 1 present
+	dc.b	"R71A__.MMD;1", 0		; Stardust Speedway Act 1 present
 File_R71B:
-	dc.b	'R71B__.MMD;1', 0		; Stardust Speedway Act 1 past
+	dc.b	"R71B__.MMD;1", 0		; Stardust Speedway Act 1 past
 File_R71C:
-	dc.b	'R71C__.MMD;1', 0		; Stardust Speedway Act 1 good future
+	dc.b	"R71C__.MMD;1", 0		; Stardust Speedway Act 1 good future
 File_R71D:
-	dc.b	'R71D__.MMD;1', 0		; Stardust Speedway Act 1 bad future
+	dc.b	"R71D__.MMD;1", 0		; Stardust Speedway Act 1 bad future
 File_R72A:
-	dc.b	'R72A__.MMD;1', 0		; Stardust Speedway Act 2 present
+	dc.b	"R72A__.MMD;1", 0		; Stardust Speedway Act 2 present
 File_R72B:
-	dc.b	'R72B__.MMD;1', 0		; Stardust Speedway Act 2 past
+	dc.b	"R72B__.MMD;1", 0		; Stardust Speedway Act 2 past
 File_R72C:
-	dc.b	'R72C__.MMD;1', 0		; Stardust Speedway Act 2 good future
+	dc.b	"R72C__.MMD;1", 0		; Stardust Speedway Act 2 good future
 File_R72D:
-	dc.b	'R72D__.MMD;1', 0		; Stardust Speedway Act 2 bad future
+	dc.b	"R72D__.MMD;1", 0		; Stardust Speedway Act 2 bad future
 File_R73C:
-	dc.b	'R73C__.MMD;1', 0		; Stardust Speedway Act 3 good future
+	dc.b	"R73C__.MMD;1", 0		; Stardust Speedway Act 3 good future
 File_R73D:
-	dc.b	'R73D__.MMD;1', 0		; Stardust Speedway Act 3 bad future
+	dc.b	"R73D__.MMD;1", 0		; Stardust Speedway Act 3 bad future
 File_R81A:
-	dc.b	'R81A__.MMD;1', 0		; Metallic Madness Act 1 present
+	dc.b	"R81A__.MMD;1", 0		; Metallic Madness Act 1 present
 File_R81B:
-	dc.b	'R81B__.MMD;1', 0		; Metallic Madness Act 1 past
+	dc.b	"R81B__.MMD;1", 0		; Metallic Madness Act 1 past
 File_R81C:
-	dc.b	'R81C__.MMD;1', 0		; Metallic Madness Act 1 good future
+	dc.b	"R81C__.MMD;1", 0		; Metallic Madness Act 1 good future
 File_R81D:
-	dc.b	'R81D__.MMD;1', 0		; Metallic Madness Act 1 bad future
+	dc.b	"R81D__.MMD;1", 0		; Metallic Madness Act 1 bad future
 File_R82A:
-	dc.b	'R82A__.MMD;1', 0		; Metallic Madness Act 2 present
+	dc.b	"R82A__.MMD;1", 0		; Metallic Madness Act 2 present
 File_R82B:
-	dc.b	'R82B__.MMD;1', 0		; Metallic Madness Act 2 past
+	dc.b	"R82B__.MMD;1", 0		; Metallic Madness Act 2 past
 File_R82C:
-	dc.b	'R82C__.MMD;1', 0		; Metallic Madness Act 2 good future
+	dc.b	"R82C__.MMD;1", 0		; Metallic Madness Act 2 good future
 File_R82D:
-	dc.b	'R82D__.MMD;1', 0		; Metallic Madness Act 2 bad future
+	dc.b	"R82D__.MMD;1", 0		; Metallic Madness Act 2 bad future
 File_R83C:
-	dc.b	'R83C__.MMD;1', 0		; Metallic Madness Act 3 good future
+	dc.b	"R83C__.MMD;1", 0		; Metallic Madness Act 3 good future
 File_R83D:
-	dc.b	'R83D__.MMD;1', 0		; Metallic Madness Act 3 bad future
+	dc.b	"R83D__.MMD;1", 0		; Metallic Madness Act 3 bad future
 File_SpecialMain:
-	dc.b	'SPMM__.MMD;1', 0		; Special Stage (Main CPU)
+	dc.b	"SPMM__.MMD;1", 0		; Special Stage (Main CPU)
 File_SpecialSub:
-	dc.b	'SPSS__.BIN;1', 0		; Special Stage (Sub CPU)
+	dc.b	"SPSS__.BIN;1", 0		; Special Stage (Sub CPU)
 File_R1PCM:
-	dc.b	'SNCBNK1B.BIN;1', 0		; PCM driver (Palmtree Panic)
+	dc.b	"SNCBNK1B.BIN;1", 0		; PCM driver (Palmtree Panic)
 File_R3PCM:
-	dc.b	'SNCBNK3B.BIN;1', 0		; PCM driver (Collision Chaos)
+	dc.b	"SNCBNK3B.BIN;1", 0		; PCM driver (Collision Chaos)
 File_R4PCM:
-	dc.b	'SNCBNK4B.BIN;1', 0		; PCM driver (Tidal Tempest)
+	dc.b	"SNCBNK4B.BIN;1", 0		; PCM driver (Tidal Tempest)
 File_R5PCM:
-	dc.b	'SNCBNK5B.BIN;1', 0		; PCM driver (Quartz Quadrant)
+	dc.b	"SNCBNK5B.BIN;1", 0		; PCM driver (Quartz Quadrant)
 File_R6PCM:
-	dc.b	'SNCBNK6B.BIN;1', 0		; PCM driver (Wacky Workbench)
+	dc.b	"SNCBNK6B.BIN;1", 0		; PCM driver (Wacky Workbench)
 File_R7PCM:
-	dc.b	'SNCBNK7B.BIN;1', 0		; PCM driver (Stardust Speedway)
+	dc.b	"SNCBNK7B.BIN;1", 0		; PCM driver (Stardust Speedway)
 File_R8PCM:
-	dc.b	'SNCBNK8B.BIN;1', 0		; PCM driver (Metallic Madness)
+	dc.b	"SNCBNK8B.BIN;1", 0		; PCM driver (Metallic Madness)
 File_BossPCM:
-	dc.b	'SNCBNKB1.BIN;1', 0		; PCM driver (Boss)
+	dc.b	"SNCBNKB1.BIN;1", 0		; PCM driver (Boss)
 File_FinalPCM:
-	dc.b	'SNCBNKB2.BIN;1', 0		; PCM driver (Final boss)
+	dc.b	"SNCBNKB2.BIN;1", 0		; PCM driver (Final boss)
 File_DAGardenData:
-	dc.b	'PLANET_D.BIN;1', 0		; D.A Garden data
+	dc.b	"PLANET_D.BIN;1", 0		; D.A Garden data
 File_Demo11A:
-	dc.b	'DEMO11A.MMD;1', 0		; Palmtree Panic Act 1 present demo
+	dc.b	"DEMO11A.MMD;1", 0		; Palmtree Panic Act 1 present demo
 File_VisualMode:
-	dc.b	'VM____.MMD;1', 0		; Visual Mode
+	dc.b	"VM____.MMD;1", 0		; Visual Mode
 File_BuRAMInit:
-	dc.b	'BRAMINIT.MMD;1', 0		; Backup RAM initialization
+	dc.b	"BRAMINIT.MMD;1", 0		; Backup RAM initialization
 File_BuRAMSub:
-	dc.b	'BRAMSUB.BIN;1', 0		; Backup RAM functions
+	dc.b	"BRAMSUB.BIN;1", 0		; Backup RAM functions
 File_BuRAMMain:
-	dc.b	'BRAMMAIN.MMD;1', 0		; Backup RAM manager
+	dc.b	"BRAMMAIN.MMD;1", 0		; Backup RAM manager
 File_ThanksMain:
-	dc.b	'THANKS_M.MMD;1', 0		; "Thank You" screen (Main CPU)
+	dc.b	"THANKS_M.MMD;1", 0		; "Thank You" screen (Main CPU)
 File_ThanksSub:
-	dc.b	'THANKS_S.BIN;1', 0		; "Thank You" screen (Sub CPU)
+	dc.b	"THANKS_S.BIN;1", 0		; "Thank You" screen (Sub CPU)
 File_ThanksData:
-	dc.b	'THANKS_D.BIN;1', 0		; "Thank You" screen data
+	dc.b	"THANKS_D.BIN;1", 0		; "Thank You" screen data
 File_EndingMain:
-	dc.b	'ENDING.MMD;1', 0		; Ending FMV (Main CPU)
+	dc.b	"ENDING.MMD;1", 0		; Ending FMV (Main CPU)
 File_GoodEndSub:
-	dc.b	'GOODEND.BIN;1', 0 		; Good ending FMV (Sub CPU)
+	dc.b	"GOODEND.BIN;1", 0 		; Good ending FMV (Sub CPU)
 File_BadEndSub:
-	dc.b	'BADEND.BIN;1', 0 		; Bad ending FMV (Sub CPU)
+	dc.b	"BADEND.BIN;1", 0 		; Bad ending FMV (Sub CPU)
 File_FunIsInf:
-	dc.b	'NISI.MMD;1', 0			; "Fun is infinite" screen
+	dc.b	"NISI.MMD;1", 0			; "Fun is infinite" screen
 File_StaffCredits:
-	dc.b	'SPEEND.MMD;1', 0		; Staff credits
+	dc.b	"SPEEND.MMD;1", 0		; Staff credits
 File_MCSonic:
-	dc.b	'DUMMY0.MMD;1', 0		; M.C. Sonic screen
+	dc.b	"DUMMY0.MMD;1", 0		; M.C. Sonic screen
 File_Tails:
-	dc.b	'DUMMY1.MMD;1', 0		; Tails screen
+	dc.b	"DUMMY1.MMD;1", 0		; Tails screen
 File_BatmanSonic:
-	dc.b	'DUMMY2.MMD;1', 0		; Batman Sonic screen
+	dc.b	"DUMMY2.MMD;1", 0		; Batman Sonic screen
 File_CuteSonic:
-	dc.b	'DUMMY3.MMD;1', 0		; Cute Sonic screen
+	dc.b	"DUMMY3.MMD;1", 0		; Cute Sonic screen
 File_StaffTimes:
-	dc.b	'DUMMY4.MMD;1', 0		; Best staff times screen
+	dc.b	"DUMMY4.MMD;1", 0		; Best staff times screen
 File_Dummy5:
-	dc.b	'DUMMY5.MMD;1', 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY5.MMD;1", 0		; Copy of sound test (Unused)
 File_Dummy6:
-	dc.b	'DUMMY6.MMD;1', 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY6.MMD;1", 0		; Copy of sound test (Unused)
 File_Dummy7:
-	dc.b	'DUMMY7.MMD;1', 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY7.MMD;1", 0		; Copy of sound test (Unused)
 File_Dummy8:
-	dc.b	'DUMMY8.MMD;1', 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY8.MMD;1", 0		; Copy of sound test (Unused)
 File_Dummy9:
-	dc.b	'DUMMY9.MMD;1', 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY9.MMD;1", 0		; Copy of sound test (Unused)
 File_PencilTestMain:
-	dc.b	'PTEST.MMD;1', 0		; Pencil test FMV (Main CPU)
+	dc.b	"PTEST.MMD;1", 0		; Pencil test FMV (Main CPU)
 File_PencilTestSub:
-	dc.b	'PTEST.BIN;1', 0		; Pencil test FMV (Sub CPU)
+	dc.b	"PTEST.BIN;1", 0		; Pencil test FMV (Sub CPU)
 File_Demo43C:
-	dc.b	'DEMO43C.MMD;1', 0		; Tidal Tempest Act 3 good future demo
+	dc.b	"DEMO43C.MMD;1", 0		; Tidal Tempest Act 3 good future demo
 File_Demo82A:
-	dc.b	'DEMO82A.MMD;1', 0		; Metallic Madness Act 2 present demo
+	dc.b	"DEMO82A.MMD;1", 0		; Metallic Madness Act 2 present demo
 	even
 
 ; -------------------------------------------------------------------------------
@@ -276,7 +276,7 @@ File_Demo82A:
 ; -------------------------------------------------------------------------------
 
 BuRAMReadParams:
-	dc.b	'SONICCD____'
+	dc.b	"SONICCD____"
 	even
 
 ; -------------------------------------------------------------------------------
@@ -284,7 +284,7 @@ BuRAMReadParams:
 ; -------------------------------------------------------------------------------
 
 BuRAMWriteParams:
-	dc.b	'SONICCD____'
+	dc.b	"SONICCD____"
 	dc.b	0
 	dc.w	$B
 
