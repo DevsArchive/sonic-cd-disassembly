@@ -465,8 +465,8 @@ BuRAMWriteParams:
 	dc.w	SPCmd_WriteBuRAM-.SPCmds	; $88 | Write Backup RAM
 	dc.w	SPCmd_LoadBuRAMInit-.SPCmds	; $89 | Load Backup RAM initialization
 	dc.w	SPCmd_ResetSSFlags-.SPCmds	; $8A | Reset special stage flags
-	dc.w	SPCmd_GetBuRAMData-.SPCmds	; $8B | Get Backup RAM data from buffer
-	dc.w	SPCmd_SendBuRAMData-.SPCmds	; $8C | Send Backup RAM data to buffer
+	dc.w	SPCmd_ReadBuRAMCache-.SPCmds	; $8B | Read Backup RAM data from cache
+	dc.w	SPCmd_CacheBuRAM-.SPCmds	; $8C | Cache Backup RAM data
 	dc.w	SPCmd_LoadThankYou-.SPCmds	; $8D | Load "Thank You" screen
 	dc.w	SPCmd_LoadBuRAMMngr-.SPCmds	; $8E | Load Backup RAM manager
 	dc.w	SPCmd_ResetCDDAVol-.SPCmds	; $8F | Reset CDDA music volume
@@ -702,15 +702,15 @@ SPCmd_WriteBuRAM:
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
 ; -------------------------------------------------------------------------------
-; Get Backup RAM data from buffer
+; Read Backup RAM data from cache
 ; -------------------------------------------------------------------------------
 
-SPCmd_GetBuRAMData:
+SPCmd_ReadBuRAMCache:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
-	lea	BuRAMBuffer.w,a0		; Copy data from buffer
+	lea	BuRAMCache.w,a0			; Copy data from cache
 	lea	WORDRAM_2M,a1
-	move.w	#BURAM_BUF_LEN/4-1,d7
+	move.w	#BURAM_CACHE_LEN/4-1,d7
 
 .Copy:
 	move.l	(a0)+,(a1)+
@@ -719,15 +719,15 @@ SPCmd_GetBuRAMData:
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
 ; -------------------------------------------------------------------------------
-; Send Backup RAM data to buffer
+; Copy Backup RAM data to cache
 ; -------------------------------------------------------------------------------
 
-SPCmd_SendBuRAMData:
+SPCmd_CacheBuRAM:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
-	lea	BuRAMBuffer.w,a0		; Copy data to buffer
+	lea	BuRAMCache.w,a0			; Copy data to cache
 	lea	WORDRAM_2M,a1
-	move.w	#BURAM_BUF_LEN/4-1,d7
+	move.w	#BURAM_CACHE_LEN/4-1,d7
 
 .Copy:
 	move.l	(a1)+,(a0)+
