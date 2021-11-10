@@ -1,0 +1,1722 @@
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; Sonic CD Misc. Disassembly
+00000000                            ; By Ralakimus 2021
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; System program
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            	include	"_inc/macros.asm"
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; Sonic CD Misc. Disassembly
+00000000                            ; By Ralakimus 2021
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; Common macros
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; Align
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; PARAMETERS:
+00000000                            ;	bound	- Size boundary
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000                            align macros bound
+00000000                            	cnop	0,\bound			; Align data
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; Push all registers to the stack
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000                            pusha macros
+00000000                            	movem.l	d0-a6,-(sp)			; Push registers
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; Pop all registers from the stack
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000                            popa macros
+00000000                            	movem.l	(sp)+,d0-a6			; Pop registers
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; Pad RS to even address
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000                            rsEven macros
+00000000                            	rs.b	__rs&1				; Align RS
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; -------------------------------------------------------------------------
+00000000                            	include	"_inc/subcpu.asm"
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; Sonic CD Misc. Disassembly
+00000000                            ; By Ralakimus 2021
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; Sub CPU definitions
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; Memory map
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000 =00000000                  PRG_RAM		EQU	$00000			; PRG-RAM
+00000000 =00080000                  WORDRAM_2M	EQU	$80000			; Word RAM in 2M mode	
+00000000 =000C0000                  WORDRAM_1M	EQU	$C0000			; Word RAM in 1M mode
+00000000                            
+00000000 =00006000                  SP_START	EQU	PRG_RAM+$6000		; Start of SP program
+00000000                            
+00000000 =00040000                  WORDRAM_2M_LEN	EQU	$40000			; Size of Word RAM in 2M mode
+00000000 =00020000                  WORDRAM_1M_LEN	EQU	$20000			; Size of Word RAM in 1M mode
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; Gate array
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000 =FFFF8000                  GA_BASE		EQU	$FFFF8000		; Gate array base
+00000000 =FFFF0000                  PCM_BASE	EQU	$FFFF0000		; PCM chip base
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000 =00000000                  gaReset		EQU	$0000			; Peripheral reset
+00000000 =00000002                  gaMemMode	EQU	$0002			; Memory mode/Write protection
+00000000 =00000004                  gaCDCMode	EQU	$0004			; CDC mode/Device destination
+00000000 =00000006                  gaCRS1		EQU	$0006			; CDC control register
+00000000 =00000008                  gaCDCHost	EQU	$0008			; 16 bit CDC data to host
+00000000 =0000000A                  gaDMAAddr	EQU	$000A			; DMA offset into destination area
+00000000 =0000000C                  gaStopwatch	EQU	$000C			; CDC/gp timer 30.72us LSB
+00000000 =0000000E                  gaComFlags	EQU	$000E			; Communication flags
+00000000 =0000000E                  gaMainFlag	EQU	$000E			; Main CPU communication flag
+00000000 =0000000F                  gaSubFlag	EQU	$000F			; Sub CPU communication flag
+00000000 =00000010                  gaCmds		EQU	$0010			; Communication commands
+00000000 =00000010                  gaCmd0		EQU	$0010			; Communication command 0
+00000000 =00000011                  gaCmd1		EQU	$0011			; Communication command 1
+00000000 =00000012                  gaCmd2		EQU	$0012			; Communication command 2
+00000000 =00000013                  gaCmd3		EQU	$0013			; Communication command 3
+00000000 =00000014                  gaCmd4		EQU	$0014			; Communication command 4
+00000000 =00000015                  gaCmd5		EQU	$0015			; Communication command 5
+00000000 =00000016                  gaCmd6		EQU	$0016			; Communication command 6
+00000000 =00000017                  gaCmd7		EQU	$0017			; Communication command 7
+00000000 =00000018                  gaCmd8		EQU	$0018			; Communication command 8
+00000000 =00000019                  gaCmd9		EQU	$0019			; Communication command 9
+00000000 =0000001A                  gaCmdA		EQU	$001A			; Communication command A
+00000000 =0000001B                  gaCmdB		EQU	$001B			; Communication command B
+00000000 =0000001C                  gaCmdC		EQU	$001C			; Communication command C
+00000000 =0000001D                  gaCmdD		EQU	$001D			; Communication command D
+00000000 =0000001E                  gaCmdE		EQU	$001E			; Communication command E
+00000000 =0000001F                  gaCmdF		EQU	$001F			; Communication command F
+00000000 =00000020                  gaStats		EQU	$0020			; Communication statuses
+00000000 =00000020                  gaStat0		EQU	$0020			; Communication status 0
+00000000 =00000021                  gaStat1		EQU	$0021			; Communication status 1
+00000000 =00000022                  gaStat2		EQU	$0022			; Communication status 2
+00000000 =00000023                  gaStat3		EQU	$0023			; Communication status 3
+00000000 =00000024                  gaStat4		EQU	$0024			; Communication status 4
+00000000 =00000025                  gaStat5		EQU	$0025			; Communication status 5
+00000000 =00000026                  gaStat6		EQU	$0026			; Communication status 6
+00000000 =00000027                  gaStat7		EQU	$0027			; Communication status 7
+00000000 =00000028                  gaStat8		EQU	$0028			; Communication status 8
+00000000 =00000029                  gaStat9		EQU	$0029			; Communication status 9
+00000000 =0000002A                  gaStatA		EQU	$002A			; Communication status A
+00000000 =0000002B                  gaStatB		EQU	$002B			; Communication status B
+00000000 =0000002C                  gaStatC		EQU	$002C			; Communication status C
+00000000 =0000002D                  gaStatD		EQU	$002D			; Communication status D
+00000000 =0000002E                  gaStatE		EQU	$002E			; Communication status E
+00000000 =0000002F                  gaStatF		EQU	$002F			; Communication status F
+00000000 =00000030                  gaInt3Timer	EQU	$0030			; Interrupt 3 timer
+00000000 =00000032                  gaIntMask	EQU	$0032			; Interrupt mask
+00000000 =00000034                  gaCDFader	EQU	$0034			; Fader control/Spindle speed
+00000000 =00000036                  gaCDDCtrl	EQU	$0036			; CDD control
+00000000 =00000038                  gaCDDComm	EQU	$0038			; CDD communication
+00000000 =0000004C                  gaFontCol	EQU	$004C			; Source color values
+00000000 =0000004E                  gaFontBits	EQU	$004E			; Font data
+00000000 =00000056                  gaFontData	EQU	$0056			; Read only
+00000000 =00000058                  gaStampSz	EQU	$0058			; Stamp size/Map size
+00000000 =0000005A                  gaStampMap	EQU	$005A			; Stamp map base address
+00000000 =0000005C                  gaImgVCell	EQU	$005C			; Image buffer V size in cells
+00000000 =0000005E                  gaImgStart	EQU	$005E			; Image buffer start address
+00000000 =00000060                  gaImgOff	EQU	$0060			; Image buffer offset
+00000000 =00000062                  gaImgHDot	EQU	$0062			; Image buffer H size in dots
+00000000 =00000064                  gaImgVDot	EQU	$0064			; Image buffer V size in dots
+00000000 =00000066                  gaTrace		EQU	$0066			; Trace vector base address
+00000000 =00000068                  gaSubAddr	EQU	$0068			; Subcode top address
+00000000 =00000100                  gaSubcode	EQU	$0100			; 64 word subcode buffer
+00000000 =00000180                  gaSubImg	EQU	$0180			; Image of subcode buffer
+00000000                            
+00000000 =FFFF8000                  GA_RESET	EQU	GA_BASE+gaReset		; Peripheral reset
+00000000 =FFFF8002                  GA_MEM_MODE	EQU	GA_BASE+gaMemMode	; Memory mode/Write protection
+00000000 =FFFF8004                  GA_CDC_MODE	EQU	GA_BASE+gaCDCMode	; CDC mode/Device destination
+00000000 =FFFF8006                  GA_CRS1		EQU	GA_BASE+gaCRS1		;  CDC control register
+00000000 =FFFF8008                  GA_CDC_HOST	EQU	GA_BASE+gaCDCHost	; 16 bit CDC data to host
+00000000 =FFFF800A                  GA_DMA_ADDR	EQU	GA_BASE+gaDMAAddr	; DMA offset into destination area
+00000000 =FFFF800C                  GA_STOPWATCH	EQU	GA_BASE+gaStopwatch	; CDC/gp timer 30.72us LSB
+00000000                            GA_COM_FLAGS	EQU	GA_BASE+gaFlags		; Communication flags
+00000000 =FFFF800E                  GA_MAIN_FLAG	EQU	GA_BASE+gaMainFlag	; Main CPU communication flag
+00000000 =FFFF800F                  GA_SUB_FLAG	EQU	GA_BASE+gaSubFlag	; Sub CPU communication flag
+00000000 =FFFF8010                  GA_CMDS		EQU	GA_BASE+gaCmds		; Communication commands
+00000000 =FFFF8010                  GA_CMD_0	EQU	GA_BASE+gaCmd0		; Communication command 0
+00000000 =FFFF8011                  GA_CMD_1	EQU	GA_BASE+gaCmd1		; Communication command 1
+00000000 =FFFF8012                  GA_CMD_2	EQU	GA_BASE+gaCmd2		; Communication command 2
+00000000 =FFFF8013                  GA_CMD_3	EQU	GA_BASE+gaCmd3		; Communication command 3
+00000000 =FFFF8014                  GA_CMD_4	EQU	GA_BASE+gaCmd4		; Communication command 4
+00000000 =FFFF8015                  GA_CMD_5	EQU	GA_BASE+gaCmd5		; Communication command 5
+00000000 =FFFF8016                  GA_CMD_6	EQU	GA_BASE+gaCmd6		; Communication command 6
+00000000 =FFFF8017                  GA_CMD_7	EQU	GA_BASE+gaCmd7		; Communication command 7
+00000000 =FFFF8018                  GA_CMD_8	EQU	GA_BASE+gaCmd8		; Communication command 8
+00000000 =FFFF8019                  GA_CMD_9	EQU	GA_BASE+gaCmd9		; Communication command 9
+00000000 =FFFF801A                  GA_CMD_A	EQU	GA_BASE+gaCmdA		; Communication command A
+00000000 =FFFF801B                  GA_CMD_B	EQU	GA_BASE+gaCmdB		; Communication command B
+00000000 =FFFF801C                  GA_CMD_C	EQU	GA_BASE+gaCmdC		; Communication command C
+00000000 =FFFF801D                  GA_CMD_D	EQU	GA_BASE+gaCmdD		; Communication command D
+00000000 =FFFF801E                  GA_CMD_E	EQU	GA_BASE+gaCmdE		; Communication command E
+00000000 =FFFF801F                  GA_CMD_F	EQU	GA_BASE+gaCmdF		; Communication command F
+00000000 =FFFF8020                  GA_STATS	EQU	GA_BASE+gaStats		; Communication statuses
+00000000 =FFFF8020                  GA_STAT_0	EQU	GA_BASE+gaStat0		; Communication status 0
+00000000 =FFFF8021                  GA_STAT_1	EQU	GA_BASE+gaStat1		; Communication status 1
+00000000 =FFFF8022                  GA_STAT_2	EQU	GA_BASE+gaStat2		; Communication status 2
+00000000 =FFFF8023                  GA_STAT_3	EQU	GA_BASE+gaStat3		; Communication status 3
+00000000 =FFFF8024                  GA_STAT_4	EQU	GA_BASE+gaStat4		; Communication status 4
+00000000 =FFFF8025                  GA_STAT_5	EQU	GA_BASE+gaStat5		; Communication status 5
+00000000 =FFFF8026                  GA_STAT_6	EQU	GA_BASE+gaStat6		; Communication status 6
+00000000 =FFFF8027                  GA_STAT_7	EQU	GA_BASE+gaStat7		; Communication status 7
+00000000 =FFFF8028                  GA_STAT_8	EQU	GA_BASE+gaStat8		; Communication status 8
+00000000 =FFFF8029                  GA_STAT_9	EQU	GA_BASE+gaStat9		; Communication status 9
+00000000 =FFFF802A                  GA_STAT_A	EQU	GA_BASE+gaStatA		; Communication status A
+00000000 =FFFF802B                  GA_STAT_B	EQU	GA_BASE+gaStatB		; Communication status B
+00000000 =FFFF802C                  GA_STAT_C	EQU	GA_BASE+gaStatC		; Communication status C
+00000000 =FFFF802D                  GA_STAT_D	EQU	GA_BASE+gaStatD		; Communication status D
+00000000 =FFFF802E                  GA_STAT_E	EQU	GA_BASE+gaStatE		; Communication status E
+00000000 =FFFF802F                  GA_STAT_F	EQU	GA_BASE+gaStatF		; Communication status F
+00000000 =FFFF8030                  GA_INT3_TIMER	EQU	GA_BASE+gaInt3Timer	; Interrupt 3 timer
+00000000 =FFFF8032                  GA_INT_MASK	EQU	GA_BASE+gaIntMask	; Interrupt mask
+00000000 =FFFF8034                  GA_CD_FADER	EQU	GA_BASE+gaCDFader	; Fader control/Spindle speed
+00000000 =FFFF8036                  GA_CDD_CTRL	EQU	GA_BASE+gaCDDCtrl	; CDD control
+00000000 =FFFF8038                  GA_CDD_COMM	EQU	GA_BASE+gaCDDComm	; CDD communication
+00000000 =FFFF804C                  GA_FONT_COLOR	EQU	GA_BASE+gaFontCol	; Source color values
+00000000 =FFFF804E                  GA_FONT_BITS	EQU	GA_BASE+gaFontBits	; Font data
+00000000 =FFFF8056                  GA_FONT_DATA	EQU	GA_BASE+gaFontData	; Read only
+00000000 =FFFF8058                  GA_STAMP_SIZE	EQU	GA_BASE+gaStampSz	; Stamp size/Map size
+00000000 =FFFF805A                  GA_STAMP_MAP	EQU	GA_BASE+gaStampMap	; Stamp map base address
+00000000 =FFFF805C                  GA_IMG_VCELL	EQU	GA_BASE+gaImgVCell	; Image buffer V size in cells
+00000000 =FFFF805E                  GA_IMG_START	EQU	GA_BASE+gaImgStart	; Image buffer start address
+00000000 =FFFF8060                  GA_IMG_OFFSET	EQU	GA_BASE+gaImgOff	; Image buffer offset
+00000000 =FFFF8062                  GA_IMG_HDOT	EQU	GA_BASE+gaImgHDot	; Image buffer H size in dots
+00000000 =FFFF8064                  GA_IMG_VDOT	EQU	GA_BASE+gaImgVDot	; Image buffer V size in dots
+00000000 =FFFF8066                  GA_IMG_TRACE	EQU	GA_BASE+gaTrace		; Trace vector base address
+00000000 =FFFF8068                  GA_SUBCODE_ADDR	EQU	GA_BASE+gaSubAddr	; Subcode top address
+00000000 =FFFF8100                  GA_SUBCODE	EQU	GA_BASE+gaSubcode	; 64 word subcode buffer
+00000000 =FFFF8180                  GA_SUBCODE_IMG	EQU	GA_BASE+gaSubImg	; Image of subcode buffer
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; PCM chip registers
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000 =00000001                  pcmEnv		EQU	$0000*2+1		; Volume
+00000000 =00000003                  pcmPan		EQU	$0001*2+1		; Pan
+00000000 =00000005                  pcmFDL		EQU	$0002*2+1		; Frequency (low)
+00000000 =00000007                  pcmFDH		EQU	$0003*2+1		; Frequency (high)
+00000000 =00000009                  pcmLSL		EQU	$0004*2+1		; Wave memory stop address (high)
+00000000 =0000000B                  pcmLSH		EQU	$0005*2+1		; Wave memory stop address (low)
+00000000 =0000000D                  pcmST		EQU	$0006*2+1		; Start of wave memory
+00000000 =0000000F                  pcmCtrl		EQU	$0007*2+1		; Control
+00000000 =00000011                  pcmOnOff	EQU	$0008*2+1		; On/Off
+00000000 =00000021                  pcmWaveAddr	EQU	$0010*2+1		; Wave address
+00000000 =00002001                  pcmWaveData	EQU	$1000*2+1		; Wave data
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000 =FFFF0001                  PCM_ENV		EQU	PCM_BASE+pcmEnv		; Volume
+00000000 =FFFF0003                  PCM_PAN		EQU	PCM_BASE+pcmPan		; Pan
+00000000 =FFFF0005                  PCM_FDL		EQU	PCM_BASE+pcmFDL		; Frequency (low)
+00000000 =FFFF0007                  PCM_FDH		EQU	PCM_BASE+pcmFDH		; Frequency (high)
+00000000 =FFFF0009                  PCM_LSL		EQU	PCM_BASE+pcmLSL		; Wave memory stop address (high)
+00000000 =FFFF000B                  PCM_LSH		EQU	PCM_BASE+pcmLSH		; Wave memory stop address (low)
+00000000 =FFFF000D                  PCM_ST		EQU	PCM_BASE+pcmST		; Start of wave memory
+00000000 =FFFF000F                  PCM_CTRL	EQU	PCM_BASE+pcmCtrl	; Control
+00000000 =FFFF0011                  PCM_ON_OFF	EQU	PCM_BASE+pcmOnOff	; On/Off
+00000000 =FFFF0021                  PCM_WAVE_ADDR	EQU	PCM_BASE+pcmWaveAddr	; Wave address
+00000000 =FFFF2001                  PCM_WAVE_DATA	EQU	PCM_BASE+pcmWaveData	; Wave data
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; BIOS function codes
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000 =00000002                  MSCSTOP		EQU	$0002
+00000000 =00000003                  MSCPAUSEON	EQU	$0003
+00000000 =00000004                  MSCPAUSEOFF	EQU	$0004
+00000000 =00000005                  MSCSCANFF	EQU	$0005
+00000000 =00000006                  MSCSCANFR	EQU	$0006
+00000000 =00000007                  MSCSCANOFF	EQU	$0007
+00000000                            
+00000000 =00000008                  ROMPAUSEON	EQU	$0008
+00000000 =00000009                  ROMPAUSEOFF	EQU	$0009
+00000000                            
+00000000 =0000000A                  DRVOPEN		EQU	$000A
+00000000 =00000010                  DRVINIT		EQU	$0010
+00000000                            
+00000000 =00000011                  MSCPLAY		EQU	$0011
+00000000 =00000012                  MSCPLAY1	EQU	$0012
+00000000 =00000013                  MSCPLAYR	EQU	$0013
+00000000 =00000014                  MSCPLAYT	EQU	$0014
+00000000 =00000015                  MSCSEEK		EQU	$0015
+00000000 =00000016                  MSCSEEKT	EQU	$0016
+00000000                            
+00000000 =00000017                  ROMREAD		EQU	$0017
+00000000 =00000018                  ROMSEEK		EQU	$0018
+00000000                            
+00000000 =00000019                  MSCSEEK1	EQU	$0019
+00000000 =0000001E                  TESTENTRY	EQU	$001E
+00000000 =0000001F                  TESTENTRYLOOP	EQU	$001F
+00000000                            
+00000000 =00000020                  ROMREADN	EQU	$0020
+00000000 =00000021                  ROMREADE	EQU	$0021
+00000000                            
+00000000 =00000080                  CDBCHK		EQU	$0080
+00000000 =00000081                  CDBSTAT		EQU	$0081
+00000000 =00000082                  CDBTOCWRITE	EQU	$0082
+00000000 =00000083                  CDBTOCREAD	EQU	$0083
+00000000 =00000084                  CDBPAUSE	EQU	$0084
+00000000                            
+00000000 =00000085                  FDRSET		EQU	$0085
+00000000 =00000086                  FDRCHG		EQU	$0086
+00000000                            
+00000000 =00000087                  CDCSTART	EQU	$0087
+00000000 =00000088                  CDCSTARTP	EQU	$0088
+00000000 =00000089                  CDCSTOP		EQU	$0089
+00000000 =0000008A                  CDCSTAT		EQU	$008A
+00000000 =0000008B                  CDCREAD		EQU	$008B
+00000000 =0000008C                  CDCTRN		EQU	$008C
+00000000 =0000008D                  CDCACK		EQU	$008D
+00000000                            
+00000000 =0000008E                  SCDINIT		EQU	$008E
+00000000 =0000008F                  SCDSTART	EQU	$008F
+00000000 =00000090                  SCDSTOP		EQU	$0090
+00000000 =00000091                  SCDSTAT		EQU	$0091
+00000000 =00000092                  SCDREAD		EQU	$0092
+00000000 =00000093                  SCDPQ		EQU	$0093
+00000000 =00000094                  SCDPQL		EQU	$0094
+00000000                            
+00000000 =00000095                  LEDSET		EQU	$0095
+00000000                            
+00000000 =00000096                  CDCSETMODE	EQU	$0096
+00000000                            
+00000000 =00000097                  WONDERREQ	EQU	$0097
+00000000 =00000098                  WONDERCHK	EQU	$0098
+00000000                            
+00000000 =00000000                  CBTINIT		EQU	$0000
+00000000 =00000001                  CBTINT		EQU	$0001
+00000000 =00000002                  CBTOPENDISC	EQU	$0002
+00000000 =00000003                  CBTOPENSTAT	EQU	$0003
+00000000 =00000004                  CBTCHKDISC	EQU	$0004
+00000000 =00000005                  CBTCHKSTAT	EQU	$0005
+00000000 =00000006                  CBTIPDISC	EQU	$0006
+00000000 =00000007                  CBTIPSTAT	EQU	$0007
+00000000 =00000008                  CBTSPDISC	EQU	$0008
+00000000 =00000009                  CBTSPSTAT	EQU	$0009
+00000000                            
+00000000 =00000000                  BRMINIT		EQU	$0000
+00000000 =00000001                  BRMSTAT		EQU	$0001
+00000000 =00000002                  BRMSERCH	EQU	$0002
+00000000 =00000003                  BRMREAD		EQU	$0003
+00000000 =00000004                  BRMWRITE	EQU	$0004
+00000000 =00000005                  BRMDEL		EQU	$0005
+00000000 =00000006                  BRMFORMAT	EQU	$0006
+00000000 =00000007                  BRMDIR		EQU	$0007
+00000000 =00000008                  BRMVERIFY	EQU	$0008
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; BIOS entry points
+00000000                            ; -------------------------------------------------------------------------
+00000000                            
+00000000 =00005F40                  _ADRERR		EQU	$00005F40
+00000000 =00005EA0                  _BOOTSTAT	EQU	$00005EA0
+00000000 =00005F16                  _BURAM		EQU	$00005F16
+00000000 =00005F22                  _CDBIOS		EQU	$00005F22
+00000000 =00005F1C                  _CDBOOT		EQU	$00005F1C
+00000000 =00005E80                  _CDSTAT		EQU	$00005E80
+00000000 =00005F52                  _CHKERR		EQU	$00005F52
+00000000 =00005F46                  _CODERR		EQU	$00005F46
+00000000 =00005F4C                  _DEVERR		EQU	$00005F4C
+00000000 =00005F76                  _LEVEL1		EQU	$00005F76
+00000000 =00005F7C                  _LEVEL2		EQU	$00005F7C
+00000000 =00005F82                  _LEVEL3		EQU	$00005F82
+00000000 =00005F88                  _LEVEL4		EQU	$00005F88
+00000000 =00005F8E                  _LEVEL5		EQU	$00005F8E
+00000000 =00005F94                  _LEVEL6		EQU	$00005F94
+00000000 =00005F9A                  _LEVEL7		EQU	$00005F9A
+00000000 =00005F6A                  _NOCOD0		EQU	$00005F6A
+00000000 =00005F70                  _NOCOD1		EQU	$00005F70
+00000000 =00005F0A                  _SETJMPTBL	EQU	$00005F0A
+00000000 =00005F5E                  _SPVERR		EQU	$00005F5E
+00000000 =00005F64                  _TRACE		EQU	$00005F64
+00000000 =00005FA0                  _TRAP00		EQU	$00005FA0
+00000000 =00005FA6                  _TRAP01		EQU	$00005FA6
+00000000 =00005FAC                  _TRAP02		EQU	$00005FAC
+00000000 =00005FB2                  _TRAP03		EQU	$00005FB2
+00000000 =00005FB8                  _TRAP04		EQU	$00005FB8
+00000000 =00005FBE                  _TRAP05		EQU	$00005FBE
+00000000 =00005FC4                  _TRAP06		EQU	$00005FC4
+00000000 =00005FCA                  _TRAP07		EQU	$00005FCA
+00000000 =00005FD0                  _TRAP08		EQU	$00005FD0
+00000000 =00005FD6                  _TRAP09		EQU	$00005FD6
+00000000 =00005FDC                  _TRAP10		EQU	$00005FDC
+00000000 =00005FE2                  _TRAP11		EQU	$00005FE2
+00000000 =00005FE8                  _TRAP12		EQU	$00005FE8
+00000000 =00005FEE                  _TRAP13		EQU	$00005FEE
+00000000 =00005FF4                  _TRAP14		EQU	$00005FF4
+00000000 =00005FFA                  _TRAP15		EQU	$00005FFA
+00000000 =00005F58                  _TRPERR		EQU	$00005F58
+00000000 =00005F28                  _USERCALL0	EQU	$00005F28
+00000000 =00005F2E                  _USERCALL1	EQU	$00005F2E
+00000000 =00005F34                  _USERCALL2	EQU	$00005F34
+00000000 =00005F3A                  _USERCALL3	EQU	$00005F3A
+00000000 =00005EA6                  _USERMODE	EQU	$00005EA6
+00000000 =00005F10                  _WAITVSYNC	EQU	$00005F10
+00000000                            
+00000000                            ; -------------------------------------------------------------------------
+00000000                            ; -------------------------------------------------------------------------
+00000000                            	include	"_inc/system.asm"
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; Sonic CD Misc. Disassembly
+00000000                            ; By Ralakimus 2021
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; System definitions
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; Constants
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            ; Addresses
+00000000 =00007000                  SPVariables	EQU	$7000			; Variables
+00000000 =00007400                  SaveDataTemp	EQU	$7400			; Temporary save data buffer
+00000000 =00007700                  SPIRQ2		EQU	$7700			; IRQ2 handler
+00000000 =00007800                  LoadFile	EQU	$7800			; Load file
+00000000 =00007840                  GetFileName	EQU	$7840			; Get file name
+00000000 =00007880                  FileEngineFunc	EQU	$7880			; File engine function handler
+00000000 =00008C00                  FileEngineVars	EQU	$8C00			; File engine variables
+00000000 =0000B800                  SPX		EQU	$B800			; SPX start location
+00000000 =0000B800                  SPXFileTable	EQU	SPX			; SPX file table
+00000000 =0000C000                  SPXStart	EQU	SPX+$800		; SPX code start
+00000000 =00010000                  Stack		EQU	$10000			; Stack base
+00000000 =00040000                  PCMDriver	EQU	PRG_RAM+$40000		; PCM driver location
+00000000 =00040010                  PCMDrv_Run	EQU	PCMDriver+$10		; Run PCM driver
+00000000 =00040022                  PCMDrv_Queue	EQU	PCMDriver+$22		; PCM sound queue
+00000000                            
+00000000                            ; File engine functions
+00000000 =00000000                  FFUNC_INIT	EQU	0			; Initialize
+00000000 =00000001                  FFUNC_OPER	EQU	1			; Perform operation
+00000000 =00000002                  FFUNC_STATUS	EQU	2			; Get status
+00000000 =00000003                  FFUNC_GETFILES	EQU	3			; Get files
+00000000 =00000004                  FFUNC_LOADFILE	EQU	4			; Load file
+00000000 =00000005                  FFUNC_FINDFILE	EQU	5			; Find file
+00000000 =00000006                  FFUNC_LOADFMV	EQU	6			; Load FMV
+00000000 =00000007                  FFUNC_RESET	EQU	7			; Reset
+00000000 =00000008                  FFUNC_LOADFMVM	EQU	8			; Load FMV (mute)
+00000000                            
+00000000                            ; File engine operation modes
+00000000 =00000000                  FMODE_NONE	EQU	0			; No function
+00000000 =00000001                  FMODE_GETFILES	EQU	1			; Get files
+00000000 =00000002                  FMODE_LOADFILE	EQU	2			; Load file
+00000000 =00000003                  FMODE_LOADFMV	EQU	3			; Load FMV
+00000000 =00000004                  FMODE_LOADFMVM	EQU	4			; Load FMV (mute)
+00000000                            
+00000000                            ; File engine statuses
+00000000 =00000064                  FSTAT_OK	EQU	100			; OK
+00000000 =FFFFFFFF                  FSTAT_GETFAIL	EQU	-1			; File get failed
+00000000 =FFFFFFFE                  FSTAT_NOTFOUND	EQU	-2			; File not found
+00000000 =FFFFFFFD                  FSTAT_LOADFAIL	EQU	-3			; File load failed
+00000000 =FFFFFF9C                  FSTAT_READFAIL	EQU	-100			; Failed
+00000000 =FFFFFF91                  FSTAT_FMVFAIL	EQU	-111			; FMV load failed
+00000000                            
+00000000                            ; FMV data types
+00000000 =00000000                  FMVT_PCM	EQU	0			; PCM data type
+00000000 =00000001                  FMVT_GFX	EQU	1			; Graphics data type
+00000000                            
+00000000                            ; FMV flags
+00000000 =00000003                  FMVF_INIT	EQU	3			; Initialized flag
+00000000 =00000004                  FMVF_BANK	EQU	4			; PCM bank ID
+00000000 =00000005                  FMVF_READY	EQU	5			; Ready flag
+00000000 =00000007                  FMVF_SECT	EQU	7			; Reading data section 1 flag
+00000000                            
+00000000                            ; FMV addreses
+00000000 =00040000                  FMV_PCM_BUF	EQU	PRG_RAM+$40000		; PCM data buffer
+00000000 =000C0000                  FMV_GFX_BUF	EQU	WORDRAM_1M		; Graphics data buffer
+00000000                            
+00000000                            ; File data
+00000000 =0000000C                  FILENAME_LEN	EQU	12			; File name length
+00000000                            
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; SP variables
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            	rsset	SPVariables
+00000000 =00007000                  curPCMDriver	rs.l	1			; Current PCM driver
+00000000 =00007004                  ssFlags		rs.b	1			; Special stage flags
+00000000 =00007005                  pcmDrvFlags	rs.b	1			; PCM driver flags
+00000000                            		rs.b	$400-__rs
+00000000 =00000400                  SP_VARS_LEN	rs.b	1			; Size of structure
+00000000                            
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; File engine variables structure
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            	rsreset
+00000000 =00000000                  feOperMark	rs.l	1			; Operation bookmark
+00000000 =00000004                  feSector	rs.l	1			; Sector to read from
+00000000 =00000008                  feSectorCnt	rs.l	1			; Number of sectors to read
+00000000 =0000000C                  feReturnAddr	rs.l	1			; Return address for CD read functions
+00000000 =00000010                  feReadBuffer	rs.l	1			; Read buffer address
+00000000 =00000014                  feReadTime	rs.b	0			; Time of read sector
+00000000 =00000014                  feReadMin	rs.b	1			; Read sector minute
+00000000 =00000015                  feReadSec	rs.b	1			; Read sector second
+00000000 =00000016                  feReadFrame	rs.b	1			; Read sector frame
+00000000                            		rs.b	1
+00000000 =00000018                  feDirSectors	rs.b	0			; Directory size in sectors
+00000000 =00000018                  feFileSize	rs.l	1			; File size buffer
+00000000 =0000001C                  feOperMode	rs.w	1			; Operation mode
+00000000 =0000001E                  feStatus	rs.w	1			; Status code
+00000000 =00000020                  feFileCount	rs.w	1			; File count
+00000000 =00000022                  feWaitTime	rs.w	1			; Wait timer
+00000000 =00000024                  feRetries	rs.w	1			; Retry counter
+00000000 =00000026                  feSectorsRead	rs.w	1			; Number of sectors read
+00000000 =00000028                  feCDC		rs.b	1			; CDC mode
+00000000 =00000029                  feSectorFrame	rs.b	1			; Sector frame
+00000000 =0000002A                  feFileName	rs.b	FILENAME_LEN		; File name buffer
+00000000                            		rs.b	$100-__rs
+00000000 =00000100                  feFileList	rs.b	$2000			; File list
+00000000 =00002100                  feDirReadBuf	rs.b	$900			; Directory read buffer
+00000000 =00002A00                  feFMVSectFrame	rs.w	1			; FMV sector frame
+00000000 =00002A02                  feFMVDataType	rs.b	1			; FMV read data type
+00000000 =00002A03                  feFMVFlags	rs.b	1			; FMV flags
+00000000 =00002A04                  feFMVFailCount	rs.b	1			; FMV fail counter
+00000000 =00002A05                  FILE_VARS_LEN	rs.b	0			; Size of structure
+00000000                            
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; File entry structure
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            	rsreset
+00000000 =00000000                  fileName	rs.b	FILENAME_LEN		; File name
+00000000                            		rs.b	$17-__rs
+00000000 =00000017                  fileFlags	rs.b	1			; File flags
+00000000 =00000018                  fileSector	rs.l	1			; File sector
+00000000 =0000001C                  fileLength	rs.l	1			; File size
+00000000 =00000020                  FILE_ENTRY_LEN	rs.b	0			; Size of structure
+00000000                            
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            ; Header
+00000000                            ; -------------------------------------------------------------------------------
+00000000                            
+00000000                            	org	SP_START
+00006000                            SPHeader:
+00006000 4D41 494E 2020 2020 2020+  	dc.b	'MAIN       ', 0
+0000600C 0000 0000                  	dc.w	0, 0
+00006010 0000 0000                  	dc.l	0
+00006014 0000 0000                  	dc.l	SPEnd-SPHeader
+00006018 0000 0000                  	dc.l	SPHeaderOffsets-SPHeader
+0000601C 0000 0000                  	dc.l	0
+00006020                            
+00006020                            ; -------------------------------------------------------------------------------
+00006020                            ; Offsets
+00006020                            ; -------------------------------------------------------------------------------
+00006020                            
+00006020                            SPHeaderOffsets:
+00006020 0000                       	dc.w	SPInit-SPHeaderOffsets		; Initialization
+00006022 0000                       	dc.w	SPMain-SPHeaderOffsets		; Main
+00006024 16E0                       	dc.w	SPIRQ2-SPHeaderOffsets		; IRQ2
+00006026 0000                       	dc.w	SPNull-SPHeaderOffsets		; Null
+00006028 0000                       	dc.w	0
+0000602A                            
+0000602A                            ; -------------------------------------------------------------------------------
+0000602A                            ; Initialization
+0000602A                            ; -------------------------------------------------------------------------------
+0000602A                            
+0000602A                            SPInit:
+0000602A 41F8 8020                  	lea	GA_STATS.w,a0			; Clear communication statuses
+0000602E 7000                       	moveq	#0,d0
+00006030 1140 FFEF                  	move.b	d0,GA_SUB_FLAG-GA_STATS(a0)
+00006034 20C0                       	move.l	d0,(a0)+
+00006036 20C0                       	move.l	d0,(a0)+
+00006038 20C0                       	move.l	d0,(a0)+
+0000603A 20C0                       	move.l	d0,(a0)+
+0000603C                            
+0000603C 41FA 0000                  	lea	DriveInitParams(pc),a0		; Initialzie drive
+00006040 303C 0010                  	move.w	#DRVINIT,d0
+00006044 4EB8 5F22                  	jsr	_CDBIOS.w
+00006048                            
+00006048                            .WaitReady:
+00006048 303C 0081                  	move.w	#CDBSTAT,d0			; Wait for the BIOS to be ready
+0000604C 4EB8 5F22                  	jsr	_CDBIOS.w
+00006050 0238 00F0 5E80             	andi.b	#$F0,_CDSTAT.w
+00006056 66F0                       	bne.s	.WaitReady
+00006058                            
+00006058 0238 00FA 8003             	andi.b	#$FA,GA_MEM_MODE+1.w		; Set to 2M mode
+0000605E                            	
+0000605E 303C 0000                  	move.w	#FFUNC_INIT,d0			; Initialize file engine
+00006062 4EB9 0000 7880             	jsr	FileEngineFunc
+00006068                            
+00006068                            SPNull:
+00006068 4E75                       	rts
+0000606A                            
+0000606A                            ; -------------------------------------------------------------------------------
+0000606A                            
+0000606A                            DriveInitParams:
+0000606A 01FF                       	dc.b	1, $FF
+0000606C                            
+0000606C                            SPXFile:
+0000606C 5350 585F 5F5F 2E42 494E+  	dc.b	"SPX___.BIN;1", 0
+0000607A 00                         	even
+0000607A                            
+0000607A                            ; -------------------------------------------------------------------------------
+0000607A                            ; Main routine
+0000607A                            ; -------------------------------------------------------------------------------
+0000607A                            
+0000607A                            SPMain:
+0000607A 303C 0003                  	move.w	#FFUNC_GETFILES,d0		; Get files
+0000607E 4EB9 0000 7880             	jsr	FileEngineFunc
+00006084                            
+00006084                            .Wait:
+00006084 4EB8 5F10                  	jsr	_WAITVSYNC.w			; VSync
+00006088                            
+00006088 303C 0002                  	move.w	#FFUNC_STATUS,d0		; Is the operation finished?
+0000608C 4EB9 0000 7880             	jsr	FileEngineFunc
+00006092 65F0                       	bcs.s	.Wait				; If not, wait
+00006094                            
+00006094 0C40 0064                  	cmpi.w	#FSTAT_OK,d0			; Was the operation a success?
+00006098 6600 0000                  	bne.w	.Error				; If not, branch
+0000609C                            
+0000609C 41FA FFCE                  	lea	SPXFile(pc),a0			; Load SPX file
+000060A0 43F9 0000 B800             	lea	SPX,a1
+000060A6 4EB8 7800                  	jsr	LoadFile.w
+000060AA                            
+000060AA 4FF9 0001 0000             	lea	Stack,sp			; Set stack pointer
+000060B0 4EF9 0000 C000             	jmp	SPXStart			; Go to SPX
+000060B6                            
+000060B6                            .Error:
+000060B6 4E71                       	nop					; Loop here forever
+000060B8 4E71                       	nop
+000060BA 60FA                       	bra.s	.Error
+000060BC                            
+000060BC                            ; -------------------------------------------------------------------------------
+000060BC                            ; Variables
+000060BC                            ; -------------------------------------------------------------------------------
+000060BC                            
+000060BC                            	align	SPVariables
+00007000                            
+00007000                            ; -------------------------------------------------------------------------------
+00007000                            ; Temporary save data buffer
+00007000                            ; -------------------------------------------------------------------------------
+00007000                            
+00007000                            	align	SaveDataTemp
+00007400 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+0000740C 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007418 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007424 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007430 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+0000743C 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007448 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007454 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007460 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+0000746C 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007478 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007484 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007490 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+0000749C 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+000074A8 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+000074B4 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+000074C0 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+000074CC 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+000074D8 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+000074E4 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+000074F0 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+000074FC 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007508 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007514 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007520 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+0000752C 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007538 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007544 0005 0000 0005 0000 0005+  	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
+00007550 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+0000755C 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007568 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007574 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007580 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+0000758C 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007598 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+000075A4 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+000075B0 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+000075BC 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+000075C8 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+000075D4 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+000075E0 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+000075EC 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+000075F8 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007604 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007610 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+0000761C 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007628 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007634 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007640 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+0000764C 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007658 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007664 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007670 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+0000767C 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007688 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+00007694 0B0B 0B00 0B0B 0B00 0B0B+  	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
+000076A0 2319 1F00 0000 0000 1000+  	dc.b	$23, $19, $1F, $00, $00, $00, $00, $00, $10, $00, $00, $00
+000076AC 0000 0000 0000 0000 0000+  	dc.b	$00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
+000076B8 0000 0000 0000 0000        	dc.b	$00, $00, $00, $00, $00, $00, $00, $00
+000076C0                            
+000076C0                            ; -------------------------------------------------------------------------------
+000076C0                            ; IRQ2
+000076C0                            ; -------------------------------------------------------------------------------
+000076C0                            
+000076C0 0000 0000 0000 0000 0000+  	align	SPIRQ2
+00007700 48E7 FFFE                  	movem.l	d0-a6,-(sp)			; Save registers
+00007704 303C 0001                  	move.w	#FFUNC_OPER,d0			; Perform engine operation
+00007708 4EB9 0000 7880             	jsr	FileEngineFunc
+0000770E 4CDF 7FFF                  	movem.l	(sp)+,d0-a6			; Restore registers
+00007712 4E75                       	rts
+00007714                            
+00007714                            ; -------------------------------------------------------------------------------
+00007714                            ; Load file
+00007714                            ; -------------------------------------------------------------------------------
+00007714                            ; PARAMETERS:
+00007714                            ;	a0.l - Pointer to file name
+00007714                            ;	a1.l - File read destination buffer
+00007714                            ; -------------------------------------------------------------------------------
+00007714                            
+00007714 0000 0000 0000 0000 0000+  	align	LoadFile
+00007800 303C 0004                  	move.w	#FFUNC_LOADFILE,d0		; Start file loading
+00007804 4EB9 0000 7880             	jsr	FileEngineFunc
+0000780A                            
+0000780A                            .WaitFileLoad:
+0000780A 4EB8 5F10                  	jsr	_WAITVSYNC.w			; VSync
+0000780E                            	
+0000780E 303C 0002                  	move.w	#FFUNC_STATUS,d0		; Is the operation finished?
+00007812 4EB9 0000 7880             	jsr	FileEngineFunc
+00007818 65F0                       	bcs.s	.WaitFileLoad			; If not, wait
+0000781A                            
+0000781A 0C40 0064                  	cmpi.w	#FSTAT_OK,d0			; Was the operation a success?
+0000781E 6600 FFE0                  	bne.w	LoadFile			; If not, try again
+00007822 4E75                       	rts
+00007824                            
+00007824                            ; -------------------------------------------------------------------------------
+00007824                            ; Get file name
+00007824                            ; -------------------------------------------------------------------------------
+00007824                            ; PARAMETERS:
+00007824                            ;	d0.w - File ID
+00007824                            ; RETURNS:
+00007824                            ;	a0.l - Pointer to file name
+00007824                            ; -------------------------------------------------------------------------------
+00007824                            
+00007824 0000 0000 0000 0000 0000+  	align	GetFileName
+00007840 C0FC 000D                  	mulu.w	#FILENAME_LEN+1,d0		; Get file name pointer
+00007844 41F9 0000 B800             	lea	SPXFileTable,a0
+0000784A D0C0                       	adda.w	d0,a0
+0000784C 4E75                       	rts
+0000784E                            
+0000784E                            ; -------------------------------------------------------------------------------
+0000784E                            ; File engine function
+0000784E                            ; -------------------------------------------------------------------------------
+0000784E                            ; PARAMETERS:
+0000784E                            ;	d0.w - File engine function ID
+0000784E                            ; -------------------------------------------------------------------------------
+0000784E                            
+0000784E 0000 0000 0000 0000 0000+  	align	FileEngineFunc
+00007880 48E7 00FE                  	movem.l	a0-a6,-(sp)			; Save registers
+00007884 4BF9 0000 8C00             	lea	FileEngineVars,a5		; Perform function
+0000788A D040                       	add.w	d0,d0
+0000788C 303B 0000                  	move.w	.Functions(pc,d0.w),d0
+00007890 4EBB 0000                  	jsr	.Functions(pc,d0.w)
+00007894 4CDF 7F00                  	movem.l	(sp)+,a0-a6			; Restore registers
+00007898 4E75                       	rts
+0000789A                            
+0000789A                            ; -------------------------------------------------------------------------------
+0000789A                            
+0000789A                            .Functions:
+0000789A 0000                       	dc.w	FileFunc_EngineInit-.Functions	; Initialize engine
+0000789C 0000                       	dc.w	FileFunc_Operation-.Functions	; Perform operation
+0000789E 0000                       	dc.w	FileFunc_GetStatus-.Functions	; Get status
+000078A0 0000                       	dc.w	FileFunc_GetFiles-.Functions	; Get files
+000078A2 0000                       	dc.w	FileFunc_LoadFile-.Functions	; Load file
+000078A4 0000                       	dc.w	FileFunc_FindFile-.Functions	; Find file
+000078A6 0000                       	dc.w	FileFunc_LoadFMV-.Functions	; Load FMV
+000078A8 0000                       	dc.w	FileFunc_EngineReset-.Functions	; Reset engine
+000078AA 0000                       	dc.w	FileFunc_LoadMuteFMV-.Functions	; Load mute FMV
+000078AC                            
+000078AC                            ; -------------------------------------------------------------------------------
+000078AC                            ; Get files
+000078AC                            ; -------------------------------------------------------------------------------
+000078AC                            
+000078AC                            FileFunc_GetFiles:
+000078AC 3B7C 0001 001C             	move.w	#FMODE_GETFILES,feOperMode(a5)	; Set operation mode to "get files"
+000078B2 1B7C 0080 2A03             	move.b	#1<<FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+000078B8 2B7C 0000 0000 2A04        	move.l	#0,feFMVFailCount(a5)		; Reset fail counter
+000078C0 4E75                       	rts
+000078C2                            
+000078C2                            ; -------------------------------------------------------------------------------
+000078C2                            ; Initialize file engine
+000078C2                            ; -------------------------------------------------------------------------------
+000078C2                            
+000078C2                            FileFunc_EngineInit:
+000078C2 2B7C 0000 0000 0000        	move.l	#FileEngineOper,feOperMark(a5)	; Reset operation bookmark
+000078CA 3B7C 0000 001C             	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
+000078D0 4E75                       	rts
+000078D2                            
+000078D2                            ; -------------------------------------------------------------------------------
+000078D2                            ; Perform operation
+000078D2                            ; -------------------------------------------------------------------------------
+000078D2                            
+000078D2                            FileFunc_Operation:
+000078D2 206D 0000                  	movea.l	feOperMark(a5),a0		; Go to operation bookmark
+000078D6 4ED0                       	jmp	(a0)
+000078D8                            
+000078D8                            ; -------------------------------------------------------------------------------
+000078D8                            ; Handle file engine operation
+000078D8                            ; -------------------------------------------------------------------------------
+000078D8                            
+000078D8                            FileEngineOper:
+000078D8 6100 0000                  	bsr.w	FileEngine_SetOperMark		; Set bookmark
+000078DC                            	
+000078DC 302D 001C                  	move.w	feOperMode(a5),d0		; Perform operation
+000078E0 D040                       	add.w	d0,d0
+000078E2 303B 0000                  	move.w	.Opers(pc,d0.w),d0
+000078E6 4EFB 0000                  	jmp	.Opers(pc,d0.w)
+000078EA                            
+000078EA                            ; -------------------------------------------------------------------------------
+000078EA                            
+000078EA                            .Opers:
+000078EA FFEE                       	dc.w	FileEngineOper-.Opers		; None
+000078EC 0000                       	dc.w	FileEngine_GetFiles-.Opers	; Get files
+000078EE 0000                       	dc.w	FileEngine_LoadFile-.Opers	; Load file
+000078F0 0000                       	dc.w	FileEngine_LoadFMV-.Opers	; Load FMV
+000078F2 0000                       	dc.w	FileEngine_LoadMuteFMV-.Opers	; Load mute FMV
+000078F4                            
+000078F4                            ; -------------------------------------------------------------------------------
+000078F4                            ; Set operation bookmark
+000078F4                            ; -------------------------------------------------------------------------------
+000078F4                            
+000078F4                            FileEngine_SetOperMark:
+000078F4 2B5F 0000                  	move.l	(sp)+,feOperMark(a5)
+000078F8 4E75                       	rts
+000078FA                            
+000078FA                            ; -------------------------------------------------------------------------------
+000078FA                            ; "Get files" operation
+000078FA                            ; -------------------------------------------------------------------------------
+000078FA                            
+000078FA                            FileEngine_GetFiles:
+000078FA 1B7C 0003 0028             	move.b	#3,feCDC(a5)			; Set CDC mode to "Sub CPU"
+00007900 2B7C 0000 0010 0004        	move.l	#$10,feSector(a5)		; Read from sector $10 (primary volume descriptor)
+00007908 2B7C 0000 0001 0008        	move.l	#1,feSectorCnt(a5)		; Read 1 sector
+00007910 41ED 2100                  	lea	feDirReadBuf(a5),a0		; Get read buffer
+00007914 2B48 0010                  	move.l	a0,feReadBuffer(a5)
+00007918 6100 0000                  	bsr.w	ReadSectors			; Read sectors
+0000791C 0C6D FF9C 001E             	cmpi.w	#FSTAT_READFAIL,feStatus(a5)	; Was the operation a failure?
+00007922 6700 0000                  	beq.w	.Failed				; If so, branch
+00007926                            
+00007926 43ED 2100                  	lea	feDirReadBuf(a5),a1		; Primary volume descriptor buffer
+0000792A 2B69 00A2 0004             	move.l	$A2(a1),feSector(a5)		; Get root directory sector
+00007930 2029 00AA                  	move.l	$AA(a1),d0			; Get root directory size
+00007934 80FC 0800                  	divu.w	#$800,d0			; Get size in sectors
+00007938 4840                       	swap	d0
+0000793A 4A40                       	tst.w	d0				; Is the size sector aligned?
+0000793C 6700                       	beq.s	.Aligned			; If so, branch
+0000793E 0680 0001 0000             	addi.l	#1<<16,d0			; Align sector count
+00007944                            
+00007944                            .Aligned:
+00007944 4840                       	swap	d0				; Set sector count
+00007946 3B40 0018                  	move.w	d0,feDirSectors(a5)
+0000794A 426D 0020                  	clr.w	feFileCount(a5)			; Reset file count
+0000794E                            
+0000794E                            .GetDirectory:
+0000794E 2B7C 0000 0001 0008        	move.l	#1,feSectorCnt(a5)		; Read 1 sector
+00007956 43ED 2100                  	lea	feDirReadBuf(a5),a1		; Get read buffer
+0000795A 2B49 0010                  	move.l	a1,feReadBuffer(a5)
+0000795E 6100 0000                  	bsr.w	ReadSectors			; Read sector of root directory
+00007962 0C6D FF9C 001E             	cmpi.w	#FSTAT_READFAIL,feStatus(a5)	; Was the operation a failure?
+00007968 6700 0000                  	beq.w	.Failed				; If so, branch
+0000796C                            
+0000796C 41ED 0100                  	lea	feFileList(a5),a0		; Go to file list cursor
+00007970 302D 0020                  	move.w	feFileCount(a5),d0
+00007974 C0FC 0020                  	mulu.w	#FILE_ENTRY_LEN,d0
+00007978 D1C0                       	adda.l	d0,a0
+0000797A                            	
+0000797A 43ED 2100                  	lea	feDirReadBuf(a5),a1		; Prepare to get file info
+0000797E 7000                       	moveq	#0,d0
+00007980                            
+00007980                            .GetFileInfo:
+00007980 1029 0000                  	move.b	0(a1),d0			; Get file entry size
+00007984 6700                       	beq.s	.NoMoreFiles			; If there are no more files left, branch
+00007986 1169 0019 0017             	move.b	$19(a1),fileFlags(a0)		; Get file flags
+0000798C                            	
+0000798C 7200                       	moveq	#0,d1				; Prepare to get location and size
+0000798E                            
+0000798E                            .GetFileLocSize:
+0000798E 11B1 1006 1018             	move.b	6(a1,d1.w),fileSector(a0,d1.w)	; Get file sector
+00007994 11B1 100E 101C             	move.b	$E(a1,d1.w),fileLength(a0,d1.w)	; Get file size
+0000799A 5241                       	addq.w	#1,d1
+0000799C 0C41 0004                  	cmpi.w	#4,d1				; Are we done?
+000079A0 6DEC                       	blt.s	.GetFileLocSize			; If not, branch
+000079A2                            	
+000079A2 7200                       	moveq	#0,d1				; Prepare to get file name
+000079A4                            
+000079A4                            .GetFileName:
+000079A4 11B1 1021 1000             	move.b	$21(a1,d1.w),(a0,d1.w)		; Get file name
+000079AA 5241                       	addq.w	#1,d1
+000079AC B229 0020                  	cmp.b	$20(a1),d1			; Are we done?
+000079B0 6DF2                       	blt.s	.GetFileName			; If not, branch
+000079B2                            
+000079B2                            .PadFileName:
+000079B2 0C01 000C                  	cmpi.b	#FILENAME_LEN,d1		; Are we at the end of the file name?
+000079B6 6C00                       	bge.s	.NextFile			; If so, branch
+000079B8 11BC 0020 1000             	move.b	#' ',(a0,d1.w)			; If not, pad out with spaces
+000079BE 5241                       	addq.w	#1,d1
+000079C0 60F0                       	bra.s	.PadFileName			; Loop until done
+000079C2                            
+000079C2                            .NextFile:
+000079C2 526D 0020                  	addq.w	#1,feFileCount(a5)		; Increment fle count
+000079C6 D3C0                       	adda.l	d0,a1				; Prepare next file
+000079C8 D1FC 0000 0020             	adda.l	#FILE_ENTRY_LEN,a0
+000079CE 60B0                       	bra.s	.GetFileInfo
+000079D0                            
+000079D0                            .NoMoreFiles:
+000079D0 536D 0018                  	subq.w	#1,feDirSectors(a5)		; Decrement directory sector count
+000079D4 6600 FF78                  	bne.w	.GetDirectory			; If there are sectors left, branch
+000079D8                            
+000079D8 3B7C 0064 001E             	move.w	#FSTAT_OK,feStatus(a5)		; Mark operation as successful
+000079DE                            
+000079DE                            .Done:
+000079DE 3B7C 0000 001C             	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
+000079E4 6000 FEF2                  	bra.w	FileEngineOper			; Loop back
+000079E8                            
+000079E8                            .Failed:
+000079E8 3B7C FFFF 001E             	move.w	#FSTAT_GETFAIL,feStatus(a5)	; Mark operation as successful
+000079EE 60EE                       	bra.s	.Done
+000079F0                            
+000079F0                            ; -------------------------------------------------------------------------------
+000079F0                            ; "Load file" operation
+000079F0                            ; -------------------------------------------------------------------------------
+000079F0                            
+000079F0                            FileEngine_LoadFile:
+000079F0 1B7C 0003 0028             	move.b	#3,feCDC(a5)			; Set CDC mode to "Sub CPU"
+000079F6 41ED 002A                  	lea	feFileName(a5),a0		; Find file
+000079FA 6100 0000                  	bsr.w	FileFunc_FindFile
+000079FE 6500 0000                  	bcs.w	.FileNotFound			; If it wasn't found, branch
+00007A02                            	
+00007A02 2B68 0018 0004             	move.l	fileSector(a0),feSector(a5)	; Get file sector
+00007A08 2228 001C                  	move.l	fileLength(a0),d1		; Get file size
+00007A0C 2B41 0018                  	move.l	d1,feFileSize(a5)
+00007A10                            
+00007A10 2B7C 0000 0001 0008        	move.l	#1,feSectorCnt(a5)		; Get file size in sectors
+00007A18                            
+00007A18                            .GetSectors:
+00007A18 0481 0000 0800             	subi.l	#$800,d1
+00007A1E 6F00                       	ble.s	.ReadFile
+00007A20 52AD 0008                  	addq.l	#1,feSectorCnt(a5)
+00007A24 60F2                       	bra.s	.GetSectors
+00007A26                            
+00007A26                            .ReadFile:
+00007A26 6100 0000                  	bsr.w	ReadSectors			; Read file
+00007A2A 0C6D 0064 001E             	cmp.w	#FSTAT_OK,feStatus(a5)		; Was the operation a success?
+00007A30 6700                       	beq.s	.Done				; If so, branch
+00007A32 3B7C FFFD 001E             	move.w	#FSTAT_LOADFAIL,feStatus(a5)	; Mark as failed
+00007A38                            
+00007A38                            .Done:
+00007A38 3B7C 0000 001C             	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
+00007A3E 6000 FE98                  	bra.w	FileEngineOper			; Loop back
+00007A42                            
+00007A42                            .FileNotFound:
+00007A42 3B7C FFFE 001E             	move.w	#FSTAT_NOTFOUND,feStatus(a5)	; Mark as not found
+00007A48 60EE                       	bra.s	.Done
+00007A4A                            
+00007A4A                            ; -------------------------------------------------------------------------------
+00007A4A                            ; Get file engine status
+00007A4A                            ; -------------------------------------------------------------------------------
+00007A4A                            ; RETURNS:
+00007A4A                            ;	d0.w  - Return code
+00007A4A                            ;	d1.l  - File size if file load was successful
+00007A4A                            ;	        Sectors read if file load failed
+00007A4A                            ;	cc/cs - Inactive/Busy
+00007A4A                            ; -------------------------------------------------------------------------------
+00007A4A                            
+00007A4A                            FileFunc_GetStatus:
+00007A4A 0C6D 0000 001C             	cmpi.w	#FMODE_NONE,feOperMode(a5)	; Is there an operation going on?
+00007A50 6600                       	bne.s	.Busy				; If so, branch
+00007A52                            	
+00007A52 302D 001E                  	move.w	feStatus(a5),d0			; Get status
+00007A56 0C40 0064                  	cmpi.w	#FSTAT_OK,d0			; Is the status marked as successful?
+00007A5A 6600                       	bne.s	.Failed				; If not, branch
+00007A5C 222D 0018                  	move.l	feFileSize(a5),d1		; Return file size
+00007A60 6000                       	bra.s	.Inactive
+00007A62                            
+00007A62                            .Failed:
+00007A62 0C40 FFFD                  	cmpi.w	#FSTAT_LOADFAIL,d0		; Is the status marked as a failed load?
+00007A66 6600                       	bne.s	.Inactive			; If not, branch
+00007A68 322D 0026                  	move.w	feSectorsRead(a5),d1		; Return sectors read
+00007A6C                            
+00007A6C                            .Inactive:
+00007A6C 44FC 0000                  	move	#0,ccr				; Mark as inactive
+00007A70 4E75                       	rts
+00007A72                            
+00007A72                            .Busy:
+00007A72 44FC 0001                  	move	#1,ccr				; Mark as bust
+00007A76 4E75                       	rts
+00007A78                            
+00007A78                            ; -------------------------------------------------------------------------------
+00007A78                            ; Load a file
+00007A78                            ; -------------------------------------------------------------------------------
+00007A78                            ; PARAMETERS:
+00007A78                            ;	a0.l - File name
+00007A78                            ;	a1.l - File read destination buffer
+00007A78                            ; -------------------------------------------------------------------------------
+00007A78                            
+00007A78                            FileFunc_LoadFile:
+00007A78 3B7C 0002 001C             	move.w	#FMODE_LOADFILE,feOperMode(a5)	; Set operation mode to "load file"
+00007A7E 2B49 0010                  	move.l	a1,feReadBuffer(a5)		; Set read buffer
+00007A82                            	
+00007A82 2248                       	movea.l	a0,a1				; Copy file name
+00007A84 45ED 002A                  	lea	feFileName(a5),a2
+00007A88 323C 000B                  	move.w	#FILENAME_LEN-1,d1
+00007A8C                            
+00007A8C                            .CopyFileName:
+00007A8C 14D9                       	move.b	(a1)+,(a2)+
+00007A8E 51C9 FFFC                  	dbf	d1,.CopyFileName
+00007A92 4E75                       	rts
+00007A94                            
+00007A94                            ; -------------------------------------------------------------------------------
+00007A94                            ; Find a file
+00007A94                            ; -------------------------------------------------------------------------------
+00007A94                            ; PARAMETERS
+00007A94                            ;	a0.l  - File name
+00007A94                            ; RETURNS:
+00007A94                            ;	a0.l  - Found file information
+00007A94                            ;	cc/cs - Found/Not found
+00007A94                            ; -------------------------------------------------------------------------------
+00007A94                            
+00007A94                            FileFunc_FindFile:
+00007A94 2F0A                       	move.l	a2,-(sp)			; Save a2
+00007A96 7200                       	moveq	#0,d1				; Prepare to find file
+00007A98 2248                       	movea.l	a0,a1
+00007A9A 303C 000A                  	move.w	#FILENAME_LEN-2,d0
+00007A9E                            
+00007A9E                            .GetNameLength:
+00007A9E 4A11                       	tst.b	(a1)				; Is this character a termination character?
+00007AA0 6700                       	beq.s	.GotNameLength			; If so, branch
+00007AA2 0C11 003B                  	cmpi.b	#';',(a1)			; Is this character a semicolon?
+00007AA6 6700                       	beq.s	.GotNameLength			; If so, branch
+00007AA8 0C11 0020                  	cmpi.b	#' ',(a1)			; Is this character a space?
+00007AAC 6700                       	beq.s	.GotNameLength			; If so, branch
+00007AAE                            
+00007AAE 5241                       	addq.w	#1,d1				; Increment length
+00007AB0 5249                       	addq.w	#1,a1				; Next character
+00007AB2 51C8 FFEA                  	dbf	d0,.GetNameLength		; Loop until finished
+00007AB6                            
+00007AB6                            .GotNameLength:
+00007AB6 302D 0020                  	move.w	feFileCount(a5),d0		; Prepare to scan file list
+00007ABA 2248                       	movea.l	a0,a1
+00007ABC 41ED 0100                  	lea	feFileList(a5),a0
+00007AC0                            
+00007AC0 45FA 0000                  	lea	.FirstFile(pc),a2		; Are we retrieving the first file?
+00007AC4 6100 0000                  	bsr.w	CompareStrings
+00007AC8 6700 0000                  	beq.w	.Done				; If so, branch
+00007ACC                            
+00007ACC 2448                       	movea.l	a0,a2				; Start scanning list
+00007ACE 5340                       	subq.w	#1,d0
+00007AD0                            
+00007AD0                            .FindFile:
+00007AD0 6100 0000                  	bsr.w	CompareStrings			; Is this file entry the one we are looking for?
+00007AD4 6700                       	beq.s	.FileFound			; If so, branch
+00007AD6 D4FC 0020                  	adda.w	#FILE_ENTRY_LEN,a2		; Go to next file
+00007ADA 51C8 FFF4                  	dbf	d0,.FindFile			; Loop until file is found or until all files are scanned
+00007ADE 6000                       	bra.s	.FileNotFound			; File not found
+00007AE0                            
+00007AE0                            .FileFound:
+00007AE0 7001                       	moveq	#1,d0				; Mark as found
+00007AE2 204A                       	movea.l	a2,a0				; Get file entry
+00007AE4                            
+00007AE4                            .Done:
+00007AE4 245F                       	movea.l	(sp)+,a2			; Restore a2
+00007AE6 4E75                       	rts
+00007AE8                            
+00007AE8                            .FileNotFound:
+00007AE8 44FC 0001                  	move	#1,ccr				; Mark as not found
+00007AEC 60F6                       	bra.s	.Done
+00007AEE                            
+00007AEE                            ; -------------------------------------------------------------------------------
+00007AEE                            
+00007AEE                            .FirstFile:
+00007AEE 5C20 2020 2020 2020 2020+  	dc.b	"\          ", 0
+00007AFA                            	even
+00007AFA                            
+00007AFA                            ; -------------------------------------------------------------------------------
+00007AFA                            ; Read sectors from CD
+00007AFA                            ; -------------------------------------------------------------------------------
+00007AFA                            
+00007AFA                            ReadSectors:
+00007AFA 2B5F 000C                  	move.l	(sp)+,feReturnAddr(a5)		; Save return address
+00007AFE 3B7C 0000 0026             	move.w	#0,feSectorsRead(a5)		; Reset sectors read count
+00007B04 3B7C 001E 0024             	move.w	#30,feRetries(a5)		; Set retry counter
+00007B0A                            
+00007B0A                            .StartRead:
+00007B0A 13ED 0028 00FF 8004        	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+00007B12                            	
+00007B12 41ED 0004                  	lea	feSector(a5),a0			; Get sector information
+00007B16 2010                       	move.l	(a0),d0				; Get sector frame (in BCD)
+00007B18 80FC 004B                  	divu.w	#75,d0
+00007B1C 4840                       	swap	d0
+00007B1E 48C0                       	ext.l	d0
+00007B20 80FC 000A                  	divu.w	#10,d0
+00007B24 1200                       	move.b	d0,d1
+00007B26 E909                       	lsl.b	#4,d1
+00007B28 4840                       	swap	d0
+00007B2A 44FC 0000                  	move	#0,ccr
+00007B2E C101                       	abcd	d1,d0
+00007B30 1B40 0029                  	move.b	d0,feSectorFrame(a5)
+00007B34                            
+00007B34 303C 0089                  	move.w	#CDCSTOP,d0			; Stop CDC
+00007B38 4EB8 5F22                  	jsr	_CDBIOS.w
+00007B3C 303C 0020                  	move.w	#ROMREADN,d0			; Start reading
+00007B40 4EB8 5F22                  	jsr	_CDBIOS.w
+00007B44 3B7C 0258 0022             	move.w	#600,feWaitTime(a5)		; Set wait timer
+00007B4A                            
+00007B4A                            .Bookmark:
+00007B4A 6100 FDA8                  	bsr.w	FileEngine_SetOperMark		; Set bookmark
+00007B4E                            
+00007B4E                            .CheckReady:
+00007B4E 303C 008A                  	move.w	#CDCSTAT,d0			; Check if data is ready
+00007B52 4EB8 5F22                  	jsr	_CDBIOS.w
+00007B56 6400                       	bcc.s	.ReadData			; If so, branch
+00007B58 536D 0022                  	subq.w	#1,feWaitTime(a5)		; Decrement wait time
+00007B5C 6CEC                       	bge.s	.Bookmark			; If we are still waiting, branch
+00007B5E 536D 0024                  	subq.w	#1,feRetries(a5)		; If we waited too long, decrement retry counter
+00007B62 6CA6                       	bge.s	.StartRead			; If we can still retry, do it
+00007B64 6000 0000                  	bra.w	.ReadFailed			; Give up
+00007B68                            
+00007B68                            .ReadData:
+00007B68 303C 008B                  	move.w	#CDCREAD,d0			; Read data
+00007B6C 4EB8 5F22                  	jsr	_CDBIOS.w
+00007B70 6500 0000                  	bcs.w	.ReadRetry			; If the data isn't read, branch
+00007B74 2B40 0014                  	move.l	d0,feReadTime(a5)		; Get time of sector read
+00007B78 102D 0029                  	move.b	feSectorFrame(a5),d0		; Does the read sector match the sector we want?
+00007B7C B02D 0016                  	cmp.b	feReadFrame(a5),d0
+00007B80 6700                       	beq.s	.WaitDataSet			; If so, branch
+00007B82                            
+00007B82                            .ReadRetry:
+00007B82 536D 0024                  	subq.w	#1,feRetries(a5)		; Decrement retry counter
+00007B86 6C00 FF82                  	bge.w	.StartRead			; If we can still retry, do it
+00007B8A 6000 0000                  	bra.w	.ReadFailed			; Give up
+00007B8E                            
+00007B8E                            .WaitDataSet:
+00007B8E 303C 07FF                  	move.w	#$800-1,d0			; Wait for data set
+00007B92                            
+00007B92                            .WaitDataSetLoop:
+00007B92 0839 0006 00FF 8004        	btst	#6,GA_CDC_MODE&$FFFFFF
+00007B9A 56C8 FFF6                  	dbne	d0,.WaitDataSetLoop		; Loop until ready or until it takes too long
+00007B9E 6600                       	bne.s	.TransferData			; If the data is ready to be transfered, branch
+00007BA0                            	
+00007BA0 536D 0024                  	subq.w	#1,feRetries(a5)		; Decrement retry counter
+00007BA4 6C00 FF64                  	bge.w	.StartRead			; If we can still retry, do it
+00007BA8 6000 0000                  	bra.w	.ReadFailed			; Give up
+00007BAC                            
+00007BAC                            .TransferData:
+00007BAC 0C2D 0002 0028             	cmpi.b	#2,feCDC(a5)			; Is the CDC mode set to "Main CPU"
+00007BB2 6700 0000                  	beq.w	.MainCPUTransfer		; If so, branch
+00007BB6                            
+00007BB6 303C 008C                  	move.w	#CDCTRN,d0			; Transfer data
+00007BBA 206D 0010                  	movea.l	feReadBuffer(a5),a0
+00007BBE 43ED 0014                  	lea	feReadTime(a5),a1
+00007BC2 4EB8 5F22                  	jsr	_CDBIOS.w
+00007BC6 6500                       	bcs.s	.CopyRetry			; If it wasn't successful, branch
+00007BC8                            	
+00007BC8 102D 0029                  	move.b	feSectorFrame(a5),d0		; Does the read sector match the sector we want?
+00007BCC B02D 0016                  	cmp.b	feReadFrame(a5),d0
+00007BD0 6700                       	beq.s	.IncSectorFrame			; If so, branch
+00007BD2                            
+00007BD2                            .CopyRetry:
+00007BD2 536D 0024                  	subq.w	#1,feRetries(a5)		; Decrement retry counter
+00007BD6 6C00 FF32                  	bge.w	.StartRead			; If we can still retry, do it
+00007BDA 6000 0000                  	bra.w	.ReadFailed			; Give up
+00007BDE                            
+00007BDE                            .IncSectorFrame:
+00007BDE 44FC 0000                  	move	#0,ccr				; Next sector frame
+00007BE2 7201                       	moveq	#1,d1
+00007BE4 C101                       	abcd	d1,d0
+00007BE6 1B40 0029                  	move.b	d0,feSectorFrame(a5)
+00007BEA 0C2D 0075 0029             	cmpi.b	#$75,feSectorFrame(a5)		; Should we wrap it?
+00007BF0 6500                       	bcs.s	.FinishSectorRead		; If not, branch
+00007BF2 1B7C 0000 0029             	move.b	#0,feSectorFrame(a5)		; If so, wrap it
+00007BF8                            
+00007BF8                            .FinishSectorRead:
+00007BF8 303C 008D                  	move.w	#CDCACK,d0			; Finish data read
+00007BFC 4EB8 5F22                  	jsr	_CDBIOS.w
+00007C00                            
+00007C00 3B7C 0006 0022             	move.w	#6,feWaitTime(a5)		; Set new wait time
+00007C06 3B7C 001E 0024             	move.w	#30,feRetries(a5)		; Set new retry counter
+00007C0C 06AD 0000 0800 0010        	addi.l	#$800,feReadBuffer(a5)		; Advance read buffer
+00007C14 526D 0026                  	addq.w	#1,feSectorsRead(a5)		; Increment sectors read counter
+00007C18 52AD 0004                  	addq.l	#1,feSector(a5)			; Next sector
+00007C1C 53AD 0008                  	subq.l	#1,feSectorCnt(a5)		; Decrement sectors to read
+00007C20 6E00 FF2C                  	bgt.w	.CheckReady			; If there are still sectors to read, branch
+00007C24 3B7C 0064 001E             	move.w	#FSTAT_OK,feStatus(a5)		; Mark as successful
+00007C2A                            
+00007C2A                            .Done:
+00007C2A 13ED 0028 00FF 8004        	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+00007C32 206D 000C                  	movea.l	feReturnAddr(a5),a0		; Go to saved return address
+00007C36 4ED0                       	jmp	(a0)
+00007C38                            
+00007C38                            .ReadFailed:
+00007C38 3B7C FF9C 001E             	move.w	#FSTAT_READFAIL,feStatus(a5)	; Mark as failed
+00007C3E 60EA                       	bra.s	.Done
+00007C40                            
+00007C40                            .MainCPUTransfer:
+00007C40 3B7C 0006 0022             	move.w	#6,feWaitTime(a5)		; Set new wait time
+00007C46                            
+00007C46                            .WaitMainCopy:
+00007C46 6100 FCAC                  	bsr.w	FileEngine_SetOperMark		; Set bookmark
+00007C4A 0839 0007 00FF 8004        	btst	#7,GA_CDC_MODE&$FFFFFF		; Has the data been transferred?
+00007C52 66A4                       	bne.s	.FinishSectorRead		; If so, branch
+00007C54 536D 0022                  	subq.w	#1,feWaitTime(a5)		; Decrement wait time
+00007C58 6CEC                       	bge.s	.WaitMainCopy			; If we are still waiting, branch
+00007C5A 60DC                       	bra.s	.ReadFailed			; If we have waited too long, branch
+00007C5C                            
+00007C5C                            ; -------------------------------------------------------------------------------
+00007C5C                            ; Compare two strings
+00007C5C                            ; -------------------------------------------------------------------------------
+00007C5C                            ; PARAMETERS:
+00007C5C                            ;	d1.w  - Number of characters to compare
+00007C5C                            ;	a1.l  - Pointer to string 1
+00007C5C                            ;	a2.l  - Pointer to string 2
+00007C5C                            ; RETURNS:
+00007C5C                            ;	eq/ne - Same/Different
+00007C5C                            ; -------------------------------------------------------------------------------
+00007C5C                            
+00007C5C                            CompareStrings:
+00007C5C 48E7 4060                  	movem.l	d1/a1-a2,-(sp)			; Save registers
+00007C60                            
+00007C60                            .Compare:
+00007C60 B509                       	cmpm.b	(a1)+,(a2)+			; Compare characters
+00007C62 6600                       	bne.s	.Done				; If they aren't the same branch
+00007C64 51C9 FFFA                  	dbf	d1,.Compare			; Loop until all characters are scanned
+00007C68                            
+00007C68 7200                       	moveq	#0,d1				; Mark strings as the same
+00007C6A                            
+00007C6A                            .Done:
+00007C6A 4CDF 0602                  	movem.l	(sp)+,d1/a1-a2			; Restore registers
+00007C6E 4E75                       	rts
+00007C70                            
+00007C70                            ; -------------------------------------------------------------------------------
+00007C70                            ; Load an FMV
+00007C70                            ; -------------------------------------------------------------------------------
+00007C70                            ; PARAMETERS:
+00007C70                            ;	a0.l - File name
+00007C70                            ; -------------------------------------------------------------------------------
+00007C70                            
+00007C70                            FileFunc_LoadFMV:
+00007C70 1B7C 0080 2A03             	move.b	#1<<FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+00007C76 3B7C 0003 001C             	move.w	#FMODE_LOADFMV,feOperMode(a5)	; Set operation mode to "load FMV"
+00007C7C 2B7C 0004 0000 0010        	move.l	#FMV_PCM_BUF,feReadBuffer(a5)	; Prepare to read PCM data
+00007C84 3B7C 0000 2A00             	move.w	#0,feFMVSectFrame(a5)		; Reset FMV sector frame
+00007C8A 08ED 0007 2A03             	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+00007C90                            
+00007C90 2248                       	movea.l	a0,a1				; Copy file name
+00007C92 45ED 002A                  	lea	feFileName(a5),a2
+00007C96 323C 000B                  	move.w	#FILENAME_LEN-1,d1
+00007C9A                            
+00007C9A                            .CopyFileName:
+00007C9A 14D9                       	move.b	(a1)+,(a2)+
+00007C9C 51C9 FFFC                  	dbf	d1,.CopyFileName
+00007CA0 4E75                       	rts
+00007CA2                            
+00007CA2                            ; -------------------------------------------------------------------------------
+00007CA2                            ; "Load FMV" operation
+00007CA2                            ; -------------------------------------------------------------------------------
+00007CA2                            
+00007CA2                            FileEngine_LoadFMV:
+00007CA2 1B7C 0003 0028             	move.b	#3,feCDC(a5)			; Set CDC mode to "Sub CPU"
+00007CA8 41ED 002A                  	lea	feFileName(a5),a0		; Find file
+00007CAC 6100 FDE6                  	bsr.w	FileFunc_FindFile
+00007CB0 6500 0000                  	bcs.w	.FileNotFound			; If it wasn't found, branch
+00007CB4                            	
+00007CB4 2B68 0018 0004             	move.l	fileSector(a0),feSector(a5)	; Get file sector
+00007CBA 2228 001C                  	move.l	fileLength(a0),d1		; Get file size
+00007CBE 2B41 0018                  	move.l	d1,feFileSize(a5)
+00007CC2                            
+00007CC2 2B7C 0000 0001 0008        	move.l	#1,feSectorCnt(a5)		; Get file size in sectors
+00007CCA                            
+00007CCA                            .GetSectors:
+00007CCA 0481 0000 0800             	subi.l	#$800,d1
+00007CD0 6F00                       	ble.s	.ReadFile
+00007CD2 52AD 0008                  	addq.l	#1,feSectorCnt(a5)
+00007CD6 60F2                       	bra.s	.GetSectors
+00007CD8                            
+00007CD8                            .ReadFile:
+00007CD8 6100 0000                  	bsr.w	ReadFMVSectors			; Read FMV file data
+00007CDC 0C6D 0064 001E             	cmp.w	#FSTAT_OK,feStatus(a5)		; Was the operation a success?
+00007CE2 6700                       	beq.s	.Done				; If so, branch
+00007CE4 3B7C FFFD 001E             	move.w	#FSTAT_LOADFAIL,feStatus(a5)	; Mark as failed
+00007CEA                            
+00007CEA                            .Done:
+00007CEA 3B7C 0000 001C             	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
+00007CF0 6000 FBE6                  	bra.w	FileEngineOper			; Loop back
+00007CF4                            
+00007CF4                            .FileNotFound:
+00007CF4 3B7C FFFE 001E             	move.w	#FSTAT_NOTFOUND,feStatus(a5)	; Mark as not found
+00007CFA 60EE                       	bra.s	.Done
+00007CFC                            
+00007CFC                            ; -------------------------------------------------------------------------------
+00007CFC                            ; Read FMV file data from CD
+00007CFC                            ; -------------------------------------------------------------------------------
+00007CFC                            
+00007CFC                            ReadFMVSectors:
+00007CFC 2B5F 000C                  	move.l	(sp)+,feReturnAddr(a5)		; Save return address
+00007D00 3B7C 0000 0026             	move.w	#0,feSectorsRead(a5)		; Reset sectors read count
+00007D06 3B7C 000A 0024             	move.w	#10,feRetries(a5)		; Set retry counter
+00007D0C                            
+00007D0C                            .StartRead:
+00007D0C 13ED 0028 00FF 8004        	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+00007D14                            	
+00007D14 41ED 0004                  	lea	feSector(a5),a0			; Get sector information
+00007D18 2010                       	move.l	(a0),d0				; Get sector frame (in BCD)
+00007D1A 80FC 004B                  	divu.w	#75,d0
+00007D1E 4840                       	swap	d0
+00007D20 48C0                       	ext.l	d0
+00007D22 80FC 000A                  	divu.w	#10,d0
+00007D26 1200                       	move.b	d0,d1
+00007D28 E909                       	lsl.b	#4,d1
+00007D2A 4840                       	swap	d0
+00007D2C 44FC 0000                  	move	#0,ccr
+00007D30 C101                       	abcd	d1,d0
+00007D32 1B40 0029                  	move.b	d0,feSectorFrame(a5)
+00007D36                            
+00007D36 303C 0089                  	move.w	#CDCSTOP,d0			; Stop CDC
+00007D3A 4EB8 5F22                  	jsr	_CDBIOS.w
+00007D3E 303C 0020                  	move.w	#ROMREADN,d0			; Start reading
+00007D42 4EB8 5F22                  	jsr	_CDBIOS.w
+00007D46 3B7C 0258 0022             	move.w	#600,feWaitTime(a5)		; Set wait timer
+00007D4C                            
+00007D4C                            .Bookmark:
+00007D4C 6100 FBA6                  	bsr.w	FileEngine_SetOperMark		; Set bookmark
+00007D50                            
+00007D50                            .CheckReady:
+00007D50 303C 008A                  	move.w	#CDCSTAT,d0			; Check if data is ready
+00007D54 4EB8 5F22                  	jsr	_CDBIOS.w
+00007D58 6400                       	bcc.s	.ReadData			; If so, branch
+00007D5A 536D 0022                  	subq.w	#1,feWaitTime(a5)		; Decrement wait time
+00007D5E 6CEC                       	bge.s	.Bookmark			; If we are still waiting, branch
+00007D60 536D 0024                  	subq.w	#1,feRetries(a5)		; If we waited too long, decrement retry counter
+00007D64 6CA6                       	bge.s	.StartRead			; If we can still retry, do it
+00007D66 6000 0000                  	bra.w	.ReadFailed			; Give up
+00007D6A                            
+00007D6A                            .ReadData:
+00007D6A 303C 008B                  	move.w	#CDCREAD,d0			; Read data
+00007D6E 4EB8 5F22                  	jsr	_CDBIOS.w
+00007D72 6500 0000                  	bcs.w	.ReadRetry			; If the data isn't read, branch
+00007D76 2B40 0014                  	move.l	d0,feReadTime(a5)		; Get time of sector read
+00007D7A 102D 0029                  	move.b	feSectorFrame(a5),d0		; Does the read sector match the sector we want?
+00007D7E B02D 0016                  	cmp.b	feReadFrame(a5),d0
+00007D82 6700                       	beq.s	.WaitDataSet			; If so, branch
+00007D84                            
+00007D84                            .ReadRetry:
+00007D84 52AD 2A04                  	addq.l	#1,feFMVFailCount(a5)		; Increment fail counter
+00007D88 536D 0024                  	subq.w	#1,feRetries(a5)		; Decrement retry counter
+00007D8C 6C00 FF7E                  	bge.w	.StartRead			; If we can still retry, do it
+00007D90 6000 0000                  	bra.w	.ReadFailed			; Give up
+00007D94                            
+00007D94                            .WaitDataSet:
+00007D94 303C 07FF                  	move.w	#$800-1,d0			; Wait for data set
+00007D98                            
+00007D98                            .WaitDataSetLoop:
+00007D98 0839 0006 00FF 8004        	btst	#6,GA_CDC_MODE&$FFFFFF
+00007DA0 56C8 FFF6                  	dbne	d0,.WaitDataSetLoop		; Loop until ready or until it takes too long
+00007DA4 6600                       	bne.s	.TransferData			; If the data is ready to be transfered, branch
+00007DA6                            	
+00007DA6 536D 0024                  	subq.w	#1,feRetries(a5)		; Decrement retry counter
+00007DAA 6C00 FF60                  	bge.w	.StartRead			; If we can still retry, do it
+00007DAE 6000 0000                  	bra.w	.ReadFailed			; Give up
+00007DB2                            
+00007DB2                            .TransferData:
+00007DB2 0C2D 0002 0028             	cmpi.b	#2,feCDC(a5)			; Is the CDC mode set to "Main CPU"
+00007DB8 6700 0000                  	beq.w	.MainCPUTransfer		; If so, branch
+00007DBC                            
+00007DBC 303C 008C                  	move.w	#CDCTRN,d0			; Transfer data
+00007DC0 206D 0010                  	movea.l	feReadBuffer(a5),a0
+00007DC4 43ED 0014                  	lea	feReadTime(a5),a1
+00007DC8 4EB8 5F22                  	jsr	_CDBIOS.w
+00007DCC 6500                       	bcs.s	.CopyRetry			; If it wasn't successful, branch
+00007DCE                            	
+00007DCE 102D 0029                  	move.b	feSectorFrame(a5),d0		; Does the read sector match the sector we want?
+00007DD2 B02D 0016                  	cmp.b	feReadFrame(a5),d0
+00007DD6 6700                       	beq.s	.IncSectorFrame			; If so, branch
+00007DD8                            
+00007DD8                            .CopyRetry:
+00007DD8 52AD 2A04                  	addq.l	#1,feFMVFailCount(a5)		; Increment fail counter
+00007DDC 536D 0024                  	subq.w	#1,feRetries(a5)		; Decrement retry counter
+00007DE0 6C00 FF2A                  	bge.w	.StartRead			; If we can still retry, do it
+00007DE4 6000 0000                  	bra.w	.ReadFailed			; Give up
+00007DE8                            
+00007DE8                            .IncSectorFrame:
+00007DE8 44FC 0000                  	move	#0,ccr				; Next sector frame
+00007DEC 7201                       	moveq	#1,d1
+00007DEE C101                       	abcd	d1,d0
+00007DF0 1B40 0029                  	move.b	d0,feSectorFrame(a5)
+00007DF4 0C2D 0075 0029             	cmpi.b	#$75,feSectorFrame(a5)		; Should we wrap it?
+00007DFA 6500                       	bcs.s	.FinishSectorRead		; If not, branch
+00007DFC 1B7C 0000 0029             	move.b	#0,feSectorFrame(a5)		; If so, wrap it
+00007E02                            
+00007E02                            .FinishSectorRead:
+00007E02 303C 008D                  	move.w	#CDCACK,d0			; Finish data read
+00007E06 4EB8 5F22                  	jsr	_CDBIOS.w
+00007E0A                            
+00007E0A 3B7C 0006 0022             	move.w	#6,feWaitTime(a5)		; Set new wait time
+00007E10 3B7C 000A 0024             	move.w	#10,feRetries(a5)		; Set new retry counter
+00007E16                            	
+00007E16 302D 2A00                  	move.w	feFMVSectFrame(a5),d0		; Get current sector frame
+00007E1A 0C40 000F                  	cmpi.w	#15,d0				; Is it time to load graphics data now?
+00007E1E 6700                       	beq.s	.PCMDone			; If so, branch
+00007E20 0C40 004A                  	cmpi.w	#74,d0				; Are we done loading graphics data?
+00007E24 6700                       	beq.s	.GfxDone			; If so, branch
+00007E26 06AD 0000 0800 0010        	addi.l	#$800,feReadBuffer(a5)		; Advance read buffer
+00007E2E 6000 0000                  	bra.w	.Advance
+00007E32                            
+00007E32                            .PCMDone:
+00007E32 1B7C 0001 2A02             	move.b	#FMVT_GFX,feFMVDataType(a5)	; Set graphics data type
+00007E38 08AD 0007 2A03             	bclr	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 2
+00007E3E 2B7C 000C 0000 0010        	move.l	#FMV_GFX_BUF,feReadBuffer(a5)	; Set read buffer for graphics data
+00007E46 6000 0000                  	bra.w	.Advance
+00007E4A                            
+00007E4A                            .GfxDone:
+00007E4A 08F8 0000 800F             	bset	#0,GA_SUB_FLAG.w		; Sync with Main CPU
+00007E50 08ED 0007 2A03             	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+00007E56 08ED 0005 2A03             	bset	#FMVF_READY,feFMVFlags(a5)	; Mark as ready
+00007E5C                            
+00007E5C                            .WaitMain:
+00007E5C 0838 0000 800E             	btst	#0,GA_MAIN_FLAG.w		; Wait for Main CPU
+00007E62 67F8                       	beq.s	.WaitMain
+00007E64 0838 0000 800E             	btst	#0,GA_MAIN_FLAG.w
+00007E6A 67F0                       	beq.s	.WaitMain
+00007E6C 08B8 0000 800F             	bclr	#0,GA_SUB_FLAG.w
+00007E72                            	
+00007E72 0878 0000 8003             	bchg	#0,GA_MEM_MODE+1.w		; Swap Word RAM banks
+00007E78                            
+00007E78                            .WaitWordRAM:
+00007E78 0838 0001 8003             	btst	#1,GA_MEM_MODE+1.w
+00007E7E 66F8                       	bne.s	.WaitWordRAM
+00007E80                            	
+00007E80 1B7C 0000 2A02             	move.b	#FMVT_PCM,feFMVDataType(a5)	; Set PCM data type
+00007E86 2B7C 0004 0000 0010        	move.l	#FMV_PCM_BUF,feReadBuffer(a5)	; Set read buffer for PCM data
+00007E8E 08ED 0007 2A03             	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+00007E94                            
+00007E94                            .Advance:
+00007E94 526D 0026                  	addq.w	#1,feSectorsRead(a5)		; Increment sectors read counter
+00007E98 52AD 0004                  	addq.l	#1,feSector(a5)			; Next sector
+00007E9C 526D 2A00                  	addq.w	#1,feFMVSectFrame(a5)		; Increment FMV sector frame
+00007EA0 0C6D 004B 2A00             	cmpi.w	#75,feFMVSectFrame(a5)		; Should we wrap it?
+00007EA6 6500                       	bcs.s	.CheckSectorsLeft		; If not, branch
+00007EA8 3B7C 0000 2A00             	move.w	#0,feFMVSectFrame(a5)		; If so, wrap it
+00007EAE                            
+00007EAE                            .CheckSectorsLeft:
+00007EAE 53AD 0008                  	subq.l	#1,feSectorCnt(a5)		; Decrement sectors to read
+00007EB2 6E00 FE9C                  	bgt.w	.CheckReady			; If there are still sectors to read, branch
+00007EB6 3B7C 0064 001E             	move.w	#FSTAT_OK,feStatus(a5)		; Mark as successful
+00007EBC                            
+00007EBC                            .Done:
+00007EBC 13ED 0028 00FF 8004        	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+00007EC4 206D 000C                  	movea.l	feReturnAddr(a5),a0		; Go to saved return address
+00007EC8 4ED0                       	jmp	(a0)
+00007ECA                            
+00007ECA                            .ReadFailed:
+00007ECA 302D 2A00                  	move.w	feFMVSectFrame(a5),d0		; Get current sector frame
+00007ECE 0C40 000F                  	cmpi.w	#15,d0				; Is it time to load graphics data now?
+00007ED2 6700                       	beq.s	.PCMDone2			; If so, branch
+00007ED4 0C40 004A                  	cmpi.w	#74,d0				; Are we done loading graphics data?
+00007ED8 6700                       	beq.s	.GfxDone2			; If so, branch
+00007EDA 06AD 0000 0800 0010        	addi.l	#$800,feReadBuffer(a5)		; Advance read buffer
+00007EE2 6000 0000                  	bra.w	.Advance2
+00007EE6                            
+00007EE6                            .PCMDone2:
+00007EE6 1B7C 0001 2A02             	move.b	#FMVT_GFX,feFMVDataType(a5)	; Set graphics data type
+00007EEC 08AD 0007 2A03             	bclr	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 2
+00007EF2 2B7C 000C 0000 0010        	move.l	#FMV_GFX_BUF,feReadBuffer(a5)	; Set read buffer for graphics data
+00007EFA 6000 0000                  	bra.w	.Advance2
+00007EFE                            
+00007EFE                            .GfxDone2:
+00007EFE 08F8 0000 800F             	bset	#0,GA_SUB_FLAG.w		; Sync with Main CPU
+00007F04 08ED 0007 2A03             	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+00007F0A 08ED 0005 2A03             	bset	#FMVF_READY,feFMVFlags(a5)	; Mark as ready
+00007F10                            
+00007F10                            .WaitMain2:
+00007F10 0838 0000 800E             	btst	#0,GA_MAIN_FLAG.w		; Wait for Main CPU
+00007F16 67F8                       	beq.s	.WaitMain2
+00007F18 0838 0000 800E             	btst	#0,GA_MAIN_FLAG.w
+00007F1E 67F0                       	beq.s	.WaitMain2
+00007F20 08B8 0000 800F             	bclr	#0,GA_SUB_FLAG.w
+00007F26                            	
+00007F26 0878 0000 8003             	bchg	#0,GA_MEM_MODE+1.w		; Swap Word RAM banks
+00007F2C                            
+00007F2C                            .WaitWordRAM2:
+00007F2C 0838 0001 8003             	btst	#1,GA_MEM_MODE+1.w
+00007F32 66F8                       	bne.s	.WaitWordRAM2
+00007F34                            	
+00007F34 1B7C 0000 2A02             	move.b	#FMVT_PCM,feFMVDataType(a5)	; Set PCM data type
+00007F3A 2B7C 0004 0000 0010        	move.l	#FMV_PCM_BUF,feReadBuffer(a5)	; Set read buffer for PCM data
+00007F42 08ED 0007 2A03             	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+00007F48                            
+00007F48                            .Advance2:
+00007F48 526D 0026                  	addq.w	#1,feSectorsRead(a5)		; Increment sectors read counter
+00007F4C 52AD 0004                  	addq.l	#1,feSector(a5)			; Next sector
+00007F50 526D 2A00                  	addq.w	#1,feFMVSectFrame(a5)		; Increment FMV sector frame
+00007F54 0C6D 004B 2A00             	cmpi.w	#75,feFMVSectFrame(a5)		; Should we wrap it?
+00007F5A 6500                       	bcs.s	.CheckSectorsLeft2		; If not, branch
+00007F5C 3B7C 0000 2A00             	move.w	#0,feFMVSectFrame(a5)		; If so, wrap it
+00007F62                            
+00007F62                            .CheckSectorsLeft2:
+00007F62 53AD 0008                  	subq.l	#1,feSectorCnt(a5)		; Decrement sectors to read
+00007F66 6E00 FDA4                  	bgt.w	.StartRead			; If there are still sectors to read, branch
+00007F6A 3B7C FF91 001E             	move.w	#FSTAT_FMVFAIL,feStatus(a5)	; Mark as failed
+00007F70 6000 FF4A                  	bra.w	.Done
+00007F74                            
+00007F74                            .MainCPUTransfer:
+00007F74 3B7C 0006 0022             	move.w	#6,feWaitTime(a5)		; Set new wait time
+00007F7A                            
+00007F7A                            .WaitMainCopy:
+00007F7A 6100 F978                  	bsr.w	FileEngine_SetOperMark		; Set bookmark
+00007F7E 0839 0007 00FF 8004        	btst	#7,GA_CDC_MODE&$FFFFFF		; Has the data been transferred?
+00007F86 6600 FE7A                  	bne.w	.FinishSectorRead		; If so, branch
+00007F8A 536D 0022                  	subq.w	#1,feWaitTime(a5)		; Decrement wait time
+00007F8E 6CEA                       	bge.s	.WaitMainCopy			; If we are still waiting, branch
+00007F90 6000 FF38                  	bra.w	.ReadFailed			; If we have waited too long, branch
+00007F94                            
+00007F94                            ; -------------------------------------------------------------------------------
+00007F94                            ; Load a mute FMV
+00007F94                            ; -------------------------------------------------------------------------------
+00007F94                            ; PARAMETERS:
+00007F94                            ;	a0.l - File name
+00007F94                            ; -------------------------------------------------------------------------------
+00007F94                            
+00007F94                            FileFunc_LoadMuteFMV:
+00007F94 1B7C 0080 2A03             	move.b	#1<<FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+00007F9A 3B7C 0004 001C             	move.w	#FMODE_LOADFMVM,feOperMode(a5)	; Set operation mode to "load mute FMV"
+00007FA0 2B7C 000C 0000 0010        	move.l	#FMV_GFX_BUF,feReadBuffer(a5)	; Prepare to read graphics data
+00007FA8 3B7C 0000 2A00             	move.w	#0,feFMVSectFrame(a5)		; Reset FMV sector frame
+00007FAE                            	
+00007FAE 2248                       	movea.l	a0,a1				; Copy file name
+00007FB0 45ED 002A                  	lea	feFileName(a5),a2
+00007FB4 323C 000B                  	move.w	#FILENAME_LEN-1,d1
+00007FB8                            
+00007FB8                            .CopyFileName:
+00007FB8 14D9                       	move.b	(a1)+,(a2)+
+00007FBA 51C9 FFFC                  	dbf	d1,.CopyFileName
+00007FBE 4E75                       	rts
+00007FC0                            
+00007FC0                            ; -------------------------------------------------------------------------------
+00007FC0                            ; "Load mute FMV" operation
+00007FC0                            ; -------------------------------------------------------------------------------
+00007FC0                            
+00007FC0                            FileEngine_LoadMuteFMV:
+00007FC0 1B7C 0003 0028             	move.b	#3,feCDC(a5)			; Set CDC mode to "Sub CPU"
+00007FC6 41ED 002A                  	lea	feFileName(a5),a0		; Find file
+00007FCA 6100 FAC8                  	bsr.w	FileFunc_FindFile
+00007FCE 6500 0000                  	bcs.w	.FileNotFound			; If it wasn't found, branch
+00007FD2                            	
+00007FD2 2B68 0018 0004             	move.l	fileSector(a0),feSector(a5)	; Get file sector
+00007FD8 2228 001C                  	move.l	fileLength(a0),d1		; Get file size
+00007FDC 2B41 0018                  	move.l	d1,feFileSize(a5)
+00007FE0                            
+00007FE0 2B7C 0000 0000 0008        	move.l	#0,feSectorCnt(a5)		; Get file size in sectors
+00007FE8                            
+00007FE8                            .GetSectors:
+00007FE8 0481 0000 0800             	subi.l	#$800,d1
+00007FEE 6F00                       	ble.s	.ReadFile
+00007FF0 52AD 0008                  	addq.l	#1,feSectorCnt(a5)
+00007FF4 60F2                       	bra.s	.GetSectors
+00007FF6                            
+00007FF6                            .ReadFile:
+00007FF6 6100 0000                  	bsr.w	ReadMuteFMVSectors		; Read FMV file data
+00007FFA 0C6D 0064 001E             	cmp.w	#FSTAT_OK,feStatus(a5)		; Was the operation a success?
+00008000 6700                       	beq.s	.Done				; If so, branch
+00008002 3B7C FFFD 001E             	move.w	#FSTAT_LOADFAIL,feStatus(a5)	; Mark as failed
+00008008                            
+00008008                            .Done:
+00008008 3B7C 0000 001C             	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
+0000800E 6000 F8C8                  	bra.w	FileEngineOper			; Loop back
+00008012                            
+00008012                            .FileNotFound:
+00008012 3B7C FFFE 001E             	move.w	#FSTAT_NOTFOUND,feStatus(a5)	; Mark as not found
+00008018 60EE                       	bra.s	.Done
+0000801A                            
+0000801A                            ; -------------------------------------------------------------------------------
+0000801A                            ; Read mute FMV file data from CD
+0000801A                            ; -------------------------------------------------------------------------------
+0000801A                            
+0000801A                            ReadMuteFMVSectors:
+0000801A 2B5F 000C                  	move.l	(sp)+,feReturnAddr(a5)		; Save return address
+0000801E 3B7C 0000 0026             	move.w	#0,feSectorsRead(a5)		; Reset sectors read count
+00008024 3B7C 000A 0024             	move.w	#10,feRetries(a5)		; Set retry counter
+0000802A                            
+0000802A                            .StartRead:
+0000802A 13ED 0028 00FF 8004        	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+00008032                            	
+00008032 41ED 0004                  	lea	feSector(a5),a0			; Get sector information
+00008036 2010                       	move.l	(a0),d0				; Get sector frame (in BCD)
+00008038 80FC 004B                  	divu.w	#75,d0
+0000803C 4840                       	swap	d0
+0000803E 48C0                       	ext.l	d0
+00008040 80FC 000A                  	divu.w	#10,d0
+00008044 1200                       	move.b	d0,d1
+00008046 E909                       	lsl.b	#4,d1
+00008048 4840                       	swap	d0
+0000804A 44FC 0000                  	move	#0,ccr
+0000804E C101                       	abcd	d1,d0
+00008050 1B40 0029                  	move.b	d0,feSectorFrame(a5)
+00008054                            
+00008054 303C 0089                  	move.w	#CDCSTOP,d0			; Stop CDC
+00008058 4EB8 5F22                  	jsr	_CDBIOS.w
+0000805C 303C 0020                  	move.w	#ROMREADN,d0			; Start reading
+00008060 4EB8 5F22                  	jsr	_CDBIOS.w
+00008064 3B7C 0258 0022             	move.w	#600,feWaitTime(a5)		; Set wait timer
+0000806A                            
+0000806A                            .Bookmark:
+0000806A 6100 F888                  	bsr.w	FileEngine_SetOperMark		; Set bookmark
+0000806E                            
+0000806E                            .CheckReady:
+0000806E 303C 008A                  	move.w	#CDCSTAT,d0			; Check if data is ready
+00008072 4EB8 5F22                  	jsr	_CDBIOS.w
+00008076 6400                       	bcc.s	.ReadData			; If so, branch
+00008078 536D 0022                  	subq.w	#1,feWaitTime(a5)		; Decrement wait time
+0000807C 6CEC                       	bge.s	.Bookmark			; If we are still waiting, branch
+0000807E 536D 0024                  	subq.w	#1,feRetries(a5)		; If we waited too long, decrement retry counter
+00008082 6CA6                       	bge.s	.StartRead			; If we can still retry, do it
+00008084 6000 0000                  	bra.w	.ReadFailed			; Give up
+00008088                            
+00008088                            .ReadData:
+00008088 303C 008B                  	move.w	#CDCREAD,d0			; Read data
+0000808C 4EB8 5F22                  	jsr	_CDBIOS.w
+00008090 6500 0000                  	bcs.w	.ReadRetry			; If the data isn't read, branch
+00008094 2B40 0014                  	move.l	d0,feReadTime(a5)		; Get time of sector read
+00008098 102D 0029                  	move.b	feSectorFrame(a5),d0		; Does the read sector match the sector we want?
+0000809C B02D 0016                  	cmp.b	feReadFrame(a5),d0
+000080A0 6700                       	beq.s	.WaitDataSet			; If so, branch
+000080A2                            
+000080A2                            .ReadRetry:
+000080A2 52AD 2A04                  	addq.l	#1,feFMVFailCount(a5)		; Increment fail counter
+000080A6 536D 0024                  	subq.w	#1,feRetries(a5)		; Decrement retry counter
+000080AA 6C00 FF7E                  	bge.w	.StartRead			; If we can still retry, do it
+000080AE 6000 0000                  	bra.w	.ReadFailed			; Give up
+000080B2                            
+000080B2                            .WaitDataSet:
+000080B2 303C 07FF                  	move.w	#$800-1,d0			; Wait for data set
+000080B6                            
+000080B6                            .WaitDataSetLoop:
+000080B6 0839 0006 00FF 8004        	btst	#6,GA_CDC_MODE&$FFFFFF
+000080BE 56C8 FFF6                  	dbne	d0,.WaitDataSetLoop		; Loop until ready or until it takes too long
+000080C2 6600                       	bne.s	.TransferData			; If the data is ready to be transfered, branch
+000080C4                            	
+000080C4 536D 0024                  	subq.w	#1,feRetries(a5)		; Decrement retry counter
+000080C8 6C00 FF60                  	bge.w	.StartRead			; If we can still retry, do it
+000080CC 6000 0000                  	bra.w	.ReadFailed			; Give up
+000080D0                            
+000080D0                            .TransferData:
+000080D0 0C2D 0002 0028             	cmpi.b	#2,feCDC(a5)			; Is the CDC mode set to "Main CPU"
+000080D6 6700 0000                  	beq.w	.MainCPUTransfer		; If so, branch
+000080DA                            
+000080DA 303C 008C                  	move.w	#CDCTRN,d0			; Transfer data
+000080DE 206D 0010                  	movea.l	feReadBuffer(a5),a0
+000080E2 43ED 0014                  	lea	feReadTime(a5),a1
+000080E6 4EB8 5F22                  	jsr	_CDBIOS.w
+000080EA 6500                       	bcs.s	.CopyRetry			; If it wasn't successful, branch
+000080EC                            	
+000080EC 102D 0029                  	move.b	feSectorFrame(a5),d0		; Does the read sector match the sector we want?
+000080F0 B02D 0016                  	cmp.b	feReadFrame(a5),d0
+000080F4 6700                       	beq.s	.IncSectorFrame			; If so, branch
+000080F6                            
+000080F6                            .CopyRetry:
+000080F6 52AD 2A04                  	addq.l	#1,feFMVFailCount(a5)		; Increment fail counter
+000080FA 536D 0024                  	subq.w	#1,feRetries(a5)		; Decrement retry counter
+000080FE 6C00 FF2A                  	bge.w	.StartRead			; If we can still retry, do it
+00008102 6000 0000                  	bra.w	.ReadFailed			; Give up
+00008106                            
+00008106                            .IncSectorFrame:
+00008106 44FC 0000                  	move	#0,ccr				; Next sector frame
+0000810A 7201                       	moveq	#1,d1
+0000810C C101                       	abcd	d1,d0
+0000810E 1B40 0029                  	move.b	d0,feSectorFrame(a5)
+00008112 0C2D 0075 0029             	cmpi.b	#$75,feSectorFrame(a5)		; Should we wrap it?
+00008118 6500                       	bcs.s	.FinishSectorRead		; If not, branch
+0000811A 1B7C 0000 0029             	move.b	#0,feSectorFrame(a5)		; If so, wrap it
+00008120                            
+00008120                            .FinishSectorRead:
+00008120 303C 008D                  	move.w	#CDCACK,d0			; Finish data read
+00008124 4EB8 5F22                  	jsr	_CDBIOS.w
+00008128                            
+00008128 3B7C 0006 0022             	move.w	#6,feWaitTime(a5)		; Set new wait time
+0000812E 3B7C 000A 0024             	move.w	#10,feRetries(a5)		; Set new retry counter
+00008134 526D 0026                  	addq.w	#1,feSectorsRead(a5)		; Increment sectors read counter
+00008138 52AD 0004                  	addq.l	#1,feSector(a5)			; Next sector
+0000813C 526D 2A00                  	addq.w	#1,feFMVSectFrame(a5)		; Increment FMV sector frame
+00008140                            	
+00008140 302D 2A00                  	move.w	feFMVSectFrame(a5),d0		; Get current sector frame
+00008144 0C40 0005                  	cmpi.w	#5,d0				; Are we done loading graphics data?
+00008148 6700                       	beq.s	.GfxDone			; If so, branch
+0000814A 06AD 0000 0800 0010        	addi.l	#$800,feReadBuffer(a5)		; Advance read buffer
+00008152 6000 0000                  	bra.w	.Advance
+00008156                            
+00008156                            .GfxDone:
+00008156 08F8 0000 800F             	bset	#0,GA_SUB_FLAG.w		; Sync with Main CPU
+0000815C                            
+0000815C                            .WaitMain:
+0000815C 0838 0000 800E             	btst	#0,GA_MAIN_FLAG.w		; Wait for Main CPU
+00008162 67F8                       	beq.s	.WaitMain
+00008164 0838 0000 800E             	btst	#0,GA_MAIN_FLAG.w
+0000816A 67F0                       	beq.s	.WaitMain
+0000816C 08B8 0000 800F             	bclr	#0,GA_SUB_FLAG.w
+00008172                            	
+00008172 0878 0000 8003             	bchg	#0,GA_MEM_MODE+1.w		; Swap Word RAM banks
+00008178                            
+00008178                            .WaitWordRAM:
+00008178 0838 0001 8003             	btst	#1,GA_MEM_MODE+1.w
+0000817E 66F8                       	bne.s	.WaitWordRAM
+00008180                            	
+00008180 2B7C 000C 0000 0010        	move.l	#FMV_GFX_BUF,feReadBuffer(a5)	; Set read buffer for graphics data
+00008188 3B7C 0000 2A00             	move.w	#0,feFMVSectFrame(a5)		; Reset FMV sector frame
+0000818E                            
+0000818E                            .Advance:
+0000818E 53AD 0008                  	subq.l	#1,feSectorCnt(a5)		; Decrement sectors to read
+00008192 6E00 FEDA                  	bgt.w	.CheckReady			; If there are still sectors to read, branch
+00008196 3B7C 0064 001E             	move.w	#FSTAT_OK,feStatus(a5)		; Mark as successful
+0000819C                            
+0000819C                            .Done:
+0000819C 13ED 0028 00FF 8004        	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+000081A4 206D 000C                  	movea.l	feReturnAddr(a5),a0		; Go to saved return address
+000081A8 4ED0                       	jmp	(a0)
+000081AA                            
+000081AA                            .ReadFailed:
+000081AA 3B7C FF91 001E             	move.w	#FSTAT_FMVFAIL,feStatus(a5)	; Mark as failed
+000081B0 60EA                       	bra.s	.Done
+000081B2                            
+000081B2                            .MainCPUTransfer:
+000081B2 3B7C 0006 0022             	move.w	#6,feWaitTime(a5)		; Set new wait time
+000081B8                            
+000081B8                            .WaitMainCopy:
+000081B8 6100 F73A                  	bsr.w	FileEngine_SetOperMark		; Set bookmark
+000081BC 0839 0007 00FF 8004        	btst	#7,GA_CDC_MODE&$FFFFFF		; Has the data been transferred?
+000081C4 6600 FF5A                  	bne.w	.FinishSectorRead		; If so, branch
+000081C8 536D 0022                  	subq.w	#1,feWaitTime(a5)		; Decrement wait time
+000081CC 6CEA                       	bge.s	.WaitMainCopy			; If we are still waiting, branch
+000081CE 60DA                       	bra.s	.ReadFailed			; If we have waited too long, branch
+000081D0                            
+000081D0                            ; -------------------------------------------------------------------------------
+000081D0                            ; Reset file engine
+000081D0                            ; -------------------------------------------------------------------------------
+000081D0                            
+000081D0                            FileFunc_EngineReset:
+000081D0 6100 F6F0                  	bsr.w	FileFunc_EngineInit
+000081D4 4E75                       	rts
+000081D6                            
+000081D6                            ; -------------------------------------------------------------------------------
+000081D6                            
+000081D6                            SPEnd:
+000081D6                            
+000081D6                            ; -------------------------------------------------------------------------------

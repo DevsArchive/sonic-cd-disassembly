@@ -12,7 +12,11 @@
 PRG_RAM		EQU	$00000			; PRG-RAM
 WORDRAM_2M	EQU	$80000			; Word RAM in 2M mode	
 WORDRAM_1M	EQU	$C0000			; Word RAM in 1M mode
-SP_START	EQU	$6000			; Start of SP program
+
+SP_START	EQU	PRG_RAM+$6000		; Start of SP program
+
+WORDRAM_2M_LEN	EQU	$40000			; Size of Word RAM in 2M mode
+WORDRAM_1M_LEN	EQU	$20000			; Size of Word RAM in 1M mode
 
 ; -------------------------------------------------------------------------
 ; Gate array

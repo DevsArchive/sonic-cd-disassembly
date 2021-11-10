@@ -68,9 +68,6 @@ FMV_GFX_BUF	EQU	WORDRAM_1M		; Graphics data buffer
 ; File data
 FILENAME_LEN	EQU	12			; File name length
 
-; Backup RAM
-TEMP_SAVE_LEN	EQU	$2C0			; Temporary save data buffer length
-
 ; -------------------------------------------------------------------------------
 ; SP variables
 ; -------------------------------------------------------------------------------
