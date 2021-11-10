@@ -11,7 +11,7 @@
 
 ; Addresses
 SPVariables	EQU	$7000			; Variables
-BuRAMCache	EQU	$7400			; BuRAM cache
+SaveDataTemp	EQU	$7400			; Temporary save data buffer
 SPIRQ2		EQU	$7700			; IRQ2 handler
 LoadFile	EQU	$7800			; Load file
 GetFileName	EQU	$7840			; Get file name
@@ -69,7 +69,7 @@ FMV_GFX_BUF	EQU	WORDRAM_1M		; Graphics data buffer
 FILENAME_LEN	EQU	12			; File name length
 
 ; Backup RAM
-BURAM_CACHE_LEN	EQU	$2C0			; Backup RAM cache length
+TEMP_SAVE_LEN	EQU	$2C0			; Temporary save data buffer length
 
 ; -------------------------------------------------------------------------------
 ; SP variables

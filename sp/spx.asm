@@ -461,12 +461,12 @@ BuRAMWriteParams:
 	dc.w	SPCmd_LoadLevel-.SPCmds		; $84 | Load Palmtree Panic Act 1 present demo
 	dc.w	SPCmd_LoadVisualMode-.SPCmds	; $85 | Load Visual Mode menu
 	dc.w	SPCmd_ResetSSFlags2-.SPCmds	; $86 | Reset special stage flags
-	dc.w	SPCmd_ReadBuRAM-.SPCmds		; $87 | Read Backup RAM
-	dc.w	SPCmd_WriteBuRAM-.SPCmds	; $88 | Write Backup RAM
+	dc.w	SPCmd_LoadSaveData-.SPCmds		; $87 | Read Backup RAM
+	dc.w	SPCmd_WriteSaveData-.SPCmds	; $88 | Write Backup RAM
 	dc.w	SPCmd_LoadBuRAMInit-.SPCmds	; $89 | Load Backup RAM initialization
 	dc.w	SPCmd_ResetSSFlags-.SPCmds	; $8A | Reset special stage flags
-	dc.w	SPCmd_ReadBuRAMCache-.SPCmds	; $8B | Read Backup RAM data from cache
-	dc.w	SPCmd_CacheBuRAM-.SPCmds	; $8C | Cache Backup RAM data
+	dc.w	SPCmd_LoadTempSaveData-.SPCmds	; $8B | Load save data from cache
+	dc.w	SPCmd_SaveTempSaveData-.SPCmds	; $8C | Cache Backup RAM data
 	dc.w	SPCmd_LoadThankYou-.SPCmds	; $8D | Load "Thank You" screen
 	dc.w	SPCmd_LoadBuRAMMngr-.SPCmds	; $8E | Load Backup RAM manager
 	dc.w	SPCmd_ResetCDDAVol-.SPCmds	; $8F | Reset CDDA music volume
@@ -659,10 +659,10 @@ SPCmd_LoadBuRAMInit:
 	rts
 
 ; -------------------------------------------------------------------------------
-; Read Backup RAM data
+; Load save data
 ; -------------------------------------------------------------------------------
 
-SPCmd_ReadBuRAM:
+SPCmd_LoadSaveData:
 	lea	BuRAMScratch(pc),a0		; Initialize Backup RAM interaction
 	lea	BuRAMStrings(pc),a1
 	move.w	#BRMINIT,d0
@@ -671,7 +671,7 @@ SPCmd_ReadBuRAM:
 .ReadData:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
-	lea	BuRAMReadParams(pc),a0		; Read Backup RAM data
+	lea	BuRAMReadParams(pc),a0		; Load save data
 	lea	WORDRAM_2M,a1
 	move.w	#BRMREAD,d0
 	jsr	_BURAM.w
@@ -680,10 +680,10 @@ SPCmd_ReadBuRAM:
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
 ; -------------------------------------------------------------------------------
-; Write Backup RAM data
+; Write save data
 ; -------------------------------------------------------------------------------
 
-SPCmd_WriteBuRAM:
+SPCmd_WriteSaveData:
 	lea	BuRAMScratch(pc),a0		; Initialize Backup RAM interaction
 	lea	BuRAMStrings(pc),a1
 	move.w	#BRMINIT,d0
@@ -692,7 +692,7 @@ SPCmd_WriteBuRAM:
 .WriteData:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
-	lea	BuRAMWriteParams(pc),a0		; Write Backup RAM data
+	lea	BuRAMWriteParams(pc),a0		; Write save data
 	lea	WORDRAM_2M,a1
 	move.w	#BRMWRITE,d0
 	moveq	#0,d1
@@ -702,15 +702,15 @@ SPCmd_WriteBuRAM:
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
 ; -------------------------------------------------------------------------------
-; Read Backup RAM data from cache
+; Load temporary save data
 ; -------------------------------------------------------------------------------
 
-SPCmd_ReadBuRAMCache:
+SPCmd_LoadTempSaveData:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
-	lea	BuRAMCache.w,a0			; Copy data from cache
+	lea	SaveDataTemp.w,a0		; Copy from temporary save data buffer
 	lea	WORDRAM_2M,a1
-	move.w	#BURAM_CACHE_LEN/4-1,d7
+	move.w	#TEMP_SAVE_LEN/4-1,d7
 
 .Copy:
 	move.l	(a0)+,(a1)+
@@ -719,15 +719,15 @@ SPCmd_ReadBuRAMCache:
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
 ; -------------------------------------------------------------------------------
-; Copy Backup RAM data to cache
+; Save temporary save data
 ; -------------------------------------------------------------------------------
 
-SPCmd_CacheBuRAM:
+SPCmd_SaveTempSaveData:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
-	lea	BuRAMCache.w,a0			; Copy data to cache
+	lea	SaveDataTemp.w,a0		; Copy to temporary save data buffer
 	lea	WORDRAM_2M,a1
-	move.w	#BURAM_CACHE_LEN/4-1,d7
+	move.w	#TEMP_SAVE_LEN/4-1,d7
 
 .Copy:
 	move.l	(a1)+,(a0)+
