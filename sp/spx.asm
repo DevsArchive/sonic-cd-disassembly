@@ -461,7 +461,7 @@ BuRAMWriteParams:
 	dc.w	SPCmd_LoadLevel-.SPCmds		; $84 | Load Palmtree Panic Act 1 present demo
 	dc.w	SPCmd_LoadVisualMode-.SPCmds	; $85 | Load Visual Mode menu
 	dc.w	SPCmd_ResetSSFlags2-.SPCmds	; $86 | Reset special stage flags
-	dc.w	SPCmd_LoadSaveData-.SPCmds		; $87 | Read Backup RAM
+	dc.w	SPCmd_LoadSaveData-.SPCmds	; $87 | Read Backup RAM
 	dc.w	SPCmd_WriteSaveData-.SPCmds	; $88 | Write Backup RAM
 	dc.w	SPCmd_LoadBuRAMInit-.SPCmds	; $89 | Load Backup RAM initialization
 	dc.w	SPCmd_ResetSSFlags-.SPCmds	; $8A | Reset special stage flags
