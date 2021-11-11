@@ -4,3 +4,5 @@ This is a collection of documented disassemblies of various misc. files from Son
 ## Currently Contains
 * System program
 * System program extension file (SPX)
+* Backup RAM initialization file (BRAMINIT)
+* Sub CPU Backup RAM functions file (BRAMSUB)
