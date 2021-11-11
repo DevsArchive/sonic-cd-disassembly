@@ -1,50 +1,50 @@
-; -------------------------------------------------------------------------------
-; Sonic CD Misc. Disassembly
+; -------------------------------------------------------------------------
+; Sonic CD Disassembly
 ; By Ralakimus 2021
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Sub CPU Backup RAM management functions
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	include	"_inc/macros.asm"
-	include	"_inc/subcpu.asm"
-	include	"_inc/system.asm"
-	include	"_inc/buram.asm"
+	include	"_inc/common.i"
+	include	"_inc/subcpu.i"
+	include	"_inc/system.i"
+	include	"_inc/buram.i"
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Variables
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	rsset	PRG_RAM+$16000
-VARS_START	rs.b	0			; Start of area
+	rsset	PRGRAM+$16000
+VARSSTART	rs.b	0			; Start of variables
 		rs.b	$800			; Unused
 irq1Flag	rs.b	1			; IRQ1 flag
 		rs.b	$17FF			; Unused
-VARS_LEN	EQU	__rs-VARS_START		; Size of area
+VARSSZ		EQU	__rs-VARSSTART		; Size of variables area
 
-decompWindow	EQU	WORDRAM_2M+$38000	; Decompression sliding window
+decompWindow	EQU	WORDRAM2M+$38000	; Decompression sliding window
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Program start
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 	org	$10000
 
 	move.l	#IRQ1,_LEVEL1+2.w		; Set IRQ1 handler
-	move.b	#0,GA_MEM_MODE+1.w		; Set to 2M mode
+	move.b	#0,GAMEMMODE.w			; Set to 2M mode
 
 	moveq	#0,d0				; Clear communication statuses
-	move.l	d0,GA_STAT_0.w
-	move.l	d0,GA_STAT_4.w
-	move.l	d0,GA_STAT_8.w
-	move.l	d0,GA_STAT_C.w
+	move.l	d0,GACOMSTAT0.w
+	move.l	d0,GACOMSTAT4.w
+	move.l	d0,GACOMSTAT8.w
+	move.l	d0,GACOMSTATC.w
 	
-	bset	#7,GA_SUB_FLAG.w		; Tell Main CPU we're ready to accept Word RAM access
-	bclr	#1,GA_INT_MASK+1.w		; Disable level 1 interrupt
-	bclr	#3,GA_INT_MASK+1.w		; Disable timer interrupt
-	move.b	#3,GA_CDC_MODE.w		; Set CDC mode to "Sub CPU"
+	bset	#7,GASUBFLAG.w			; Tell Main CPU we're ready to accept Word RAM access
+	bclr	#1,GAIRQMASK.w			; Disable level 1 interrupt
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
+	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
 
-	lea	VARS_START,a0			; Clear variables
-	move.w	#VARS_LEN/4-1,d7
+	lea	VARSSTART,a0			; Clear variables
+	move.w	#VARSSZ/4-1,d7
 
 .ClearVars:
 	move.l	#0,(a0)+
@@ -52,72 +52,75 @@ decompWindow	EQU	WORDRAM_2M+$38000	; Decompression sliding window
 
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
-	lea	WORDRAM_2M,a0			; Clear Word RAM
-	move.w	#WORDRAM_2M_LEN/8-1,d7
+	lea	WORDRAM2M,a0			; Clear Word RAM
+	move.w	#WORDRAM2MS/8-1,d7
 
 .ClearWordRAM:
 	move.l	#0,(a0)+
 	move.l	#0,(a0)+
 	dbf	d7,.ClearWordRAM
 
-	bset	#1,GA_INT_MASK+1.w		; Enable level 1 interrupt
-	bclr	#7,GA_SUB_FLAG.w		; Tell Main CPU we're done initializing
+	bset	#1,GAIRQMASK.w			; Enable level 1 interrupt
+	bclr	#7,GASUBFLAG.w			; Tell Main CPU we're done initializing
 
 MainLoop:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
-	btst	#7,GA_MAIN_FLAG.w		; Is the Main CPU finished?
+	btst	#7,GAMAINFLAG.w			; Is the Main CPU finished?
 	bne.s	.Done				; If so, branch
 	bsr.w	RunBuRAMCmd			; Run Backup RAM command
-	bsr.w	GiveWordRAMAccess		; Give Word RAM access to Main CPU
+	bsr.w	GiveWordRAMAccess		; Give Main CPU to Word RAM access
 	bra.w	MainLoop			; Loop
 
 .Done:
-	bset	#7,GA_SUB_FLAG.w		; Tell Main CPU that we are done
+	bset	#7,GASUBFLAG.w			; Tell Main CPU that we are done
 
 .WaitMainCPU:
-	btst	#7,GA_MAIN_FLAG.w		; Is the Main CPU done wrapping up>
+	btst	#7,GAMAINFLAG.w			; Is the Main CPU done?
 	bne.s	.WaitMainCPU			; If not, wait
 
 	moveq	#0,d0				; Clear communication statuses
-	move.l	d0,GA_STAT_0.w
-	move.l	d0,GA_STAT_4.w
-	move.l	d0,GA_STAT_8.w
-	move.l	d0,GA_STAT_C.w
-	move.b	d0,GA_SUB_FLAG.w
+	move.l	d0,GACOMSTAT0.w
+	move.l	d0,GACOMSTAT4.w
+	move.l	d0,GACOMSTAT8.w
+	move.l	d0,GACOMSTATC.w
+	move.b	d0,GASUBFLAG.w
 	nop
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Unused function to get a command ID from the Main CPU
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; RETURNS:
+;	d0.w - Command ID
+; -------------------------------------------------------------------------
 
 GetMainCPUCmd:
-	move.w	GA_CMD_2.w,d0			; Get command ID from Main CPU
+	move.w	GACOMCMD2.w,d0			; Get command ID from Main CPU
 	beq.w	MainLoop			; If it's zero, exit out
-	move.w	GA_CMD_2.w,GA_STAT_2.w		; Acknowledge command
+	move.w	GACOMCMD2.w,GACOMSTAT2.w	; Acknowledge command
 
 .WaitMainCPU:
-	tst.w	GA_CMD_2.w			; Is the Main CPU ready?
+	tst.w	GACOMCMD2.w			; Is the Main CPU ready to send more commands?
 	bne.s	.WaitMainCPU			; If not, branch
 	
-	move.w	#0,GA_STAT_2.w			; Mark as ready for another command
+	move.w	#0,GACOMSTAT2.w			; Mark as ready for another command
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Unknown IRQ1 handler
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 IRQ1:
 	move.b	#0,irq1Flag			; Clear IRQ1 flag
 	rte
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Unknown decompression routine
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a0.l - Pointer to compressed data
 ;	a1.l - Pointer to destination buffer
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 UnkDecomp:
 	movem.l	d0-a2,-(sp)			; Save registers
@@ -180,13 +183,13 @@ UnkDecomp:
 	movem.l	(sp)+,d0-a2			; Restore registers
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Mass copy 128 bytes
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a1.l - Pointer to source data
 ;	a2.l - Pointer to destination buffer
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 MassCopy:
 	rept	32
@@ -194,9 +197,9 @@ MassCopy:
 	endr
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Wait for the IRQ1 handler to be run
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 WaitIRQ1:
 	move.b	#1,irq1Flag			; Set IRQ1 flag
@@ -207,42 +210,42 @@ WaitIRQ1:
 	bne.s	.Wait				; If not, wait
 	rts
 
-; -------------------------------------------------------------------------------
-; Wait for the Main CPU to be ready
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Sync with Main CPU
+; -------------------------------------------------------------------------
 
-WaitMainCPU:
-	tst.w	GA_CMD_2.w			; Is the Main CPU ready?
-	bne.s	WaitMainCPU			; If not, branch
+SyncWithMainCPU:
+	tst.w	GACOMCMD2.w			; Are we synced with the Main CPU?
+	bne.s	SyncWithMainCPU			; If not, wait
 	rts
 
-; -------------------------------------------------------------------------------
-; Give Word RAM access to the Main CPU (and finish off command)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Give Main CPU Word RAM access
+; -------------------------------------------------------------------------
 
 GiveWordRAMAccess:
-	bset	#0,GA_MEM_MODE+1.w		; Give Word RAM access to Main CPU
-	btst	#0,GA_MEM_MODE+1.w		; Has it been given?
+	bset	#0,GAMEMMODE.w		; Give Main CPU Word RAM access
+	btst	#0,GAMEMMODE.w		; Has it been given?
 	beq.s	GiveWordRAMAccess		; If not, wait
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Wait for Word RAM access
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 WaitWordRAMAccess:
-	btst	#1,GA_MEM_MODE+1.w		; Do we have Word RAM access?
+	btst	#1,GAMEMMODE.w		; Do we have Word RAM access?
 	beq.s	WaitWordRAMAccess		; If not, wait
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Unknown map data(?) loading routine
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a1.l - Pointer to source data
 ;	d1.w - Width (minus 1)
 ;	d2.w - Height (minus 1)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 UnkMapDataLoad:
 	move.l	#$100,d4			; Stride
@@ -260,9 +263,9 @@ UnkMapDataLoad:
 	dbf	d2,.SetupRow			; Loop until all data is written
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Run Backup RAM command
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 RunBuRAMCmd:
 	moveq	#0,d0				; Get command ID
@@ -293,7 +296,7 @@ RunBuRAMCmd:
 .End:
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .Commands:
 	dc.w	Cmd_InitBuRAM-.Commands		; Initialize Backup RAM interaction
@@ -309,9 +312,9 @@ RunBuRAMCmd:
 	dc.w	Cmd_WriteSaveData-.Commands	; Write save data
 .CommandsEnd:
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Initialize Backup RAM interaction
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_InitBuRAM:
 	lea	BuRAMScratch,a0
@@ -319,18 +322,18 @@ Cmd_InitBuRAM:
 	moveq	#BRMINIT,d0
 	jmp	_BURAM.w
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Get Backup RAM status	
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_BuRAMStatus:
 	moveq	#BRMSTAT,d0
 	movea.l	#BuRAMStrings,a1
 	jmp	_BURAM.w
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Search Backup RAM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_SearchBuRAM:
 	movea.l	#buramParams,a0
@@ -339,9 +342,9 @@ Cmd_SearchBuRAM:
 	moveq	#BRMSERCH,d0
 	jmp	_BURAM.w
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Read from Backup RAM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_ReadBuRAM:
 	movea.l	#buramParams,a0
@@ -352,9 +355,9 @@ Cmd_ReadBuRAM:
 	jsr	_BURAM.w
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Read save data
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_ReadSaveData:
 	tst.b	buramDisabled			; Is Backup RAM disabled?
@@ -372,9 +375,9 @@ Cmd_ReadSaveData:
 	move.w	#0,buramD1
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Write to Backup RAM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_WriteBuRAM:
 	movea.l	#buramParams,a0
@@ -385,9 +388,9 @@ Cmd_WriteBuRAM:
 	jsr	_BURAM.w
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Write save data
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_WriteSaveData:
 	tst.b	buramDisabled			; Is Backup RAM disabled?
@@ -405,9 +408,9 @@ Cmd_WriteSaveData:
 	move.w	#0,buramD1
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Delete Backup RAM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_DeleteBuRAM:
 	movea.l	#buramParams,a0
@@ -416,17 +419,17 @@ Cmd_DeleteBuRAM:
 	moveq	#BRMDEL,d0
 	jmp	_BURAM.w
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Format Backup RAM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_FormatBuRAM:
 	moveq	#BRMFORMAT,d0
 	jmp	_BURAM.w
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Get Backup RAM directory
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_GetBuRAMDir:
 	movea.l	#buramParams,a0
@@ -437,9 +440,9 @@ Cmd_GetBuRAMDir:
 	moveq	#BRMDIR,d0
 	jmp	_BURAM.w
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Verify Backup RAM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Cmd_VerifyBuRAM:
 	movea.l	#buramParams,a0
@@ -449,16 +452,16 @@ Cmd_VerifyBuRAM:
 	moveq	#BRMVERIFY,d0
 	jmp	_BURAM.w
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Write to temporary save data buffer
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 WriteTempSaveData:
 	movem.l	d0/a0-a1,-(sp)			; Save registers
 
 	movea.l	#buramData,a0			; Write to temporary save data buffer
 	movea.l	#SaveDataTemp,a1
-	move.w	#BURAM_DATA_LEN/4-1,d0
+	move.w	#BURAMDATASZ/4-1,d0
 
 .Write:
 	move.l	(a0)+,(a1)+
@@ -467,16 +470,16 @@ WriteTempSaveData:
 	movem.l	(sp)+,d0/a0-a1			; Restore registers
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Read from temporary save data buffer
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ReadTempSaveData:
 	movem.l	d0/a0-a1,-(sp)			; Save registers
 
 	movea.l	#SaveDataTemp,a0		; Read from temporary save data buffer
 	movea.l	#buramData,a1
-	move.w	#BURAM_DATA_LEN/4-1,d0
+	move.w	#BURAMDATASZ/4-1,d0
 
 .read:
 	move.l	(a0)+,(a1)+
@@ -485,9 +488,9 @@ ReadTempSaveData:
 	movem.l	(sp)+,d0/a0-a1			; Restore registers
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Backup RAM data
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 BuRAMScratch:
 	dcb.b	$640, 0				; Scratch RAM
@@ -495,4 +498,4 @@ BuRAMScratch:
 BuRAMStrings:	
 	dcb.b	$C, 0				; Display strings
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------

@@ -1,19 +1,20 @@
-; -------------------------------------------------------------------------------
-; Sonic CD Misc. Disassembly
+; -------------------------------------------------------------------------
+; Sonic CD Disassembly
 ; By Ralakimus 2021
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; System program
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	include	"_inc/macros.asm"
-	include	"_inc/subcpu.asm"
-	include	"_inc/system.asm"
+	include	"_inc/common.i"
+	include	"_inc/subcpu.i"
+	include	"_inc/system.i"
+	include	"_inc/buram.i"
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Header
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	org	SP_START
+	org	SPSTART
 SPHeader:
 	dc.b	'MAIN       ', 0
 	dc.w	0, 0
@@ -22,9 +23,9 @@ SPHeader:
 	dc.l	SPHeaderOffsets-SPHeader
 	dc.l	0
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Offsets
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPHeaderOffsets:
 	dc.w	SPInit-SPHeaderOffsets		; Initialization
@@ -33,14 +34,14 @@ SPHeaderOffsets:
 	dc.w	SPNull-SPHeaderOffsets		; Null
 	dc.w	0
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Initialization
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPInit:
-	lea	GA_STATS.w,a0			; Clear communication statuses
+	lea	GACOMSTATS.w,a0			; Clear communication statuses
 	moveq	#0,d0
-	move.b	d0,GA_SUB_FLAG-GA_STATS(a0)
+	move.b	d0,GASUBFLAG-GACOMSTATS(a0)
 	move.l	d0,(a0)+
 	move.l	d0,(a0)+
 	move.l	d0,(a0)+
@@ -56,7 +57,7 @@ SPInit:
 	andi.b	#$F0,_CDSTAT.w
 	bne.s	.WaitReady
 
-	andi.b	#$FA,GA_MEM_MODE+1.w		; Set to 2M mode
+	andi.b	#$FA,GAMEMMODE.w		; Set to 2M mode
 	
 	move.w	#FFUNC_INIT,d0			; Initialize file engine
 	jsr	FileEngineFunc
@@ -64,7 +65,7 @@ SPInit:
 SPNull:
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 DriveInitParams:
 	dc.b	1, $FF
@@ -73,9 +74,9 @@ SPXFile:
 	dc.b	"SPX___.BIN;1", 0
 	even
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Main routine
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPMain:
 	move.w	#FFUNC_GETFILES,d0		; Get files
@@ -103,97 +104,39 @@ SPMain:
 	nop
 	bra.s	.Error
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Variables
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	align	SPVariables
+	ALIGN	SPVariables
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Temporary save data buffer
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	align	SaveDataTemp
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$00, $05, $00, $00, $00, $05, $00, $00, $00, $05, $00, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$0B, $0B, $0B, $00, $0B, $0B, $0B, $00, $0B, $0B, $0B, $00
-	dc.b	$23, $19, $1F, $00, $00, $00, $00, $00, $10, $00, $00, $00
-	dc.b	$00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00, $00
-	dc.b	$00, $00, $00, $00, $00, $00, $00, $00
+	ALIGN	SaveDataTemp
+	include	"buram/datainitial.asm"
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; IRQ2
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	align	SPIRQ2
+	ALIGN	SPIRQ2
 	movem.l	d0-a6,-(sp)			; Save registers
 	move.w	#FFUNC_OPER,d0			; Perform engine operation
 	jsr	FileEngineFunc
 	movem.l	(sp)+,d0-a6			; Restore registers
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load file
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a0.l - Pointer to file name
 ;	a1.l - File read destination buffer
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	align	LoadFile
+	ALIGN	LoadFile
 	move.w	#FFUNC_LOADFILE,d0		; Start file loading
 	jsr	FileEngineFunc
 
@@ -208,29 +151,29 @@ SPMain:
 	bne.w	LoadFile			; If not, try again
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Get file name
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d0.w - File ID
 ; RETURNS:
 ;	a0.l - Pointer to file name
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	align	GetFileName
-	mulu.w	#FILENAME_LEN+1,d0		; Get file name pointer
+	ALIGN	GetFileName
+	mulu.w	#FILENAMESZ+1,d0		; Get file name pointer
 	lea	SPXFileTable,a0
 	adda.w	d0,a0
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; File engine function
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d0.w - File engine function ID
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	align	FileEngineFunc
+	ALIGN	FileEngineFunc
 	movem.l	a0-a6,-(sp)			; Save registers
 	lea	FileEngineVars,a5		; Perform function
 	add.w	d0,d0
@@ -239,7 +182,7 @@ SPMain:
 	movem.l	(sp)+,a0-a6			; Restore registers
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .Functions:
 	dc.w	FileFunc_EngineInit-.Functions	; Initialize engine
@@ -252,9 +195,9 @@ SPMain:
 	dc.w	FileFunc_EngineReset-.Functions	; Reset engine
 	dc.w	FileFunc_LoadMuteFMV-.Functions	; Load mute FMV
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Get files
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileFunc_GetFiles:
 	move.w	#FMODE_GETFILES,feOperMode(a5)	; Set operation mode to "get files"
@@ -262,26 +205,26 @@ FileFunc_GetFiles:
 	move.l	#0,feFMVFailCount(a5)		; Reset fail counter
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Initialize file engine
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileFunc_EngineInit:
 	move.l	#FileEngineOper,feOperMark(a5)	; Reset operation bookmark
 	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Perform operation
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileFunc_Operation:
 	movea.l	feOperMark(a5),a0		; Go to operation bookmark
 	jmp	(a0)
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Handle file engine operation
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileEngineOper:
 	bsr.w	FileEngine_SetOperMark		; Set bookmark
@@ -291,7 +234,7 @@ FileEngineOper:
 	move.w	.Opers(pc,d0.w),d0
 	jmp	.Opers(pc,d0.w)
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .Opers:
 	dc.w	FileEngineOper-.Opers		; None
@@ -300,20 +243,20 @@ FileEngineOper:
 	dc.w	FileEngine_LoadFMV-.Opers	; Load FMV
 	dc.w	FileEngine_LoadMuteFMV-.Opers	; Load mute FMV
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Set operation bookmark
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileEngine_SetOperMark:
 	move.l	(sp)+,feOperMark(a5)
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; "Get files" operation
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileEngine_GetFiles:
-	move.b	#3,feCDC(a5)			; Set CDC mode to "Sub CPU"
+	move.b	#3,feCDC(a5)			; Set CDC device to "Sub CPU"
 	move.l	#$10,feSector(a5)		; Read from sector $10 (primary volume descriptor)
 	move.l	#1,feSectorCnt(a5)		; Read 1 sector
 	lea	feDirReadBuf(a5),a0		; Get read buffer
@@ -346,7 +289,7 @@ FileEngine_GetFiles:
 
 	lea	feFileList(a5),a0		; Go to file list cursor
 	move.w	feFileCount(a5),d0
-	mulu.w	#FILE_ENTRY_LEN,d0
+	mulu.w	#FILEENTRYSZ,d0
 	adda.l	d0,a0
 	
 	lea	feDirReadBuf(a5),a1		; Prepare to get file info
@@ -375,7 +318,7 @@ FileEngine_GetFiles:
 	blt.s	.GetFileName			; If not, branch
 
 .PadFileName:
-	cmpi.b	#FILENAME_LEN,d1		; Are we at the end of the file name?
+	cmpi.b	#FILENAMESZ,d1			; Are we at the end of the file name?
 	bge.s	.NextFile			; If so, branch
 	move.b	#' ',(a0,d1.w)			; If not, pad out with spaces
 	addq.w	#1,d1
@@ -384,7 +327,7 @@ FileEngine_GetFiles:
 .NextFile:
 	addq.w	#1,feFileCount(a5)		; Increment fle count
 	adda.l	d0,a1				; Prepare next file
-	adda.l	#FILE_ENTRY_LEN,a0
+	adda.l	#FILEENTRYSZ,a0
 	bra.s	.GetFileInfo
 
 .NoMoreFiles:
@@ -401,12 +344,12 @@ FileEngine_GetFiles:
 	move.w	#FSTAT_GETFAIL,feStatus(a5)	; Mark operation as successful
 	bra.s	.Done
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; "Load file" operation
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileEngine_LoadFile:
-	move.b	#3,feCDC(a5)			; Set CDC mode to "Sub CPU"
+	move.b	#3,feCDC(a5)			; Set CDC device to "Sub CPU"
 	lea	feFileName(a5),a0		; Find file
 	bsr.w	FileFunc_FindFile
 	bcs.w	.FileNotFound			; If it wasn't found, branch
@@ -437,15 +380,15 @@ FileEngine_LoadFile:
 	move.w	#FSTAT_NOTFOUND,feStatus(a5)	; Mark as not found
 	bra.s	.Done
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Get file engine status
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; RETURNS:
 ;	d0.w  - Return code
 ;	d1.l  - File size if file load was successful
 ;	        Sectors read if file load failed
 ;	cc/cs - Inactive/Busy
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileFunc_GetStatus:
 	cmpi.w	#FMODE_NONE,feOperMode(a5)	; Is there an operation going on?
@@ -470,13 +413,13 @@ FileFunc_GetStatus:
 	move	#1,ccr				; Mark as bust
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load a file
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a0.l - File name
 ;	a1.l - File read destination buffer
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileFunc_LoadFile:
 	move.w	#FMODE_LOADFILE,feOperMode(a5)	; Set operation mode to "load file"
@@ -484,28 +427,28 @@ FileFunc_LoadFile:
 	
 	movea.l	a0,a1				; Copy file name
 	lea	feFileName(a5),a2
-	move.w	#FILENAME_LEN-1,d1
+	move.w	#FILENAMESZ-1,d1
 
 .CopyFileName:
 	move.b	(a1)+,(a2)+
 	dbf	d1,.CopyFileName
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Find a file
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS
 ;	a0.l  - File name
 ; RETURNS:
 ;	a0.l  - Found file information
 ;	cc/cs - Found/Not found
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileFunc_FindFile:
 	move.l	a2,-(sp)			; Save a2
 	moveq	#0,d1				; Prepare to find file
 	movea.l	a0,a1
-	move.w	#FILENAME_LEN-2,d0
+	move.w	#FILENAMESZ-2,d0
 
 .GetNameLength:
 	tst.b	(a1)				; Is this character a termination character?
@@ -534,7 +477,7 @@ FileFunc_FindFile:
 .FindFile:
 	bsr.w	CompareStrings			; Is this file entry the one we are looking for?
 	beq.s	.FileFound			; If so, branch
-	adda.w	#FILE_ENTRY_LEN,a2		; Go to next file
+	adda.w	#FILEENTRYSZ,a2		; Go to next file
 	dbf	d0,.FindFile			; Loop until file is found or until all files are scanned
 	bra.s	.FileNotFound			; File not found
 
@@ -550,15 +493,15 @@ FileFunc_FindFile:
 	move	#1,ccr				; Mark as not found
 	bra.s	.Done
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .FirstFile:
 	dc.b	"\          ", 0
 	even
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Read sectors from CD
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ReadSectors:
 	move.l	(sp)+,feReturnAddr(a5)		; Save return address
@@ -566,7 +509,7 @@ ReadSectors:
 	move.w	#30,feRetries(a5)		; Set retry counter
 
 .StartRead:
-	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+	move.b	feCDC(a5),GACDCDEVICE&$FFFFFF	; Set CDC device
 	
 	lea	feSector(a5),a0			; Get sector information
 	move.l	(a0),d0				; Get sector frame (in BCD)
@@ -618,7 +561,7 @@ ReadSectors:
 	move.w	#$800-1,d0			; Wait for data set
 
 .WaitDataSetLoop:
-	btst	#6,GA_CDC_MODE&$FFFFFF
+	btst	#6,GACDCDEVICE&$FFFFFF
 	dbne	d0,.WaitDataSetLoop		; Loop until ready or until it takes too long
 	bne.s	.TransferData			; If the data is ready to be transfered, branch
 	
@@ -627,7 +570,7 @@ ReadSectors:
 	bra.w	.ReadFailed			; Give up
 
 .TransferData:
-	cmpi.b	#2,feCDC(a5)			; Is the CDC mode set to "Main CPU"
+	cmpi.b	#2,feCDC(a5)			; Is the CDC device set to "Main CPU"
 	beq.w	.MainCPUTransfer		; If so, branch
 
 	move.w	#CDCTRN,d0			; Transfer data
@@ -668,7 +611,7 @@ ReadSectors:
 	move.w	#FSTAT_OK,feStatus(a5)		; Mark as successful
 
 .Done:
-	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+	move.b	feCDC(a5),GACDCDEVICE&$FFFFFF	; Set CDC device
 	movea.l	feReturnAddr(a5),a0		; Go to saved return address
 	jmp	(a0)
 
@@ -681,22 +624,22 @@ ReadSectors:
 
 .WaitMainCopy:
 	bsr.w	FileEngine_SetOperMark		; Set bookmark
-	btst	#7,GA_CDC_MODE&$FFFFFF		; Has the data been transferred?
+	btst	#7,GACDCDEVICE&$FFFFFF		; Has the data been transferred?
 	bne.s	.FinishSectorRead		; If so, branch
 	subq.w	#1,feWaitTime(a5)		; Decrement wait time
 	bge.s	.WaitMainCopy			; If we are still waiting, branch
 	bra.s	.ReadFailed			; If we have waited too long, branch
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Compare two strings
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d1.w  - Number of characters to compare
 ;	a1.l  - Pointer to string 1
 ;	a2.l  - Pointer to string 2
 ; RETURNS:
 ;	eq/ne - Same/Different
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 CompareStrings:
 	movem.l	d1/a1-a2,-(sp)			; Save registers
@@ -712,35 +655,35 @@ CompareStrings:
 	movem.l	(sp)+,d1/a1-a2			; Restore registers
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load an FMV
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a0.l - File name
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileFunc_LoadFMV:
 	move.b	#1<<FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
 	move.w	#FMODE_LOADFMV,feOperMode(a5)	; Set operation mode to "load FMV"
-	move.l	#FMV_PCM_BUF,feReadBuffer(a5)	; Prepare to read PCM data
+	move.l	#FMVPCMBUF,feReadBuffer(a5)	; Prepare to read PCM data
 	move.w	#0,feFMVSectFrame(a5)		; Reset FMV sector frame
 	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
 
 	movea.l	a0,a1				; Copy file name
 	lea	feFileName(a5),a2
-	move.w	#FILENAME_LEN-1,d1
+	move.w	#FILENAMESZ-1,d1
 
 .CopyFileName:
 	move.b	(a1)+,(a2)+
 	dbf	d1,.CopyFileName
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; "Load FMV" operation
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileEngine_LoadFMV:
-	move.b	#3,feCDC(a5)			; Set CDC mode to "Sub CPU"
+	move.b	#3,feCDC(a5)			; Set CDC device to "Sub CPU"
 	lea	feFileName(a5),a0		; Find file
 	bsr.w	FileFunc_FindFile
 	bcs.w	.FileNotFound			; If it wasn't found, branch
@@ -771,9 +714,9 @@ FileEngine_LoadFMV:
 	move.w	#FSTAT_NOTFOUND,feStatus(a5)	; Mark as not found
 	bra.s	.Done
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Read FMV file data from CD
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ReadFMVSectors:
 	move.l	(sp)+,feReturnAddr(a5)		; Save return address
@@ -781,7 +724,7 @@ ReadFMVSectors:
 	move.w	#10,feRetries(a5)		; Set retry counter
 
 .StartRead:
-	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+	move.b	feCDC(a5),GACDCDEVICE&$FFFFFF	; Set CDC device
 	
 	lea	feSector(a5),a0			; Get sector information
 	move.l	(a0),d0				; Get sector frame (in BCD)
@@ -834,7 +777,7 @@ ReadFMVSectors:
 	move.w	#$800-1,d0			; Wait for data set
 
 .WaitDataSetLoop:
-	btst	#6,GA_CDC_MODE&$FFFFFF
+	btst	#6,GACDCDEVICE&$FFFFFF
 	dbne	d0,.WaitDataSetLoop		; Loop until ready or until it takes too long
 	bne.s	.TransferData			; If the data is ready to be transfered, branch
 	
@@ -843,7 +786,7 @@ ReadFMVSectors:
 	bra.w	.ReadFailed			; Give up
 
 .TransferData:
-	cmpi.b	#2,feCDC(a5)			; Is the CDC mode set to "Main CPU"
+	cmpi.b	#2,feCDC(a5)			; Is the CDC device set to "Main CPU"
 	beq.w	.MainCPUTransfer		; If so, branch
 
 	move.w	#CDCTRN,d0			; Transfer data
@@ -889,29 +832,29 @@ ReadFMVSectors:
 .PCMDone:
 	move.b	#FMVT_GFX,feFMVDataType(a5)	; Set graphics data type
 	bclr	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 2
-	move.l	#FMV_GFX_BUF,feReadBuffer(a5)	; Set read buffer for graphics data
+	move.l	#FMVGFXBUF,feReadBuffer(a5)	; Set read buffer for graphics data
 	bra.w	.Advance
 
 .GfxDone:
-	bset	#0,GA_SUB_FLAG.w		; Sync with Main CPU
+	bset	#0,GASUBFLAG.w			; Sync with Main CPU
 	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
 	bset	#FMVF_READY,feFMVFlags(a5)	; Mark as ready
 
 .WaitMain:
-	btst	#0,GA_MAIN_FLAG.w		; Wait for Main CPU
+	btst	#0,GAMAINFLAG.w			; Wait for Main CPU
 	beq.s	.WaitMain
-	btst	#0,GA_MAIN_FLAG.w
+	btst	#0,GAMAINFLAG.w
 	beq.s	.WaitMain
-	bclr	#0,GA_SUB_FLAG.w
+	bclr	#0,GASUBFLAG.w
 	
-	bchg	#0,GA_MEM_MODE+1.w		; Swap Word RAM banks
+	bchg	#0,GAMEMMODE.w			; Swap Word RAM banks
 
 .WaitWordRAM:
-	btst	#1,GA_MEM_MODE+1.w
+	btst	#1,GAMEMMODE.w
 	bne.s	.WaitWordRAM
 	
 	move.b	#FMVT_PCM,feFMVDataType(a5)	; Set PCM data type
-	move.l	#FMV_PCM_BUF,feReadBuffer(a5)	; Set read buffer for PCM data
+	move.l	#FMVPCMBUF,feReadBuffer(a5)	; Set read buffer for PCM data
 	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
 
 .Advance:
@@ -928,7 +871,7 @@ ReadFMVSectors:
 	move.w	#FSTAT_OK,feStatus(a5)		; Mark as successful
 
 .Done:
-	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+	move.b	feCDC(a5),GACDCDEVICE&$FFFFFF	; Set CDC device
 	movea.l	feReturnAddr(a5),a0		; Go to saved return address
 	jmp	(a0)
 
@@ -944,29 +887,29 @@ ReadFMVSectors:
 .PCMDone2:
 	move.b	#FMVT_GFX,feFMVDataType(a5)	; Set graphics data type
 	bclr	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 2
-	move.l	#FMV_GFX_BUF,feReadBuffer(a5)	; Set read buffer for graphics data
+	move.l	#FMVGFXBUF,feReadBuffer(a5)	; Set read buffer for graphics data
 	bra.w	.Advance2
 
 .GfxDone2:
-	bset	#0,GA_SUB_FLAG.w		; Sync with Main CPU
+	bset	#0,GASUBFLAG.w			; Sync with Main CPU
 	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
 	bset	#FMVF_READY,feFMVFlags(a5)	; Mark as ready
 
 .WaitMain2:
-	btst	#0,GA_MAIN_FLAG.w		; Wait for Main CPU
+	btst	#0,GAMAINFLAG.w			; Wait for Main CPU
 	beq.s	.WaitMain2
-	btst	#0,GA_MAIN_FLAG.w
+	btst	#0,GAMAINFLAG.w
 	beq.s	.WaitMain2
-	bclr	#0,GA_SUB_FLAG.w
+	bclr	#0,GASUBFLAG.w
 	
-	bchg	#0,GA_MEM_MODE+1.w		; Swap Word RAM banks
+	bchg	#0,GAMEMMODE.w			; Swap Word RAM banks
 
 .WaitWordRAM2:
-	btst	#1,GA_MEM_MODE+1.w
+	btst	#1,GAMEMMODE.w
 	bne.s	.WaitWordRAM2
 	
 	move.b	#FMVT_PCM,feFMVDataType(a5)	; Set PCM data type
-	move.l	#FMV_PCM_BUF,feReadBuffer(a5)	; Set read buffer for PCM data
+	move.l	#FMVPCMBUF,feReadBuffer(a5)	; Set read buffer for PCM data
 	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
 
 .Advance2:
@@ -988,40 +931,40 @@ ReadFMVSectors:
 
 .WaitMainCopy:
 	bsr.w	FileEngine_SetOperMark		; Set bookmark
-	btst	#7,GA_CDC_MODE&$FFFFFF		; Has the data been transferred?
+	btst	#7,GACDCDEVICE&$FFFFFF		; Has the data been transferred?
 	bne.w	.FinishSectorRead		; If so, branch
 	subq.w	#1,feWaitTime(a5)		; Decrement wait time
 	bge.s	.WaitMainCopy			; If we are still waiting, branch
 	bra.w	.ReadFailed			; If we have waited too long, branch
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load a mute FMV
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a0.l - File name
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileFunc_LoadMuteFMV:
 	move.b	#1<<FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
 	move.w	#FMODE_LOADFMVM,feOperMode(a5)	; Set operation mode to "load mute FMV"
-	move.l	#FMV_GFX_BUF,feReadBuffer(a5)	; Prepare to read graphics data
+	move.l	#FMVGFXBUF,feReadBuffer(a5)	; Prepare to read graphics data
 	move.w	#0,feFMVSectFrame(a5)		; Reset FMV sector frame
 	
 	movea.l	a0,a1				; Copy file name
 	lea	feFileName(a5),a2
-	move.w	#FILENAME_LEN-1,d1
+	move.w	#FILENAMESZ-1,d1
 
 .CopyFileName:
 	move.b	(a1)+,(a2)+
 	dbf	d1,.CopyFileName
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; "Load mute FMV" operation
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileEngine_LoadMuteFMV:
-	move.b	#3,feCDC(a5)			; Set CDC mode to "Sub CPU"
+	move.b	#3,feCDC(a5)			; Set CDC device to "Sub CPU"
 	lea	feFileName(a5),a0		; Find file
 	bsr.w	FileFunc_FindFile
 	bcs.w	.FileNotFound			; If it wasn't found, branch
@@ -1052,9 +995,9 @@ FileEngine_LoadMuteFMV:
 	move.w	#FSTAT_NOTFOUND,feStatus(a5)	; Mark as not found
 	bra.s	.Done
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Read mute FMV file data from CD
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ReadMuteFMVSectors:
 	move.l	(sp)+,feReturnAddr(a5)		; Save return address
@@ -1062,7 +1005,7 @@ ReadMuteFMVSectors:
 	move.w	#10,feRetries(a5)		; Set retry counter
 
 .StartRead:
-	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+	move.b	feCDC(a5),GACDCDEVICE&$FFFFFF	; Set CDC device
 	
 	lea	feSector(a5),a0			; Get sector information
 	move.l	(a0),d0				; Get sector frame (in BCD)
@@ -1115,7 +1058,7 @@ ReadMuteFMVSectors:
 	move.w	#$800-1,d0			; Wait for data set
 
 .WaitDataSetLoop:
-	btst	#6,GA_CDC_MODE&$FFFFFF
+	btst	#6,GACDCDEVICE&$FFFFFF
 	dbne	d0,.WaitDataSetLoop		; Loop until ready or until it takes too long
 	bne.s	.TransferData			; If the data is ready to be transfered, branch
 	
@@ -1124,7 +1067,7 @@ ReadMuteFMVSectors:
 	bra.w	.ReadFailed			; Give up
 
 .TransferData:
-	cmpi.b	#2,feCDC(a5)			; Is the CDC mode set to "Main CPU"
+	cmpi.b	#2,feCDC(a5)			; Is the CDC device set to "Main CPU"
 	beq.w	.MainCPUTransfer		; If so, branch
 
 	move.w	#CDCTRN,d0			; Transfer data
@@ -1169,22 +1112,22 @@ ReadMuteFMVSectors:
 	bra.w	.Advance
 
 .GfxDone:
-	bset	#0,GA_SUB_FLAG.w		; Sync with Main CPU
+	bset	#0,GASUBFLAG.w			; Sync with Main CPU
 
 .WaitMain:
-	btst	#0,GA_MAIN_FLAG.w		; Wait for Main CPU
+	btst	#0,GAMAINFLAG.w			; Wait for Main CPU
 	beq.s	.WaitMain
-	btst	#0,GA_MAIN_FLAG.w
+	btst	#0,GAMAINFLAG.w
 	beq.s	.WaitMain
-	bclr	#0,GA_SUB_FLAG.w
+	bclr	#0,GASUBFLAG.w
 	
-	bchg	#0,GA_MEM_MODE+1.w		; Swap Word RAM banks
+	bchg	#0,GAMEMMODE.w			; Swap Word RAM banks
 
 .WaitWordRAM:
-	btst	#1,GA_MEM_MODE+1.w
+	btst	#1,GAMEMMODE.w
 	bne.s	.WaitWordRAM
 	
-	move.l	#FMV_GFX_BUF,feReadBuffer(a5)	; Set read buffer for graphics data
+	move.l	#FMVGFXBUF,feReadBuffer(a5)	; Set read buffer for graphics data
 	move.w	#0,feFMVSectFrame(a5)		; Reset FMV sector frame
 
 .Advance:
@@ -1193,7 +1136,7 @@ ReadMuteFMVSectors:
 	move.w	#FSTAT_OK,feStatus(a5)		; Mark as successful
 
 .Done:
-	move.b	feCDC(a5),GA_CDC_MODE&$FFFFFF	; Set CDC mode
+	move.b	feCDC(a5),GACDCDEVICE&$FFFFFF	; Set CDC device
 	movea.l	feReturnAddr(a5),a0		; Go to saved return address
 	jmp	(a0)
 
@@ -1206,22 +1149,22 @@ ReadMuteFMVSectors:
 
 .WaitMainCopy:
 	bsr.w	FileEngine_SetOperMark		; Set bookmark
-	btst	#7,GA_CDC_MODE&$FFFFFF		; Has the data been transferred?
+	btst	#7,GACDCDEVICE&$FFFFFF		; Has the data been transferred?
 	bne.w	.FinishSectorRead		; If so, branch
 	subq.w	#1,feWaitTime(a5)		; Decrement wait time
 	bge.s	.WaitMainCopy			; If we are still waiting, branch
 	bra.s	.ReadFailed			; If we have waited too long, branch
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Reset file engine
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 FileFunc_EngineReset:
 	bsr.w	FileFunc_EngineInit
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPEnd:
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------

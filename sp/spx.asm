@@ -1,19 +1,19 @@
-; -------------------------------------------------------------------------------
-; Sonic CD Misc. Disassembly
+; -------------------------------------------------------------------------
+; Sonic CD Disassembly
 ; By Ralakimus 2021
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; System program extension
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	include	"_inc/macros.asm"
-	include	"_inc/subcpu.asm"
-	include	"_inc/system.asm"
-	include	"_inc/sound.asm"
-	include	"_inc/buram.asm"
+	include	"_inc/common.i"
+	include	"_inc/subcpu.i"
+	include	"_inc/system.i"
+	include	"_inc/sound.i"
+	include	"_inc/buram.i"
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Files
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 	org	SPX
 File_R11A:
@@ -272,43 +272,43 @@ File_Demo82A:
 	dc.b	"DEMO82A.MMD;1", 0		; Metallic Madness Act 2 present demo
 	even
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Backup RAM read parameters
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 BuRAMReadParams:
 	dc.b	"SONICCD____"
 	even
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Backup RAM write parameters
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 BuRAMWriteParams:
 	dc.b	"SONICCD____"
 	dc.b	0
 	dc.w	$B
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; System program extension start
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	align	SPXStart
+	ALIGN	SPXStart
 	lea	SPVariables.w,a0		; Clear parameters
-	move.w	#SP_VARS_LEN/4-1,d7
+	move.w	#SPVARSSZ/4-1,d7
 
 .ClearVars:
 	move.l	#0,(a0)+
 	dbf	d7,.ClearVars
 
-	bclr	#3,GA_INT_MASK+1.w		; Disable timer interrupt
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 	move.l	#RunPCMDriver,_LEVEL3+2.w	; Set timer interrupt address
-	move.b	#255,GA_INT3_TIMER+1.w		; Set timer interrupt interval
+	move.b	#255,GAIRQ3TIME.w		; Set timer interrupt interval
 
 .WaitCommand:
-	move.w	GA_CMD_0.w,d0			; Get command ID from Main CPU
+	move.w	GACOMCMD0.w,d0			; Get command ID from Main CPU
 	beq.s	.WaitCommand
-	cmp.w	GA_CMD_0.w,d0
+	cmp.w	GACOMCMD0.w,d0
 	bne.s	.WaitCommand
 	cmpi.w	#(.SPCmdsEnd-.SPCmds)/2+1,d0	; Note: that "+1" shouldn't be there
 	bcc.w	SPCmdFinish			; If it's an invalid ID, branch
@@ -319,12 +319,12 @@ BuRAMWriteParams:
 	jsr	.SPCmds(pc,d0.w)
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2 address
-	bclr	#1,GA_INT_MASK+1.w		; Disable level 1 interrupt
+	bclr	#1,GAIRQMASK.w			; Disable level 1 interrupt
 	move.l	#IRQ1Null,_LEVEL1+2.w		; Reset level 1 interrupt address
 
 	bra.s	.WaitCommand			; Loop
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .SPCmds:
 	dc.w	0				; $00 | Invalid
@@ -546,122 +546,122 @@ BuRAMWriteParams:
 	dc.w	SPCmd_LoadCominSoon-.SPCmds	; $D8 | Load "Comin' Soon" screen
 .SPCmdsEnd:
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load pencil test FMV
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadPencilTest:
-	bclr	#3,GA_INT_MASK+1.w		; Disable timer interrupt
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 
 	lea	File_PencilTestMain(pc),a0	; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	lea	File_PencilTestSub(pc),a0	; Load Sub CPU file
-	lea	PRG_RAM+$30000,a1
+	lea	PRGRAM+$30000,a1
 	jsr	LoadFile.w
 
-	jsr	PRG_RAM+$30000			; Run Sub CPU file code
+	jsr	PRGRAM+$30000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
-	andi.b	#$FA,GA_MEM_MODE+1.w		; Set to 2M mode
-	move.b	#3,GA_CDC_MODE.w		; Set CDC mode to "Sub CPU"
+	andi.b	#$FA,GAMEMMODE.w		; Set to 2M mode
+	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
 	move.l	#0,curPCMDriver.w		; Reset current PCM driver
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load Backup RAM manager
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadBuRAMMngr:
 	lea	File_BuRAMMain(pc),a0		; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	lea	File_BuRAMSub(pc),a0		; Load Sub CPU file
-	lea	PRG_RAM+$10000,a1
+	lea	PRGRAM+$10000,a1
 	jsr	LoadFile.w
 
-	jsr	PRG_RAM+$10000			; Run Sub CPU file code
+	jsr	PRGRAM+$10000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load "Thank You" screen
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadThankYou:
 	bsr.w	WaitWordRAMAccess		; Load Main CPU file
 	lea	File_ThanksMain(pc),a0
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 
 	lea	File_ThanksData(pc),a0		; Load data file
-	lea	WORDRAM_2M+$10000,a1
+	lea	WORDRAM2M+$10000,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	lea	File_ThanksSub(pc),a0		; Load Sub CPU file
-	lea	PRG_RAM+$10000,a1
+	lea	PRGRAM+$10000,a1
 	jsr	LoadFile.w
 
-	jsr	PRG_RAM+$10000			; Run Sub CPU file code
+	jsr	PRGRAM+$10000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Reset special stage flags
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_ResetSSFlags:
 	moveq	#0,d0
-	move.b	d0,GA_STAT_A.w
-	move.b	d0,GA_STAT_3.w
-	move.l	d0,GA_STAT_6.w
-	move.w	d0,GA_STAT_4.w
+	move.b	d0,GACOMSTATA.w
+	move.b	d0,GACOMSTAT3.w
+	move.l	d0,GACOMSTAT6.w
+	move.w	d0,GACOMSTAT4.w
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Reset special stage flags
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_ResetSSFlags2:
 	moveq	#0,d0
-	move.b	d0,GA_STAT_A.w
-	move.b	d0,GA_STAT_3.w
-	move.l	d0,GA_STAT_6.w
-	move.w	d0,GA_STAT_4.w
+	move.b	d0,GACOMSTATA.w
+	move.b	d0,GACOMSTAT3.w
+	move.l	d0,GACOMSTAT6.w
+	move.w	d0,GACOMSTAT4.w
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load Backup RAM initialization
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadBuRAMInit:
 	lea	File_BuRAMInit(pc),a0		; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	lea	File_BuRAMSub(pc),a0		; Load Sub CPU file
-	lea	PRG_RAM+$10000,a1
+	lea	PRGRAM+$10000,a1
 	jsr	LoadFile.w
 
-	jsr	PRG_RAM+$10000			; Run Sub CPU file code
+	jsr	PRGRAM+$10000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Read save data
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_ReadSaveData:
 	lea	BuRAMScratch(pc),a0		; Initialize Backup RAM interaction
@@ -673,16 +673,16 @@ SPCmd_ReadSaveData:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
 	lea	BuRAMReadParams(pc),a0		; Load save data
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	move.w	#BRMREAD,d0
 	jsr	_BURAM.w
 	bcs.s	.ReadData			; If it failed, try again
 
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Write save data
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_WriteSaveData:
 	lea	BuRAMScratch(pc),a0		; Initialize Backup RAM interaction
@@ -694,7 +694,7 @@ SPCmd_WriteSaveData:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
 	lea	BuRAMWriteParams(pc),a0		; Write save data
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	move.w	#BRMWRITE,d0
 	moveq	#0,d1
 	jsr	_BURAM.w
@@ -702,16 +702,16 @@ SPCmd_WriteSaveData:
 	
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Read temporary save data
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_ReadTempSaveData:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
 	lea	SaveDataTemp.w,a0		; Copy from temporary save data buffer
-	lea	WORDRAM_2M,a1
-	move.w	#BURAM_DATA_LEN/4-1,d7
+	lea	WORDRAM2M,a1
+	move.w	#BURAMDATASZ/4-1,d7
 
 .Read:
 	move.l	(a0)+,(a1)+
@@ -719,16 +719,16 @@ SPCmd_ReadTempSaveData:
 
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Write temporary save data
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_WriteTempSaveData:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
 	lea	SaveDataTemp.w,a0		; Copy to temporary save data buffer
-	lea	WORDRAM_2M,a1
-	move.w	#BURAM_DATA_LEN/4-1,d7
+	lea	WORDRAM2M,a1
+	move.w	#BURAMDATASZ/4-1,d7
 
 .Write:
 	move.l	(a1)+,(a0)+
@@ -736,9 +736,9 @@ SPCmd_WriteTempSaveData:
 
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load level
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadLevel:
 	add.w	d1,d1				; Get level file based on command ID
@@ -748,11 +748,11 @@ SPCmd_LoadLevel:
 	move.l	d1,-(sp)
 
 	bsr.w	WaitWordRAMAccess		; Load level file
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 
 	bsr.w	ResetCDDAVol			; Reset CDDA music volume
-	bclr	#3,GA_INT_MASK+1.w		; Disable timer interrupt
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 
 	move.l	(sp)+,d1			; Get PCM driver file based on command ID
 	add.w	d1,d1
@@ -767,12 +767,12 @@ SPCmd_LoadLevel:
 	jsr	LoadFile.w
 
 .Done:
-	bset	#3,GA_INT_MASK+1.w		; Enable timer interrupt
+	bset	#3,GAIRQMASK.w			; Enable timer interrupt
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Level files
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .LevelFiles:
 	dc.w	File_R11A-.LevelFiles		; $00 | Invalid
@@ -926,9 +926,9 @@ SPCmd_LoadLevel:
 	dc.w	File_R11A-.LevelFiles		; $94 | Invalid
 	dc.w	File_R11A-.LevelFiles		; $95 | Invalid
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PCM drivers
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .PCMDrivers:
 	dc.l	File_R11A			; $00 | Invalid
@@ -1082,29 +1082,29 @@ SPCmd_LoadLevel:
 	dc.l	File_R11A			; $94 | Invalid
 	dc.l	File_R11A			; $95 | Invalid
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load Mega Drive initialization
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadMDInit:
 	lea	File_MDInit(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bra.w	GiveWordRAMAccess
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load title screen
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadTitle:
 	lea	File_TitleMain(pc),a0		; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 
 	lea	File_TitleSub(pc),a0		; Load Sub CPU file
-	lea	PRG_RAM+$10000,a1
+	lea	PRGRAM+$10000,a1
 	jsr	LoadFile.w
 
 	bsr.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
@@ -1114,19 +1114,19 @@ SPCmd_LoadTitle:
 	move.w	#MSCPLAY1,d0
 	jsr	_CDBIOS.w
 
-	jsr	PRG_RAM+$10000			; Run Sub CPU file code
+	jsr	PRGRAM+$10000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load "Comin' Soon" screen
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadCominSoon:
 	lea	File_CominSoon(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
@@ -1135,92 +1135,92 @@ SPCmd_LoadCominSoon:
 	move.w	#MSCPLAYR,d0
 	jmp	_CDBIOS.w
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load staff credits
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadStaffCreds:
 	lea	File_StaffCredits(pc),a0	; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	bra.w	SPCmd_PlayEndingMus		; Play ending music
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load "Fun is infinite" screen
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadFunIsInf:
 	lea	File_FunIsInf(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	bra.w	SPCmd_PlayBossMus		; Play boss music
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load M.C. Sonic screen
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadMCSonic:
 	lea	File_MCSonic(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	bra.w	SPCmd_PlayR8AMus		; Play Metallic Madness present music
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load Tails screen
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadTails:
 	lea	File_Tails(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	bra.w	SPCmd_PlayDAGardenMus		; Play D.A. Garden music
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load Batman Sonic screen
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadBatmanSonic:
 	lea	File_BatmanSonic(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	bra.w	SPCmd_PlayFinalMus		; Play final boss music
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load cute Sonic screen
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadCuteSonic:
 	lea	File_CuteSonic(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	bra.w	SPCmd_PlayR1CMus		; Play Palmtree Panic good future music
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load best staff times screen
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadStaffTimes:
 	lea	File_StaffTimes(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
@@ -1229,90 +1229,90 @@ SPCmd_LoadStaffTimes:
 	move.w	#MSCPLAYR,d0
 	jmp	_CDBIOS.w
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load main program
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadIPX:
 	lea	File_IPX(pc),a0			; Load file
 	bra.s	LoadFileIntoWordRAM
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load sound test
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadSndTest:
 	lea	File_SoundTest(pc),a0		; Load file
 	bra.s	LoadFileIntoWordRAM
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load dummy file (unused)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadDummyFile1:
 	lea	File_MCSonic(pc),a0		; Load file
 	bra.s	LoadFileIntoWordRAM
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load dummy file (unused)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadDummyFile2:
 	lea	File_MCSonic(pc),a0		; Load file
 	bra.s	LoadFileIntoWordRAM
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load dummy file (unused)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadDummyFile3:
 	lea	File_MCSonic(pc),a0		; Load file
 	bra.s	LoadFileIntoWordRAM
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load dummy file (unused)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadDummyFile4:
 	lea	File_MCSonic(pc),a0		; Load file
 	bra.s	LoadFileIntoWordRAM
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load dummy file (unused)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadDummyFile5:
 	lea	File_MCSonic(pc),a0		; Load file
 	bra.s	LoadFileIntoWordRAM
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load stage select
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadStageSel:
 	lea	File_StageSelect(pc),a0		; Load file
 	
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load file into Word RAM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS
 ;	a0.l - Pointer to file name
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadFileIntoWordRAM:
 	bsr.w	WaitWordRAMAccess		; Load file into Word RAM
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bra.w	GiveWordRAMAccess
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load Visual Mode menu
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadVisualMode:
 	lea	File_VisualMode(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 
 	bsr.w	ResetCDDAVol			; Play title screen music
@@ -1322,25 +1322,25 @@ SPCmd_LoadVisualMode:
 
 	bra.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load warp sequence
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadWarp:
 	lea	File_Warp(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bra.w	GiveWordRAMAccess
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load time attack menu
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadTimeAttack:
 	lea	File_TimeAttackMain(pc),a0	; Load file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
@@ -1350,24 +1350,24 @@ SPCmd_LoadTimeAttack:
 	jsr	_CDBIOS.w
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load D.A. Garden
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadDAGarden:
 	lea	File_DAGardenMain(pc),a0	; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 
 	lea	File_DAGardenData(pc),a0	; Load data file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M+$12C00,a1
+	lea	WORDRAM2M+$12C00,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	lea	File_DAGardenSub(pc),a0		; Load Sub CPU file
-	lea	PRG_RAM+$10000,a1
+	lea	PRGRAM+$10000,a1
 	jsr	LoadFile.w
 
 	bsr.w	ResetCDDAVol			; Play D.A. Garden music
@@ -1375,109 +1375,109 @@ SPCmd_LoadDAGarden:
 	move.w	#MSCPLAYR,d0
 	jsr	_CDBIOS.w
 
-	jsr	PRG_RAM+$10000			; Run Sub CPU file code
+	jsr	PRGRAM+$10000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load opening FMV
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadOpening:
-	bclr	#3,GA_INT_MASK+1.w		; Disable timer interrupt
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 
 	lea	File_OpeningMain(pc),a0		; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	lea	File_OpeningSub(pc),a0		; Load Sub CPU file
-	lea	PRG_RAM+$30000,a1
+	lea	PRGRAM+$30000,a1
 	jsr	LoadFile.w
 
-	jsr	PRG_RAM+$30000			; Run Sub CPU file code
+	jsr	PRGRAM+$30000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
-	andi.b	#$FA,GA_MEM_MODE+1.w		; Set to 2M mode
-	move.b	#3,GA_CDC_MODE.w		; Set CDC mode to "Sub CPU"
+	andi.b	#$FA,GAMEMMODE.w		; Set to 2M mode
+	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
 	move.l	#0,curPCMDriver.w		; Reset current PCM driver
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadGoodEnd:
-	bclr	#3,GA_INT_MASK+1.w		; Disable timer interrupt
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 
 	lea	File_EndingMain(pc),a0		; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	lea	File_GoodEndSub(pc),a0		; Load Sub CPU file
-	lea	PRG_RAM+$30000,a1
+	lea	PRGRAM+$30000,a1
 	jsr	LoadFile.w
 
-	jsr	PRG_RAM+$30000			; Run Sub CPU file code
+	jsr	PRGRAM+$30000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
-	andi.b	#$FA,GA_MEM_MODE+1.w		; Set to 2M mode
-	move.b	#3,GA_CDC_MODE.w		; Set CDC mode to "Sub CPU"
+	andi.b	#$FA,GAMEMMODE.w		; Set to 2M mode
+	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
 	move.l	#0,curPCMDriver.w		; Reset current PCM driver
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadBadEnd:
-	bclr	#3,GA_INT_MASK+1.w		; Disable timer interrupt
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 
 	lea	File_EndingMain(pc),a0		; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 
 	lea	File_BadEndSub(pc),a0		; Load Sub CPU file
-	lea	PRG_RAM+$30000,a1
+	lea	PRGRAM+$30000,a1
 	jsr	LoadFile.w
 
-	jsr	PRG_RAM+$30000			; Run Sub CPU file code
+	jsr	PRGRAM+$30000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
-	andi.b	#$FA,GA_MEM_MODE+1.w		; Set to 2M mode
-	move.b	#3,GA_CDC_MODE.w		; Set CDC mode to "Sub CPU"
+	andi.b	#$FA,GAMEMMODE.w		; Set to 2M mode
+	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
 	move.l	#0,curPCMDriver.w		; Reset current PCM driver
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load special stage
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_LoadSpecStage:
-	bclr	#3,GA_INT_MASK+1.w		; Disable timer interrupt
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 
-	move.b	GA_CMD_3.w,GA_STAT_3.w		; Set stage ID
-	move.b	GA_CMD_A.w,GA_STAT_A.w		; Set stages beaten array
-	move.b	GA_CMD_B.w,ssFlags.w		; Set flags
+	move.b	GACOMCMD3.w,GACOMSTAT3.w	; Set stage ID
+	move.b	GACOMCMDA.w,GACOMSTATA.w	; Set stages beaten array
+	move.b	GACOMCMDB.w,ssFlags.w		; Set flags
 
 	lea	File_SpecialMain(pc),a0		; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM_2M,a1
+	lea	WORDRAM2M,a1
 	jsr	LoadFile.w
 
 	lea	File_SpecialSub(pc),a0		; Load Sub CPU file
-	lea	PRG_RAM+$10000,a1
+	lea	PRGRAM+$10000,a1
 	jsr	LoadFile.w
 
 	moveq	#0,d0				; Copy background graphics data into Word RAM
-	move.b	GA_STAT_3.w,d0
+	move.b	GACOMSTAT3.w,d0
 	mulu.w	#6,d0
-	lea	PRG_RAM+$18000,a0
+	lea	PRGRAM+$18000,a0
 	move.w	4(a0,d0.w),d7
 	movea.l	(a0,d0.w),a0
-	lea	WORDRAM_2M+$6D00,a1
+	lea	WORDRAM2M+$6D00,a1
 
 .CopyData:
 	move.b	(a0)+,(a1)+
@@ -1490,7 +1490,7 @@ SPCmd_LoadSpecStage:
 	move.w	#MSCPLAYR,d0
 	jsr	_CDBIOS.w
 
-	jsr	PRG_RAM+$10000			; Run Sub CPU file code
+	jsr	PRGRAM+$10000			; Run Sub CPU file code
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
 	
@@ -1506,145 +1506,145 @@ SPCmd_LoadSpecStage:
 	move.l	#0,curPCMDriver.w		; Reset current PCM driver
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Future" voice clip
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayFutureSFX:
-	move.b	#PCMS_FUTURE,PCMDrv_Queue
+	move.b	#PCMS_FUTURE,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Past" voice clip
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayPastSFX:
-	move.b	#PCMS_PAST,PCMDrv_Queue
+	move.b	#PCMS_PAST,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Alright" voice clip
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayAlrightSFX:
-	move.b	#PCMS_ALRIGHT,PCMDrv_Queue
+	move.b	#PCMS_ALRIGHT,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "I'm outta here" voice clip
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayGiveUpSFX:
-	move.b	#$B4,PCMDrv_Queue
+	move.b	#$B4,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Yes" voice clip
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayYesSFX:
-	move.b	#PCMS_YES,PCMDrv_Queue
+	move.b	#PCMS_YES,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Yeah" voice clip
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayYeahSFX:
-	move.b	#PCMS_YEAH,PCMDrv_Queue
+	move.b	#PCMS_YEAH,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Amy giggle voice clip
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayGiggleSFX:
-	move.b	#PCMS_GIGGLE,PCMDrv_Queue
+	move.b	#PCMS_GIGGLE,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Amy yelp voice clip
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayAmyYelpSFX:
-	move.b	#PCMS_AMYYELP,PCMDrv_Queue
+	move.b	#PCMS_AMYYELP,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play boss stomp sound
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayStompSFX:
-	move.b	#PCMS_STOMP,PCMDrv_Queue
+	move.b	#PCMS_STOMP,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play bumper sound
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayBumperSFX:
-	move.b	#PCMS_BUMPER,PCMDrv_Queue
+	move.b	#PCMS_BUMPER,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play glass break sound
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayBreakSFX:
-	move.b	#PCMS_BREAK,PCMDrv_Queue
+	move.b	#PCMS_BREAK,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play past music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayPastMus:
-	move.b	#PCMM_PAST,PCMDrv_Queue
+	move.b	#PCMM_PAST,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Fade out PCM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_FadeOutPCM:
-	move.b	#$E0,PCMDrv_Queue
+	move.b	#$E0,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Stop PCM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_StopPCM:
-	move.b	#$E1,PCMDrv_Queue
+	move.b	#$E1,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Pause PCM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PausePCM:
-	move.b	#$E2,PCMDrv_Queue
+	move.b	#$E2,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Unpause PCM
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_UnpausePCM:
-	move.b	#$E3,PCMDrv_Queue
+	move.b	#$E3,PCMDrvQueue
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Reset CDDA music volume
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_ResetCDDAVol:
 	bsr.w	ResetCDDAVol
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Fade out CDDA music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_FadeOutCDDA:
 	move.w	#FDRCHG,d0
@@ -1652,36 +1652,36 @@ SPCmd_FadeOutCDDA:
 	jsr	_CDBIOS.w
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Stop CDDA music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_StopCDDA:
 	move.w	#MSCSTOP,d0
 	jsr	_CDBIOS.w
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Pause CDDA music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PauseCDDA:
 	move.w	#MSCPAUSEON,d0
 	jsr	_CDBIOS.w
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Unpause CDDA music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_UnpauseCDDA:
 	move.w	#MSCPAUSEOFF,d0
 	jsr	_CDBIOS.w
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Reset CDDA music volume
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ResetCDDAVol:
 	move.l	a0,-(sp)
@@ -1697,171 +1697,171 @@ ResetCDDAVol:
 	movea.l	(sp)+,a0
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Palmtree Panic present music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR1AMus:
 	lea	MusID_R1A(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Palmtree Panic good future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR1CMus:
 	lea	MusID_R1C(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Palmtree Panic bad future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR1DMus:
 	lea	MusID_R1D(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Collision Chaos present music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR3AMus:
 	lea	MusID_R3A(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Collision Chaos good future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR3CMus:
 	lea	MusID_R3C(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Collision Chaos bad future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR3DMus:
 	lea	MusID_R3D(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Tidal Tempest present music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR4AMus:
 	lea	MusID_R4A(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Tidal Tempest good future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR4CMus:
 	lea	MusID_R4C(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Tidal Tempest bad future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR4DMus:
 	lea	MusID_R4D(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Quartz Quadrant present music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR5AMus:
 	lea	MusID_R5A(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Quartz Quadrant good future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR5CMus:
 	lea	MusID_R5C(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Quartz Quadrant bad future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR5DMus:
 	lea	MusID_R5D(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Wacky Workbench present music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR6AMus:
 	lea	MusID_R6A(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Wacky Workbench good future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR6CMus:
 	lea	MusID_R6C(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Wacky Workbench bad future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR6DMus:
 	lea	MusID_R6D(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Stardust Speedway present music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR7AMus:
 	lea	MusID_R7A(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Stardust Speedway good future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR7CMus:
 	lea	MusID_R7C(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Stardust Speedway bad future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR7DMus:
 	lea	MusID_R7D(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Metallic Madness present music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR8AMus:
 	lea	MusID_R8A(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Metallic Madness good future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR8CMus:
 	lea	MusID_R8C(pc),a0
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Loop CDDA music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS
 ;	a0.l - Pointer to music ID
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoopCDDA:
 	bsr.w	ResetCDDAVol			; Reset CDDA music volume
@@ -1869,123 +1869,123 @@ LoopCDDA:
 	jsr	_CDBIOS.w
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Metallic Madness bad future music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayR8DMus:
 	lea	MusID_R8D(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play boss music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayBossMus:
 	lea	MusID_Boss(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play final boss music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayFinalMus:
 	lea	MusID_Final(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play time attack menu music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayTimeAtkMus:
 	lea	MusID_TimeAttack(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play special stage music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlaySpecialMus:
 	lea	MusID_Special(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play D.A. Garden music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayDAGardenMus:
 	lea	MusID_DAGarden(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play prototype warp sound
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayProtoWarp:
 	lea	MusID_ProtoWarp(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play opening music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayIntroMus:
 	lea	MusID_Intro(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play ending music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayEndingMus:
 	lea	MusID_Ending(pc),a0
 	bra.s	LoopCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play title screen music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayTitleMus:
 	lea	MusID_Title(pc),a0
 	bra.s	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play level end music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayLvlEndMus:
 	lea	MusID_LevelEnd(pc),a0
 	bra.s	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play speed shoes music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayShoesMus:
 	lea	MusID_Shoes(pc),a0
 	bra.s	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play invincibility music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayInvincMus:
 	lea	MusID_Invinc(pc),a0
 	bra.s	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play game over music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_PlayGameOverMus:
 	lea	MusID_GameOver(pc),a0
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play CDDA music
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS
 ;	a0.l - Pointer to music ID
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 PlayCDDA:
 	bsr.w	ResetCDDAVol			; Reset CDDA music volume
@@ -1993,457 +1993,457 @@ PlayCDDA:
 	jsr	_CDBIOS.w
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Palmtree Panic present music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR1AMus:
 	lea	MusID_R1A(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Palmtree Panic good future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR1CMus:
 	lea	MusID_R1C(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Palmtree Panic bad future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR1DMus:
 	lea	MusID_R1D(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Collision Chaos present music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR3AMus:
 	lea	MusID_R3A(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Collision Chaos good future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR3CMus:
 	lea	MusID_R3C(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Collision Chaos bad future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR3DMus:
 	lea	MusID_R3D(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Tidal Tempest present music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR4AMus:
 	lea	MusID_R4A(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Tidal Tempest good future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR4CMus:
 	lea	MusID_R4C(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Tidal Tempest bad future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR4DMus:
 	lea	MusID_R4D(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Quartz Quadrant present music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR5AMus:
 	lea	MusID_R5A(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Quartz Quadrant good future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR5CMus:
 	lea	MusID_R5C(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Quartz Quadrant bad future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR5DMus:
 	lea	MusID_R5D(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Wacky Workbench present music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR6AMus:
 	lea	MusID_R6A(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Wacky Workbench good future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR6CMus:
 	lea	MusID_R6C(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Wacky Workbench bad future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR6DMus:
 	lea	MusID_R6D(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Stardust Speedway present music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR7AMus:
 	lea	MusID_R7A(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Stardust Speedway good future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR7CMus:
 	lea	MusID_R7C(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Stardust Speedway bad future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR7DMus:
 	lea	MusID_R7D(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Metallic Madness present music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR8AMus:
 	lea	MusID_R8A(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Metallic Madness good future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR8CMus:
 	lea	MusID_R8C(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Metallic Madness bad future music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR8DMus:
 	lea	MusID_R8D(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play boss music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestBossMus:
 	lea	MusID_Boss(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play final boss music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestFinalMus:
 	lea	MusID_Final(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play title screen music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestTitleMus:
 	lea	MusID_Title(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play time attack menu music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestTimeAtkMus:
 	lea	MusID_TimeAttack(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play level end music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestLvlEndMus:
 	lea	MusID_LevelEnd(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play speed shoes music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestShoesMus:
 	lea	MusID_Shoes(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play invincibility music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestInvincMus:
 	lea	MusID_Invinc(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play game over music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestGameOverMus:
 	lea	MusID_GameOver(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play special stage music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestSpecialMus:
 	lea	MusID_Special(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play D.A. Garden music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestDAGardenMus:
 	lea	MusID_DAGarden(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play prototype warp sound (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestProtoWarp:
 	lea	MusID_ProtoWarp(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play opening music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestIntroMus:
 	lea	MusID_Intro(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play ending music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestEndingMus:
 	lea	MusID_Ending(pc),a0
 	bra.w	PlayCDDA
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Future" voice clip (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestFutureSFX:
 	lea	File_R1PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_FUTURE,PCMDrv_Queue	; Queue sound ID
+	move.b	#PCMS_FUTURE,PCMDrvQueue	; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Past" voice clip (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestPastSFX:
 	lea	File_R1PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_PAST,PCMDrv_Queue		; Queue sound ID
+	move.b	#PCMS_PAST,PCMDrvQueue		; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Alright" voice clip (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestAlrightSFX:
 	lea	File_R1PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_ALRIGHT,PCMDrv_Queue	; Queue sound ID
+	move.b	#PCMS_ALRIGHT,PCMDrvQueue	; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "I'm outta here" voice clip (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestGiveUpSFX:
 	lea	File_R1PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_GIVEUP,PCMDrv_Queue	; Queue sound ID
+	move.b	#PCMS_GIVEUP,PCMDrvQueue	; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Yes" voice clip (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestYesSFX:
 	lea	File_R1PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_YES,PCMDrv_Queue		; Queue sound ID
+	move.b	#PCMS_YES,PCMDrvQueue		; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play "Yeah" voice clip (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestYeahSFX:
 	lea	File_R1PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_YEAH,PCMDrv_Queue		; Queue sound ID
+	move.b	#PCMS_YEAH,PCMDrvQueue		; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Amy giggle voice clip (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestGiggleSFX:
 	lea	File_R1PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_GIGGLE,PCMDrv_Queue	; Queue sound ID
+	move.b	#PCMS_GIGGLE,PCMDrvQueue	; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Amy yelp voice clip (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestAmyYelpSFX:
 	lea	File_R1PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_AMYYELP,PCMDrv_Queue	; Queue sound ID
+	move.b	#PCMS_AMYYELP,PCMDrvQueue	; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play stomp sound (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestStompSFX:
 	lea	File_R3PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_STOMP,PCMDrv_Queue	; Queue sound ID
+	move.b	#PCMS_STOMP,PCMDrvQueue		; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play bumper sound (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestBumperSFX:
 	lea	File_R3PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMS_BUMPER,PCMDrv_Queue	; Queue sound ID
+	move.b	#PCMS_BUMPER,PCMDrvQueue	; Queue sound ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Palmtree Panic past music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR1BMus:
 	lea	File_R1PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMM_PAST,PCMDrv_Queue		; Queue music ID
+	move.b	#PCMM_PAST,PCMDrvQueue		; Queue music ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Collision Chaos past music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR3BMus:
 	lea	File_R3PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMM_PAST,PCMDrv_Queue		; Queue music ID
+	move.b	#PCMM_PAST,PCMDrvQueue		; Queue music ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Tidal Tempest past music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR4BMus:
 	lea	File_R4PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMM_PAST,PCMDrv_Queue		; Queue music ID
+	move.b	#PCMM_PAST,PCMDrvQueue		; Queue music ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Quartz Quadrant past music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR5BMus:
 	lea	File_R5PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMM_PAST,PCMDrv_Queue		; Queue music ID
+	move.b	#PCMM_PAST,PCMDrvQueue		; Queue music ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Wacky Workbench past music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR6BMus:
 	lea	File_R6PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMM_PAST,PCMDrv_Queue		; Queue music ID
+	move.b	#PCMM_PAST,PCMDrvQueue		; Queue music ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Stardust Speedway past music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR7BMus:
 	lea	File_R7PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMM_PAST,PCMDrv_Queue		; Queue music ID
+	move.b	#PCMM_PAST,PCMDrvQueue		; Queue music ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Play Metallic Madness past music (sound test)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmd_TestR8BMus:
 	lea	File_R8PCM(pc),a0		; Load PCM driver
 	bsr.w	LoadPCMDriver
-	move.b	#PCMM_PAST,PCMDrv_Queue		; Queue music ID
+	move.b	#PCMM_PAST,PCMDrvQueue		; Queue music ID
 	bra.w	SPCmdFinish
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Load PCM driver for sound test
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a0.l - Pointer to file name
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadPCMDriver:
-	bclr	#3,GA_INT_MASK+1.w		; Disable timer interrupt
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 
 	move.l	curPCMDriver.w,d0		; Is this driver already loaded?
 	move.l	a0,curPCMDriver.w
@@ -2453,68 +2453,68 @@ LoadPCMDriver:
 	jsr	LoadFile.w
 
 .End:
-	bset	#3,GA_INT_MASK+1.w		; Enable timer interrupt
+	bset	#3,GAIRQMASK.w			; Enable timer interrupt
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Null level 1 interrupt
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 IRQ1Null:
 	rte
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Run PCM driver (timer interrupt)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 RunPCMDriver:
 	bchg	#0,pcmDrvFlags.w		; Should we run the driver on this interrupt?
 	beq.s	.End				; If not, branch
 
 	movem.l	d0-a6,-(sp)			; Run the driver
-	jsr	PCMDrv_Run
+	jsr	PCMDrvRun
 	movem.l	(sp)+,d0-a6
 
 .End:
 	rte
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Give Word RAM access to the Main CPU (and finish off command)
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 GiveWordRAMAccess:
-	bset	#0,GA_MEM_MODE+1.w		; Give Word RAM access to Main CPU
-	btst	#0,GA_MEM_MODE+1.w		; Has it been given?
+	bset	#0,GAMEMMODE.w			; Give Word RAM access to Main CPU
+	btst	#0,GAMEMMODE.w			; Has it been given?
 	beq.s	GiveWordRAMAccess		; If not, wait
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Finish off command
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SPCmdFinish:
-	move.w	GA_CMD_0.w,GA_STAT_0.w		; Acknowledge command
+	move.w	GACOMCMD0.w,GACOMSTAT0.w	; Acknowledge command
 
 .WaitMain:
-	move.w	GA_CMD_0.w,d0			; Is the Main CPU ready?
+	move.w	GACOMCMD0.w,d0			; Is the Main CPU ready?
 	bne.s	.WaitMain			; If not, wait
-	move.w	GA_CMD_0.w,d0
+	move.w	GACOMCMD0.w,d0
 	bne.s	.WaitMain			; If not, wait
 
-	move.w	#0,GA_STAT_0.w			; Mark as ready for another command
+	move.w	#0,GACOMSTAT0.w			; Mark as ready for another command
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Wait for Word RAM access
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 WaitWordRAMAccess:
-	btst	#1,GA_MEM_MODE+1.w		; Do we have Word RAM access?
+	btst	#1,GAMEMMODE.w			; Do we have Word RAM access?
 	beq.s	WaitWordRAMAccess		; If not, wait
 	rts
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Music IDs
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 MusID_ProtoWarp:
 	dc.w	CDDA_WARP			; Prototype warp
@@ -2585,9 +2585,9 @@ MusID_Intro:
 MusID_Ending:
 	dc.w	CDDA_ENDING			; Ending
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Backup RAM data
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 BuRAMScratch:
 	dcb.b	$640, 0				; Scratch RAM
@@ -2595,8 +2595,8 @@ BuRAMScratch:
 BuRAMStrings:	
 	dcb.b	$C, 0				; Display strings
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-	align	$FC00
+	ALIGN	$FC00
 
-; -------------------------------------------------------------------------------
+; -------------------------------------------------------------------------
