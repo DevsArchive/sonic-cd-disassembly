@@ -353,6 +353,7 @@ InitMessage:
 	move.b	#$C0,IODATA1
 
 	bsr.w	StopZ80				; Stop the Z80
+	
 	DMAFILL	0,$10000,0			; Clear VRAM
 
 	VDPCMD	move.l,$C000,VRAM,WRITE,VDPCTRL	; Clear Plane A
@@ -445,13 +446,13 @@ ReadController:
 	lea	ctrlData,a0			; Controller data buffer
 	lea	IODATA1,a1			; Controller port 1
 
-	move.b	#0,(a1)				; Pull TH low
+	move.b	#0,(a1)				; TH = 0
 	tst.w	(a0)				; Delay
 	move.b	(a1),d0				; Read start and A buttons
 	lsl.b	#2,d0
 	andi.b	#$C0,d0
 	
-	move.b	#$40,(a1)			; Pull TH high
+	move.b	#$40,(a1)			; TH = 1
 	tst.w	(a0)				; Delay
 	move.b	(a1),d1				; Read B, C, and D-pad buttons
 	andi.b	#$3F,d1

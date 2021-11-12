@@ -47,7 +47,7 @@ MMD macro flags, origin, size, entry, hint, vint
 		org	(\origin)-MMDHEADSZ
 	endif
 
-	dc.w	\flags
+	dc.b	\flags, 0
 	dc.l	\origin
 	dc.w	((\size)+(($800-((\size)%$800))%$800))/4-1
 	dc.l	\entry, \hint, \vint

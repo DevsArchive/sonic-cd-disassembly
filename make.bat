@@ -15,4 +15,7 @@ fc /b _built\BRAMINIT.MMD _original\BRAMINIT.MMD
 
 _bin\asm68k.exe /p /o ae- /o l. buram\buramsub.asm, _built\BRAMSUB.BIN, , buram\buramsub.lst
 fc /b _built\BRAMSUB.BIN _original\BRAMSUB.BIN
+
+_bin\asm68k.exe /p /o ae- /o l. mdinit\mdinit.asm, _built\MDINIT.MMD, , mdinit\mdinit.lst
+fc /b _built\MDINIT.MMD _original\MDINIT.MMD
 pause
