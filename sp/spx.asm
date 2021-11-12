@@ -234,10 +234,10 @@ File_ThanksData:
 	dc.b	"THANKS_D.BIN;1", 0		; "Thank You" screen data
 File_EndingMain:
 	dc.b	"ENDING.MMD;1", 0		; Ending FMV (Main CPU)
-File_GoodEndSub:
-	dc.b	"GOODEND.BIN;1", 0 		; Good ending FMV (Sub CPU)
 File_BadEndSub:
-	dc.b	"BADEND.BIN;1", 0 		; Bad ending FMV (Sub CPU)
+	dc.b	"GOODEND.BIN;1", 0 		; Bad ending FMV (Sub CPU, not a typo)
+File_GoodEndSub:
+	dc.b	"BADEND.BIN;1", 0 		; Good ending FMV (Sub CPU, not a typo)
 File_FunIsInf:
 	dc.b	"NISI.MMD;1", 0			; "Fun is infinite" screen
 File_StaffCredits:
@@ -327,223 +327,223 @@ BuRAMWriteParams:
 ; -------------------------------------------------------------------------
 
 .SPCmds:
-	dc.w	0				; $00 | Invalid
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $01 | Load Palmtree Panic Act 1 present
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $02 | Load Palmtree Panic Act 1 past
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $03 | Load Palmtree Panic Act 1 good future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $04 | Load Palmtree Panic Act 1 bad future
-	dc.w	SPCmd_LoadMDInit-.SPCmds	; $05 | Load Mega Drive initialization
-	dc.w	SPCmd_LoadStageSel-.SPCmds	; $06 | Load stage select
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $07 | Load Palmtree Panic Act 2 present
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $08 | Load Palmtree Panic Act 2 past
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $09 | Load Palmtree Panic Act 2 good future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $0A | Load Palmtree Panic Act 2 bad future
-	dc.w	SPCmd_LoadTitle-.SPCmds		; $0B | Load title screen
-	dc.w	SPCmd_LoadWarp-.SPCmds		; $0C | Load warp sequence
-	dc.w	SPCmd_LoadTimeAttack-.SPCmds	; $0D | Load time attack menu
-	dc.w	SPCmd_FadeOutCDDA-.SPCmds	; $0E | Fade out CDDA music
-	dc.w	SPCmd_PlayR1AMus-.SPCmds	; $0F | Play Palmtree Panic present music
-	dc.w	SPCmd_PlayR1CMus-.SPCmds	; $10 | Play Palmtree Panic good future music
-	dc.w	SPCmd_PlayR1DMus-.SPCmds	; $11 | Play Palmtree Panic bad future music
-	dc.w	SPCmd_PlayR3AMus-.SPCmds	; $12 | Play Collision Chaos present music
-	dc.w	SPCmd_PlayR3CMus-.SPCmds	; $13 | Play Collision Chaos good future music
-	dc.w	SPCmd_PlayR3DMus-.SPCmds	; $14 | Play Collision Chaos bad future music
-	dc.w	SPCmd_PlayR4AMus-.SPCmds	; $15 | Play Tidal Tempest present music
-	dc.w	SPCmd_PlayR4CMus-.SPCmds	; $16 | Play Tidal Tempest good future music
-	dc.w	SPCmd_PlayR4DMus-.SPCmds	; $17 | Play Tidal Tempest bad future music
-	dc.w	SPCmd_PlayR5AMus-.SPCmds	; $18 | Play Quartz Quadrant present music
-	dc.w	SPCmd_PlayR5CMus-.SPCmds	; $19 | Play Quartz Quadrant good future music
-	dc.w	SPCmd_PlayR5DMus-.SPCmds	; $1A | Play Quartz Quadrant bad future music
-	dc.w	SPCmd_PlayR6AMus-.SPCmds	; $1B | Play Wacky Workbench present music
-	dc.w	SPCmd_PlayR6CMus-.SPCmds	; $1C | Play Wacky Workbench good future music
-	dc.w	SPCmd_PlayR6DMus-.SPCmds	; $1D | Play Wacky Workbench bad future music
-	dc.w	SPCmd_PlayR7AMus-.SPCmds	; $1E | Play Stardust Speedway present music
-	dc.w	SPCmd_PlayR7CMus-.SPCmds	; $1F | Play Stardust Speedway good future music
-	dc.w	SPCmd_PlayR7DMus-.SPCmds	; $20 | Play Stardust Speedway bad future music
-	dc.w	SPCmd_PlayR8AMus-.SPCmds	; $21 | Play Metallic Madness present music
-	dc.w	SPCmd_PlayR8CMus-.SPCmds	; $22 | Play Metallic Madness good future music
-	dc.w	SPCmd_LoadIPX-.SPCmds		; $23 | Load main program
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $24 | Load Tidal Tempest Act 3 good future demo
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $25 | Load Metallic Madness Act 2 present demo
-	dc.w	SPCmd_LoadSndTest-.SPCmds	; $26 | Load sound test
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $27 | Invalid
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $28 | Load Collision Chaos Act 1 present
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $29 | Load Collision Chaos Act 1 past
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $2A | Load Collision Chaos Act 1 good future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $2B | Load Collision Chaos Act 1 bad future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $2C | Load Collision Chaos Act 2 present 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $2D | Load Collision Chaos Act 2 past 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $2E | Load Collision Chaos Act 2 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $2F | Load Collision Chaos Act 2 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $30 | Load Collision Chaos Act 3 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $31 | Load Collision Chaos Act 3 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $32 | Load Palmtree Panic Act 3 good future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $33 | Load Palmtree Panic Act 3 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $34 | Load Tidal Tempest Act 1 present
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $35 | Load Tidal Tempest Act 1 past
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $36 | Load Tidal Tempest Act 1 good future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $37 | Load Tidal Tempest Act 1 bad future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $38 | Load Tidal Tempest Act 2 present 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $39 | Load Tidal Tempest Act 2 past 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $3A | Load Tidal Tempest Act 2 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $3B | Load Tidal Tempest Act 2 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $3C | Load Tidal Tempest Act 3 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $3D | Load Tidal Tempest Act 3 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $3E | Load Quartz Quadrant Act 1 present
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $3F | Load Quartz Quadrant Act 1 past
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $40 | Load Quartz Quadrant Act 1 good future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $41 | Load Quartz Quadrant Act 1 bad future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $42 | Load Quartz Quadrant Act 2 present 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $43 | Load Quartz Quadrant Act 2 past 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $44 | Load Quartz Quadrant Act 2 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $45 | Load Quartz Quadrant Act 2 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $46 | Load Quartz Quadrant Act 3 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $47 | Load Quartz Quadrant Act 3 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $48 | Load Wacky Workbench Act 1 present
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $49 | Load Wacky Workbench Act 1 past
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $4A | Load Wacky Workbench Act 1 good future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $4B | Load Wacky Workbench Act 1 bad future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $4C | Load Wacky Workbench Act 2 present 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $4D | Load Wacky Workbench Act 2 past 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $4E | Load Wacky Workbench Act 2 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $4F | Load Wacky Workbench Act 2 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $50 | Load Wacky Workbench Act 3 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $51 | Load Wacky Workbench Act 3 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $52 | Load Stardust Speedway Act 1 present
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $53 | Load Stardust Speedway Act 1 past
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $54 | Load Stardust Speedway Act 1 good future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $55 | Load Stardust Speedway Act 1 bad future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $56 | Load Stardust Speedway Act 2 present 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $57 | Load Stardust Speedway Act 2 past 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $58 | Load Stardust Speedway Act 2 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $59 | Load Stardust Speedway Act 2 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $5A | Load Stardust Speedway Act 3 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $5B | Load Stardust Speedway Act 3 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $5C | Load Metallic Madness Act 1 present
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $5D | Load Metallic Madness Act 1 past
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $5E | Load Metallic Madness Act 1 good future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $5F | Load Metallic Madness Act 1 bad future
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $60 | Load Metallic Madness Act 2 present 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $61 | Load Metallic Madness Act 2 past 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $62 | Load Metallic Madness Act 2 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $63 | Load Metallic Madness Act 2 bad future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $64 | Load Metallic Madness Act 3 good future 
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $65 | Load Metallic Madness Act 3 bad future 
-	dc.w	SPCmd_PlayR8DMus-.SPCmds	; $66 | Play Metallic Madness bad future music
-	dc.w	SPCmd_PlayBossMus-.SPCmds	; $67 | Play boss music
-	dc.w	SPCmd_PlayFinalMus-.SPCmds	; $68 | Play final boss music
-	dc.w	SPCmd_PlayTitleMus-.SPCmds	; $69 | Play title screen music
-	dc.w	SPCmd_PlayTimeAtkMus-.SPCmds	; $6A | Play time attack menu music
-	dc.w	SPCmd_PlayLvlEndMus-.SPCmds	; $6B | Play level end music
-	dc.w	SPCmd_PlayShoesMus-.SPCmds	; $6C | Play speed shoes music
-	dc.w	SPCmd_PlayInvincMus-.SPCmds	; $6D | Play invincibility music
-	dc.w	SPCmd_PlayGameOverMus-.SPCmds	; $6E | Play game over music
-	dc.w	SPCmd_PlaySpecialMus-.SPCmds	; $6F | Play special stage music
-	dc.w	SPCmd_PlayDAGardenMus-.SPCmds	; $70 | Play D.A. Garden music
-	dc.w	SPCmd_PlayProtoWarp-.SPCmds	; $71 | Play prototype warp sound
-	dc.w	SPCmd_PlayIntroMus-.SPCmds	; $72 | Play opening music
-	dc.w	SPCmd_PlayEndingMus-.SPCmds	; $73 | Play ending music
-	dc.w	SPCmd_StopCDDA-.SPCmds		; $74 | Stop CDDA music
-	dc.w	SPCmd_LoadSpecStage-.SPCmds	; $75 | Load special stage
-	dc.w	SPCmd_PlayFutureSFX-.SPCmds	; $76 | Play "Future" voice clip
-	dc.w	SPCmd_PlayPastSFX-.SPCmds	; $77 | Play "Past" voice clip
-	dc.w	SPCmd_PlayAlrightSFX-.SPCmds	; $78 | Play "Alright" voice clip
-	dc.w	SPCmd_PlayGiveUpSFX-.SPCmds	; $79 | Play "I'm outta here" voice clip
-	dc.w	SPCmd_PlayYesSFX-.SPCmds	; $7A | Play "Yes" voice clip
-	dc.w	SPCmd_PlayYeahSFX-.SPCmds	; $7B | Play "Yeah" voice clip
-	dc.w	SPCmd_PlayGiggleSFX-.SPCmds	; $7C | Play Amy giggle voice clip
-	dc.w	SPCmd_PlayAmyYelpSFX-.SPCmds	; $7D | Play Amy yelp voice clip
-	dc.w	SPCmd_PlayStompSFX-.SPCmds	; $7E | Play boss stomp sound
-	dc.w	SPCmd_PlayBumperSFX-.SPCmds	; $7F | Play bumper sound
-	dc.w	SPCmd_PlayPastMus-.SPCmds	; $80 | Play past music
-	dc.w	SPCmd_LoadDAGarden-.SPCmds	; $81 | Load D.A. Garden
-	dc.w	SPCmd_FadeOutPCM-.SPCmds	; $82 | Fade out PCM
-	dc.w	SPCmd_StopPCM-.SPCmds		; $83 | Stop PCM
-	dc.w	SPCmd_LoadLevel-.SPCmds		; $84 | Load Palmtree Panic Act 1 present demo
-	dc.w	SPCmd_LoadVisualMode-.SPCmds	; $85 | Load Visual Mode menu
-	dc.w	SPCmd_ResetSSFlags2-.SPCmds	; $86 | Reset special stage flags
-	dc.w	SPCmd_ReadSaveData-.SPCmds	; $87 | Read save data
-	dc.w	SPCmd_WriteSaveData-.SPCmds	; $88 | Write save data
-	dc.w	SPCmd_LoadBuRAMInit-.SPCmds	; $89 | Load Backup RAM initialization
-	dc.w	SPCmd_ResetSSFlags-.SPCmds	; $8A | Reset special stage flags
-	dc.w	SPCmd_ReadTempSaveData-.SPCmds	; $8B | Read temporary save data
-	dc.w	SPCmd_WriteTempSaveData-.SPCmds	; $8C | Write temporary save data
-	dc.w	SPCmd_LoadThankYou-.SPCmds	; $8D | Load "Thank You" screen
-	dc.w	SPCmd_LoadBuRAMMngr-.SPCmds	; $8E | Load Backup RAM manager
-	dc.w	SPCmd_ResetCDDAVol-.SPCmds	; $8F | Reset CDDA music volume
-	dc.w	SPCmd_PausePCM-.SPCmds		; $90 | Pause PCM
-	dc.w	SPCmd_UnpausePCM-.SPCmds	; $91 | Unpause PCM
-	dc.w	SPCmd_PlayBreakSFX-.SPCmds	; $92 | Play glass break sound
-	dc.w	SPCmd_LoadGoodEnd-.SPCmds	; $93 | Load good ending FMV
-	dc.w	SPCmd_LoadBadEnd-.SPCmds	; $94 | Load bad ending FMV
-	dc.w	SPCmd_TestR1AMus-.SPCmds	; $95 | Play Palmtree Panic present music (sound test)
-	dc.w	SPCmd_TestR1CMus-.SPCmds	; $96 | Play Palmtree Panic good future music (sound test)
-	dc.w	SPCmd_TestR1DMus-.SPCmds	; $97 | Play Palmtree Panic bad future music (sound test)
-	dc.w	SPCmd_TestR3AMus-.SPCmds	; $98 | Play Collision Chaos present music (sound test)
-	dc.w	SPCmd_TestR3CMus-.SPCmds	; $99 | Play Collision Chaos good future music (sound test)
-	dc.w	SPCmd_TestR3DMus-.SPCmds	; $9A | Play Collision Chaos bad future music (sound test)
-	dc.w	SPCmd_TestR4AMus-.SPCmds	; $9B | Play Tidal Tempest present music (sound test)
-	dc.w	SPCmd_TestR4CMus-.SPCmds	; $9C | Play Tidal Tempest good future music (sound test)
-	dc.w	SPCmd_TestR4DMus-.SPCmds	; $9D | Play Tidal Tempest bad future music (sound test)
-	dc.w	SPCmd_TestR5AMus-.SPCmds	; $9E | Play Quartz Quadrant present music (sound test)
-	dc.w	SPCmd_TestR5CMus-.SPCmds	; $9F | Play Quartz Quadrant good future music (sound test)
-	dc.w	SPCmd_TestR5DMus-.SPCmds	; $A0 | Play Quartz Quadrant bad future music (sound test)
-	dc.w	SPCmd_TestR6AMus-.SPCmds	; $A1 | Play Wacky Workbench present music (sound test)
-	dc.w	SPCmd_TestR6CMus-.SPCmds	; $A2 | Play Wacky Workbench good future music (sound test)
-	dc.w	SPCmd_TestR6DMus-.SPCmds	; $A3 | Play Wacky Workbench bad future music (sound test)
-	dc.w	SPCmd_TestR7AMus-.SPCmds	; $A4 | Play Stardust Speedway present music (sound test)
-	dc.w	SPCmd_TestR7CMus-.SPCmds	; $A5 | Play Stardust Speedway good future music (sound test)
-	dc.w	SPCmd_TestR7DMus-.SPCmds	; $A6 | Play Stardust Speedway bad future music (sound test)
-	dc.w	SPCmd_TestR8AMus-.SPCmds	; $A7 | Play Metallic Madness present music (sound test)
-	dc.w	SPCmd_TestR8CMus-.SPCmds	; $A8 | Play Metallic Madness good future music (sound test)
-	dc.w	SPCmd_TestR8DMus-.SPCmds	; $A9 | Play Metallic Madness bad future music (sound test)
-	dc.w	SPCmd_TestBossMus-.SPCmds	; $AA | Play boss music (sound test)
-	dc.w	SPCmd_TestFinalMus-.SPCmds	; $AB | Play final boss music (sound test)
-	dc.w	SPCmd_TestTitleMus-.SPCmds	; $AC | Play title screen music (sound test)
-	dc.w	SPCmd_TestTimeAtkMus-.SPCmds	; $AD | Play time attack music (sound test)
-	dc.w	SPCmd_TestLvlEndMus-.SPCmds	; $AE | Play level end music (sound test)
-	dc.w	SPCmd_TestShoesMus-.SPCmds	; $AF | Play speed shoes music (sound test)
-	dc.w	SPCmd_TestInvincMus-.SPCmds	; $B0 | Play invincibility music (sound test)
-	dc.w	SPCmd_TestGameOverMus-.SPCmds	; $B1 | Play game over music (sound test)
-	dc.w	SPCmd_TestSpecialMus-.SPCmds	; $B2 | Play special stage music (sound test)
-	dc.w	SPCmd_TestDAGardenMus-.SPCmds	; $B3 | Play D.A. Garden music (sound test)
-	dc.w	SPCmd_TestProtoWarp-.SPCmds	; $B4 | Play prototype warp sound (sound test)
-	dc.w	SPCmd_TestIntroMus-.SPCmds	; $B5 | Play opening music (sound test)
-	dc.w	SPCmd_TestEndingMus-.SPCmds	; $B6 | Play ending music (sound test)
-	dc.w	SPCmd_TestFutureSFX-.SPCmds	; $B7 | Play "Future" voice clip (sound test)
-	dc.w	SPCmd_TestPastSFX-.SPCmds	; $B8 | Play "Past" voice clip (sound test)
-	dc.w	SPCmd_TestAlrightSFX-.SPCmds	; $B9 | Play "Alright" voice clip (sound test)
-	dc.w	SPCmd_TestGiveUpSFX-.SPCmds	; $BA | Play "I'm outta here" voice clip (sound test)
-	dc.w	SPCmd_TestYesSFX-.SPCmds	; $BB | Play "Yes" voice clip (sound test)
-	dc.w	SPCmd_TestYeahSFX-.SPCmds	; $BC | Play "Yeah" voice clip (sound test)
-	dc.w	SPCmd_TestGiggleSFX-.SPCmds	; $BD | Play Amy giggle voice clip (sound test)
-	dc.w	SPCmd_TestAmyYelpSFX-.SPCmds	; $BE | Play Amy yelp voice clip (sound test)
-	dc.w	SPCmd_TestStompSFX-.SPCmds	; $BF | Play boss stomp sound (sound test)
-	dc.w	SPCmd_TestBumperSFX-.SPCmds	; $C0 | Play bumper sound (sound test)
-	dc.w	SPCmd_TestR1BMus-.SPCmds	; $C1 | Play Palmtree Panic past music (sound test)
-	dc.w	SPCmd_TestR3BMus-.SPCmds	; $C2 | Play Collision Chaos past music (sound test)
-	dc.w	SPCmd_TestR4BMus-.SPCmds	; $C3 | Play Tidal Tempest past music (sound test)
-	dc.w	SPCmd_TestR5BMus-.SPCmds	; $C4 | Play Quartz Quadrant past music (sound test)
-	dc.w	SPCmd_TestR6BMus-.SPCmds	; $C5 | Play Palmtree Panic past music (sound test)
-	dc.w	SPCmd_TestR7BMus-.SPCmds	; $C6 | Play Palmtree Panic past music (sound test)
-	dc.w	SPCmd_TestR8BMus-.SPCmds	; $C7 | Play Palmtree Panic past music (sound test)
-	dc.w	SPCmd_LoadFunIsInf-.SPCmds	; $C8 | Load "Fun is infinite" screen
-	dc.w	SPCmd_LoadStaffCreds-.SPCmds	; $C9 | Load staff credits
-	dc.w	SPCmd_LoadMCSonic-.SPCmds	; $CA | Load M.C. Sonic screen
-	dc.w	SPCmd_LoadTails-.SPCmds		; $CB | Load Tails screen
-	dc.w	SPCmd_LoadBatmanSonic-.SPCmds	; $CC | Load Batman Sonic screen
-	dc.w	SPCmd_LoadCuteSonic-.SPCmds	; $CD | Load cute Sonic screen
-	dc.w	SPCmd_LoadStaffTimes-.SPCmds	; $CE | Load best staff times screen
-	dc.w	SPCmd_LoadDummyFile1-.SPCmds	; $CF | Load dummy file (unused)
-	dc.w	SPCmd_LoadDummyFile2-.SPCmds	; $D0 | Load dummy file (unused)
-	dc.w	SPCmd_LoadDummyFile3-.SPCmds	; $D1 | Load dummy file (unused)
-	dc.w	SPCmd_LoadDummyFile4-.SPCmds	; $D2 | Load dummy file (unused)
-	dc.w	SPCmd_LoadDummyFile5-.SPCmds	; $D3 | Load dummy file (unused)
-	dc.w	SPCmd_LoadPencilTest-.SPCmds	; $D4 | Load pencil test FMV
-	dc.w	SPCmd_PauseCDDA-.SPCmds		; $D5 | Pause CDDA music
-	dc.w	SPCmd_UnpauseCDDA-.SPCmds	; $D6 | Unpause CDDA music
-	dc.w	SPCmd_LoadOpening-.SPCmds	; $D7 | Load opening FMV
-	dc.w	SPCmd_LoadCominSoon-.SPCmds	; $D8 | Load "Comin' Soon" screen
+	dc.w	0				; Invalid
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 1 present
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 1 past
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 1 good future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 1 bad future
+	dc.w	SPCmd_LoadMDInit-.SPCmds	; Load Mega Drive initialization
+	dc.w	SPCmd_LoadStageSel-.SPCmds	; Load stage select
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 2 present
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 2 past
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 2 good future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 2 bad future
+	dc.w	SPCmd_LoadTitle-.SPCmds		; Load title screen
+	dc.w	SPCmd_LoadWarp-.SPCmds		; Load warp sequence
+	dc.w	SPCmd_LoadTimeAttack-.SPCmds	; Load time attack menu
+	dc.w	SPCmd_FadeOutCDDA-.SPCmds	; Fade out CDDA music
+	dc.w	SPCmd_PlayR1AMus-.SPCmds	; Play Palmtree Panic present music
+	dc.w	SPCmd_PlayR1CMus-.SPCmds	; Play Palmtree Panic good future music
+	dc.w	SPCmd_PlayR1DMus-.SPCmds	; Play Palmtree Panic bad future music
+	dc.w	SPCmd_PlayR3AMus-.SPCmds	; Play Collision Chaos present music
+	dc.w	SPCmd_PlayR3CMus-.SPCmds	; Play Collision Chaos good future music
+	dc.w	SPCmd_PlayR3DMus-.SPCmds	; Play Collision Chaos bad future music
+	dc.w	SPCmd_PlayR4AMus-.SPCmds	; Play Tidal Tempest present music
+	dc.w	SPCmd_PlayR4CMus-.SPCmds	; Play Tidal Tempest good future music
+	dc.w	SPCmd_PlayR4DMus-.SPCmds	; Play Tidal Tempest bad future music
+	dc.w	SPCmd_PlayR5AMus-.SPCmds	; Play Quartz Quadrant present music
+	dc.w	SPCmd_PlayR5CMus-.SPCmds	; Play Quartz Quadrant good future music
+	dc.w	SPCmd_PlayR5DMus-.SPCmds	; Play Quartz Quadrant bad future music
+	dc.w	SPCmd_PlayR6AMus-.SPCmds	; Play Wacky Workbench present music
+	dc.w	SPCmd_PlayR6CMus-.SPCmds	; Play Wacky Workbench good future music
+	dc.w	SPCmd_PlayR6DMus-.SPCmds	; Play Wacky Workbench bad future music
+	dc.w	SPCmd_PlayR7AMus-.SPCmds	; Play Stardust Speedway present music
+	dc.w	SPCmd_PlayR7CMus-.SPCmds	; Play Stardust Speedway good future music
+	dc.w	SPCmd_PlayR7DMus-.SPCmds	; Play Stardust Speedway bad future music
+	dc.w	SPCmd_PlayR8AMus-.SPCmds	; Play Metallic Madness present music
+	dc.w	SPCmd_PlayR8CMus-.SPCmds	; Play Metallic Madness good future music
+	dc.w	SPCmd_LoadIPX-.SPCmds		; Load main program
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 3 good future demo
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 2 present demo
+	dc.w	SPCmd_LoadSndTest-.SPCmds	; Load sound test
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Invalid
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 1 present
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 1 past
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 1 good future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 1 bad future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 2 present 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 2 past 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 2 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 2 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 3 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Collision Chaos Act 3 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 3 good future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 3 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 1 present
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 1 past
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 1 good future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 1 bad future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 2 present 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 2 past 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 2 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 2 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 3 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Tidal Tempest Act 3 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 1 present
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 1 past
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 1 good future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 1 bad future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 2 present 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 2 past 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 2 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 2 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 3 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Quartz Quadrant Act 3 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 1 present
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 1 past
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 1 good future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 1 bad future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 2 present 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 2 past 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 2 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 2 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 3 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Wacky Workbench Act 3 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 1 present
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 1 past
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 1 good future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 1 bad future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 2 present 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 2 past 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 2 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 2 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 3 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Stardust Speedway Act 3 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 1 present
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 1 past
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 1 good future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 1 bad future
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 2 present 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 2 past 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 2 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 2 bad future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 3 good future 
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Metallic Madness Act 3 bad future 
+	dc.w	SPCmd_PlayR8DMus-.SPCmds	; Play Metallic Madness bad future music
+	dc.w	SPCmd_PlayBossMus-.SPCmds	; Play boss music
+	dc.w	SPCmd_PlayFinalMus-.SPCmds	; Play final boss music
+	dc.w	SPCmd_PlayTitleMus-.SPCmds	; Play title screen music
+	dc.w	SPCmd_PlayTimeAtkMus-.SPCmds	; Play time attack menu music
+	dc.w	SPCmd_PlayLvlEndMus-.SPCmds	; Play level end music
+	dc.w	SPCmd_PlayShoesMus-.SPCmds	; Play speed shoes music
+	dc.w	SPCmd_PlayInvincMus-.SPCmds	; Play invincibility music
+	dc.w	SPCmd_PlayGameOverMus-.SPCmds	; Play game over music
+	dc.w	SPCmd_PlaySpecialMus-.SPCmds	; Play special stage music
+	dc.w	SPCmd_PlayDAGardenMus-.SPCmds	; Play D.A. Garden music
+	dc.w	SPCmd_PlayProtoWarp-.SPCmds	; Play prototype warp sound
+	dc.w	SPCmd_PlayIntroMus-.SPCmds	; Play opening music
+	dc.w	SPCmd_PlayEndingMus-.SPCmds	; Play ending music
+	dc.w	SPCmd_StopCDDA-.SPCmds		; Stop CDDA music
+	dc.w	SPCmd_LoadSpecStage-.SPCmds	; Load special stage
+	dc.w	SPCmd_PlayFutureSFX-.SPCmds	; Play "Future" voice clip
+	dc.w	SPCmd_PlayPastSFX-.SPCmds	; Play "Past" voice clip
+	dc.w	SPCmd_PlayAlrightSFX-.SPCmds	; Play "Alright" voice clip
+	dc.w	SPCmd_PlayGiveUpSFX-.SPCmds	; Play "I'm outta here" voice clip
+	dc.w	SPCmd_PlayYesSFX-.SPCmds	; Play "Yes" voice clip
+	dc.w	SPCmd_PlayYeahSFX-.SPCmds	; Play "Yeah" voice clip
+	dc.w	SPCmd_PlayGiggleSFX-.SPCmds	; Play Amy giggle voice clip
+	dc.w	SPCmd_PlayAmyYelpSFX-.SPCmds	; Play Amy yelp voice clip
+	dc.w	SPCmd_PlayStompSFX-.SPCmds	; Play boss stomp sound
+	dc.w	SPCmd_PlayBumperSFX-.SPCmds	; Play bumper sound
+	dc.w	SPCmd_PlayPastMus-.SPCmds	; Play past music
+	dc.w	SPCmd_LoadDAGarden-.SPCmds	; Load D.A. Garden
+	dc.w	SPCmd_FadeOutPCM-.SPCmds	; Fade out PCM
+	dc.w	SPCmd_StopPCM-.SPCmds		; Stop PCM
+	dc.w	SPCmd_LoadLevel-.SPCmds		; Load Palmtree Panic Act 1 present demo
+	dc.w	SPCmd_LoadVisualMode-.SPCmds	; Load Visual Mode menu
+	dc.w	SPCmd_ResetSSFlags2-.SPCmds	; Reset special stage flags
+	dc.w	SPCmd_ReadSaveData-.SPCmds	; Read save data
+	dc.w	SPCmd_WriteSaveData-.SPCmds	; Write save data
+	dc.w	SPCmd_LoadBuRAMInit-.SPCmds	; Load Backup RAM initialization
+	dc.w	SPCmd_ResetSSFlags-.SPCmds	; Reset special stage flags
+	dc.w	SPCmd_ReadTempSaveData-.SPCmds	; Read temporary save data
+	dc.w	SPCmd_WriteTempSaveData-.SPCmds	; Write temporary save data
+	dc.w	SPCmd_LoadThankYou-.SPCmds	; Load "Thank You" screen
+	dc.w	SPCmd_LoadBuRAMMngr-.SPCmds	; Load Backup RAM manager
+	dc.w	SPCmd_ResetCDDAVol-.SPCmds	; Reset CDDA music volume
+	dc.w	SPCmd_PausePCM-.SPCmds		; Pause PCM
+	dc.w	SPCmd_UnpausePCM-.SPCmds	; Unpause PCM
+	dc.w	SPCmd_PlayBreakSFX-.SPCmds	; Play glass break sound
+	dc.w	SPCmd_LoadBadEnd-.SPCmds	; Load bad ending FMV
+	dc.w	SPCmd_LoadGoodEnd-.SPCmds	; Load good ending FMV
+	dc.w	SPCmd_TestR1AMus-.SPCmds	; Play Palmtree Panic present music (sound test)
+	dc.w	SPCmd_TestR1CMus-.SPCmds	; Play Palmtree Panic good future music (sound test)
+	dc.w	SPCmd_TestR1DMus-.SPCmds	; Play Palmtree Panic bad future music (sound test)
+	dc.w	SPCmd_TestR3AMus-.SPCmds	; Play Collision Chaos present music (sound test)
+	dc.w	SPCmd_TestR3CMus-.SPCmds	; Play Collision Chaos good future music (sound test)
+	dc.w	SPCmd_TestR3DMus-.SPCmds	; Play Collision Chaos bad future music (sound test)
+	dc.w	SPCmd_TestR4AMus-.SPCmds	; Play Tidal Tempest present music (sound test)
+	dc.w	SPCmd_TestR4CMus-.SPCmds	; Play Tidal Tempest good future music (sound test)
+	dc.w	SPCmd_TestR4DMus-.SPCmds	; Play Tidal Tempest bad future music (sound test)
+	dc.w	SPCmd_TestR5AMus-.SPCmds	; Play Quartz Quadrant present music (sound test)
+	dc.w	SPCmd_TestR5CMus-.SPCmds	; Play Quartz Quadrant good future music (sound test)
+	dc.w	SPCmd_TestR5DMus-.SPCmds	; Play Quartz Quadrant bad future music (sound test)
+	dc.w	SPCmd_TestR6AMus-.SPCmds	; Play Wacky Workbench present music (sound test)
+	dc.w	SPCmd_TestR6CMus-.SPCmds	; Play Wacky Workbench good future music (sound test)
+	dc.w	SPCmd_TestR6DMus-.SPCmds	; Play Wacky Workbench bad future music (sound test)
+	dc.w	SPCmd_TestR7AMus-.SPCmds	; Play Stardust Speedway present music (sound test)
+	dc.w	SPCmd_TestR7CMus-.SPCmds	; Play Stardust Speedway good future music (sound test)
+	dc.w	SPCmd_TestR7DMus-.SPCmds	; Play Stardust Speedway bad future music (sound test)
+	dc.w	SPCmd_TestR8AMus-.SPCmds	; Play Metallic Madness present music (sound test)
+	dc.w	SPCmd_TestR8CMus-.SPCmds	; Play Metallic Madness good future music (sound test)
+	dc.w	SPCmd_TestR8DMus-.SPCmds	; Play Metallic Madness bad future music (sound test)
+	dc.w	SPCmd_TestBossMus-.SPCmds	; Play boss music (sound test)
+	dc.w	SPCmd_TestFinalMus-.SPCmds	; Play final boss music (sound test)
+	dc.w	SPCmd_TestTitleMus-.SPCmds	; Play title screen music (sound test)
+	dc.w	SPCmd_TestTimeAtkMus-.SPCmds	; Play time attack music (sound test)
+	dc.w	SPCmd_TestLvlEndMus-.SPCmds	; Play level end music (sound test)
+	dc.w	SPCmd_TestShoesMus-.SPCmds	; Play speed shoes music (sound test)
+	dc.w	SPCmd_TestInvincMus-.SPCmds	; Play invincibility music (sound test)
+	dc.w	SPCmd_TestGameOverMus-.SPCmds	; Play game over music (sound test)
+	dc.w	SPCmd_TestSpecialMus-.SPCmds	; Play special stage music (sound test)
+	dc.w	SPCmd_TestDAGardenMus-.SPCmds	; Play D.A. Garden music (sound test)
+	dc.w	SPCmd_TestProtoWarp-.SPCmds	; Play prototype warp sound (sound test)
+	dc.w	SPCmd_TestIntroMus-.SPCmds	; Play opening music (sound test)
+	dc.w	SPCmd_TestEndingMus-.SPCmds	; Play ending music (sound test)
+	dc.w	SPCmd_TestFutureSFX-.SPCmds	; Play "Future" voice clip (sound test)
+	dc.w	SPCmd_TestPastSFX-.SPCmds	; Play "Past" voice clip (sound test)
+	dc.w	SPCmd_TestAlrightSFX-.SPCmds	; Play "Alright" voice clip (sound test)
+	dc.w	SPCmd_TestGiveUpSFX-.SPCmds	; Play "I'm outta here" voice clip (sound test)
+	dc.w	SPCmd_TestYesSFX-.SPCmds	; Play "Yes" voice clip (sound test)
+	dc.w	SPCmd_TestYeahSFX-.SPCmds	; Play "Yeah" voice clip (sound test)
+	dc.w	SPCmd_TestGiggleSFX-.SPCmds	; Play Amy giggle voice clip (sound test)
+	dc.w	SPCmd_TestAmyYelpSFX-.SPCmds	; Play Amy yelp voice clip (sound test)
+	dc.w	SPCmd_TestStompSFX-.SPCmds	; Play boss stomp sound (sound test)
+	dc.w	SPCmd_TestBumperSFX-.SPCmds	; Play bumper sound (sound test)
+	dc.w	SPCmd_TestR1BMus-.SPCmds	; Play Palmtree Panic past music (sound test)
+	dc.w	SPCmd_TestR3BMus-.SPCmds	; Play Collision Chaos past music (sound test)
+	dc.w	SPCmd_TestR4BMus-.SPCmds	; Play Tidal Tempest past music (sound test)
+	dc.w	SPCmd_TestR5BMus-.SPCmds	; Play Quartz Quadrant past music (sound test)
+	dc.w	SPCmd_TestR6BMus-.SPCmds	; Play Palmtree Panic past music (sound test)
+	dc.w	SPCmd_TestR7BMus-.SPCmds	; Play Palmtree Panic past music (sound test)
+	dc.w	SPCmd_TestR8BMus-.SPCmds	; Play Palmtree Panic past music (sound test)
+	dc.w	SPCmd_LoadFunIsInf-.SPCmds	; Load "Fun is infinite" screen
+	dc.w	SPCmd_LoadStaffCreds-.SPCmds	; Load staff credits
+	dc.w	SPCmd_LoadMCSonic-.SPCmds	; Load M.C. Sonic screen
+	dc.w	SPCmd_LoadTails-.SPCmds		; Load Tails screen
+	dc.w	SPCmd_LoadBatmanSonic-.SPCmds	; Load Batman Sonic screen
+	dc.w	SPCmd_LoadCuteSonic-.SPCmds	; Load cute Sonic screen
+	dc.w	SPCmd_LoadStaffTimes-.SPCmds	; Load best staff times screen
+	dc.w	SPCmd_LoadDummyFile1-.SPCmds	; Load dummy file (unused)
+	dc.w	SPCmd_LoadDummyFile2-.SPCmds	; Load dummy file (unused)
+	dc.w	SPCmd_LoadDummyFile3-.SPCmds	; Load dummy file (unused)
+	dc.w	SPCmd_LoadDummyFile4-.SPCmds	; Load dummy file (unused)
+	dc.w	SPCmd_LoadDummyFile5-.SPCmds	; Load dummy file (unused)
+	dc.w	SPCmd_LoadPencilTest-.SPCmds	; Load pencil test FMV
+	dc.w	SPCmd_PauseCDDA-.SPCmds		; Pause CDDA music
+	dc.w	SPCmd_UnpauseCDDA-.SPCmds	; Unpause CDDA music
+	dc.w	SPCmd_LoadOpening-.SPCmds	; Load opening FMV
+	dc.w	SPCmd_LoadCominSoon-.SPCmds	; Load "Comin' Soon" screen
 .SPCmdsEnd:
 
 ; -------------------------------------------------------------------------
@@ -775,312 +775,312 @@ SPCmd_LoadLevel:
 ; -------------------------------------------------------------------------
 
 .LevelFiles:
-	dc.w	File_R11A-.LevelFiles		; $00 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $01 | Palmtree Panic Act 1 present
-	dc.w	File_R11B-.LevelFiles		; $02 | Palmtree Panic Act 1 past
-	dc.w	File_R11C-.LevelFiles		; $03 | Palmtree Panic Act 1 good future
-	dc.w	File_R11D-.LevelFiles		; $04 | Palmtree Panic Act 1 bad future
-	dc.w	File_R11A-.LevelFiles		; $05 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $06 | Invalid
-	dc.w	File_R12A-.LevelFiles		; $07 | Palmtree Panic Act 2 present
-	dc.w	File_R12B-.LevelFiles		; $08 | Palmtree Panic Act 2 past
-	dc.w	File_R12C-.LevelFiles		; $09 | Palmtree Panic Act 2 good future
-	dc.w	File_R12D-.LevelFiles		; $0A | Palmtree Panic Act 2 bad future
-	dc.w	File_R11A-.LevelFiles		; $0B | Invalid
-	dc.w	File_R11A-.LevelFiles		; $0C | Invalid
-	dc.w	File_R11A-.LevelFiles		; $0D | Invalid
-	dc.w	File_R11A-.LevelFiles		; $0E | Invalid
-	dc.w	File_R11A-.LevelFiles		; $0F | Invalid
-	dc.w	File_R11A-.LevelFiles		; $10 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $11 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $12 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $13 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $14 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $15 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $16 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $17 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $18 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $19 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $1A | Invalid
-	dc.w	File_R11A-.LevelFiles		; $1B | Invalid
-	dc.w	File_R11A-.LevelFiles		; $1C | Invalid
-	dc.w	File_R11A-.LevelFiles		; $1D | Invalid
-	dc.w	File_R11A-.LevelFiles		; $1E | Invalid
-	dc.w	File_R11A-.LevelFiles		; $1F | Invalid
-	dc.w	File_R11A-.LevelFiles		; $20 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $21 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $22 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $23 | Invalid
-	dc.w	File_Demo43C-.LevelFiles	; $24 | Tidal Tempest Act 3 good future demo
-	dc.w	File_Demo82A-.LevelFiles	; $25 | Metallic Madness Act 2 present demo
-	dc.w	File_R11A-.LevelFiles		; $26 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $27 | Invalid
-	dc.w	File_R31A-.LevelFiles		; $28 | Collision Chaos Act 1 present
-	dc.w	File_R31B-.LevelFiles		; $29 | Collision Chaos Act 1 past
-	dc.w	File_R31C-.LevelFiles		; $2A | Collision Chaos Act 1 good future
-	dc.w	File_R31D-.LevelFiles		; $2B | Collision Chaos Act 1 bad future
-	dc.w	File_R32A-.LevelFiles		; $2C | Collision Chaos Act 2 present 
-	dc.w	File_R32B-.LevelFiles		; $2D | Collision Chaos Act 2 past 
-	dc.w	File_R32C-.LevelFiles		; $2E | Collision Chaos Act 2 good future 
-	dc.w	File_R32D-.LevelFiles		; $2F | Collision Chaos Act 2 bad future 
-	dc.w	File_R33C-.LevelFiles		; $30 | Collision Chaos Act 3 good future 
-	dc.w	File_R33D-.LevelFiles		; $31 | Collision Chaos Act 3 bad future 
-	dc.w	File_R13C-.LevelFiles		; $32 | Palmtree Panic Act 3 good future
-	dc.w	File_R13D-.LevelFiles		; $33 | Palmtree Panic Act 3 bad future 
-	dc.w	File_R41A-.LevelFiles		; $34 | Tidal Tempest Act 1 present
-	dc.w	File_R41B-.LevelFiles		; $35 | Tidal Tempest Act 1 past
-	dc.w	File_R41C-.LevelFiles		; $36 | Tidal Tempest Act 1 good future
-	dc.w	File_R41D-.LevelFiles		; $37 | Tidal Tempest Act 1 bad future
-	dc.w	File_R42A-.LevelFiles		; $38 | Tidal Tempest Act 2 present 
-	dc.w	File_R42B-.LevelFiles		; $39 | Tidal Tempest Act 2 past 
-	dc.w	File_R42C-.LevelFiles		; $3A | Tidal Tempest Act 2 good future 
-	dc.w	File_R42D-.LevelFiles		; $3B | Tidal Tempest Act 2 bad future 
-	dc.w	File_R43C-.LevelFiles		; $3C | Tidal Tempest Act 3 good future 
-	dc.w	File_R43D-.LevelFiles		; $3D | Tidal Tempest Act 3 bad future 
-	dc.w	File_R51A-.LevelFiles		; $3E | Quartz Quadrant Act 1 present
-	dc.w	File_R51B-.LevelFiles		; $3F | Quartz Quadrant Act 1 past
-	dc.w	File_R51C-.LevelFiles		; $40 | Quartz Quadrant Act 1 good future
-	dc.w	File_R51D-.LevelFiles		; $41 | Quartz Quadrant Act 1 bad future
-	dc.w	File_R52A-.LevelFiles		; $42 | Quartz Quadrant Act 2 present 
-	dc.w	File_R52B-.LevelFiles		; $43 | Quartz Quadrant Act 2 past 
-	dc.w	File_R52C-.LevelFiles		; $44 | Quartz Quadrant Act 2 good future 
-	dc.w	File_R52D-.LevelFiles		; $45 | Quartz Quadrant Act 2 bad future 
-	dc.w	File_R53C-.LevelFiles		; $46 | Quartz Quadrant Act 3 good future 
-	dc.w	File_R53D-.LevelFiles		; $47 | Quartz Quadrant Act 3 bad future 
-	dc.w	File_R61A-.LevelFiles		; $48 | Wacky Workbench Act 1 present
-	dc.w	File_R61B-.LevelFiles		; $49 | Wacky Workbench Act 1 past
-	dc.w	File_R61C-.LevelFiles		; $4A | Wacky Workbench Act 1 good future
-	dc.w	File_R61D-.LevelFiles		; $4B | Wacky Workbench Act 1 bad future
-	dc.w	File_R62A-.LevelFiles		; $4C | Wacky Workbench Act 2 present 
-	dc.w	File_R62B-.LevelFiles		; $4D | Wacky Workbench Act 2 past 
-	dc.w	File_R62C-.LevelFiles		; $4E | Wacky Workbench Act 2 good future 
-	dc.w	File_R62D-.LevelFiles		; $4F | Wacky Workbench Act 2 bad future 
-	dc.w	File_R63C-.LevelFiles		; $50 | Wacky Workbench Act 3 good future 
-	dc.w	File_R63D-.LevelFiles		; $51 | Wacky Workbench Act 3 bad future 
-	dc.w	File_R71A-.LevelFiles		; $52 | Stardust Speedway Act 1 present
-	dc.w	File_R71B-.LevelFiles		; $53 | Stardust Speedway Act 1 past
-	dc.w	File_R71C-.LevelFiles		; $54 | Stardust Speedway Act 1 good future
-	dc.w	File_R71D-.LevelFiles		; $55 | Stardust Speedway Act 1 bad future
-	dc.w	File_R72A-.LevelFiles		; $56 | Stardust Speedway Act 2 present 
-	dc.w	File_R72B-.LevelFiles		; $57 | Stardust Speedway Act 2 past 
-	dc.w	File_R72C-.LevelFiles		; $58 | Stardust Speedway Act 2 good future 
-	dc.w	File_R72D-.LevelFiles		; $59 | Stardust Speedway Act 2 bad future 
-	dc.w	File_R73C-.LevelFiles		; $5A | Stardust Speedway Act 3 good future 
-	dc.w	File_R73D-.LevelFiles		; $5B | Stardust Speedway Act 3 bad future 
-	dc.w	File_R81A-.LevelFiles		; $5C | Metallic Madness Act 1 present
-	dc.w	File_R81B-.LevelFiles		; $5D | Metallic Madness Act 1 past
-	dc.w	File_R81C-.LevelFiles		; $5E | Metallic Madness Act 1 good future
-	dc.w	File_R81D-.LevelFiles		; $5F | Metallic Madness Act 1 bad future
-	dc.w	File_R82A-.LevelFiles		; $60 | Metallic Madness Act 2 present 
-	dc.w	File_R82B-.LevelFiles		; $61 | Metallic Madness Act 2 past 
-	dc.w	File_R82C-.LevelFiles		; $62 | Metallic Madness Act 2 good future 
-	dc.w	File_R82D-.LevelFiles		; $63 | Metallic Madness Act 2 bad future 
-	dc.w	File_R83C-.LevelFiles		; $64 | Metallic Madness Act 3 good future 
-	dc.w	File_R83D-.LevelFiles		; $65 | Metallic Madness Act 3 bad future 
-	dc.w	File_R11A-.LevelFiles		; $66 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $67 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $68 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $69 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $6A | Invalid
-	dc.w	File_R11A-.LevelFiles		; $6B | Invalid
-	dc.w	File_R11A-.LevelFiles		; $6C | Invalid
-	dc.w	File_R11A-.LevelFiles		; $6D | Invalid
-	dc.w	File_R11A-.LevelFiles		; $6E | Invalid
-	dc.w	File_R11A-.LevelFiles		; $6F | Invalid
-	dc.w	File_R11A-.LevelFiles		; $70 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $71 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $72 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $73 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $74 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $75 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $76 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $77 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $78 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $79 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $7A | Invalid
-	dc.w	File_R11A-.LevelFiles		; $7B | Invalid
-	dc.w	File_R11A-.LevelFiles		; $7C | Invalid
-	dc.w	File_R11A-.LevelFiles		; $7D | Invalid
-	dc.w	File_R11A-.LevelFiles		; $7E | Invalid
-	dc.w	File_R11A-.LevelFiles		; $7F | Invalid
-	dc.w	File_R11A-.LevelFiles		; $80 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $81 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $82 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $83 | Invalid
-	dc.w	File_Demo11A-.LevelFiles	; $84 | Palmtree Panic Act 1 present demo
-	dc.w	File_R11A-.LevelFiles		; $85 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $86 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $87 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $88 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $89 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $8A | Invalid
-	dc.w	File_R11A-.LevelFiles		; $8B | Invalid
-	dc.w	File_R11A-.LevelFiles		; $8C | Invalid
-	dc.w	File_R11A-.LevelFiles		; $8D | Invalid
-	dc.w	File_R11A-.LevelFiles		; $8E | Invalid
-	dc.w	File_R11A-.LevelFiles		; $8F | Invalid
-	dc.w	File_R11A-.LevelFiles		; $90 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $91 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $92 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $93 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $94 | Invalid
-	dc.w	File_R11A-.LevelFiles		; $95 | Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Palmtree Panic Act 1 present
+	dc.w	File_R11B-.LevelFiles		; Palmtree Panic Act 1 past
+	dc.w	File_R11C-.LevelFiles		; Palmtree Panic Act 1 good future
+	dc.w	File_R11D-.LevelFiles		; Palmtree Panic Act 1 bad future
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R12A-.LevelFiles		; Palmtree Panic Act 2 present
+	dc.w	File_R12B-.LevelFiles		; Palmtree Panic Act 2 past
+	dc.w	File_R12C-.LevelFiles		; Palmtree Panic Act 2 good future
+	dc.w	File_R12D-.LevelFiles		; Palmtree Panic Act 2 bad future
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_Demo43C-.LevelFiles	; Tidal Tempest Act 3 good future demo
+	dc.w	File_Demo82A-.LevelFiles	; Metallic Madness Act 2 present demo
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R31A-.LevelFiles		; Collision Chaos Act 1 present
+	dc.w	File_R31B-.LevelFiles		; Collision Chaos Act 1 past
+	dc.w	File_R31C-.LevelFiles		; Collision Chaos Act 1 good future
+	dc.w	File_R31D-.LevelFiles		; Collision Chaos Act 1 bad future
+	dc.w	File_R32A-.LevelFiles		; Collision Chaos Act 2 present 
+	dc.w	File_R32B-.LevelFiles		; Collision Chaos Act 2 past 
+	dc.w	File_R32C-.LevelFiles		; Collision Chaos Act 2 good future 
+	dc.w	File_R32D-.LevelFiles		; Collision Chaos Act 2 bad future 
+	dc.w	File_R33C-.LevelFiles		; Collision Chaos Act 3 good future 
+	dc.w	File_R33D-.LevelFiles		; Collision Chaos Act 3 bad future 
+	dc.w	File_R13C-.LevelFiles		; Palmtree Panic Act 3 good future
+	dc.w	File_R13D-.LevelFiles		; Palmtree Panic Act 3 bad future 
+	dc.w	File_R41A-.LevelFiles		; Tidal Tempest Act 1 present
+	dc.w	File_R41B-.LevelFiles		; Tidal Tempest Act 1 past
+	dc.w	File_R41C-.LevelFiles		; Tidal Tempest Act 1 good future
+	dc.w	File_R41D-.LevelFiles		; Tidal Tempest Act 1 bad future
+	dc.w	File_R42A-.LevelFiles		; Tidal Tempest Act 2 present 
+	dc.w	File_R42B-.LevelFiles		; Tidal Tempest Act 2 past 
+	dc.w	File_R42C-.LevelFiles		; Tidal Tempest Act 2 good future 
+	dc.w	File_R42D-.LevelFiles		; Tidal Tempest Act 2 bad future 
+	dc.w	File_R43C-.LevelFiles		; Tidal Tempest Act 3 good future 
+	dc.w	File_R43D-.LevelFiles		; Tidal Tempest Act 3 bad future 
+	dc.w	File_R51A-.LevelFiles		; Quartz Quadrant Act 1 present
+	dc.w	File_R51B-.LevelFiles		; Quartz Quadrant Act 1 past
+	dc.w	File_R51C-.LevelFiles		; Quartz Quadrant Act 1 good future
+	dc.w	File_R51D-.LevelFiles		; Quartz Quadrant Act 1 bad future
+	dc.w	File_R52A-.LevelFiles		; Quartz Quadrant Act 2 present 
+	dc.w	File_R52B-.LevelFiles		; Quartz Quadrant Act 2 past 
+	dc.w	File_R52C-.LevelFiles		; Quartz Quadrant Act 2 good future 
+	dc.w	File_R52D-.LevelFiles		; Quartz Quadrant Act 2 bad future 
+	dc.w	File_R53C-.LevelFiles		; Quartz Quadrant Act 3 good future 
+	dc.w	File_R53D-.LevelFiles		; Quartz Quadrant Act 3 bad future 
+	dc.w	File_R61A-.LevelFiles		; Wacky Workbench Act 1 present
+	dc.w	File_R61B-.LevelFiles		; Wacky Workbench Act 1 past
+	dc.w	File_R61C-.LevelFiles		; Wacky Workbench Act 1 good future
+	dc.w	File_R61D-.LevelFiles		; Wacky Workbench Act 1 bad future
+	dc.w	File_R62A-.LevelFiles		; Wacky Workbench Act 2 present 
+	dc.w	File_R62B-.LevelFiles		; Wacky Workbench Act 2 past 
+	dc.w	File_R62C-.LevelFiles		; Wacky Workbench Act 2 good future 
+	dc.w	File_R62D-.LevelFiles		; Wacky Workbench Act 2 bad future 
+	dc.w	File_R63C-.LevelFiles		; Wacky Workbench Act 3 good future 
+	dc.w	File_R63D-.LevelFiles		; Wacky Workbench Act 3 bad future 
+	dc.w	File_R71A-.LevelFiles		; Stardust Speedway Act 1 present
+	dc.w	File_R71B-.LevelFiles		; Stardust Speedway Act 1 past
+	dc.w	File_R71C-.LevelFiles		; Stardust Speedway Act 1 good future
+	dc.w	File_R71D-.LevelFiles		; Stardust Speedway Act 1 bad future
+	dc.w	File_R72A-.LevelFiles		; Stardust Speedway Act 2 present 
+	dc.w	File_R72B-.LevelFiles		; Stardust Speedway Act 2 past 
+	dc.w	File_R72C-.LevelFiles		; Stardust Speedway Act 2 good future 
+	dc.w	File_R72D-.LevelFiles		; Stardust Speedway Act 2 bad future 
+	dc.w	File_R73C-.LevelFiles		; Stardust Speedway Act 3 good future 
+	dc.w	File_R73D-.LevelFiles		; Stardust Speedway Act 3 bad future 
+	dc.w	File_R81A-.LevelFiles		; Metallic Madness Act 1 present
+	dc.w	File_R81B-.LevelFiles		; Metallic Madness Act 1 past
+	dc.w	File_R81C-.LevelFiles		; Metallic Madness Act 1 good future
+	dc.w	File_R81D-.LevelFiles		; Metallic Madness Act 1 bad future
+	dc.w	File_R82A-.LevelFiles		; Metallic Madness Act 2 present 
+	dc.w	File_R82B-.LevelFiles		; Metallic Madness Act 2 past 
+	dc.w	File_R82C-.LevelFiles		; Metallic Madness Act 2 good future 
+	dc.w	File_R82D-.LevelFiles		; Metallic Madness Act 2 bad future 
+	dc.w	File_R83C-.LevelFiles		; Metallic Madness Act 3 good future 
+	dc.w	File_R83D-.LevelFiles		; Metallic Madness Act 3 bad future 
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_Demo11A-.LevelFiles	; Palmtree Panic Act 1 present demo
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
+	dc.w	File_R11A-.LevelFiles		; Invalid
 
 ; -------------------------------------------------------------------------
 ; PCM drivers
 ; -------------------------------------------------------------------------
 
 .PCMDrivers:
-	dc.l	File_R11A			; $00 | Invalid
-	dc.l	File_R1PCM			; $01 | Palmtree Panic Act 1 present
-	dc.l	File_R1PCM			; $02 | Palmtree Panic Act 1 past
-	dc.l	File_R1PCM			; $03 | Palmtree Panic Act 1 good future
-	dc.l	File_R1PCM			; $04 | Palmtree Panic Act 1 bad future
-	dc.l	File_R11A			; $05 | Invalid
-	dc.l	File_R11A			; $06 | Invalid
-	dc.l	File_R1PCM			; $07 | Palmtree Panic Act 2 present
-	dc.l	File_R1PCM			; $08 | Palmtree Panic Act 2 past
-	dc.l	File_R1PCM			; $09 | Palmtree Panic Act 2 good future
-	dc.l	File_R1PCM			; $0A | Palmtree Panic Act 2 bad future
-	dc.l	File_R11A			; $0B | Invalid
-	dc.l	File_R11A			; $0C | Invalid
-	dc.l	File_R11A			; $0D | Invalid
-	dc.l	File_R11A			; $0E | Invalid
-	dc.l	File_R11A			; $0F | Invalid
-	dc.l	File_R11A			; $10 | Invalid
-	dc.l	File_R11A			; $11 | Invalid
-	dc.l	File_R11A			; $12 | Invalid
-	dc.l	File_R11A			; $13 | Invalid
-	dc.l	File_R11A			; $14 | Invalid
-	dc.l	File_R11A			; $15 | Invalid
-	dc.l	File_R11A			; $16 | Invalid
-	dc.l	File_R11A			; $17 | Invalid
-	dc.l	File_R11A			; $18 | Invalid
-	dc.l	File_R11A			; $19 | Invalid
-	dc.l	File_R11A			; $1A | Invalid
-	dc.l	File_R11A			; $1B | Invalid
-	dc.l	File_R11A			; $1C | Invalid
-	dc.l	File_R11A			; $1D | Invalid
-	dc.l	File_R11A			; $1E | Invalid
-	dc.l	File_R11A			; $1F | Invalid
-	dc.l	File_R11A			; $20 | Invalid
-	dc.l	File_R11A			; $21 | Invalid
-	dc.l	File_R11A			; $22 | Invalid
-	dc.l	File_R11A			; $23 | Invalid
-	dc.l	File_BossPCM			; $24 | Tidal Tempest Act 3 good future demo
-	dc.l	File_R8PCM			; $25 | Metallic Madness Act 2 present demo
-	dc.l	File_R11A			; $26 | Invalid
-	dc.l	File_R11A			; $27 | Invalid
-	dc.l	File_R3PCM			; $28 | Collision Chaos Act 1 present
-	dc.l	File_R3PCM			; $29 | Collision Chaos Act 1 past
-	dc.l	File_R3PCM			; $2A | Collision Chaos Act 1 good future
-	dc.l	File_R3PCM			; $2B | Collision Chaos Act 1 bad future
-	dc.l	File_R3PCM			; $2C | Collision Chaos Act 2 present 
-	dc.l	File_R3PCM			; $2D | Collision Chaos Act 2 past 
-	dc.l	File_R3PCM			; $2E | Collision Chaos Act 2 good future 
-	dc.l	File_R3PCM			; $2F | Collision Chaos Act 2 bad future 
-	dc.l	File_R3PCM			; $30 | Collision Chaos Act 3 good future 
-	dc.l	File_R3PCM			; $31 | Collision Chaos Act 3 bad future 
-	dc.l	File_BossPCM			; $32 | Palmtree Panic Act 3 good future
-	dc.l	File_BossPCM			; $33 | Palmtree Panic Act 3 bad future 
-	dc.l	File_R4PCM			; $34 | Tidal Tempest Act 1 present
-	dc.l	File_R4PCM			; $35 | Tidal Tempest Act 1 past
-	dc.l	File_R4PCM			; $36 | Tidal Tempest Act 1 good future
-	dc.l	File_R4PCM			; $37 | Tidal Tempest Act 1 bad future
-	dc.l	File_R4PCM			; $38 | Tidal Tempest Act 2 present 
-	dc.l	File_R4PCM			; $39 | Tidal Tempest Act 2 past 
-	dc.l	File_R4PCM			; $3A | Tidal Tempest Act 2 good future 
-	dc.l	File_R4PCM			; $3B | Tidal Tempest Act 2 bad future 
-	dc.l	File_BossPCM			; $3C | Tidal Tempest Act 3 good future 
-	dc.l	File_BossPCM			; $3D | Tidal Tempest Act 3 bad future 
-	dc.l	File_R5PCM			; $3E | Quartz Quadrant Act 1 present
-	dc.l	File_R5PCM			; $3F | Quartz Quadrant Act 1 past
-	dc.l	File_R5PCM			; $40 | Quartz Quadrant Act 1 good future
-	dc.l	File_R5PCM			; $41 | Quartz Quadrant Act 1 bad future
-	dc.l	File_R5PCM			; $42 | Quartz Quadrant Act 2 present 
-	dc.l	File_R5PCM			; $43 | Quartz Quadrant Act 2 past 
-	dc.l	File_R5PCM			; $44 | Quartz Quadrant Act 2 good future 
-	dc.l	File_R5PCM			; $45 | Quartz Quadrant Act 2 bad future 
-	dc.l	File_BossPCM			; $46 | Quartz Quadrant Act 3 good future 
-	dc.l	File_BossPCM			; $47 | Quartz Quadrant Act 3 bad future 
-	dc.l	File_R6PCM			; $48 | Wacky Workbench Act 1 present
-	dc.l	File_R6PCM			; $49 | Wacky Workbench Act 1 past
-	dc.l	File_R6PCM			; $4A | Wacky Workbench Act 1 good future
-	dc.l	File_R6PCM			; $4B | Wacky Workbench Act 1 bad future
-	dc.l	File_R6PCM			; $4C | Wacky Workbench Act 2 present 
-	dc.l	File_R6PCM			; $4D | Wacky Workbench Act 2 past 
-	dc.l	File_R6PCM			; $4E | Wacky Workbench Act 2 good future 
-	dc.l	File_R6PCM			; $4F | Wacky Workbench Act 2 bad future 
-	dc.l	File_BossPCM			; $50 | Wacky Workbench Act 3 good future 
-	dc.l	File_BossPCM			; $51 | Wacky Workbench Act 3 bad future 
-	dc.l	File_R7PCM			; $52 | Stardust Speedway Act 1 present
-	dc.l	File_R7PCM			; $53 | Stardust Speedway Act 1 past
-	dc.l	File_R7PCM			; $54 | Stardust Speedway Act 1 good future
-	dc.l	File_R7PCM			; $55 | Stardust Speedway Act 1 bad future
-	dc.l	File_R7PCM			; $56 | Stardust Speedway Act 2 present 
-	dc.l	File_R7PCM			; $57 | Stardust Speedway Act 2 past 
-	dc.l	File_R7PCM			; $58 | Stardust Speedway Act 2 good future 
-	dc.l	File_R7PCM			; $59 | Stardust Speedway Act 2 bad future 
-	dc.l	File_BossPCM			; $5A | Stardust Speedway Act 3 good future 
-	dc.l	File_BossPCM			; $5B | Stardust Speedway Act 3 bad future 
-	dc.l	File_R8PCM			; $5C | Metallic Madness Act 1 present
-	dc.l	File_R8PCM			; $5D | Metallic Madness Act 1 past
-	dc.l	File_R8PCM			; $5E | Metallic Madness Act 1 good future
-	dc.l	File_R8PCM			; $5F | Metallic Madness Act 1 bad future
-	dc.l	File_R8PCM			; $60 | Metallic Madness Act 2 present 
-	dc.l	File_R8PCM			; $61 | Metallic Madness Act 2 past 
-	dc.l	File_R8PCM			; $62 | Metallic Madness Act 2 good future 
-	dc.l	File_R8PCM			; $63 | Metallic Madness Act 2 bad future 
-	dc.l	File_BossPCM			; $64 | Metallic Madness Act 3 good future 
-	dc.l	File_BossPCM			; $65 | Metallic Madness Act 3 bad future 
-	dc.l	File_R11A			; $66 | Invalid
-	dc.l	File_R11A			; $67 | Invalid
-	dc.l	File_R11A			; $68 | Invalid
-	dc.l	File_R11A			; $69 | Invalid
-	dc.l	File_R11A			; $6A | Invalid
-	dc.l	File_R11A			; $6B | Invalid
-	dc.l	File_R11A			; $6C | Invalid
-	dc.l	File_R11A			; $6D | Invalid
-	dc.l	File_R11A			; $6E | Invalid
-	dc.l	File_R11A			; $6F | Invalid
-	dc.l	File_R11A			; $70 | Invalid
-	dc.l	File_R11A			; $71 | Invalid
-	dc.l	File_R11A			; $72 | Invalid
-	dc.l	File_R11A			; $73 | Invalid
-	dc.l	File_R11A			; $74 | Invalid
-	dc.l	File_R11A			; $75 | Invalid
-	dc.l	File_R11A			; $76 | Invalid
-	dc.l	File_R11A			; $77 | Invalid
-	dc.l	File_R11A			; $78 | Invalid
-	dc.l	File_R11A			; $79 | Invalid
-	dc.l	File_R11A			; $7A | Invalid
-	dc.l	File_R11A			; $7B | Invalid
-	dc.l	File_R11A			; $7C | Invalid
-	dc.l	File_R11A			; $7D | Invalid
-	dc.l	File_R11A			; $7E | Invalid
-	dc.l	File_R11A			; $7F | Invalid
-	dc.l	File_R11A			; $80 | Invalid
-	dc.l	File_R11A			; $81 | Invalid
-	dc.l	File_R11A			; $82 | Invalid
-	dc.l	File_R11A			; $83 | Invalid
-	dc.l	File_R1PCM			; $84 | Palmtree Panic Act 1 present demo
-	dc.l	File_R11A			; $85 | Invalid
-	dc.l	File_R11A			; $86 | Invalid
-	dc.l	File_R11A			; $87 | Invalid
-	dc.l	File_R11A			; $88 | Invalid
-	dc.l	File_R11A			; $89 | Invalid
-	dc.l	File_R11A			; $8A | Invalid
-	dc.l	File_R11A			; $8B | Invalid
-	dc.l	File_R11A			; $8C | Invalid
-	dc.l	File_R11A			; $8D | Invalid
-	dc.l	File_R11A			; $8E | Invalid
-	dc.l	File_R11A			; $8F | Invalid
-	dc.l	File_R11A			; $90 | Invalid
-	dc.l	File_R11A			; $91 | Invalid
-	dc.l	File_R11A			; $92 | Invalid
-	dc.l	File_R11A			; $93 | Invalid
-	dc.l	File_R11A			; $94 | Invalid
-	dc.l	File_R11A			; $95 | Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R1PCM			; Palmtree Panic Act 1 present
+	dc.l	File_R1PCM			; Palmtree Panic Act 1 past
+	dc.l	File_R1PCM			; Palmtree Panic Act 1 good future
+	dc.l	File_R1PCM			; Palmtree Panic Act 1 bad future
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R1PCM			; Palmtree Panic Act 2 present
+	dc.l	File_R1PCM			; Palmtree Panic Act 2 past
+	dc.l	File_R1PCM			; Palmtree Panic Act 2 good future
+	dc.l	File_R1PCM			; Palmtree Panic Act 2 bad future
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_BossPCM			; Tidal Tempest Act 3 good future demo
+	dc.l	File_R8PCM			; Metallic Madness Act 2 present demo
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R3PCM			; Collision Chaos Act 1 present
+	dc.l	File_R3PCM			; Collision Chaos Act 1 past
+	dc.l	File_R3PCM			; Collision Chaos Act 1 good future
+	dc.l	File_R3PCM			; Collision Chaos Act 1 bad future
+	dc.l	File_R3PCM			; Collision Chaos Act 2 present 
+	dc.l	File_R3PCM			; Collision Chaos Act 2 past 
+	dc.l	File_R3PCM			; Collision Chaos Act 2 good future 
+	dc.l	File_R3PCM			; Collision Chaos Act 2 bad future 
+	dc.l	File_R3PCM			; Collision Chaos Act 3 good future 
+	dc.l	File_R3PCM			; Collision Chaos Act 3 bad future 
+	dc.l	File_BossPCM			; Palmtree Panic Act 3 good future
+	dc.l	File_BossPCM			; Palmtree Panic Act 3 bad future 
+	dc.l	File_R4PCM			; Tidal Tempest Act 1 present
+	dc.l	File_R4PCM			; Tidal Tempest Act 1 past
+	dc.l	File_R4PCM			; Tidal Tempest Act 1 good future
+	dc.l	File_R4PCM			; Tidal Tempest Act 1 bad future
+	dc.l	File_R4PCM			; Tidal Tempest Act 2 present 
+	dc.l	File_R4PCM			; Tidal Tempest Act 2 past 
+	dc.l	File_R4PCM			; Tidal Tempest Act 2 good future 
+	dc.l	File_R4PCM			; Tidal Tempest Act 2 bad future 
+	dc.l	File_BossPCM			; Tidal Tempest Act 3 good future 
+	dc.l	File_BossPCM			; Tidal Tempest Act 3 bad future 
+	dc.l	File_R5PCM			; Quartz Quadrant Act 1 present
+	dc.l	File_R5PCM			; Quartz Quadrant Act 1 past
+	dc.l	File_R5PCM			; Quartz Quadrant Act 1 good future
+	dc.l	File_R5PCM			; Quartz Quadrant Act 1 bad future
+	dc.l	File_R5PCM			; Quartz Quadrant Act 2 present 
+	dc.l	File_R5PCM			; Quartz Quadrant Act 2 past 
+	dc.l	File_R5PCM			; Quartz Quadrant Act 2 good future 
+	dc.l	File_R5PCM			; Quartz Quadrant Act 2 bad future 
+	dc.l	File_BossPCM			; Quartz Quadrant Act 3 good future 
+	dc.l	File_BossPCM			; Quartz Quadrant Act 3 bad future 
+	dc.l	File_R6PCM			; Wacky Workbench Act 1 present
+	dc.l	File_R6PCM			; Wacky Workbench Act 1 past
+	dc.l	File_R6PCM			; Wacky Workbench Act 1 good future
+	dc.l	File_R6PCM			; Wacky Workbench Act 1 bad future
+	dc.l	File_R6PCM			; Wacky Workbench Act 2 present 
+	dc.l	File_R6PCM			; Wacky Workbench Act 2 past 
+	dc.l	File_R6PCM			; Wacky Workbench Act 2 good future 
+	dc.l	File_R6PCM			; Wacky Workbench Act 2 bad future 
+	dc.l	File_BossPCM			; Wacky Workbench Act 3 good future 
+	dc.l	File_BossPCM			; Wacky Workbench Act 3 bad future 
+	dc.l	File_R7PCM			; Stardust Speedway Act 1 present
+	dc.l	File_R7PCM			; Stardust Speedway Act 1 past
+	dc.l	File_R7PCM			; Stardust Speedway Act 1 good future
+	dc.l	File_R7PCM			; Stardust Speedway Act 1 bad future
+	dc.l	File_R7PCM			; Stardust Speedway Act 2 present 
+	dc.l	File_R7PCM			; Stardust Speedway Act 2 past 
+	dc.l	File_R7PCM			; Stardust Speedway Act 2 good future 
+	dc.l	File_R7PCM			; Stardust Speedway Act 2 bad future 
+	dc.l	File_BossPCM			; Stardust Speedway Act 3 good future 
+	dc.l	File_BossPCM			; Stardust Speedway Act 3 bad future 
+	dc.l	File_R8PCM			; Metallic Madness Act 1 present
+	dc.l	File_R8PCM			; Metallic Madness Act 1 past
+	dc.l	File_R8PCM			; Metallic Madness Act 1 good future
+	dc.l	File_R8PCM			; Metallic Madness Act 1 bad future
+	dc.l	File_R8PCM			; Metallic Madness Act 2 present 
+	dc.l	File_R8PCM			; Metallic Madness Act 2 past 
+	dc.l	File_R8PCM			; Metallic Madness Act 2 good future 
+	dc.l	File_R8PCM			; Metallic Madness Act 2 bad future 
+	dc.l	File_BossPCM			; Metallic Madness Act 3 good future 
+	dc.l	File_BossPCM			; Metallic Madness Act 3 bad future 
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R1PCM			; Palmtree Panic Act 1 present demo
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
+	dc.l	File_R11A			; Invalid
 
 ; -------------------------------------------------------------------------
 ; Load Mega Drive initialization
@@ -1406,28 +1406,7 @@ SPCmd_LoadOpening:
 	rts
 
 ; -------------------------------------------------------------------------
-
-SPCmd_LoadGoodEnd:
-	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
-
-	lea	File_EndingMain(pc),a0		; Load Main CPU file
-	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM2M,a1
-	jsr	LoadFile.w
-	bsr.w	GiveWordRAMAccess
-
-	lea	File_GoodEndSub(pc),a0		; Load Sub CPU file
-	lea	PRGRAM+$30000,a1
-	jsr	LoadFile.w
-
-	jsr	PRGRAM+$30000			; Run Sub CPU file code
-
-	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
-	andi.b	#$FA,GAMEMMODE.w		; Set to 2M mode
-	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
-	move.l	#0,curPCMDriver.w		; Reset current PCM driver
-	rts
-
+; Load bad ending FMV
 ; -------------------------------------------------------------------------
 
 SPCmd_LoadBadEnd:
@@ -1440,7 +1419,32 @@ SPCmd_LoadBadEnd:
 	bsr.w	GiveWordRAMAccess
 
 	lea	File_BadEndSub(pc),a0		; Load Sub CPU file
-	lea	PRGRAM+$30000,a1
+	lea	PRGRAM+$30000,a1		; GOODEND.BIN loads BADEND.STM. Seriously.
+	jsr	LoadFile.w
+
+	jsr	PRGRAM+$30000			; Run Sub CPU file code
+
+	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
+	andi.b	#$FA,GAMEMMODE.w		; Set to 2M mode
+	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
+	move.l	#0,curPCMDriver.w		; Reset current PCM driver
+	rts
+
+; -------------------------------------------------------------------------
+; Load good ending FMV
+; -------------------------------------------------------------------------
+
+SPCmd_LoadGoodEnd:
+	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
+
+	lea	File_EndingMain(pc),a0		; Load Main CPU file
+	bsr.w	WaitWordRAMAccess
+	lea	WORDRAM2M,a1
+	jsr	LoadFile.w
+	bsr.w	GiveWordRAMAccess
+
+	lea	File_GoodEndSub(pc),a0		; Load Sub CPU file
+	lea	PRGRAM+$30000,a1		; BADEND.BIN loads GOODEND.STM. Seriously.
 	jsr	LoadFile.w
 
 	jsr	PRGRAM+$30000			; Run Sub CPU file code
@@ -1494,9 +1498,10 @@ SPCmd_LoadSpecStage:
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
 	
-	btst	#1,ssFlags.w			; Should we play the level end music?
-	bne.s	.NoLevelEndMusic		; If not, branch
-	bsr.w	ResetCDDAVol			; If so, play it
+	btst	#1,ssFlags.w			; Were we in time attack mode?
+	bne.s	.NoLevelEndMusic		; If so, branch
+	
+	bsr.w	ResetCDDAVol			; If not, play level end music
 	lea	MusID_LevelEnd(pc),a0
 	move.w	#MSCPLAY1,d0
 	jsr	_CDBIOS.w

@@ -10,12 +10,13 @@
 ; -------------------------------------------------------------------------
 
 ; FM driver (Z80)
-	if def(Z80RAM)
-FMDrvQueue	EQU	Z80RAM+$1C09		; Sound queue
+	if def(MAINCPU)
+FMDrvQueue1	EQU	Z80RAM+$1C09		; Sound queue 1
+FMDrvQueue2	EQU	Z80RAM+$1C0A		; Sound queue 2
 	endif
 
 ; PCM driver (Sub CPU)
-	if PRGRAM=0
+	if def(SUBCPU)
 PCMDriver	EQU	PRGRAM+$40000		; PCM driver location
 PCMDrvRun	EQU	PCMDriver+$10		; Run PCM driver
 PCMDrvQueue	EQU	PCMDriver+$22		; PCM sound queue
@@ -87,5 +88,9 @@ PCMC_STOP	rs.b	1			; Stop
 PCMC_PAUSE	rs.b	1			; Pause
 PCMC_UNPAUSE	rs.b	1			; Unpause
 PCMC_MUTE	rs.b	1			; Mute
+
+; FM commands
+	rsset	$E0
+FMC_STOP	rs.b	1			; Stop
 
 ; -------------------------------------------------------------------------

@@ -25,6 +25,7 @@ mmdEntry	rs.l	1			; Entry address
 mmdHInt		rs.l	1			; H-BLANK interrupt address
 mmdVInt		rs.l	1			; V-BLANK interrupt address
 		rs.b	$100-__rs
+mmdFile		rs.b	0			; Start of file data
 MMDHEADSZ	rs.b	0			; Size of structure
 
 ; -------------------------------------------------------------------------

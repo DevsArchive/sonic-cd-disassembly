@@ -519,14 +519,14 @@ FlushSoundQueue:
 .CheckQueue2:
 	tst.b	fmSndQueue2.w			; Is the 2nd sound queue set?
 	beq.s	.CheckQueue3			; If not, branch
-	move.b	fmSndQueue2.w,FMDrvQueue	; Queue sound in driver
+	move.b	fmSndQueue2.w,FMDrvQueue1	; Queue sound in driver
 	move.b	#0,fmSndQueue2.w		; Clear 2nd sound queue
 	bra.s	.End				; Exit
 
 .CheckQueue3:
 	tst.b	fmSndQueue3.w			; Is the 3rd sound queue set?
 	beq.s	.End				; If not, branch
-	move.b	fmSndQueue3.w,FMDrvQueue	; Queue sound in driver
+	move.b	fmSndQueue3.w,FMDrvQueue1	; Queue sound in driver
 	move.b	#0,fmSndQueue3.w		; Clear 3rd sound queue
 
 .End:

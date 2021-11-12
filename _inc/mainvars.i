@@ -2,11 +2,26 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Main CPU variables
+; Main CPU global variables
+; -------------------------------------------------------------------------
+
+; -------------------------------------------------------------------------
+; Constants
+; -------------------------------------------------------------------------
+
+; Time zones
+	rsreset
+TIME_PAST		rs.b	1		; Past
+TIME_PRESENT		rs.b	1		; Present
+TIME_FUTURE		rs.b	1		; Future
+
+; -------------------------------------------------------------------------
+; Variables
 ; -------------------------------------------------------------------------
 
 	rsset	WORKRAM+$F00
-ipxFlags		rs.b	1		; IPX flags
+MAINVARS		rs.b	0		; Main CPU global variables
+ipxVSync		rs.b	1		; IPX VSync flag
 timeAttackMode		rs.b	1		; Time attack mode flag
 savedLevel		rs.w	1		; Saved level
 			rs.b	$C
@@ -26,7 +41,7 @@ curSpecStage		rs.b	1		; Current special stage
 palClearFlags		rs.b	1		; Palette clear flags
 			rs.b	1
 endingID		rs.b	1		; Ending ID
-specStageBeaten		rs.b	1		; Special stage beaten flag
+specStageLost		rs.b	1		; Special stage lost flag
 			rs.b	$5E0
 level			rs.b	0		; Level ID
 levelZone		rs.b	1		; Zone ID
@@ -51,6 +66,7 @@ demoMode		rs.w	1		; Demo mode flag
 			rs.b	$C
 lastCheckpoint		rs.b	1		; Last checkpoint ID
 			rs.b	$A71
+MAINVARSSZ		EQU	__rs-MAINVARS	; Size of Main CPU global variables area
 
 WORKRAMFILE		rs.b	$6000		; Work RAM file data
 
@@ -59,5 +75,8 @@ WORKRAMFILE		rs.b	$6000		; Work RAM file data
 fmSndQueue1		rs.b	1		; Sound queue 1
 fmSndQueue2		rs.b	1		; Sound queue 2
 fmSndQueue3		rs.b	1		; Sound queue 3
+			rs.b	$AF3
+
+WORKRAMFILESZ		EQU	(__rs&$FFFFFF)-WORKRAMFILE
 
 ; -------------------------------------------------------------------------

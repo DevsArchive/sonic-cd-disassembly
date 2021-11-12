@@ -1,5 +1,9 @@
 @echo off
 if not exist _built mkdir _built
+
+_bin\asm68k.exe /p /o ae- /o l. ip\ipx.asm, _built\IPX___.MMD, , ip\ipx.lst
+fc /b _built\IPX___.MMD _original\IPX___.MMD
+
 _bin\asm68k.exe /p /o ae- /o l. sp\sp.asm, _built\SP.BIN , sp\sp.lst
 fc /b _built\SP.BIN _original\SP.BIN
 
