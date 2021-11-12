@@ -3,6 +3,10 @@ This is a collection of documented disassemblies of various misc. files from Son
 
 ## Currently Contains
 * System program
+* Main program file (IPX)
 * System program extension file (SPX)
 * Backup RAM initialization file (BRAMINIT)
 * Sub CPU Backup RAM functions file (BRAMSUB)
+
+## Caution
+Sonic CD's core CD engine is, quite frankly, a disaster. It's overengineered and reeks of spaghetti code. If you are thinking of making a Sega CD game, then you would be better off starting from scratch than to take notes from Sonic CD.
