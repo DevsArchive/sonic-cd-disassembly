@@ -1482,7 +1482,7 @@ WriteSaveData:
 ; -------------------------------------------------------------------------
 
 SubCPUCmd:
-	move.w	d0,GACOMCMD0			; Send the command
+	move.w	d0,GACOMCMD0			; Set command ID
 
 .WaitSubCPU:
 	move.w	GACOMSTAT0,d0			; Has the Sub CPU received the command?
