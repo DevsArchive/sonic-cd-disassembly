@@ -26,4 +26,7 @@ fc /b _built\BRAMSUB.BIN _original\BRAMSUB.BIN
 _bin\asm68k.exe /p /o ae- /o l. mdinit\mdinit.asm, _built\MDINIT.MMD, , mdinit\mdinit.lst
 fc /b _built\MDINIT.MMD _original\MDINIT.MMD
 
+_bin\asm68k.exe /p /o ae- /o l. sound\pcm\ppz.asm, _built\SNCBNK1B.BIN, , sound\pcm\ppz.lst
+fc /b _built\SNCBNK1B.BIN _original\SNCBNK1B.BIN
+
 pause

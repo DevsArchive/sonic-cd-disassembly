@@ -17,9 +17,11 @@ FMDrvQueue2	EQU	Z80RAM+$1C0A		; Sound queue 2
 
 ; PCM driver (Sub CPU)
 	if def(SUBCPU)
+		include	"sound/pcm/driver/vars.i"
 PCMDriver	EQU	PRGRAM+$40000		; PCM driver location
+PCMDrvOrigin	EQU	PCMDriver+$10		; PCM driver code origin
 PCMDrvRun	EQU	PCMDriver+$10		; Run PCM driver
-PCMDrvQueue	EQU	PCMDriver+$22		; PCM sound queue
+PCMDrvQueue	EQU	PCMDriver+$18+pdrvQueue	; PCM sound queue
 	endif
 
 ; -------------------------------------------------------------------------
@@ -62,32 +64,6 @@ CDDA_SPECIAL	rs.b	1			; Special stage
 CDDA_DAGARDEN	rs.b	1			; D.A. Garden
 CDDA_INTRO	rs.b	1			; Opening
 CDDA_ENDING	rs.b	1			; Ending
-
-; PCM music
-	rsset	$81
-PCMM_PAST	rs.b	1			; Past music
-
-; PCM sound effects
-	rsset	$B1
-PCMS_FUTURE	rs.b	1			; "Future"
-PCMS_PAST	rs.b	1			; "Past"
-PCMS_ALRIGHT	rs.b	1			; "Alright"
-PCMS_GIVEUP	rs.b	1			; "I'm outta here"
-PCMS_YES	rs.b	1			; "Yes"
-PCMS_YEAH	rs.b	1			; "Yeah"
-PCMS_GIGGLE	rs.b	1			; Amy giggle
-PCMS_AMYYELP	rs.b	1			; Amy yelp
-PCMS_STOMP	rs.b	1			; Boss stomp
-PCMS_BUMPER	rs.b	1			; Bumper
-PCMS_BREAK	rs.b	1			; Glass breeak
-
-; PCM commands
-	rsset	$E0
-PCMC_FADEOUT	rs.b	1			; Fade out
-PCMC_STOP	rs.b	1			; Stop
-PCMC_PAUSE	rs.b	1			; Pause
-PCMC_UNPAUSE	rs.b	1			; Unpause
-PCMC_MUTE	rs.b	1			; Mute
 
 ; FM commands
 	rsset	$E0
