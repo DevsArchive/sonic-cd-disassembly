@@ -17,7 +17,7 @@ FMDrvQueue2	EQU	Z80RAM+$1C0A		; Sound queue 2
 
 ; PCM driver (Sub CPU)
 	if def(SUBCPU)
-		include	"sound/pcm/driver/vars.i"
+		include	"sound/pcm/driver/variables.i"
 PCMDriver	EQU	PRGRAM+$40000		; PCM driver location
 PCMDrvOrigin	EQU	PCMDriver+$10		; PCM driver code origin
 PCMDrvRun	EQU	PCMDriver+$10		; Run PCM driver

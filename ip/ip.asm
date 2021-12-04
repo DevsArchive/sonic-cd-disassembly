@@ -17,11 +17,11 @@
 	org	WORKRAM
 
 	if REGION=0
-		incbin	"ip/security/japan.bin"
+		incbin	"ip/security/japan.sec"
 	elseif REGION=1
-		incbin	"ip/security/usa.bin"
+		incbin	"ip/security/usa.sec"
 	elseif REGION=2
-		incbin	"ip/security/europe.bin"
+		incbin	"ip/security/europe.sec"
 	endif
 
 ; -------------------------------------------------------------------------
