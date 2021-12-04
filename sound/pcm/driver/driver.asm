@@ -435,7 +435,7 @@ LoadSamples:
 	move.l	(a0)+,d0			; Get number of samples
 	beq.s	.End				; If there are none, branch
 	bmi.s	.End				; If there are none, branch
-	subq.w	#1,d0				; BUG: Sample count is already prepared for use with dbf
+	subq.w	#1,d0				; Subtract 1 for dbf
 
 .LoadSample:
 	movea.l	(a0)+,a1			; Get sample data
