@@ -106,9 +106,9 @@ UpdateTrack:
 .Update:
 	jsr	UpdateSample(pC)		; Update sample
 
-	; BUG: When the developerss removed modulation support and optimized
-	; this call, they accidentally left in the stack pointer shift in the
-	; routine. See the routine for more information.
+	; BUG: The developerss removed modulation support and optimized
+	; this call, but they accidentally left in the stack pointer shift
+	; in the routine. See the routine for more information.
 
 	bra.w	HandleStaccato			; Handle staccato
 
