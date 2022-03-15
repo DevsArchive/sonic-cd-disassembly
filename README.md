@@ -11,4 +11,4 @@ This is a collection of documented disassemblies of various misc. files from Son
 * Mega Drive initialization file (MDINIT)
 
 ## Caution
-Sonic CD's core CD engine is, quite frankly, a disaster. It's overengineered and reeks of spaghetti code. If you are thinking of making a Sega CD game, then you would be better off starting from scratch than to take notes from Sonic CD.
+Sonic CD's core CD engine is, quite frankly, a disaster. Overengineered, spaghetti, and clearly rushed to completion. If you are thinking of making a Sega CD game, then you would be better off starting from scratch than to take notes from Sonic CD.
