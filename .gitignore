@@ -2,4 +2,7 @@
 *.bin
 *.mmd
 _built
-_original
+_original/*.TXT
+_original/*.BIN
+_original/*.MMD
+_original/*.STM

@@ -5,6 +5,8 @@ set OUTPUT=SCD.iso
 if not exist _built mkdir _built
 if not exist _built\files mkdir _built\files
 if not exist _built\sys mkdir _built\sys
+copy _original\*.* _built\files > nul
+del _built\files\.gitkeep
 
 _bin\asm68k.exe /p /o ae- /o l. /e REGION=%REGION% cdip\ip.asm, _built\sys\IP.BIN , cdip\ip.lst
 _bin\asm68k.exe /p /o ae- /o l. cdip\ipx.asm, _built\files\IPX___.MMD, , cdip\ipx.lst
