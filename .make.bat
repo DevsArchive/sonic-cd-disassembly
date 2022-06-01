@@ -5,18 +5,20 @@ set OUTPUT=SCD.iso
 if not exist _built mkdir _built
 if not exist _built\files mkdir _built\files
 if not exist _built\sys mkdir _built\sys
-copy _original\*.* _built\files > nul
+if %REGION%==0 (copy _original\jpn\*.* _built\files > nul)
+if %REGION%==1 (copy _original\usa\*.* _built\files > nul)
+if %REGION%==2 (copy _original\eur\*.* _built\files > nul)
 del _built\files\.gitkeep > nul
 
 _bin\asm68k.exe /p /o ae- /o l. /e REGION=%REGION% cdip\ip.asm, _built\sys\IP.BIN , cdip\ip.lst
 _bin\asm68k.exe /p /o ae- /o l. cdip\ipx.asm, _built\files\IPX___.MMD, , cdip\ipx.lst
 _bin\asm68k.exe /p /o ae- /o l. cdsp\sp.asm, _built\sys\SP.BIN , cdsp\sp.lst
-_bin\asm68k.exe /p /o ae- /o l. cdsp\spx.asm, _built\files\SPX___.BIN, , cdsp\spx.lst
-_bin\asm68k.exe /p /o ae- /o l. buram\init\buraminit.asm, _built\files\BRAMINIT.MMD, , buram\init\buraminit.lst
+_bin\asm68k.exe /p /o ae- /o l. /e REGION=%REGION% cdsp\spx.asm, _built\files\SPX___.BIN, , cdsp\spx.lst
+_bin\asm68k.exe /p /o ae- /o l. /e REGION=%REGION% buram\init\buraminit.asm, _built\files\BRAMINIT.MMD, , buram\init\buraminit.lst
 _bin\asm68k.exe /p /o ae- /o l. buram\buramsub.asm, _built\files\BRAMSUB.BIN, , buram\buramsub.lst
 _bin\asm68k.exe /p /o ae- /o l. mdinit\mdinit.asm, _built\files\MDINIT.MMD, , mdinit\mdinit.lst
 _bin\asm68k.exe /p /o ae- /o l. sound\pcm\ppz.asm, _built\files\SNCBNK1B.BIN, , sound\pcm\ppz.lst
-_bin\asm68k.exe /p /o ae- /o l. title\titlemain.asm, _built\files\TITLEM.MMD, , title\titlemain.lst
+_bin\asm68k.exe /p /o ae- /o l. /e REGION=%REGION% title\titlemain.asm, _built\files\TITLEM.MMD, , title\titlemain.lst
 _bin\asm68k.exe /p /o ae- /o l. title\titlesub.asm, _built\files\TITLES.BIN, , title\titlesub.lst
 
 echo.

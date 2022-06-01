@@ -42,7 +42,7 @@ ctrlTap		EQU	ctrlData+1		; Controller tapped buttons data
 ; -------------------------------------------------------------------------
 
 	MMD	0, &
-		WORKRAMFILE, End-Start, &
+		WORKRAMFILE, $3000, &
 		Start, 0, VInterrupt
 
 ; -------------------------------------------------------------------------
@@ -108,63 +108,10 @@ Start:
 	rts
 
 ; -------------------------------------------------------------------------
-; V-BLANK interrupt
-; -------------------------------------------------------------------------
 
-VInterrupt:
-	movem.l	d0-a6,-(sp)			; Save registers
-
-	move.b	#1,GAIRQ2			; Trigger IRQ2 on Sub CPU
-	tst.b	vsyncFlag.w			; Are we lagging?
-	beq.w	.Lag				; If so, branch
-	move.b	#0,vsyncFlag.w			; Clear VSync flag
-
-	lea	VDPCTRL,a1			; VDP control port
-	lea	VDPDATA,a2			; VDP data port
-	move.w	(a1),d0				; Reset V-INT occurance flag
-	jsr	StopZ80(pc)			; Stop the Z80
-
-	move.w	vintRoutine.w,d0		; Execute routine
-	add.w	d0,d0
-	move.w	.Routines(pc,d0.w),d0
-	jmp	.Routines(pc,d0.w)
-
-; -------------------------------------------------------------------------
-
-.Routines:
-	dc.w	.Main-.Routines
-
-; -------------------------------------------------------------------------
-; Main V-INT routine
-; -------------------------------------------------------------------------
-
-.Main:
-	bra.w	.Main2
-
-.Main2:
-	bsr.w	StartZ80			; Start the Z80
-	tst.w	timer.w				; Is the timer active?
-	beq.s	.NoTimer			; If not, branch
-	subq.w	#1,timer.w			; Decrement timer
-
-.NoTimer:
-	addq.w	#1,vintCounter.w		; Increment counter
-	jsr	ReadController(pc)		; Read controller data
-
-	movem.l	(sp)+,d0-a6			; Restore registers
-	rte
-
-; -------------------------------------------------------------------------
-; Lag V-INT routine
-; -------------------------------------------------------------------------
-
-.Lag:
-	addq.l	#1,lagCounter.w			; Increment lag counter
-	move.b	vintRoutine+1.w,lagCounter.w	; Set highest byte to V-INT routine ID
-	jsr	ReadController(pc)		; Read controller data
-
-	movem.l	(sp)+,d0-a6			; Restore registers
-	rte
+	if REGION=1
+		include	"buram/init/vinterrupt.asm"
+	endif
 
 ; -------------------------------------------------------------------------
 ; Backup RAM corrupted error
@@ -241,7 +188,11 @@ ShowMessage:
 	move.l	d0,(a6)
 	move.l	d0,(a6)
 
-	move.l	#$00010203,d0			; Load art
+	if REGION=1				; Load art
+		move.l	#$00010203,d0
+	else
+		move.l	#$00000102,d0
+	endif
 	jsr	LoadMessageArt
 
 	move.l	(sp)+,d0			; Restore message ID
@@ -278,6 +229,12 @@ Finish:
 	move.l	d0,GACOMCMDC
 	move.b	d0,GAMAINFLAG
 	rts
+
+; -------------------------------------------------------------------------
+
+	if REGION<>1
+		include	"buram/init/vinterrupt.asm"
+	endif
 
 ; -------------------------------------------------------------------------
 ; Unused function to send some kind of command ID to the Sub CPU
@@ -1227,8 +1184,11 @@ LoadMessageArt:
 	dc.l	Art_Eggman
 	VDPCMD	dc.l,$340,VRAM,WRITE		; Message art #1
 	dc.l	Art_Message1
-	VDPCMD	dc.l,$1C40,VRAM,WRITE		; Message art #2
-	dc.l	Art_Message2
+	if REGION=1
+		VDPCMD	dc.l,$1C40,VRAM,WRITE	; Message art #2
+		dc.l	Art_Message2
+	endif
+
 
 ; -------------------------------------------------------------------------
 ; Decompress Nemesis art into VRAM (Note: VDP write command must be
@@ -1491,8 +1451,13 @@ LoadMessageMap:
 
 	dc.l	Map_DataCorrupt
 	dc.w	$201A
-	dc.w	$1D-1, 6-1
-	VDPCMD	dc.l,$E58A,VRAM,WRITE
+	if REGION=0
+		dc.w	$24-1, 6-1
+		VDPCMD	dc.l,$E584,VRAM,WRITE
+	else
+		dc.w	$1D-1, 6-1
+		VDPCMD	dc.l,$E58A,VRAM,WRITE
+	endif
 	
 	dc.l	Map_Eggman			; Internal Backup RAM unformatted
 	dc.w	1
@@ -1500,29 +1465,57 @@ LoadMessageMap:
 	VDPCMD	dc.l,$C31E,VRAM,WRITE
 
 	dc.l	Map_IntUnformatted
-	dc.w	$20E2
-	dc.w	$1D-1, 8-1
-	VDPCMD	dc.l,$E58A,VRAM,WRITE
+	if REGION=0
+		dc.w	$201A
+		dc.w	$24-1, 6-1
+		VDPCMD	dc.l,$E584,VRAM,WRITE
+	elseif REGION=1
+		dc.w	$20E2
+		dc.w	$1D-1, 8-1
+		VDPCMD	dc.l,$E58A,VRAM,WRITE
+	else
+		dc.w	$201A
+		dc.w	$1D-1, 6-1
+		VDPCMD	dc.l,$E58A,VRAM,WRITE
+	endif
 	
 	dc.l	Map_Eggman			; Cartridge Backup RAM unformatted
 	dc.w	1
 	dc.w	9, 5
-	VDPCMD	dc.l,$C29E,VRAM,WRITE
+	if REGION=0
+		VDPCMD	dc.l,$C21E,VRAM,WRITE
+	else
+		VDPCMD	dc.l,$C29E,VRAM,WRITE
+	endif
 
 	dc.l	Map_CartUnformatted
 	dc.w	$201A
-	dc.w	$1D-1, 8-1
-	VDPCMD	dc.l,$E50A,VRAM,WRITE
+	if REGION=0
+		dc.w	$24-1, $A-1
+		VDPCMD	dc.l,$E484,VRAM,WRITE
+	else
+		dc.w	$1D-1, 8-1
+		VDPCMD	dc.l,$E50A,VRAM,WRITE
+	endif
 	
 	dc.l	Map_Eggman			; Backup RAM full
 	dc.w	1
 	dc.w	9, 5
-	VDPCMD	dc.l,$C31E,VRAM,WRITE
+	if REGION=0
+		VDPCMD	dc.l,$C29E,VRAM,WRITE
+	else
+		VDPCMD	dc.l,$C31E,VRAM,WRITE
+	endif
 
 	dc.l	Map_BuRAMFull
 	dc.w	$201A
-	dc.w	$1D-1, 6-1
-	VDPCMD	dc.l,$E58A,VRAM,WRITE
+	if REGION=0
+		dc.w	$24-1, 8-1
+		VDPCMD	dc.l,$E504,VRAM,WRITE
+	else
+		dc.w	$1D-1, 6-1
+		VDPCMD	dc.l,$E58A,VRAM,WRITE
+	endif
 
 ; -------------------------------------------------------------------------
 ; Decompress Enigma tilemap data into RAM
@@ -1775,29 +1768,83 @@ Map_Eggman:
 	incbin	"buram/init/data/eggman.map.eni"
 	even
 
+; -------------------------------------------------------------------------
+
+	if REGION=0
+	
 Art_Message1:
-	incbin	"buram/init/data/message1.art.nem"
-	even
+		incbin	"buram/init/data/message.jpn.art.nem"
+		even
 
 Map_DataCorrupt:
-	incbin	"buram/init/data/msgcorrupt.map.eni"
-	even
+		incbin	"buram/init/data/msgcorrupt.jpn.map.eni"
+		even
+	
+Map_IntUnformatted:
+		incbin	"buram/init/data/msginternal.jpn.map.eni"
+		even
 
 Map_CartUnformatted:
-	incbin	"buram/init/data/msgcartridge.map.eni"
-	even
+		incbin	"buram/init/data/msgcartridge.jpn.map.eni"
+		even
 
 Map_BuRAMFull:
-	incbin	"buram/init/data/msgfull.map.eni"
-	even
+		incbin	"buram/init/data/msgfull.jpn.map.eni"
+		even
+		
+; -------------------------------------------------------------------------
 
+	elseif REGION=1
+	
+Art_Message1:
+		incbin	"buram/init/data/message1.usa.art.nem"
+		even
+
+Map_DataCorrupt:
+		incbin	"buram/init/data/msgcorrupt.usa.map.eni"
+		even
+
+Map_CartUnformatted:
+		incbin	"buram/init/data/msgcartridge.usa.map.eni"
+		even
+
+Map_BuRAMFull:
+		incbin	"buram/init/data/msgfull.usa.map.eni"
+		even
+	
 Art_Message2:
-	incbin	"buram/init/data/message2.art.nem"
-	even
+		incbin	"buram/init/data/message2.usa.art.nem"
+		even
 
 Map_IntUnformatted:
-	incbin	"buram/init/data/msginternal.map.eni"
-	even
+		incbin	"buram/init/data/msginternal.usa.map.eni"
+		even
+
+; -------------------------------------------------------------------------
+
+	else
+	
+Art_Message1:
+		incbin	"buram/init/data/message.eur.art.nem"
+		even
+
+Map_DataCorrupt:
+		incbin	"buram/init/data/msgcorrupt.eur.map.eni"
+		even
+	
+Map_IntUnformatted:
+		incbin	"buram/init/data/msginternal.eur.map.eni"
+		even
+
+Map_CartUnformatted:
+		incbin	"buram/init/data/msgcartridge.eur.map.eni"
+		even
+
+Map_BuRAMFull:
+		incbin	"buram/init/data/msgfull.eur.map.eni"
+		even
+	
+	endif
 
 ; -------------------------------------------------------------------------
 

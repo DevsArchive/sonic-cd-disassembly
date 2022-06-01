@@ -51,12 +51,18 @@ object4		rs.b	oSize			; Object 4
 object5		rs.b	oSize			; Object 5
 object6		rs.b	oSize			; Object 6
 object7		rs.b	oSize			; Object 7
+	if REGION<>0
 object8		rs.b	oSize			; Object 8
 object9		rs.b	oSize			; Object 9
+	endif
 objectsEnd	rs.b	0			; End of object pool
 OBJCOUNT	EQU	(objectsEnd-objects)/oSize
 
-		rs.b	$1180			; Unused
+	if REGION=0				; Unused
+		rs.b	$1200
+	else
+		rs.b	$1180
+	endif
 nemBuffer	rs.b	$200			; Nemesis decompression buffer
 palette		rs.b	$80			; Palette buffer
 fadePalette	rs.b	$80			; Fade palette buffer
@@ -155,12 +161,21 @@ Start:
 	VDPCMD	move.l,$DC00,VRAM,WRITE,VDPCTRL	; Load menu arrow art
 	lea	Art_MenuArrow(pc),a0
 	bsr.w	NemDec
-	VDPCMD	move.l,$DE00,VRAM,WRITE,VDPCTRL	; Load copyright text art
-	lea	Art_CopyrightTM(pc),a0
-	bsr.w	NemDec
-	VDPCMD	move.l,$DFC0,VRAM,WRITE,VDPCTRL	; Load TM symbol art
-	lea	Art_TM(pc),a0
-	bsr.w	NemDec
+	if REGION=1				; Load copyright/TM art
+		VDPCMD	move.l,$DE00,VRAM,WRITE,VDPCTRL
+		lea	Art_CopyrightTM(pc),a0
+		bsr.w	NemDec
+		VDPCMD	move.l,$DFC0,VRAM,WRITE,VDPCTRL
+		lea	Art_TM(pc),a0
+		bsr.w	NemDec
+	else
+		VDPCMD	move.l,$DE00,VRAM,WRITE,VDPCTRL
+		lea	Art_Copyright(pc),a0
+		bsr.w	NemDec
+		VDPCMD	move.l,$DF20,VRAM,WRITE,VDPCTRL
+		lea	Art_TM(pc),a0
+		bsr.w	NemDec
+	endif
 	VDPCMD	move.l,$F000,VRAM,WRITE,VDPCTRL	; Load banner art
 	lea	Art_Banner(pc),a0
 	bsr.w	NemDec
@@ -174,6 +189,7 @@ Start:
 	VDPCMD	move.l,$BC20,VRAM,WRITE,VDPCTRL	; Load solid tiles
 	lea	Art_SolidColor(pc),a0
 	bsr.w	NemDec
+	
 	bsr.w	LoadCloudsMap			; Load clouds map
 	bsr.w	VSync				; VSync
 
@@ -181,11 +197,13 @@ Start:
 	move.w	#4,vintRoutine.w		; VSync
 	bsr.w	VSync
 
-	move.w	#48-1,d7			; Delay 48 frames
+	if REGION=1
+		move.w	#48-1,d7		; Delay 48 frames
 
 .Delay:
-	bsr.w	VSync
-	dbf	d7,.Delay
+		bsr.w	VSync
+		dbf	d7,.Delay
+	endif
 
 	move.l	#0,lagCounter.w			; Enable and reset lag counter
 	jsr	RunObjects(pc)			; Run objects
@@ -230,8 +248,10 @@ Start:
 	bsr.w	SpawnObject
 	lea	ObjCopyright(pc),a2		; Spawn copyright
 	bsr.w	SpawnObject
-	lea	ObjTM(pc),a2			; Spawn TM symbol
-	bsr.w	SpawnObject
+	if REGION<>0
+		lea	ObjTM(pc),a2		; Spawn TM symbol
+		bsr.w	SpawnObject
+	endif
 
 ; -------------------------------------------------------------------------
 
@@ -282,8 +302,10 @@ MainLoop:
 	bra.w	MainLoop			; Loop
 
 .Exit:
-	cmpi.b	#4,subFailCount.w		; Is the Sub CPU deemed unreliable?
-	bcc.s	.FadeOut			; If so, branch
+	if REGION=1
+		cmpi.b	#4,subFailCount.w	; Is the Sub CPU deemed unreliable?
+		bcc.s	.FadeOut		; If so, branch
+	endif
 	bset	#0,GAMAINFLAG			; Tell Sub CPU we are finished
 
 .WaitSubCPU:
@@ -1313,7 +1335,12 @@ SpawnObject:
 
 ClearObjects:
 	lea	objects.w,a0			; Clear object data
-	move.l	#(objectsEnd-objects)/4-1,d7
+	
+	if REGION=0
+		moveq	#(objectsEnd-objects)/4-1,d7
+	else
+		move.l	#(objectsEnd-objects)/4-1,d7
+	endif
 
 .Clear:
 	clr.l	(a0)+
@@ -1765,7 +1792,11 @@ ObjMenu:
 	move.b	#%1,oFlags(a0)			; Set flags
 	move.w	#83,oX(a0)			; Set X position
 	move.w	#180,oY(a0)			; Set Y position
-	move.w	#$3FC,timer.w			; Activate timer
+	if REGION=1				; Activate timer
+		move.w	#$3FC,timer.w
+	else
+		move.w	#$1E0,timer.w
+	endif
 
 ; -------------------------------------------------------------------------
 
@@ -2378,9 +2409,14 @@ ObjCopyright:
 	move.l	#MapSpr_Copyright,oMap(a0)	; Set mappings
 	move.w	#$E000|($DE00/$20),oTile(a0)	; Set sprite tile ID
 	move.b	#%1,oFlags(a0)			; Set flags
-	move.w	#208,oY(a0)			; Set Y position
-	move.w	#80,ox(a0)			; Set X position
-	move.b	#1,oMapFrame(a0)		; Display with TM symbol
+	if REGION=1
+		move.w	#208,oY(a0)		; Set Y position
+		move.w	#80,oX(a0)		; Set X position
+		move.b	#1,oMapFrame(a0)	; Display with trademark
+	else
+		move.w	#91,oX(a0)		; Set X position
+		move.w	#208,oY(a0)		; Set Y position
+	endif
 
 ; -------------------------------------------------------------------------
 
@@ -2393,7 +2429,11 @@ ObjCopyright:
 ; -------------------------------------------------------------------------
 
 MapSpr_Copyright:
-	include	"title/data/copyright.spr.asm"
+	if REGION=1
+		include	"title/data/copyright.usa.spr.asm"
+	else
+		include	"title/data/copyright.jpeu.spr.asm"
+	endif
 	even
 
 ; -------------------------------------------------------------------------
@@ -2402,7 +2442,11 @@ MapSpr_Copyright:
 
 ObjTM:
 	move.l	#MapSpr_TM,oMap(a0)		; Set mappings
-	move.w	#$E000|($DFC0/$20),oTile(a0)	; Set sprite tile ID
+	if REGION=1				; Set sprite tile ID
+		move.w	#$E000|($DFC0/$20),oTile(a0)
+	else
+		move.w	#$E000|($DF20/$20),oTile(a0)
+	endif
 	move.b	#%1,oFlags(a0)			; Set flags
 	move.w	#194,oX(a0)			; Set X position
 	move.w	#131,oY(a0)			; Set Y position
@@ -2598,13 +2642,19 @@ Art_Copyright:
 	incbin	"title/data/copyright.art.nem"
 	even
 
+	if REGION=1
 Art_TM:
-	incbin	"title/data/tm.art.nem"
-	even
+		incbin	"title/data/tm.usa.art.nem"
+		even
 
 Art_CopyrightTM:
-	incbin	"title/data/copyrighttm.art.nem"
-	even
+		incbin	"title/data/copyrighttm.art.nem"
+		even
+	else
+Art_TM:
+		incbin	"title/data/tm.jpeu.art.nem"
+		even
+	endif
 
 ; -------------------------------------------------------------------------
 

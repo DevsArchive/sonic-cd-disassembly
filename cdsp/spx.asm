@@ -1345,7 +1345,11 @@ SPCmd_LoadTimeAttack:
 	bsr.w	GiveWordRAMAccess
 
 	bsr.w	ResetCDDAVol			; Play D.A. Garden music
-	lea	MusID_DAGarden(pc),a0
+	if REGION=1
+		lea	MusID_DAGarden(pc),a0
+	else
+		lea	MusID_TimeAttack(pc),a0
+	endif
 	move.w	#MSCPLAYR,d0
 	jsr	_CDBIOS.w
 	rts
