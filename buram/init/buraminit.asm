@@ -110,7 +110,7 @@ Start:
 ; -------------------------------------------------------------------------
 
 	if REGION=USA
-		include	"buram/init/buramvint.asm"
+		include	"buram/init/vinterrupt.asm"
 	endif
 
 ; -------------------------------------------------------------------------
@@ -199,11 +199,11 @@ ShowMessage:
 	add.w	d0,d0
 
 	move.l	d0,-(sp)			; Load first tilemap
-	jsr	LoadMessageMap
+	jsr	DrawMessageTilemap
 	move.l	(sp)+,d0
 
 	addq.w	#1,d0				; Load second tilemap
-	jsr	LoadMessageMap
+	jsr	DrawMessageTilemap
 	
 	bset	#6,ipxVDPReg1+1			; Enable display
 	move.w	ipxVDPReg1,VDPCTRL
@@ -233,7 +233,7 @@ Finish:
 ; -------------------------------------------------------------------------
 
 	if REGION<>USA
-		include	"buram/init/buramvint.asm"
+		include	"buram/init/vinterrupt.asm"
 	endif
 
 ; -------------------------------------------------------------------------
@@ -404,7 +404,27 @@ StartZ80:
 ReadController:
 	lea	ctrlData,a0			; Controller data buffer
 	lea	IODATA1,a1			; Controller port 1
-	include	"_common/readctrl.asm"		; Read controller
+	
+	move.b	#0,(a1)				; TH = 0
+	tst.w	(a0)				; Delay
+	move.b	(a1),d0				; Read start and A buttons
+	lsl.b	#2,d0
+	andi.b	#$C0,d0
+	
+	move.b	#$40,(a1)			; TH = 1
+	tst.w	(a0)				; Delay
+	move.b	(a1),d1				; Read B, C, and D-pad buttons
+	andi.b	#$3F,d1
+
+	or.b	d1,d0				; Combine button data
+	not.b	d0				; Flip bits
+	move.b	d0,d1				; Make copy
+
+	move.b	(a0),d2				; Mask out tapped buttons
+	eor.b	d2,d0
+	move.b	d1,(a0)+			; Store pressed buttons
+	and.b	d1,d0				; store tapped buttons
+	move.b	d0,(a0)+
 	rts
 
 ; -------------------------------------------------------------------------
@@ -1403,16 +1423,16 @@ NemBCT_ShortCode_Loop:
 	bra.s	NemBCT_Loop			; Loop
 
 ; -------------------------------------------------------------------------
-; Load message mappings
+; Draw message tilemap
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
-;	d0.b - Message ID
+;	d0.b - Tilemap ID
 ; -------------------------------------------------------------------------
 
-LoadMessageMap:
+DrawMessageTilemap:
 	andi.l	#$FFFF,d0			; Get mappings metadata
 	mulu.w	#14,d0
-	lea	.MessageMaps,a1
+	lea	.Tilemaps,a1
 	adda.w	d0,a1
 
 	movea.l	(a1)+,a0			; Mappings data
@@ -1443,8 +1463,9 @@ LoadMessageMap:
 
 ; -------------------------------------------------------------------------
 
-.MessageMaps:
-	dc.l	Map_Eggman			; Backup RAM data corrupted
+.Tilemaps:
+	; Backup RAM data corrupted
+	dc.l	Map_Eggman
 	dc.w	1
 	dc.w	$A-1, 6-1
 	VDPCMD	dc.l,$C31E,VRAM,WRITE
@@ -1459,7 +1480,8 @@ LoadMessageMap:
 		VDPCMD	dc.l,$E58A,VRAM,WRITE
 	endif
 	
-	dc.l	Map_Eggman			; Internal Backup RAM unformatted
+	; Internal Backup RAM unformatted
+	dc.l	Map_Eggman
 	dc.w	1
 	dc.w	$A-1, 6-1
 	VDPCMD	dc.l,$C31E,VRAM,WRITE
@@ -1479,7 +1501,8 @@ LoadMessageMap:
 		VDPCMD	dc.l,$E58A,VRAM,WRITE
 	endif
 	
-	dc.l	Map_Eggman			; Cartridge Backup RAM unformatted
+	; Cartridge Backup RAM unformatted
+	dc.l	Map_Eggman
 	dc.w	1
 	dc.w	9, 5
 	if REGION=JAPAN
@@ -1498,7 +1521,8 @@ LoadMessageMap:
 		VDPCMD	dc.l,$E50A,VRAM,WRITE
 	endif
 	
-	dc.l	Map_Eggman			; Backup RAM full
+	; Backup RAM full
+	dc.l	Map_Eggman
 	dc.w	1
 	dc.w	9, 5
 	if REGION=JAPAN

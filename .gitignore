@@ -6,11 +6,14 @@ _original/jpn/*.TXT
 _original/jpn/*.BIN
 _original/jpn/*.MMD
 _original/jpn/*.STM
+_original/jpn/*.idb
 _original/usa/*.TXT
 _original/usa/*.BIN
 _original/usa/*.MMD
 _original/usa/*.STM
+_original/usa/*.idb
 _original/eur/*.TXT
 _original/eur/*.BIN
 _original/eur/*.MMD
 _original/eur/*.STM
+_original/eur/*.idb
