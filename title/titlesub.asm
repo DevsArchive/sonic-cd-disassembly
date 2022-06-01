@@ -7,7 +7,7 @@
 
 	include	"_inc/common.i"
 	include	"_inc/subcpu.i"
-	include	"title/common.i"
+	include	"title/titlecommon.i"
 
 ; -------------------------------------------------------------------------
 ; Graphics operation variable structure

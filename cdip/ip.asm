@@ -16,11 +16,11 @@
 
 	org	WORKRAM
 
-	if REGION=0
+	if REGION=JAPAN
 		incbin	"cdip/security/japan.sec"
-	elseif REGION=1
+	elseif REGION=USA
 		incbin	"cdip/security/usa.sec"
-	elseif REGION=2
+	elseif REGION=EUROPE
 		incbin	"cdip/security/europe.sec"
 	endif
 

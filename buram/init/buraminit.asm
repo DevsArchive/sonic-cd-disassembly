@@ -109,8 +109,8 @@ Start:
 
 ; -------------------------------------------------------------------------
 
-	if REGION=1
-		include	"buram/init/vinterrupt.asm"
+	if REGION=USA
+		include	"buram/init/buramvint.asm"
 	endif
 
 ; -------------------------------------------------------------------------
@@ -188,7 +188,7 @@ ShowMessage:
 	move.l	d0,(a6)
 	move.l	d0,(a6)
 
-	if REGION=1				; Load art
+	if REGION=USA				; Load art
 		move.l	#$00010203,d0
 	else
 		move.l	#$00000102,d0
@@ -232,8 +232,8 @@ Finish:
 
 ; -------------------------------------------------------------------------
 
-	if REGION<>1
-		include	"buram/init/vinterrupt.asm"
+	if REGION<>USA
+		include	"buram/init/buramvint.asm"
 	endif
 
 ; -------------------------------------------------------------------------
@@ -1184,7 +1184,7 @@ LoadMessageArt:
 	dc.l	Art_Eggman
 	VDPCMD	dc.l,$340,VRAM,WRITE		; Message art #1
 	dc.l	Art_Message1
-	if REGION=1
+	if REGION=USA
 		VDPCMD	dc.l,$1C40,VRAM,WRITE	; Message art #2
 		dc.l	Art_Message2
 	endif
@@ -1451,7 +1451,7 @@ LoadMessageMap:
 
 	dc.l	Map_DataCorrupt
 	dc.w	$201A
-	if REGION=0
+	if REGION=JAPAN
 		dc.w	$24-1, 6-1
 		VDPCMD	dc.l,$E584,VRAM,WRITE
 	else
@@ -1465,11 +1465,11 @@ LoadMessageMap:
 	VDPCMD	dc.l,$C31E,VRAM,WRITE
 
 	dc.l	Map_IntUnformatted
-	if REGION=0
+	if REGION=JAPAN
 		dc.w	$201A
 		dc.w	$24-1, 6-1
 		VDPCMD	dc.l,$E584,VRAM,WRITE
-	elseif REGION=1
+	elseif REGION=USA
 		dc.w	$20E2
 		dc.w	$1D-1, 8-1
 		VDPCMD	dc.l,$E58A,VRAM,WRITE
@@ -1482,7 +1482,7 @@ LoadMessageMap:
 	dc.l	Map_Eggman			; Cartridge Backup RAM unformatted
 	dc.w	1
 	dc.w	9, 5
-	if REGION=0
+	if REGION=JAPAN
 		VDPCMD	dc.l,$C21E,VRAM,WRITE
 	else
 		VDPCMD	dc.l,$C29E,VRAM,WRITE
@@ -1490,7 +1490,7 @@ LoadMessageMap:
 
 	dc.l	Map_CartUnformatted
 	dc.w	$201A
-	if REGION=0
+	if REGION=JAPAN
 		dc.w	$24-1, $A-1
 		VDPCMD	dc.l,$E484,VRAM,WRITE
 	else
@@ -1501,7 +1501,7 @@ LoadMessageMap:
 	dc.l	Map_Eggman			; Backup RAM full
 	dc.w	1
 	dc.w	9, 5
-	if REGION=0
+	if REGION=JAPAN
 		VDPCMD	dc.l,$C29E,VRAM,WRITE
 	else
 		VDPCMD	dc.l,$C31E,VRAM,WRITE
@@ -1509,7 +1509,7 @@ LoadMessageMap:
 
 	dc.l	Map_BuRAMFull
 	dc.w	$201A
-	if REGION=0
+	if REGION=JAPAN
 		dc.w	$24-1, 8-1
 		VDPCMD	dc.l,$E504,VRAM,WRITE
 	else
@@ -1770,7 +1770,7 @@ Map_Eggman:
 
 ; -------------------------------------------------------------------------
 
-	if REGION=0
+	if REGION=JAPAN
 	
 Art_Message1:
 		incbin	"buram/init/data/message.jpn.art.nem"
@@ -1794,7 +1794,7 @@ Map_BuRAMFull:
 		
 ; -------------------------------------------------------------------------
 
-	elseif REGION=1
+	elseif REGION=USA
 	
 Art_Message1:
 		incbin	"buram/init/data/message1.usa.art.nem"

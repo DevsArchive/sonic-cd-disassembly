@@ -12,4 +12,5 @@ fc /b _original\%REGPATH%\MDINIT.MMD _built\files\MDINIT.MMD
 fc /b _original\%REGPATH%\SNCBNK1B.BIN _built\files\SNCBNK1B.BIN
 fc /b _original\%REGPATH%\TITLEM.MMD _built\files\TITLEM.MMD
 fc /b _original\%REGPATH%\TITLES.BIN _built\files\TITLES.BIN
+
 pause

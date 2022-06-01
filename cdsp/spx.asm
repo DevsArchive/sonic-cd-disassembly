@@ -1345,7 +1345,7 @@ SPCmd_LoadTimeAttack:
 	bsr.w	GiveWordRAMAccess
 
 	bsr.w	ResetCDDAVol			; Play D.A. Garden music
-	if REGION=1
+	if REGION=USA
 		lea	MusID_DAGarden(pc),a0
 	else
 		lea	MusID_TimeAttack(pc),a0

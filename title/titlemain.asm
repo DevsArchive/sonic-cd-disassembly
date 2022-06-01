@@ -10,7 +10,7 @@
 	include	"_inc/mainvars.i"
 	include	"_inc/sound.i"
 	include	"_inc/mmd.i"
-	include	"title/common.i"
+	include	"title/titlecommon.i"
 
 ; -------------------------------------------------------------------------
 ; Object variables structure
@@ -37,10 +37,10 @@ oSize		rs.b	0			; Size of structure
 VARSSTART	rs.b	0			; Start of variables
 cloudsArt	rs.b	IMGLENGTH		; Clouds art buffer
 hscroll		rs.b	$380			; Horizontal scroll buffer
-		rs.b	$80			; Unused
+		rs.b	$80
 sprites		rs.b	80*8			; Sprite buffer
 scrollBuf	rs.b	$100			; Scroll buffer
-		rs.b	$B80			; Unused
+		rs.b	$B80
 
 objects		rs.b	0			; Object pool
 object0		rs.b	oSize			; Object 0
@@ -51,28 +51,29 @@ object4		rs.b	oSize			; Object 4
 object5		rs.b	oSize			; Object 5
 object6		rs.b	oSize			; Object 6
 object7		rs.b	oSize			; Object 7
-	if REGION<>0
+	if REGION<>JAPAN
 object8		rs.b	oSize			; Object 8
 object9		rs.b	oSize			; Object 9
 	endif
 objectsEnd	rs.b	0			; End of object pool
 OBJCOUNT	EQU	(objectsEnd-objects)/oSize
 
-	if REGION=0				; Unused
+	if REGION=JAPAN
 		rs.b	$1200
 	else
 		rs.b	$1180
 	endif
+
 nemBuffer	rs.b	$200			; Nemesis decompression buffer
 palette		rs.b	$80			; Palette buffer
 fadePalette	rs.b	$80			; Fade palette buffer
-		rs.b	1			; Unused
+		rs.b	1
 unkPalFadeFlag	rs.b	1			; Unknown palette fade flag
 palFadeInfo	rs.b	0			; Palette fade info
 palFadeStart	rs.b	1			; Palette fade start
 palFadeLen	rs.b	1			; Palette fade length
 titleMode	rs.b	1			; Title screen mode
-		rs.b	5			; Unused
+		rs.b	5
 unkObjYSpeed	rs.w	1			; Unknown global object Y speed
 palCycleFrame	rs.b	1			; Palette cycle frame
 palCycleDelay	rs.b	1			; Palette cycle delay
@@ -93,7 +94,7 @@ subWaitTime	rs.l	1			; Sub CPU wait time
 subFailCount	rs.b	1			; Sub CPU fail count
 		RSEVEN
 enableDisplay	rs.b	1			; Enable display flag
-		rs.b	$19			; Unused
+		rs.b	$19
 vintRoutine	rs.w	1			; V-INT routine ID
 timer		rs.w	1			; Timer
 vintCounter	rs.w	1			; V-INT counter
@@ -101,7 +102,7 @@ savedSR		rs.w	1			; Saved status register
 spriteCount	rs.b	1			; Sprite count
 		RSEVEN
 curSpriteSlot	rs.l	1			; Current sprite slot
-		rs.b	$B2			; Unused
+		rs.b	$B2
 VARSLEN		EQU	__rs-VARSSTART		; Size of variables area
 lagCounter	rs.l	1			; Lag counter
 
@@ -161,7 +162,7 @@ Start:
 	VDPCMD	move.l,$DC00,VRAM,WRITE,VDPCTRL	; Load menu arrow art
 	lea	Art_MenuArrow(pc),a0
 	bsr.w	NemDec
-	if REGION=1				; Load copyright/TM art
+	if REGION=USA				; Load copyright/TM art
 		VDPCMD	move.l,$DE00,VRAM,WRITE,VDPCTRL
 		lea	Art_CopyrightTM(pc),a0
 		bsr.w	NemDec
@@ -197,7 +198,7 @@ Start:
 	move.w	#4,vintRoutine.w		; VSync
 	bsr.w	VSync
 
-	if REGION=1
+	if REGION=USA
 		move.w	#48-1,d7		; Delay 48 frames
 
 .Delay:
@@ -248,7 +249,7 @@ Start:
 	bsr.w	SpawnObject
 	lea	ObjCopyright(pc),a2		; Spawn copyright
 	bsr.w	SpawnObject
-	if REGION<>0
+	if REGION<>JAPAN
 		lea	ObjTM(pc),a2		; Spawn TM symbol
 		bsr.w	SpawnObject
 	endif
@@ -302,7 +303,7 @@ MainLoop:
 	bra.w	MainLoop			; Loop
 
 .Exit:
-	if REGION=1
+	if REGION=USA
 		cmpi.b	#4,subFailCount.w	; Is the Sub CPU deemed unreliable?
 		bcc.s	.FadeOut		; If so, branch
 	endif
@@ -1336,7 +1337,7 @@ SpawnObject:
 ClearObjects:
 	lea	objects.w,a0			; Clear object data
 	
-	if REGION=0
+	if OBJCOUNT<=8
 		moveq	#(objectsEnd-objects)/4-1,d7
 	else
 		move.l	#(objectsEnd-objects)/4-1,d7
@@ -1792,7 +1793,7 @@ ObjMenu:
 	move.b	#%1,oFlags(a0)			; Set flags
 	move.w	#83,oX(a0)			; Set X position
 	move.w	#180,oY(a0)			; Set Y position
-	if REGION=1				; Activate timer
+	if REGION=USA				; Activate timer
 		move.w	#$3FC,timer.w
 	else
 		move.w	#$1E0,timer.w
@@ -2409,7 +2410,7 @@ ObjCopyright:
 	move.l	#MapSpr_Copyright,oMap(a0)	; Set mappings
 	move.w	#$E000|($DE00/$20),oTile(a0)	; Set sprite tile ID
 	move.b	#%1,oFlags(a0)			; Set flags
-	if REGION=1
+	if REGION=USA
 		move.w	#208,oY(a0)		; Set Y position
 		move.w	#80,oX(a0)		; Set X position
 		move.b	#1,oMapFrame(a0)	; Display with trademark
@@ -2429,7 +2430,7 @@ ObjCopyright:
 ; -------------------------------------------------------------------------
 
 MapSpr_Copyright:
-	if REGION=1
+	if REGION=USA
 		include	"title/data/copyright.usa.spr.asm"
 	else
 		include	"title/data/copyright.jpeu.spr.asm"
@@ -2442,7 +2443,7 @@ MapSpr_Copyright:
 
 ObjTM:
 	move.l	#MapSpr_TM,oMap(a0)		; Set mappings
-	if REGION=1				; Set sprite tile ID
+	if REGION=USA				; Set sprite tile ID
 		move.w	#$E000|($DFC0/$20),oTile(a0)
 	else
 		move.w	#$E000|($DF20/$20),oTile(a0)
@@ -2642,7 +2643,7 @@ Art_Copyright:
 	incbin	"title/data/copyright.art.nem"
 	even
 
-	if REGION=1
+	if REGION=USA
 Art_TM:
 		incbin	"title/data/tm.usa.art.nem"
 		even

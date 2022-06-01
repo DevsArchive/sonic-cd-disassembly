@@ -40,11 +40,11 @@
 	dc.b	"J               "		; I/O support
 	dc.b	"                "		; Space
 	align	$1F0, $20
-	if REGION=0				; Region
+	if REGION=JAPAN				; Region
 		dc.b	"J"
-	elseif REGION=1
+	elseif REGION=USA
 		dc.b	"U"
-	elseif REGION=2
+	elseif REGION=EUROPE
 		dc.b	"E"
 	endif
 	align	$200, $20
