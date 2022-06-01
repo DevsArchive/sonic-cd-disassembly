@@ -1,3 +1,5 @@
 *.lst
 *.bin
 *.mmd
+_built
+_original

@@ -30,8 +30,11 @@ rngSeed		rs.l	1			; Random number generator seed
 		rs.b	$2EEE
 VARSLEN		EQU	__rs-VARSSTART		; Size of variables area
 
+fmSndQueue1	EQU	$FFFFF00B		; Sound queue 1
+fmSndQueue2	EQU	$FFFFF00C		; Sound queue 2
+
 ctrlData	EQU	GACOMCMDE		; Controller data
-ctrlPress	EQU	ctrlData		; Controller pressed buttons data
+ctrlHold	EQU	ctrlData		; Controller held buttons data
 ctrlTap		EQU	ctrlData+1		; Controller tapped buttons data
 
 ; -------------------------------------------------------------------------
@@ -228,7 +231,7 @@ ErrorLoop:
 ShowMessage:
 	move.l	d0,-(sp)			; Save message ID
 
-	bsr.w	InitMessage			; Initialize message
+	bsr.w	InitMD				; Initialize Mega Drive hardware
 	bclr	#6,ipxVDPReg1+1			; Disable display
 	move.w	ipxVDPReg1,VDPCTRL
 
@@ -332,10 +335,10 @@ SyncWithSubCPU2:
 	rts
 
 ; -------------------------------------------------------------------------
-; Initialize message
+; Initialize Mega Drive hardware
 ; -------------------------------------------------------------------------
 
-InitMessage:
+InitMD:
 	lea	.VDPRegs(pc),a0			; Set up VDP registers
 	move.w	#$8000,d0
 	moveq	#.VDPRegsEnd-.VDPRegs-1,d7
@@ -353,7 +356,6 @@ InitMessage:
 	move.b	#$C0,IODATA1
 
 	bsr.w	StopZ80				; Stop the Z80
-	
 	DMAFILL	0,$10000,0			; Clear VRAM
 
 	VDPCMD	move.l,$C000,VRAM,WRITE,VDPCTRL	; Clear Plane A
@@ -445,27 +447,7 @@ StartZ80:
 ReadController:
 	lea	ctrlData,a0			; Controller data buffer
 	lea	IODATA1,a1			; Controller port 1
-
-	move.b	#0,(a1)				; TH = 0
-	tst.w	(a0)				; Delay
-	move.b	(a1),d0				; Read start and A buttons
-	lsl.b	#2,d0
-	andi.b	#$C0,d0
-	
-	move.b	#$40,(a1)			; TH = 1
-	tst.w	(a0)				; Delay
-	move.b	(a1),d1				; Read B, C, and D-pad buttons
-	andi.b	#$3F,d1
-
-	or.b	d1,d0				; Combine button data
-	not.b	d0				; Flip bits
-	move.b	d0,d1				; Make copy
-
-	move.b	(a0),d2				; Mask out tapped buttons
-	eor.b	d2,d0
-	move.b	d1,(a0)+			; Store pressed buttons
-	and.b	d1,d0				; store tapped buttons
-	move.b	d0,(a0)+
+	include	"_common/readctrl.asm"		; Read controller
 	rts
 
 ; -------------------------------------------------------------------------
@@ -495,8 +477,8 @@ LoadDummyZ80:
 ;	d0.b - FM sound ID
 ; -------------------------------------------------------------------------
 
-PlaySound2:
-	move.b	d0,fmSndQueue2.w
+PlaySound:
+	move.b	d0,fmSndQueue1.w
 	rts
 
 ; -------------------------------------------------------------------------
@@ -506,8 +488,8 @@ PlaySound2:
 ;	d0.b - FM sound ID
 ; -------------------------------------------------------------------------
 
-PlaySound3:
-	move.b	d0,fmSndQueue3.w
+PlaySound2:
+	move.b	d0,fmSndQueue2.w
 	rts
 
 ; -------------------------------------------------------------------------
@@ -518,17 +500,17 @@ FlushSoundQueue:
 	jsr	StopZ80				; Stop the Z80
 
 .CheckQueue2:
-	tst.b	fmSndQueue2.w			; Is the 2nd sound queue set?
+	tst.b	fmSndQueue1.w			; Is the 1st sound queue set?
 	beq.s	.CheckQueue3			; If not, branch
-	move.b	fmSndQueue2.w,FMDrvQueue1	; Queue sound in driver
-	move.b	#0,fmSndQueue2.w		; Clear 2nd sound queue
+	move.b	fmSndQueue1.w,FMDrvQueue1	; Queue sound in driver
+	move.b	#0,fmSndQueue1.w		; Clear 1st sound queue
 	bra.s	.End				; Exit
 
 .CheckQueue3:
-	tst.b	fmSndQueue3.w			; Is the 3rd sound queue set?
+	tst.b	fmSndQueue2.w			; Is the 2nd sound queue set?
 	beq.s	.End				; If not, branch
-	move.b	fmSndQueue3.w,FMDrvQueue1	; Queue sound in driver
-	move.b	#0,fmSndQueue3.w		; Clear 3rd sound queue
+	move.b	fmSndQueue2.w,FMDrvQueue1	; Queue sound in driver
+	move.b	#0,fmSndQueue2.w		; Clear 2nd sound queue
 
 .End:
 	jmp	StartZ80			; Start the Z80

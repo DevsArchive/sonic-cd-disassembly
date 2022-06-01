@@ -378,13 +378,30 @@ cmd	= (\type\\rwd\)|(((\addr)&$3FFF)<<16)|((\addr)/$4000)
 ; -------------------------------------------------------------------------
 
 DMA68K macro src, dest, len, type
+	; Check if source address is in Word RAM
+	local	srcd
+	if ((\src)>=WORDRAM2M)&((\src)<WORDRAM2ME)
+		srcd:	EQU (\src)+2
+	else
+		srcd:	EQU \src
+	endif
+
+	; DMA data
 	lea	VDPCTRL,a6
 	move.l	#$93009400|((((\len)/2)&$FF00)>>8)|((((\len)/2)&$FF)<<16),(a6)
-	move.l	#$95009600|((((\src)/2)&$FF00)>>8)|((((\src)/2)&$FF)<<16),(a6)
-	move.w	#$9700|(((\src)>>17)&$7F),(a6)
+	move.l	#$95009600|((((srcd)/2)&$FF00)>>8)|((((srcd)/2)&$FF)<<16),(a6)
+	move.w	#$9700|(((srcd)>>17)&$7F),(a6)
 	VDPCMD	move.w,\dest,\type,DMA,>>16,(a6)
 	VDPCMD	move.w,\dest,\type,DMA,&$FFFF,-(sp)
 	move.w	(sp)+,(a6)
+
+	; Manually write first word
+	VDPCMD	move.l,\dest,\type,WRITE,(a6)
+	if ((\src)>=$FFFF8000)&((\src)<=$FFFFFFFF)
+		move.w	(\src).w,VDPDATA
+	else
+		move.w	(\src),VDPDATA
+	endif
 	endm
 
 ; -------------------------------------------------------------------------
@@ -397,6 +414,7 @@ DMA68K macro src, dest, len, type
 ; -------------------------------------------------------------------------
 
 DMAFILL macro addr, len, byte
+	; DMA fill
 	lea	VDPCTRL,a6
 	move.w	#$8F01,(a6)
 	move.l	#$93009400|((((\len)-1)&$FF00)>>8)|((((\len)-1)&$FF)<<16),(a6)
@@ -404,6 +422,8 @@ DMAFILL macro addr, len, byte
 	VDPCMD	move.l,\addr,VRAM,DMA,(a6)
 	move.w	#(\byte)<<8,VDPDATA
 	DMAWAIT	a6
+	
+	; Manually write first word
 	VDPCMD	move.l,\addr,VRAM,WRITE,(a6)
 	move.w	#((\byte)<<8)|(\byte),VDPDATA
 	move.w	#$8F02,(a6)

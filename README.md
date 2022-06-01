@@ -1,5 +1,5 @@
 # Misc. Sonic CD File Disassemblies
-This is a collection of documented disassemblies of various misc. files from Sonic CD.
+This is a collection of documented disassemblies of various misc. files from Sonic CD. Builds a working ISO, as long as you provide the rest of the files.
 
 ## Currently Contains
 * Initial program
@@ -11,3 +11,5 @@ This is a collection of documented disassemblies of various misc. files from Son
 * Mega Drive initialization file (MDINIT)
 * SMPS-PCM
     - Palmtree Panic (SNCBNK1B)
+* Title screen (TITLEM and TITLES)
+    - A couple bits still need to be figured out

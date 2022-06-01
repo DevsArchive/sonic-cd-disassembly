@@ -69,14 +69,6 @@ lastCheckpoint		rs.b	1		; Last checkpoint ID
 MAINVARSSZ		EQU	__rs-MAINVARS	; Size of Main CPU global variables area
 
 WORKRAMFILE		rs.b	$6000		; Work RAM file data
-
-	rsset	WORKRAM+$FF008000
-			rs.b	$700A
-fmSndQueue1		rs.b	1		; Sound queue 1
-fmSndQueue2		rs.b	1		; Sound queue 2
-fmSndQueue3		rs.b	1		; Sound queue 3
-			rs.b	$AF3
-
-WORKRAMFILESZ		EQU	(__rs&$FFFFFF)-WORKRAMFILE
+WORKRAMFILESZ		EQU	$FFFB00-WORKRAMFILE
 
 ; -------------------------------------------------------------------------

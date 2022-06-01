@@ -63,12 +63,14 @@ decompWindow	EQU	WORDRAM2M+$38000	; Decompression sliding window
 	bset	#1,GAIRQMASK.w			; Enable level 1 interrupt
 	bclr	#7,GASUBFLAG.w			; Tell Main CPU we're done initializing
 
+; -------------------------------------------------------------------------
+
 MainLoop:
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 	btst	#7,GAMAINFLAG.w			; Is the Main CPU finished?
 	bne.s	.Done				; If so, branch
 	bsr.w	RunBuRAMCmd			; Run Backup RAM command
-	bsr.w	GiveWordRAMAccess		; Give Main CPU to Word RAM access
+	bsr.w	GiveWordRAMAccess		; Give Main CPU Word RAM access
 	bra.w	MainLoop			; Loop
 
 .Done:
@@ -224,8 +226,8 @@ SyncWithMainCPU:
 ; -------------------------------------------------------------------------
 
 GiveWordRAMAccess:
-	bset	#0,GAMEMMODE.w		; Give Main CPU Word RAM access
-	btst	#0,GAMEMMODE.w		; Has it been given?
+	bset	#0,GAMEMMODE.w			; Give Main CPU Word RAM access
+	btst	#0,GAMEMMODE.w			; Has it been given?
 	beq.s	GiveWordRAMAccess		; If not, wait
 	rts
 
@@ -234,7 +236,7 @@ GiveWordRAMAccess:
 ; -------------------------------------------------------------------------
 
 WaitWordRAMAccess:
-	btst	#1,GAMEMMODE.w		; Do we have Word RAM access?
+	btst	#1,GAMEMMODE.w			; Do we have Word RAM access?
 	beq.s	WaitWordRAMAccess		; If not, wait
 	rts
 
