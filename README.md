@@ -13,3 +13,5 @@ This is a collection of documented disassemblies of various misc. files from Son
     - Palmtree Panic (SNCBNK1B)
 * Title screen (TITLEM and TITLES)
     - A couple bits still need to be figured out
+* Sound test (SOSEL)
+    - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)

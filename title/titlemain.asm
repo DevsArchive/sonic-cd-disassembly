@@ -2465,7 +2465,7 @@ ObjMenu_BestTimesCheat:
 ; -------------------------------------------------------------------------
 
 ObjMenu_PlayRingSound:
-	move.b	#$95,fmSndQueue.w		; Play ring sound
+	move.b	#FM_RING,fmSndQueue.w		; Play ring sound
 	rts
 
 ; -------------------------------------------------------------------------

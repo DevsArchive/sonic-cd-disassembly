@@ -125,7 +125,7 @@ SCMD_DAGRDNMUS	rs.b	1			; Play D.A. Garden MUSic
 SCMD_PROTOWARP	rs.b	1			; Play prototype warp sound
 SCMD_INTROMUS	rs.b	1			; Play opening MUSic
 SCMD_ENDINGMUS	rs.b	1			; Play ending MUSic
-SCMD_STOPCDA	rs.b	1			; Stop CDDA MUSic
+SCMD_STOPCDDA	rs.b	1			; Stop CDDA MUSic
 SCMD_SPECSTAGE	rs.b	1			; Load special stage
 SCMD_FUTURESFX	rs.b	1			; Play "Future" voice clip
 SCMD_PASTSFX	rs.b	1			; Play "Past" voice clip
@@ -162,23 +162,23 @@ SCMD_R1AMUST	rs.b	1			; Play Palmtree Panic present music (sound test)
 SCMD_R1CMUST	rs.b	1			; Play Palmtree Panic good future music (sound test)
 SCMD_R1DMUST	rs.b	1			; Play Palmtree Panic bad future music (sound test)
 SCMD_R3AMUST	rs.b	1			; Play Collision Chaos present music (sound test)
-SCMD_R3CMUST	rs.b	1			; Play Collision Chaos good future music (sound test
+SCMD_R3CMUST	rs.b	1			; Play Collision Chaos good future music (sound test)
 SCMD_R3DMUST	rs.b	1			; Play Collision Chaos bad future music (sound test)
 SCMD_R4AMUST	rs.b	1			; Play Tidal Tempest present music (sound test)
 SCMD_R4CMUST	rs.b	1			; Play Tidal Tempest good future music (sound test)
 SCMD_R4DMUST	rs.b	1			; Play Tidal Tempest bad future music (sound test)
 SCMD_R5AMUST	rs.b	1			; Play Quartz Quadrant present music (sound test)
-SCMD_R5CMUST	rs.b	1			; Play Quartz Quadrant good future music (sound test
+SCMD_R5CMUST	rs.b	1			; Play Quartz Quadrant good future music (sound test)
 SCMD_R5DMUST	rs.b	1			; Play Quartz Quadrant bad future music (sound test)
 SCMD_R6AMUST	rs.b	1			; Play Wacky Workbench present music (sound test)
-SCMD_R6CMUST	rs.b	1			; Play Wacky Workbench good future music (sound test
+SCMD_R6CMUST	rs.b	1			; Play Wacky Workbench good future music (sound test)
 SCMD_R6DMUST	rs.b	1			; Play Wacky Workbench bad future music (sound test)
 SCMD_R7AMUST	rs.b	1			; Play Stardust Speedway present music (sound test)
-SCMD_R7CMUST	rs.b	1			; Play Stardust Speedway good future music (sound te
-SCMD_R7DMUST	rs.b	1			; Play Stardust Speedway bad future music (sound tes
+SCMD_R7CMUST	rs.b	1			; Play Stardust Speedway good future music (sound test)
+SCMD_R7DMUST	rs.b	1			; Play Stardust Speedway bad future music (sound test)
 SCMD_R8AMUST	rs.b	1			; Play Metallic Madness present music (sound test)
-SCMD_R8CMUST	rs.b	1			; Play Metallic Madness good future music (sound tes
-SCMD_R8DMUST	rs.b	1			; Play Metallic Madness bad future music (sound test
+SCMD_R8CMUST	rs.b	1			; Play Metallic Madness good future music (sound test)
+SCMD_R8DMUST	rs.b	1			; Play Metallic Madness bad future music (sound test)
 SCMD_BOSSMUST	rs.b	1			; Play boss music (sound test)
 SCMD_FINALMUST	rs.b	1			; Play final boss music (sound test)
 SCMD_TITLEMUST	rs.b	1			; Play title screen music (sound test)

@@ -21,6 +21,7 @@ del _built\files\.gitkeep > nul
 %ASM68K% sound\pcm\ppz.asm, _built\files\SNCBNK1B.BIN, , sound\pcm\ppz.lst
 %ASM68K% title\titlemain.asm, _built\files\TITLEM.MMD, , title\titlemain.lst
 %ASM68K% title\titlesub.asm, _built\files\TITLES.BIN, , title\titlesub.lst
+%ASM68K% sndtest\sndtest.asm, _built\files\SOSEL_.MMD, , sndtest\sndtest.lst
 %ASM68K% /e EASTEREGG=0 sndtest\easteregg\easteregg.asm, _built\files\NISI.MMD, , sndtest\easteregg\easteregg.funisinfinite.lst
 %ASM68K% /e EASTEREGG=1 sndtest\easteregg\easteregg.asm, _built\files\DUMMY0.MMD, , sndtest\easteregg\easteregg.mcsonic.lst
 %ASM68K% /e EASTEREGG=2 sndtest\easteregg\easteregg.asm, _built\files\DUMMY1.MMD, , sndtest\easteregg\easteregg.tails.lst

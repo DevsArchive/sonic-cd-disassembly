@@ -63,7 +63,9 @@ enteredBigRing		rs.b	1		; Entered big ring flag
 amyCaptured		rs.b	1		; Amy captured flag
 			rs.b	8
 demoMode		rs.w	1		; Demo mode flag
-			rs.b	$C
+			rs.b	6
+debugCheat		rs.w	1		; Debug cheat flag
+			rs.b	4
 lastCheckpoint		rs.b	1		; Last checkpoint ID
 			rs.b	$A71
 MAINVARSSZ		EQU	__rs-MAINVARS	; Size of Main CPU global variables area

@@ -109,7 +109,7 @@ BuRAMManager:
 ; -------------------------------------------------------------------------
 
 SpecStage1Demo:
-	move.b	#0,GACOMCMD3			; Stage 1
+	move.b	#1-1,GACOMCMD3			; Stage 1
 	move.b	#0,GACOMCMDA			; Reset stages beaten
 	bset	#0,GACOMCMDB			; Temporary mode
 	
@@ -122,7 +122,7 @@ SpecStage1Demo:
 ; -------------------------------------------------------------------------
 
 SpecStage6Demo:
-	move.b	#5,GACOMCMD3			; Stage 6
+	move.b	#6-1,GACOMCMD3			; Stage 6
 	move.b	#0,GACOMCMDA			; Reset stages beaten
 	bset	#0,GACOMCMDB			; Temporary mode
 	
@@ -948,9 +948,9 @@ Demo:
 .Demos:
 	dc.w	Demo_OpenFMV-.Demos		; Opening FMV
 	dc.w	Demo_R11A-.Demos		; Palmtree Panic Act 1 Present
-	dc.w	Demo_SS1-.Demos			; Special Stage 1
+	dc.w	Demo_SpecStg1-.Demos		; Special Stage 1
 	dc.w	Demo_R43C-.Demos		; Tidal Tempest Act 3 Good Future
-	dc.w	Demo_SS6-.Demos			; Special Stage 6
+	dc.w	Demo_SpecStg6-.Demos		; Special Stage 6
 	dc.w	Demo_R82A-.Demos		; Metallic Madness Act 2 Present
 .DemosEnd:
 
@@ -1003,7 +1003,7 @@ Demo_R82A:
 ; Special Stage 1 demo
 ; -------------------------------------------------------------------------
 
-Demo_SS1:
+Demo_SpecStg1:
 	move.w	#SCMD_INITSS,d0			; Initialize special stage flags
 	bsr.w	SubCPUCmd
 	bra.w	SpecStage1Demo			; Run demo file
@@ -1012,7 +1012,7 @@ Demo_SS1:
 ; Special Stage 6 demo
 ; -------------------------------------------------------------------------
 
-Demo_SS6:
+Demo_SpecStg6:
 	move.w	#SCMD_INITSS,d0			; Initialize special stage flags
 	bsr.w	SubCPUCmd
 	bra.w	SpecStage6Demo			; Run demo file
@@ -1036,20 +1036,20 @@ SoundTest:
 	moveq	#SCMD_SNDTEST,d0		; Run sound test file
 	bsr.w	RunMMD
 
-	add.w	d0,d0				; Run easter egg
-	move.w	.EasterEggs(pc,d0.w),d0
-	jmp	.EasterEggs(pc,d0.w)
+	add.w	d0,d0				; Exit sound test
+	move.w	.Exits(pc,d0.w),d0
+	jmp	.Exits(pc,d0.w)
 
 ; -------------------------------------------------------------------------
 
-.EasterEggs:
-	dc.w	SoundTest_Exit-.EasterEggs	; Exit sound test
-	dc.w	SoundTest_SS8-.EasterEggs	; Special Stage 8
-	dc.w	SoundTest_FunIsInf-.EasterEggs	; Fun is infinite
-	dc.w	SoundTest_MCSonic-.EasterEggs	; M.C. Sonic
-	dc.w	SoundTest_Tails-.EasterEggs	; Tails
-	dc.w	SoundTest_Batman-.EasterEggs	; Batman Sonic
-	dc.w	SoundTest_CuteSonic-.EasterEggs	; Cute Sonic
+.Exits:
+	dc.w	SoundTest_Exit-.Exits		; Exit sound test
+	dc.w	SoundTest_SpecStg8-.Exits	; Special Stage 8
+	dc.w	SoundTest_FunIsInf-.Exits	; Fun is infinite
+	dc.w	SoundTest_MCSonic-.Exits	; M.C. Sonic
+	dc.w	SoundTest_Tails-.Exits		; Tails
+	dc.w	SoundTest_Batman-.Exits		; Batman Sonic
+	dc.w	SoundTest_CuteSonic-.Exits	; Cute Sonic
 
 ; -------------------------------------------------------------------------
 ; Exit sound test
@@ -1062,8 +1062,8 @@ SoundTest_Exit:
 ; Special Stage 8
 ; -------------------------------------------------------------------------
 
-SoundTest_SS8:
-	move.b	#7,GACOMCMD3			; Stage 8
+SoundTest_SpecStg8:
+	move.b	#8-1,GACOMCMD3			; Stage 8
 	move.b	#0,GACOMCMDA			; Reset stages beaten
 	bset	#0,GACOMCMDB			; Temporary mode
 	bset	#2,GACOMCMDB
