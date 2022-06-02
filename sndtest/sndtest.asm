@@ -67,7 +67,7 @@ TEXTSTR macro str
 			dc.b	$27
 		elseif '\c'="'"
 			dc.b	$28
-		elseif '\c'='"'
+		elseif '\c'='\"'
 			dc.b	$29
 		elseif '\c'='!'
 			dc.b	$2A
