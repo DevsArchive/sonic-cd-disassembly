@@ -12,5 +12,10 @@ fc /b _original\%REGPATH%\MDINIT.MMD _built\files\MDINIT.MMD
 fc /b _original\%REGPATH%\SNCBNK1B.BIN _built\files\SNCBNK1B.BIN
 fc /b _original\%REGPATH%\TITLEM.MMD _built\files\TITLEM.MMD
 fc /b _original\%REGPATH%\TITLES.BIN _built\files\TITLES.BIN
+fc /b _original\%REGPATH%\NISI.MMD _built\files\NISI.MMD
+fc /b _original\%REGPATH%\DUMMY0.MMD _built\files\DUMMY0.MMD
+fc /b _original\%REGPATH%\DUMMY1.MMD _built\files\DUMMY1.MMD
+fc /b _original\%REGPATH%\DUMMY2.MMD _built\files\DUMMY2.MMD
+fc /b _original\%REGPATH%\DUMMY3.MMD _built\files\DUMMY3.MMD
 
 pause

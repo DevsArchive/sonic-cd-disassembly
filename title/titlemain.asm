@@ -65,8 +65,8 @@ OBJCOUNT	EQU	(objectsEnd-objects)/oSize
 	endif
 
 nemBuffer	rs.b	$200			; Nemesis decompression buffer
-palette		rs.b	$80			; Palette buffer
-fadePalette	rs.b	$80			; Fade palette buffer
+palette		rs.w	$40			; Palette buffer
+fadePalette	rs.w	$40			; Fade palette buffer
 		rs.b	1
 unkPalFadeFlag	rs.b	1			; Unknown palette fade flag
 palFadeInfo	rs.b	0			; Palette fade info
@@ -104,6 +104,7 @@ spriteCount	rs.b	1			; Sprite count
 curSpriteSlot	rs.l	1			; Current sprite slot
 		rs.b	$B2
 VARSLEN		EQU	__rs-VARSSTART		; Size of variables area
+
 lagCounter	rs.l	1			; Lag counter
 
 subP2CtrlData	EQU	GACOMCMDE		; Sub CPU player 2 controller data
