@@ -15,3 +15,5 @@ This is a collection of documented disassemblies of various misc. files from Son
     - A couple bits still need to be figured out
 * Sound test (SOSEL)
     - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
+* Level
+    - Palmtree Panic Act 1 present (R11A)
