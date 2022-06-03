@@ -13,6 +13,7 @@
 	if def(MAINCPU)
 FMDrvQueue1	EQU	Z80RAM+$1C09		; Sound queue 1
 FMDrvQueue2	EQU	Z80RAM+$1C0A		; Sound queue 2
+FMDrvQueue3	EQU	Z80RAM+$1C0B		; Sound queue 3
 	endif
 
 ; PCM driver (Sub CPU)

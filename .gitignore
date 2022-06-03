@@ -1,6 +1,4 @@
 *.lst
-*.bin
-*.mmd
 _built
 _original/jpn/*.TXT
 _original/jpn/*.BIN

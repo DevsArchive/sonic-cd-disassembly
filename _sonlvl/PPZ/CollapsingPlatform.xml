@@ -1,0 +1,166 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Name="Collapsing Platform" Image="ledge" RememberState="false">
+  <Images>
+    <ImageFromMappings id="ledge">
+      <ArtFile filename="../level/r1/objects/platform/art.bin" />
+      <MapFile type="ASM" filename="../level/r1/objects/platform/mapcollapseledge.asm" frame="0" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="wide1">
+      <ArtFile filename="../level/r1/objects/platform/art.bin" />
+      <MapFile type="ASM" filename="../level/r1/objects/platform/mapcollapse.asm" frame="0" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="wide2">
+      <ArtFile filename="../level/r1/objects/platform/art.bin" />
+      <MapFile type="ASM" filename="../level/r1/objects/platform/mapcollapse.asm" frame="1" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="square1">
+      <ArtFile filename="../level/r1/objects/platform/art.bin" />
+      <MapFile type="ASM" filename="../level/r1/objects/platform/mapcollapse.asm" frame="2" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="square2">
+      <ArtFile filename="../level/r1/objects/platform/art.bin" />
+      <MapFile type="ASM" filename="../level/r1/objects/platform/mapcollapse.asm" frame="3" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="tall1">
+      <ArtFile filename="../level/r1/objects/platform/art.bin" />
+      <MapFile type="ASM" filename="../level/r1/objects/platform/mapcollapse.asm" frame="4" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="tall2">
+      <ArtFile filename="../level/r1/objects/platform/art.bin" />
+      <MapFile type="ASM" filename="../level/r1/objects/platform/mapcollapse.asm" frame="5" startpal="2" />
+    </ImageFromMappings>
+  </Images>
+  <Properties>
+    <BitsProperty name="Sprite" type="PlatformSprite" startbit="0" length="1" />
+    <BitsProperty name="Size" type="PlatformSizes" startbit="1" length="3" />
+    <BitsProperty name="Flipped" type="FlippedFlag" startbit="4" length="1" />
+    <BitsProperty name="Collapse Direction" type="CollapseDirection" startbit="5" length="1" />
+    <BitsProperty name="Collapse Direction Dependency" type="CollapseDirDependent" startbit="6" length="1" />
+    <BitsProperty name="Type" type="PlatformTypes" startbit="7" length="1" />
+  </Properties>
+  <Enums>
+    <Enum name="PlatformTypes">
+      <EnumMember name="Ledge" />
+      <EnumMember name="Normal" />
+    </Enum>
+    <Enum name="CollapseDirection">
+      <EnumMember name="Left To Right" />
+      <EnumMember name="Right To Left" />
+    </Enum>
+    <Enum name="CollapseDirDependent">
+      <EnumMember name="None" />
+      <EnumMember name="Player's Direction" />
+    </Enum>
+    <Enum name="FlippedFlag">
+      <EnumMember name="False" />
+      <EnumMember name="True" />
+    </Enum>
+    <Enum name="PlatformSizes">
+      <EnumMember name="Wide" />
+      <EnumMember name="Square" />
+      <EnumMember name="Tall" />
+    </Enum>
+    <Enum name="PlatformSprite">
+      <EnumMember name="Sprite 1" />
+      <EnumMember name="Sprite 2" />
+    </Enum>
+  </Enums>
+  <Display>
+    <DisplayOption>
+      <Condition property="Flipped" value="False" />
+      <Condition property="Type" value="Ledge" />
+      <ImageRef image="ledge" xflip="NeverFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="True" />
+      <Condition property="Type" value="Ledge" />
+      <ImageRef image="ledge" xflip="AlwaysFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="False" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Wide" />
+      <Condition property="Sprite" value="Sprite 1" />
+      <ImageRef image="wide1" xflip="NeverFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="True" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Wide" />
+      <Condition property="Sprite" value="Sprite 1" />
+      <ImageRef image="wide1" xflip="AlwaysFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="False" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Wide" />
+      <Condition property="Sprite" value="Sprite 2" />
+      <ImageRef image="wide2" xflip="NeverFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="True" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Wide" />
+      <Condition property="Sprite" value="Sprite 2" />
+      <ImageRef image="wide2" xflip="AlwaysFlip" />
+    </DisplayOption>
+
+    <DisplayOption>
+      <Condition property="Flipped" value="False" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Square" />
+      <Condition property="Sprite" value="Sprite 1" />
+      <ImageRef image="square1" xflip="NeverFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="True" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Square" />
+      <Condition property="Sprite" value="Sprite 1" />
+      <ImageRef image="square1" xflip="AlwaysFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="False" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Square" />
+      <Condition property="Sprite" value="Sprite 2" />
+      <ImageRef image="square2" xflip="NeverFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="True" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Square" />
+      <Condition property="Sprite" value="Sprite 2" />
+      <ImageRef image="square2" xflip="AlwaysFlip" />
+    </DisplayOption>
+
+    <DisplayOption>
+      <Condition property="Flipped" value="False" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Tall" />
+      <Condition property="Sprite" value="Sprite 1" />
+      <ImageRef image="tall1" xflip="NeverFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="True" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Tall" />
+      <Condition property="Sprite" value="Sprite 1" />
+      <ImageRef image="tall1" xflip="AlwaysFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="False" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Tall" />
+      <Condition property="Sprite" value="Sprite 2" />
+      <ImageRef image="tall2" xflip="NeverFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="True" />
+      <Condition property="Type" value="Normal" />
+      <Condition property="Size" value="Tall" />
+      <Condition property="Sprite" value="Sprite 2" />
+      <ImageRef image="tall2" xflip="AlwaysFlip" />
+    </DisplayOption>
+  </Display>
+</ObjDef>

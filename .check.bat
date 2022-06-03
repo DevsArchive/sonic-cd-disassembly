@@ -18,5 +18,6 @@ fc /b _original\%REGPATH%\DUMMY0.MMD _built\files\DUMMY0.MMD
 fc /b _original\%REGPATH%\DUMMY1.MMD _built\files\DUMMY1.MMD
 fc /b _original\%REGPATH%\DUMMY2.MMD _built\files\DUMMY2.MMD
 fc /b _original\%REGPATH%\DUMMY3.MMD _built\files\DUMMY3.MMD
+fc /b _original\%REGPATH%\R11A__.MMD _built\files\R11A__.MMD
 
 pause

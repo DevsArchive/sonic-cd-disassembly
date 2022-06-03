@@ -50,10 +50,11 @@ MMD macro flags, origin, size, entry, hint, vint
 	dc.b	\flags, 0
 	if (\origin)=WORDRAM2M
 		dc.l	0
+		dc.w	0
 	else
 		dc.l	\origin
+		dc.w	((\size)+(($800-((\size)%$800))%$800))/4-1
 	endif
-	dc.w	((\size)+(($800-((\size)%$800))%$800))/4-1
 	dc.l	\entry, \hint, \vint
 
 	ALIGN	MMDHEADSZ

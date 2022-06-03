@@ -27,6 +27,7 @@ del _built\files\.gitkeep > nul
 %ASM68K% /e EASTEREGG=2 sndtest\easteregg\easteregg.asm, _built\files\DUMMY1.MMD, , sndtest\easteregg\easteregg.tails.lst
 %ASM68K% /e EASTEREGG=3 sndtest\easteregg\easteregg.asm, _built\files\DUMMY2.MMD, , sndtest\easteregg\easteregg.batman.lst
 %ASM68K% /e EASTEREGG=4 sndtest\easteregg\easteregg.asm, _built\files\DUMMY3.MMD, , sndtest\easteregg\easteregg.cutesonic.lst
+%ASM68K% level\r11a.asm, _built\files\R11A__.MMD, , level\r11a.lst
 
 echo.
 echo Compiling filesystem...
