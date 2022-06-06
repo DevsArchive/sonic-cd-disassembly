@@ -5,11 +5,11 @@
 ; Level definitions
 ; -------------------------------------------------------------------------
 
-	include	"_inc/common.i"
-	include	"_inc/maincpu.i"
-	include	"_inc/mainvars.i"
-	include	"_inc/sound.i"
-	include	"_inc/mmd.i"
+	include	"_Include/Common.i"
+	include	"_Include/Main CPU.i"
+	include	"_Include/Main CPU Variables.i"
+	include	"_Include/Sound.i"
+	include	"_Include/MMD.i"
 	
 ; -------------------------------------------------------------------------
 ; Object structure
