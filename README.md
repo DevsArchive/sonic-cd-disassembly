@@ -1,5 +1,5 @@
 # Misc. Sonic CD File Disassemblies
-This is a collection of documented disassemblies of various misc. files from Sonic CD. Builds a working ISO, as long as you provide the rest of the files.
+This is a collection of mostly documented disassemblies of various misc. files from Sonic CD. Builds a working ISO, as long as you provide the rest of the files.
 
 ## Currently Contains
 * Initial program
