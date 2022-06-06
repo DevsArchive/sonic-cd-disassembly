@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Name="Spring" Image="vertred">
+  <Images>
+    <ImageFromMappings id="vertred">
+      <ArtFile filename="../Level/_Objects/Spring/Data/Art (Normal).nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Spring/Data/Mappings.asm" label="unk_209BAC" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="vertyel">
+      <ArtFile filename="../Level/_Objects/Spring/Data/Art (Normal).nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Spring/Data/Mappings.asm" label="unk_209BAC" startpal="1" />
+    </ImageFromMappings>
+    <ImageFromMappings id="horzred">
+      <ArtFile filename="../Level/_Objects/Spring/Data/Art (Normal).nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Spring/Data/Mappings.asm" label="unk_209BCE" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="horzyel">
+      <ArtFile filename="../Level/_Objects/Spring/Data/Art (Normal).nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Spring/Data/Mappings.asm" label="unk_209BCE" startpal="1" />
+    </ImageFromMappings>
+    <ImageFromMappings id="diagred">
+      <ArtFile filename="../Level/_Objects/Spring/Data/Art (Diagonal).nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Spring/Data/Mappings.asm" label="unk_209BF6" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="diagyel">
+      <ArtFile filename="../Level/_Objects/Spring/Data/Art (Diagonal).nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Spring/Data/Mappings.asm" label="unk_209BF6" startpal="1" />
+    </ImageFromMappings>
+  </Images>
+  <Subtypes>
+    <Subtype id="00" name="Red Vertical" image="vertred" />
+    <Subtype id="02" name="Yellow Vertical" image="vertyel" />
+    <Subtype id="04" name="Red Horizontal" image="horzred" />
+    <Subtype id="06" name="Yellow Horizontal" image="horzyel" />
+    <Subtype id="08" name="Red Diagonal" image="diagred" />
+    <Subtype id="0A" name="Yellow Diagonal" image="diagyel" />
+  </Subtypes>
+  <Properties>
+    <BitsProperty name="Color" type="SpringColor" startbit="1" length="1" />
+    <BitsProperty name="Direction" type="SpringDirection" startbit="2" length="2" />
+  </Properties>
+  <Enums>
+    <Enum name="SpringColor">
+      <EnumMember name="Red" />
+      <EnumMember name="Yellow" />
+    </Enum>
+    <Enum name="SpringDirection">
+      <EnumMember name="Vertical" />
+      <EnumMember name="Horizontal" />
+      <EnumMember name="Diagonal" />
+    </Enum>
+  </Enums>
+  <Display>
+    <DisplayOption>
+      <Condition property="Direction" value="Vertical" />
+      <Condition property="Color" value="Red" />
+      <ImageRef image="vertred" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Direction" value="Vertical" />
+      <Condition property="Color" value="Yellow" />
+      <ImageRef image="vertyel" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Direction" value="Horizontal" />
+      <Condition property="Color" value="Red" />
+      <ImageRef image="horzred" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Direction" value="Horizontal" />
+      <Condition property="Color" value="Yellow" />
+      <ImageRef image="horzyel" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Direction" value="Diagonal" />
+      <Condition property="Color" value="Red" />
+      <ImageRef image="diagred" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Direction" value="Diagonal" />
+      <Condition property="Color" value="Yellow" />
+      <ImageRef image="diagyel" />
+    </DisplayOption>
+  </Display>
+</ObjDef>

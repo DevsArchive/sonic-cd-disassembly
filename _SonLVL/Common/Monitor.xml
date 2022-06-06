@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Name="Monitor/Time Post" Image="img" RememberState="true">
+  <Images>
+    <ImageFromMappings id="sonic">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="0" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="rings">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="1" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="shield">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="2" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="invincibility">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="3" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="shoes">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="4" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="stopwatch">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="5" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="bluering">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="6" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="s">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="7" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="img">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="8" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="static">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="9" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="past">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="10" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="future">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="12" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="broken">
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="17" startpal="0" />
+    </ImageFromMappings>
+  </Images>
+  <Subtypes>
+    <Subtype id="00" name="Sonic" image="sonic" />
+    <Subtype id="01" name="Rings" image="rings" />
+    <Subtype id="02" name="Shield" image="shield" />
+    <Subtype id="03" name="Invincibility" image="invincibility" />
+    <Subtype id="04" name="Shoes" image="shoes" />
+    <Subtype id="05" name="Stopwatch" image="stopwatch" />
+    <Subtype id="06" name="Blue Ring" image="bluering" />
+    <Subtype id="07" name="S" image="s" />
+    <Subtype id="08" name="Past Time Post" image="past" />
+    <Subtype id="09" name="Future Time Post" image="future" />
+  </Subtypes>
+  <Properties>
+    <BitsProperty name="Contents" type="MonitorType" startbit="0" length="4" />
+  </Properties>
+  <Enums>
+    <Enum name="MonitorType">
+      <EnumMember name="Sonic" />
+      <EnumMember name="Rings" />
+      <EnumMember name="Shield" />
+      <EnumMember name="Invincibility" />
+      <EnumMember name="Shoes" />
+      <EnumMember name="Stopwatch" />
+      <EnumMember name="Blue Ring" />
+      <EnumMember name="S" />
+      <EnumMember name="Past Time Post" />
+      <EnumMember name="Future Time Post" />
+    </Enum>
+  </Enums>
+</ObjDef>

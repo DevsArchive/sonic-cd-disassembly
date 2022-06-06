@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Name="Breakable Wall" Image="sprite1" RememberState="true">
+  <Images>
+    <ImageFromMappings id="sprite1">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Breakable Wall/Data/Mappings.asm" frame="0" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="sprite2">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Breakable Wall/Data/Mappings.asm" frame="1" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="sprite3">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Breakable Wall/Data/Mappings.asm" frame="2" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="sprite4">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Breakable Wall/Data/Mappings.asm" frame="3" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="sprite5">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Breakable Wall/Data/Mappings.asm" frame="4" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="sprite6">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Breakable Wall/Data/Mappings.asm" frame="5" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="sprite7">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Breakable Wall/Data/Mappings.asm" frame="6" startpal="2" />
+    </ImageFromMappings>
+    <ImageFromMappings id="sprite8">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Breakable Wall/Data/Mappings.asm" frame="7" startpal="2" />
+    </ImageFromMappings>
+  </Images>
+  <Subtypes>
+    <Subtype id="00" name="Sprite 1" image="sprite1" />
+    <Subtype id="01" name="Sprite 2" image="sprite2" />
+    <Subtype id="02" name="Sprite 3" image="sprite3" />
+    <Subtype id="03" name="Sprite 4" image="sprite4" />
+    <Subtype id="04" name="Sprite 5" image="sprite5" />
+    <Subtype id="05" name="Sprite 6" image="sprite6" />
+    <Subtype id="06" name="Sprite 7" image="sprite7" />
+    <Subtype id="07" name="Sprite 8" image="sprite8" />
+  </Subtypes>
+</ObjDef>
