@@ -15,18 +15,18 @@ namespace SCDObjectDefinitions.Common
 
 		public override void Init(ObjectData data)
 		{
-			byte[] artfile = ObjectHelper.OpenArtFile("../level/r1/objects/spring/artwheel.bin", CompressionType.Nemesis);
-			img_wheel = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/spring/mapwheel.asm", 0, 0);
+			byte[] artfile = ObjectHelper.OpenArtFile("../Level/_Objects/Spring/Data/Art (Wheel).nem", CompressionType.Nemesis);
+			img_wheel = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Spring/Data/Mappings (Wheel).asm", 0, 0);
 
-			artfile = ObjectHelper.OpenArtFile("../level/r1/objects/spring/artnormal.bin", CompressionType.Nemesis);
-			img_spring[0] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/spring/map.asm", "unk_209BAC", 0);
-			img_spring[1] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/spring/map.asm", "unk_209BAC", 1);
-			img_spring[2] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/spring/map.asm", "unk_209BCE", 0);
-			img_spring[3] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/spring/map.asm", "unk_209BCE", 1);
+			artfile = ObjectHelper.OpenArtFile("../Level/_Objects/Spring/Data/Art (Normal).nem", CompressionType.Nemesis);
+			img_spring[0] = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Spring/Data/Mappings.asm", "unk_209BAC", 0);
+			img_spring[1] = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Spring/Data/Mappings.asm", "unk_209BAC", 1);
+			img_spring[2] = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Spring/Data/Mappings.asm", "unk_209BCE", 0);
+			img_spring[3] = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Spring/Data/Mappings.asm", "unk_209BCE", 1);
 
-			artfile = ObjectHelper.OpenArtFile("../level/r1/objects/spring/artdiag.bin", CompressionType.Nemesis);
-			img_spring[4] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/spring/map.asm", "unk_209BF6", 0);
-			img_spring[5] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/spring/map.asm", "unk_209BF6", 1);
+			artfile = ObjectHelper.OpenArtFile("../Level/_Objects/Spring/Data/Art (Diagonal).nem", CompressionType.Nemesis);
+			img_spring[4] = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Spring/Data/Mappings.asm", "unk_209BF6", 0);
+			img_spring[5] = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Spring/Data/Mappings.asm", "unk_209BF6", 1);
 		}
 
 		public override ReadOnlyCollection<byte> Subtypes

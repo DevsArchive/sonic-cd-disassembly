@@ -127,7 +127,8 @@ angleNormalBuf		rs.b	1		; Angle normal buffer
 quadrantNormalBuf	rs.b	1		; Quadrant normal buffer
 floorDist 		rs.b	1		; Floor distance
 demoMode		rs.w	1		; Demo mode flag
-			rs.l	1
+			rs.w	1
+s1CreditsIndex		rs.w	1		; Credits index (leftover from Sonic 1)
 versionCache 		rs.b	1		; Hardware version cache
 			rs.b	1
 debugCheat		rs.w	1		; Debug cheat flag

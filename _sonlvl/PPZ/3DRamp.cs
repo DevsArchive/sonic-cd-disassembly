@@ -15,12 +15,12 @@ namespace SCDObjectDefinitions.PPZ
 
 		public override void Init(ObjectData data)
 		{
-			byte[] artfile = ObjectHelper.OpenArtFile("../level/r1/objects/3dramp/art.bin", CompressionType.Nemesis);
-			img_booster = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/3dramp/map.asm", 0, 0);
+			byte[] artfile = ObjectHelper.OpenArtFile("../Level/Palmtree Panic/Objects/3D Ramp/Data/Art (Booster).nem", CompressionType.Nemesis);
+			img_booster = ObjectHelper.MapASMToBmp(artfile, "../Level/Palmtree Panic/Objects/3D Ramp/Data/Mappings (Booster).asm", 0, 0);
 
-			artfile = LevelData.ReadFile("../level/r1/objects/sonic/art.bin", CompressionType.Uncompressed);
-			byte[] map = LevelData.ASMToBin("../level/r1/objects/sonic/map.asm", EngineVersion.S1);
-			byte[] plc = LevelData.ASMToBin("../level/r1/objects/sonic/dplc.asm", EngineVersion.S2);
+			artfile = LevelData.ReadFile("../Level/_Objects/Sonic/Data/Art.bin", CompressionType.Uncompressed);
+			byte[] map = LevelData.ASMToBin("../Level/_Objects/Sonic/Data/Mappings.asm", EngineVersion.S1);
+			byte[] plc = LevelData.ASMToBin("../Level/_Objects/Sonic/Data/DPLCs.asm", EngineVersion.S2);
 			img_sonic = ObjectHelper.MapDPLCToBmp(artfile, map, plc, 23, 0, true);
 		}
 

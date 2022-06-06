@@ -15,14 +15,14 @@ namespace SCDObjectDefinitions.PPZ
 
 		public override void Init(ObjectData data)
 		{
-			byte[] artfile = ObjectHelper.OpenArtFile("../level/r1/objects/platform/art.bin", CompressionType.Nemesis);
-			img_ptfm[0] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/platform/mapnormal.asm", 0, 2);
-			img_ptfm[1] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/platform/mapnormal.asm", 1, 2);
-			img_ptfm[2] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/platform/mapnormal.asm", 2, 2);
+			byte[] artfile = ObjectHelper.OpenArtFile("../Level/Palmtree Panic/Objects/Platform/Data/Art.nem", CompressionType.Nemesis);
+			img_ptfm[0] = ObjectHelper.MapASMToBmp(artfile, "../Level/Palmtree Panic/Objects/Platform/Data/Mappings (Platform 1).asm", 0, 2);
+			img_ptfm[1] = ObjectHelper.MapASMToBmp(artfile, "../Level/Palmtree Panic/Objects/Platform/Data/Mappings (Platform 1).asm", 1, 2);
+			img_ptfm[2] = ObjectHelper.MapASMToBmp(artfile, "../Level/Palmtree Panic/Objects/Platform/Data/Mappings (Platform 1).asm", 2, 2);
 
-			artfile = ObjectHelper.OpenArtFile("../level/r1/objects/spring/artnormal.bin", CompressionType.Nemesis);
-			img_spring[0] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/spring/map.asm", "unk_209BAC", 0);
-			img_spring[1] = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/spring/map.asm", "unk_209BAC", 1);
+			artfile = ObjectHelper.OpenArtFile("../Level/_Objects/Spring/Data/Art (Normal).nem", CompressionType.Nemesis);
+			img_spring[0] = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Spring/Data/Mappings.asm", "unk_209BAC", 0);
+			img_spring[1] = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Spring/Data/Mappings.asm", "unk_209BAC", 1);
 		}
 
 		public override ReadOnlyCollection<byte> Subtypes

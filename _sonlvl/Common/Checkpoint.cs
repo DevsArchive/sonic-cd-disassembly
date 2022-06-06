@@ -14,9 +14,9 @@ namespace SCDObjectDefinitions.Common
 
 		public override void Init(ObjectData data)
 		{
-			byte[] artfile = ObjectHelper.OpenArtFile("../level/r1/objects/checkpoint/art.bin", CompressionType.Nemesis);
-			img = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/checkpoint/map.asm", 0, 0);
-			img2 = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/checkpoint/map.asm", 1, 0);
+			byte[] artfile = ObjectHelper.OpenArtFile("../Level/_Objects/Checkpoint/Data/Art.nem", CompressionType.Nemesis);
+			img = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Checkpoint/Data/Mappings.asm", 0, 0);
+			img2 = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Checkpoint/Data/Mappings.asm", 1, 0);
 		}
 
 		public override ReadOnlyCollection<byte> Subtypes

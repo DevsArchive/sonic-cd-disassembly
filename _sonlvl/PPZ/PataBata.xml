@@ -2,12 +2,12 @@
 <ObjDef xmlns="http://www.sonicretro.org" Name="Pata-Bata" Image="normal" RememberState="true">
   <Images>
     <ImageFromMappings id="normal">
-      <ArtFile filename="../level/r1/objects/patabata/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/patabata/mapnormal.asm" frame="0" startpal="1" />
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Pata-Bata/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Pata-Bata/Data/Mappings (Normal).asm" frame="0" startpal="1" />
     </ImageFromMappings>
     <ImageFromMappings id="damaged">
-      <ArtFile filename="../level/r1/objects/patabata/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/patabata/mapdamaged.asm" frame="0" startpal="1" />
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Pata-Bata/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Pata-Bata/Data/Mappings (Damaged).asm" frame="0" startpal="1" />
     </ImageFromMappings>
   </Images>
   <Subtypes>

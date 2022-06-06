@@ -25,9 +25,9 @@ namespace SCDObjectDefinitions.PPZ
 
 		public override void Init(ObjectData data)
 		{
-			byte[] artfile = ObjectHelper.OpenArtFile("../level/r1/objects/3dplant/art.bin", CompressionType.Nemesis);
-			img = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/3dplant/map.asm", 0, 2);
-			img2 = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/3dplant/map.asm", 1, 2);
+			byte[] artfile = ObjectHelper.OpenArtFile("../Level/Palmtree Panic/Objects/3D Ramp/Data/Art (Plant).nem", CompressionType.Nemesis);
+			img = ObjectHelper.MapASMToBmp(artfile, "../Level/Palmtree Panic/Objects/3D Ramp/Data/Mappings (Plant).asm", 0, 2);
+			img2 = ObjectHelper.MapASMToBmp(artfile, "../Level/Palmtree Panic/Objects/3D Ramp/Data/Mappings (Plant).asm", 1, 2);
 		}
 
 		public override ReadOnlyCollection<byte> Subtypes

@@ -2,56 +2,56 @@
 <ObjDef xmlns="http://www.sonicretro.org" Name="Monitor/Time Post" Image="img" RememberState="true">
   <Images>
     <ImageFromMappings id="sonic">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="0" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="0" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="rings">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="1" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="1" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="shield">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="2" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="2" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="invincibility">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="3" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="3" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="shoes">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="4" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="4" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="stopwatch">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="5" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="5" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="bluering">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="6" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="6" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="s">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="7" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="7" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="img">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="8" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="8" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="static">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="9" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="9" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="past">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="10" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="10" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="future">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="12" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="12" startpal="0" />
     </ImageFromMappings>
     <ImageFromMappings id="broken">
-      <ArtFile filename="../level/r1/objects/monitor/art.bin" />
-      <MapFile type="ASM" filename="../level/r1/objects/monitor/map.asm" frame="17" startpal="0" />
+      <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="17" startpal="0" />
     </ImageFromMappings>
   </Images>
   <Subtypes>

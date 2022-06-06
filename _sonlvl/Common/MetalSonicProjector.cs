@@ -15,10 +15,10 @@ namespace SCDObjectDefinitions.Common
 
 		public override void Init(ObjectData data)
 		{
-			byte[] artfile = ObjectHelper.OpenArtFile("../level/r1/objects/projector/art.bin", CompressionType.Nemesis);
-			img_projector = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/projector/map.asm", 0, 0);
-			img_light = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/projector/map.asm", 2, 0);
-			img_metalsonic = ObjectHelper.MapASMToBmp(artfile, "../level/r1/objects/projector/map.asm", 4, 0);
+			byte[] artfile = ObjectHelper.OpenArtFile("../Level/_Objects/Projector/Data/Art.nem", CompressionType.Nemesis);
+			img_projector = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Projector/Data/Mappings.asm", 0, 0);
+			img_light = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Projector/Data/Mappings.asm", 2, 0);
+			img_metalsonic = ObjectHelper.MapASMToBmp(artfile, "../Level/_Objects/Projector/Data/Mappings.asm", 4, 0);
 		}
 
 		public override ReadOnlyCollection<byte> Subtypes
