@@ -16,4 +16,4 @@ This is a collection of mostly documented disassemblies of various misc. files f
 * Sound test (SOSEL)
     - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
 * Level
-    - Palmtree Panic Act 1 present (R11A)
+    - Palmtree Panic Act 1 (R11A, R11B, R11C)
