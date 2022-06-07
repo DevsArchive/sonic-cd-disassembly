@@ -238,8 +238,8 @@ PLC_Signpost:
 
 	if REGION=USA
 	incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Past, U).bin"
-	;else
-	;incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Past, JE).bin"
+	else
+	incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Past, JE).bin"
 	endif
 
 ; -------------------------------------------------------------------------
@@ -313,8 +313,8 @@ MapSpr_FlowerCapsule:
 
 	if REGION=USA
 	incbin	"Level/Palmtree Panic/Data/Padding/2 (Act 1 Past, U).bin"
-	;else
-	;incbin	"Level/Palmtree Panic/Data/Padding/2 (Act 1 Past, JE).bin"
+	else
+	incbin	"Level/Palmtree Panic/Data/Padding/2 (Act 1 Past, JE).bin"
 	endif
 
 ; -------------------------------------------------------------------------
@@ -558,6 +558,6 @@ Art_Projector:
 ; with a "align $40000"
 ; -------------------------------------------------------------------------
 
-	incbin	"Level/Palmtree Panic/Data/Padding/3 (Act 1 Past, U).bin"
+	incbin	"Level/Palmtree Panic/Data/Padding/3 (Act 1 Past).bin"
 
 ; -------------------------------------------------------------------------
