@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Palmtree Panic Present palette cycle
+; Palmtree Panic Past palette cycle
 ; -------------------------------------------------------------------------
 
 ; -------------------------------------------------------------------------
@@ -71,14 +71,14 @@ PaletteCycle:
 ; -------------------------------------------------------------------------
 
 PPZ_ProtoPalCyc1:
-	dc.w	$ECC, $ECA, $EEE, $EA8
-	dc.w	$EA8, $ECC, $ECC, $ECA
-	dc.w	$ECA, $EA8, $ECA, $ECC
+	dc.w	$EEA, $CE6, $EEE, $8C4
+	dc.w	$8C4, $EEA, $EEA, $CE6
+	dc.w	$CE6, $8C4, $CE6, $EEA
 
 PPZ_ProtoPalCyc2:
-	dc.w	$ECA, $EA8, $C60, $E86
-	dc.w	$EA8, $E86, $C60, $ECA
-	dc.w	$E86, $ECA, $C60, $EA8
+	dc.w	$EEC, $CE6, $AA0, $8C4
+	dc.w	$CE6, $8C4, $AA0, $EEC
+	dc.w	$8C4, $EEC, $AA0, $CE6
 
 ; -------------------------------------------------------------------------
 ; The actual final palette cycling function
@@ -162,7 +162,7 @@ PPZ_PalCyc_Script1:
 	dc.b	8, 1
 	dc.b	8, 2
 PPZ_PalCyc_Colors1:
-	dc.w	$EEE, $CC6, $EEA
+	dc.w	$EEA, $CE6, $8C4
 
 ; Color 2
 PPZ_PalCyc_Script2:
@@ -171,7 +171,7 @@ PPZ_PalCyc_Script2:
 	dc.b	8, 1
 	dc.b	8, 2
 PPZ_PalCyc_Colors2:
-	dc.w	$EEA, $EEE, $CC6
+	dc.w	$8C4, $EEA, $CE6
 
 ; Color 3
 PPZ_PalCyc_Script3:
@@ -180,7 +180,7 @@ PPZ_PalCyc_Script3:
 	dc.b	8, 1
 	dc.b	8, 2
 PPZ_PalCyc_Colors3:
-	dc.w	$CC6, $EEA, $EEE
+	dc.w	$CE6, $8C4, $EEA
 
 ; Color 4
 PPZ_PalCyc_Script4:
@@ -189,7 +189,7 @@ PPZ_PalCyc_Script4:
 	dc.b	6, 1
 	dc.b	6, 2
 PPZ_PalCyc_Colors4:
-	dc.w	$ECA, $EA8, $E86
+	dc.w	$EEC, $CE6, $8C4
 
 ; Color 5
 PPZ_PalCyc_Script5:
@@ -198,7 +198,7 @@ PPZ_PalCyc_Script5:
 	dc.b	6, 1
 	dc.b	6, 2
 PPZ_PalCyc_Colors5:
-	dc.w	$EA8, $E86, $ECA
+	dc.w	$CE6, $8C4, $EEC
 
 ; Color 6
 PPZ_PalCyc_Script6:
@@ -207,6 +207,6 @@ PPZ_PalCyc_Script6:
 	dc.b	6, 1
 	dc.b	6, 2
 PPZ_PalCyc_Colors6:
-	dc.w	$C86, $ECA, $EA8
+	dc.w	$8C4, $EEC, $CE6
 
 ; -------------------------------------------------------------------------

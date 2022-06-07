@@ -122,8 +122,8 @@ SetVertiScrollFlagsBG2:
 	rts
 
 ; -------------------------------------------------------------------------
-; Set horizontal scroll flags for the background camera while scrolling the
-; position
+; Set horizontal scroll flags for the background camera while
+; scrolling the position
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d4.w - X scroll offset
@@ -156,8 +156,8 @@ SetHorizScrollFlagsBG:
 	rts
 
 ; -------------------------------------------------------------------------
-; Set horizontal scroll flags for the background camera #2 while scrolling the
-; position
+; Set horizontal scroll flags for the background camera #2 while
+; scrolling the position
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d4.w - X scroll offset
@@ -191,8 +191,8 @@ SetHorizScrollFlagsBG2:
 	rts
 
 ; -------------------------------------------------------------------------
-; Set horizontal scroll flags for the background camera #3 while scrolling the
-; position
+; Set horizontal scroll flags for the background camera #3 while
+; scrolling the position
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d4.w - X scroll offset

@@ -3079,7 +3079,7 @@ LoadSonicDynPLC:
 	move.b	(a2)+,d2
 	andi.w	#$FFF,d2
 	lsl.l	#5,d2
-	lea	ArtUnc_Sonic,a1
+	lea	Art_Sonic,a1
 	adda.l	d2,a1
 
 .CopyPieceLoop:

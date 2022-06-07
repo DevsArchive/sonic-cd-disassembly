@@ -184,10 +184,10 @@ LoadShieldArt:
 ; -------------------------------------------------------------------------
 
 ShieldArtIndex:
-	dc.l	ArtUnc_Shield
-	dc.l	ArtUnc_InvStars
-	dc.l	ArtUnc_TimeStars
-	dc.l	ArtUnc_GameOver
-	dc.l	ArtUnc_TimeOver
+	dc.l	Art_Shield
+	dc.l	Art_InvStars
+	dc.l	Art_TimeStars
+	dc.l	Art_GameOver
+	dc.l	Art_TimeOver
 
 ; -------------------------------------------------------------------------

@@ -16,7 +16,7 @@
 	dc.b	"SONICCD    ", 0		; System name
 	dc.w	$0000				; System version
 	dc.w	$0000				; Always 0
-	if filesize("_built/sys/IP.BIN")<=$600
+	if filesize("_Built/System/IP.BIN")<=$600
 		dc.l	$00000200		; IP disk address
 		dc.l	$00000600		; IP load size
 	else

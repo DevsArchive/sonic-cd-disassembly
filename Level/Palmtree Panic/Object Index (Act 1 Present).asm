@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Palmtree Panic Act 1 object index
+; Palmtree Panic Act 1 Present object index
 ; -------------------------------------------------------------------------
 
 ObjectIndex:

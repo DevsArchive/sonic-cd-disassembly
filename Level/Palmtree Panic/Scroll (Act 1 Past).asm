@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Palmtree Panic Act 1 Present level scrolling/drawing
+; Palmtree Panic Act 1 Past level scrolling/drawing
 ; -------------------------------------------------------------------------
 
 ; -------------------------------------------------------------------------
@@ -10,6 +10,8 @@
 ; -------------------------------------------------------------------------
 
 LevelSizeLoad:
+	lea	objPlayerSlot.w,a6		; Get player slot
+
 	moveq	#0,d0				; Clear unused variables
 	move.b	d0,unusedF740.w
 	move.b	d0,unusedF741.w
@@ -41,7 +43,7 @@ LevelSizeLoad:
 ; -------------------------------------------------------------------------
 
 CamBounds:
-	dc.w	4, 0, $2897, 0, $710, $60
+	dc.w	4, 0, $2897, 0, $310, $60
 
 ; -------------------------------------------------------------------------
 ; Leftover ending demo start positions from Sonic 1
@@ -66,8 +68,8 @@ LevelSizeLoad_StartPos:
 	jsr	ObjCheckpoint_LoadData		; Load checkpoint data
 	moveq	#0,d0				; Get player position
 	moveq	#0,d1
-	move.w	objPlayerSlot+oX.w,d1
-	move.w	objPlayerSlot+oY.w,d0
+	move.w	oX(a6),d1
+	move.w	oY(a6),d0
 	bpl.s	.SkipCap			; If the Y position is positive, branch
 	moveq	#0,d0				; Cap the Y position at 0 if negative
 
@@ -76,12 +78,28 @@ LevelSizeLoad_StartPos:
 
 .DefaultStart:
 	lea	LevelStartLoc,a1		; Prepare level start position
+	
+	tst.w	demoMode			; Are we in the credits (Sonic 1 leftover)?
+	bpl.s	.NotS1Credits			; If not, branch
+	move.w	s1CreditsIndex,d0		; Get Sonic 1 credits starting position
+	subq.w	#1,d0
+	lsl.w	#2,d0
+	lea	EndingStLocsS1,a1
+	adda.w	d0,a1
+	bra.s	.SetStartPos
+	
+.NotS1Credits:
+	move.w	demoMode,d0			; Get start position
+	lsl.w	#2,d0
+	adda.w	d0,a1
+	
+.SetStartPos:
 	moveq	#0,d1				; Get starting X position
 	move.w	(a1)+,d1
-	move.w	d1,objPlayerSlot+oX.w
+	move.w	d1,oX(a6)
 	moveq	#0,d0				; Get starting Y position
 	move.w	(a1),d0
-	move.w	d0,objPlayerSlot+oY.w
+	move.w	d0,oY(a6)
 
 .SetupCamera:
 	subi.w	#320/2,d1			; Get camera X position
@@ -120,31 +138,23 @@ LevelSizeLoad_StartPos:
 ; -------------------------------------------------------------------------
 
 LevelStartLoc:
-	incbin	"Level/Palmtree Panic/Data/Start Position (Act 1 Present).bin"
+	incbin	"Level/Palmtree Panic/Data/Start Position (Act 1 Past).bin"
 
 ; -------------------------------------------------------------------------
 ; Special chunk IDs
 ; -------------------------------------------------------------------------
 
 SpecChunks:
-	dc.b	$7F, $7F, $7F, $7F
+	dc.b	$8C, $7F, $1E, $1E
 
 ; -------------------------------------------------------------------------
 ; Initialize level scrolling
 ; -------------------------------------------------------------------------
 
 InitLevelScroll:
-	cmpi.w	#$800,objPlayerSlot+oX.w	; Has the player gone past the first 3D ramp?
-	bcs.s	.No3DRamp			; If not, branch
-	subi.w	#$1E0,d0			; Get background Y position after first 3D ramp
-	bcs.s	.ChgDir
-	lsr.w	#1,d0
-
-.ChgDir:
-	addi.w	#$1E0,d0			; Get background Y position
-
-.No3DRamp:
 	swap	d0				; Set background Y positions
+	asr.l	#4,d0
+	add.l	d0,d0
 	move.l	d0,cameraBgY.w
 	swap	d0
 	move.w	d0,cameraBg2Y.w
@@ -153,22 +163,18 @@ InitLevelScroll:
 	lsr.w	#1,d1				; Get background X positions
 	move.w	d1,cameraBgX.w
 	lsr.w	#2,d1
-	move.w	d1,d2
-	add.w	d2,d2
-	add.w	d1,d2
-	move.w	d2,cameraBg3X.w
+	move.w	d1,cameraBg3X.w
 	lsr.w	#1,d1
 	move.w	d1,d2
 	add.w	d2,d2
 	add.w	d1,d2
 	move.w	d2,cameraBg2X.w
 
-	lea	lvlLayerSpeeds,a2		; Clear cloud speeds
-	moveq	#$12,d6
-
-.ClearSpeeds:
+	lea	deformBuffer.w,a2		; Clear cloud speeds
 	clr.l	(a2)+
-	dbf	d6,.ClearSpeeds
+	clr.l	(a2)+
+	clr.l	(a2)+
+	clr.l	(a2)+
 	rts
 
 ; -------------------------------------------------------------------------
@@ -176,6 +182,8 @@ InitLevelScroll:
 ; -------------------------------------------------------------------------
 
 LevelScroll:
+	lea	objPlayerSlot.w,a6		; Get player slot
+	
 	tst.b	scrollLock.w			; Is scrolling locked?
 	beq.s	.DoScroll			; If not, branch
 	rts
@@ -201,55 +209,31 @@ LevelScroll:
 
 ; -------------------------------------------------------------------------
 
-	moveq	#0,d5				; Reset scroll speed offset
-	btst	#1,objPlayerSlot+oPlayerCtrl.w	; Is the player on a 3D ramp?
-	beq.s	.GotSpeed			; If not, branch
-	tst.w	scrollXDiff.w			; Is the camera scrolling horizontally?
-	beq.s	.GotSpeed			; If not, branch
-	move.w	objPlayerSlot+oXVel.w,d5	; Set scroll speed offset to the player's X velocity
-	ext.l	d5
-	asl.l	#8,d5
-
-.GotSpeed:
-	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the clouds
+	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the clouds and mountains
 	ext.l	d4
 	asl.l	#5,d4
-	add.l	d5,d4
 	moveq	#6,d6
 	bsr.w	SetHorizScrollFlagsBG3
 
-	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the mountains
+	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the waterfalls
 	ext.l	d4
 	asl.l	#4,d4
 	move.l	d4,d3
 	add.l	d3,d3
 	add.l	d3,d4
-	add.l	d5,d4
-	add.l	d5,d4
 	moveq	#4,d6
 	bsr.w	SetHorizScrollFlagsBG2
 
-	lea	deformBuffer.w,a1		; Prepare deformation buffer
+	lea	deformBuffer+$10.w,a1		; Prepare deformation buffer
 
-	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the bushes and water
+	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the rest of the background
 	ext.l	d4
 	asl.l	#7,d4
-	add.l	d5,d4
-	moveq	#2,d6
-	bsr.w	SetHorizScrollFlagsBG
-
-	move.w	cameraY.w,d0			; Get background Y position
-	cmpi.w	#$800,objPlayerSlot+oX.w	; Has the player gone past the first 3D ramp?
-	bcs.s	.No3DRamp			; If not, branch
-	subi.w	#$1E0,d0			; Get background Y position past the first 3D ramp
-	bcs.s	.ChgDir
-	lsr.w	#1,d0
-
-.ChgDir:
-	addi.w	#$1E0,d0			; Get background Y position before the first 3D ramp
-
-.No3DRamp:
-	bsr.w	SetVertiScrollFlagsBG2		; Set BG2 vertical scroll flags
+	move.w	scrollYDiff.w,d5
+	ext.l	d5
+	asl.l	#4,d5
+	add.l	d5,d5
+	bsr.w	SetScrollFlagsBG
 
 	move.w	cameraBgY.w,vscrollScreen+2.w	; Update background Y positions
 	move.w	cameraBgY.w,cameraBg2Y.w
@@ -261,197 +245,85 @@ LevelScroll:
 	clr.b	scrollFlagsBg3.w
 	clr.b	scrollFlagsBg2.w
 
-	lea	lvlLayerSpeeds,a2		; Set speeds for the clouds
-	addi.l	#$10000,(a2)+
-	addi.l	#$E000,(a2)+
-	addi.l	#$C000,(a2)+
-	addi.l	#$A000,(a2)+
-	addi.l	#$8000,(a2)+
-	addi.l	#$6000,(a2)+
-	addi.l	#$4800,(a2)+
-	addi.l	#$4000,(a2)+
-	addi.l	#$2800,(a2)+
-	addi.l	#$2000,(a2)+
-	addi.l	#$2000,(a2)+
-	addi.l	#$4000,(a2)+
-	addi.l	#$8000,(a2)+
-	addi.l	#$C000,(a2)+
+	lea	deformBuffer.w,a2		; Set speeds for the clouds
 	addi.l	#$10000,(a2)+
 	addi.l	#$C000,(a2)+
 	addi.l	#$8000,(a2)+
 	addi.l	#$4000,(a2)+
-	addi.l	#$2000,(a2)+
 
 	move.w	cameraX.w,d0			; Prepare scroll buffer entry
 	neg.w	d0
 	swap	d0
 
-	lea	lvlLayerSpeeds,a2		; Prepare cloud speeds
-	moveq	#10-1,d6			; Number of cloud sections
-
-.CloudsScroll:
-	move.l	(a2)+,d1			; Get cloud section scroll offset
-	swap	d1
-	add.w	cameraBg3X.w,d1
-	neg.w	d1
-
-	moveq	#0,d5				; Get number of lines in this section
-	lea	CloudSectSizes,a3
-	move.b	(a3,d6.w),d5
-
-.CloudsScrollSect:
-	move.w	d1,(a1)+			; Store scroll offset
-	dbf	d5,.CloudsScrollSect		; Loop until this section is stored
-	dbf	d6,.CloudsScroll		; Loop until the clouds are finished being processed
-
-	move.w	cameraBg2X.w,d0			; Scroll top mountains
+	move.w	deformBuffer.w,d0		; Scroll top clouds
+	add.w	cameraBg3X.w,d0
 	neg.w	d0
-	moveq	#20-1,d6
+	move.w	#2-1,d1
+	
+.ScrollClouds1:
+	move.w	d0,(a1)+
+	dbf	d1,.ScrollClouds1
+
+	move.w	deformBuffer+4.w,d0		; Scroll top middle clouds
+	add.w	cameraBg3X.w,d0
+	neg.w	d0
+	move.w	#2-1,d1
+	
+.ScrollClouds2:
+	move.w	d0,(a1)+
+	dbf	d1,.ScrollClouds2
+
+	move.w	deformBuffer+8.w,d0		; Scroll bottom middle clouds
+	add.w	cameraBg3X.w,d0
+	neg.w	d0
+	move.w	#2-1,d1
+	
+.ScrollClouds3:
+	move.w	d0,(a1)+
+	dbf	d1,.ScrollClouds3
+
+	move.w	deformBuffer+$C.w,d0		; Scroll bottom clouds
+	add.w	cameraBg3X.w,d0
+	neg.w	d0
+	move.w	#2-1,d1
+	
+.ScrollClouds4:
+	move.w	d0,(a1)+
+	dbf	d1,.ScrollClouds4
+	
+	move.w	#10-1,d1			; Scroll mountains
+	move.w	cameraBg3X.w,d0
+	neg.w	d0
 
 .ScrollMountains:
 	move.w	d0,(a1)+
-	dbf	d6,.ScrollMountains
-
-	move.w	cameraBgX.w,d0			; Scroll top bushes
+	dbf	d1,.ScrollMountains
+	
+	move.w	#24-1,d1			; Scroll waterfalls
+	move.w	cameraBg2X.w,d0
 	neg.w	d0
-	moveq	#4-1,d6
 
-.ScrollBushes:
+.ScrollWaterfalls:
 	move.w	d0,(a1)+
-	dbf	d6,.ScrollBushes
-
-	move.w	cameraBgX.w,d0			; Scroll water (top and upside down)
-	neg.w	d0
-	move.w	#(28*2)-1,d6
-
-.ScrollWater:
-	move.w	d0,(a1)+
-	dbf	d6,.ScrollWater
-
-	move.w	cameraBgX.w,d0			; Scroll upside down bushes
-	neg.w	d0
-	moveq	#4-1,d6
-
-.ScrollUpsideDownBushes:
-	move.w	d0,(a1)+
-	dbf	d6,.ScrollUpsideDownBushes
-
-	move.w	cameraBg2X.w,d0			; Scroll upside down mountains
-	neg.w	d0
-	moveq	#20-1,d6
-
-.ScrollUpsideDownMountains:
-	move.w	d0,(a1)+
-	dbf	d6,.ScrollUpsideDownMountains
-
-	moveq	#9-1,d6				; Number of cloud sections
-
-.UpsideDownCloudsScroll:
-	move.l	(a2)+,d1			; Get cloud section scroll offset
-	swap	d1
-	add.w	cameraBg3X.w,d1
-	neg.w	d1
-
-	moveq	#0,d5				; Get number of lines in this section
-	lea	CloudUpsideDownSectSizes,a3
-	move.b	(a3,d6.w),d5
-
-.UpsideDownCloudsScrollSect:
-	move.w	d1,(a1)+			; Store scroll offset
-	dbf	d5,.UpsideDownCloudsScrollSect	; Loop until this section is stored
-	dbf	d6,.UpsideDownCloudsScroll	; Loop until the clouds are finished being processed
-
-	move.w	cameraBg2X.w,d0			; Scroll bottom mountains
-	neg.w	d0
-	moveq	#20-1,d6
-
-.ScrollBtmMountains:
-	move.w	d0,(a1)+
-	dbf	d6,.ScrollBtmMountains
-
-	move.w	cameraBgX.w,d0			; Scroll bottom bushes
-	neg.w	d0
-	moveq	#4-1,d6
-
-.ScrollBtmBushes:
-	move.w	d0,(a1)+
-	dbf	d6,.ScrollBtmBushes
-
-	move.w	cameraBgX.w,d0			; Scroll bottom water
-	neg.w	d0
-	move.w	#16-1,d6
-
-.ScrollBtmWater:
-	move.w	d0,(a1)+
-	dbf	d6,.ScrollBtmWater
+	dbf	d1,.ScrollWaterfalls
 
 	lea	hscroll.w,a1			; Prepare horizontal scroll buffer
-	lea	deformBuffer.w,a2		; Prepare deformation buffer
+	lea	deformBuffer+$10.w,a2		; Prepare deformation buffer
 
 	move.w	cameraBgY.w,d0			; Get background Y position
 	move.w	d0,d2
-	move.w	d0,d4
-	andi.w	#$7F8,d0
+	andi.w	#$1F8,d0
 	lsr.w	#2,d0
 	moveq	#(240/8)-1,d1			; Max number of blocks to scroll
+	
 	lea	(a2,d0.w),a2			; Get starting scroll block
-	lea	WaterDeformSects,a3		; Prepare water deformation section information
-	bra.w	ApplyBGHScroll			; Apply HScroll
-
-; -------------------------------------------------------------------------
-
-CloudSectSizes:					; Top cloud section sizes
-	dc.b	2-1
-	dc.b	4-1
-	dc.b	6-1
-	dc.b	8-1
-	dc.b	8-1
-	dc.b	8-1
-	dc.b	4-1
-	dc.b	6-1
-	dc.b	6-1
-	dc.b	4-1
-
-CloudUpsideDownSectSizes:			; Upside down and bottom cloud section sizes
-	dc.b	2-1
-	dc.b	4-1
-	dc.b	6-1
-	dc.b	8-1
-	dc.b	16-1
-	dc.b	4-1
-	dc.b	10-1
-	dc.b	4-1
-	dc.b	2-1
-	even
-
-WaterDeformSects:				; Water deform section positions and sizes
-	dc.w	$280, $E0
-	dc.w	$780, $80
-	dc.w	$7FFF, $360
-
-; -------------------------------------------------------------------------
-
-ApplyBGHScroll:
-	cmp.w	(a3),d4				; Is the background scrolled past the current water section?
-	bcc.s	.FoundWaterSection		; If so, branch
-
-.ScrollUnmodified:
 	andi.w	#7,d2				; Get the number of lines to scroll for the first block of lines
-	sub.w	d2,d4
-	addq.w	#8,d4
 	add.w	d2,d2
-
 	move.w	(a2)+,d0			; Start scrolling
 	jmp	.ScrollBlock(pc,d2.w)
 
 .ScrollLoop:
-	tst.w	d1				; Are we done scrolling?
-	bmi.s	.End				; If so, branch
-	cmp.w	(a3),d4				; Is the background scrolled past the current water section?
-	bcc.s	.FoundWaterSection		; If so, branch
-
-	addq.w	#8,d4				; Scroll another block of lines
-	move.w	(a2)+,d0
+	move.w	(a2)+,d0			; Scroll another block of lines
 
 .ScrollBlock:
 	rept	8				; Scroll a block of 8 lines
@@ -461,78 +333,6 @@ ApplyBGHScroll:
 
 .End:
 	rts
-
-.FoundWaterSection:
-	move.w	d4,d5				; Determine how deep we are into the section
-	sub.w	(a3),d5
-	move.w	2(a3),d6			; Get number of scanlines to scroll
-	sub.w	d5,d6
-	bcs.s	.SectOffscreen			; If the section is offscreen now, branch
-	beq.s	.NextSection
-
-	move.w	#224,d3				; Get base water deformation speed
-	move.w	cameraBgX.w,d0
-	move.w	cameraX.w,d2
-	sub.w	d0,d2
-	ext.l	d2
-	asl.l	#8,d2
-	divs.w	d3,d2
-	ext.l	d2
-	asl.l	#8,d2
-	moveq	#0,d3
-	move.w	d0,d3
-
-	subq.w	#1,d5				; Get number of scanlines in which the section is offscreen
-	bmi.s	.GotStartWaterSpeed		; to help get the starting water deformation speed
-
-.GetStartWaterSpeed:
-	move.w	d3,d0				; Increment starting water deformation speed
-	swap	d3
-	add.l	d2,d3
-	swap	d3
-	dbf	d5,.GetStartWaterSpeed		; Loop until we got it
-
-.GotStartWaterSpeed:
-	move.w	d6,d5				; Decrement section size from scroll block count
-	lsr.w	#3,d5
-	sub.w	d5,d1
-	bcc.s	.StartWaterDeform		; If we still have some scroll blocks left over, branch
-
-	move.w	d1,d5				; Shrink the size of the section down to fit only up to the bottom of the screen
-	neg.w	d5
-	lsl.w	#3,d5
-	sub.w	d5,d6
-	beq.s	.NextSection			; If the size of the section shrinks down to 0 pixels, branch
-
-.StartWaterDeform:
-	subq.w	#1,d6				; Prepare section size
-
-.DoWaterDeform:
-	move.w	d3,d0				; Scroll line
-	neg.w	d0
-	move.l	d0,(a1)+
-
-	swap	d3				; Increment water deformation speed
-	add.l	d2,d3
-	swap	d3
-
-	addq.w	#1,d4				; Next line
-	move.w	d4,d0
-	andi.w	#7,d0				; Have we crossed a block?
-	bne.s	.NextLine			; If not, branch
-	addq.w	#2,a2				; Skip block in the deformation buffer
-
-.NextLine:
-	dbf	d6,.DoWaterDeform		; Loop until section is scrolled
-
-.NextSection:
-	addq.w	#4,a3				; Next section
-	bra.w	.ScrollLoop			; Start scrolling regular blocks of lines again
-
-.SectOffscreen:
-	addq.w	#4,a3				; Next section
-	move.w	d4,d2				; Start scrolling regular blocks of lines again
-	bra.w	.ScrollUnmodified
 
 ; -------------------------------------------------------------------------
 ; Scroll the camera horizontally
@@ -563,7 +363,7 @@ ScrollCamX:
 ; -------------------------------------------------------------------------
 
 MoveScreenHoriz:
-	move.w	objPlayerSlot+oX.w,d0		; Get the distance scrolled
+	move.w	oX(a6),d0			; Get the distance scrolled
 	sub.w	cameraX.w,d0
 	sub.w	camXCenter.w,d0
 	beq.s	.AtDest				; If not scrolled at all, branch
@@ -628,14 +428,14 @@ ShiftCameraHoriz:
 
 ScrollCamY:
 	moveq	#0,d1				; Get how far we have scrolled vertically
-	move.w	objPlayerSlot+oY.w,d0
+	move.w	oY(a6),d0
 	sub.w	cameraY.w,d0
-	btst	#2,objPlayerSlot+oStatus.w	; Is the player rolling?
+	btst	#2,oStatus(a6)			; Is the player rolling?
 	beq.s	.NoRoll				; If not, branch
 	subq.w	#5,d0				; Account for the different height
 
 .NoRoll:
-	btst	#1,objPlayerSlot+oStatus.w	; Is the player in the air?
+	btst	#1,oStatus(a6)			; Is the player in the air?
 	beq.s	.OnGround			; If not, branch
 
 	addi.w	#$20,d0
@@ -663,7 +463,7 @@ ScrollCamY:
 .CamMoving:
 	cmpi.w	#$60,camYCenter.w		; Is the camera center normal?
 	bne.s	.DoScrollSlow			; If not, branch
-	move.w	objPlayerSlot+oPlayerGVel.w,d1	; Get the player's ground velocity
+	move.w	oPlayerGVel(a6),d1		; Get the player's ground velocity
 	bpl.s	.DoScrollMedium
 	neg.w	d1
 
@@ -720,7 +520,7 @@ ScrollCamY:
 	cmpi.w	#-$100,d1			; Is Y wrapping enabled?
 	bgt.s	.CapTop				; If not, branch
 	andi.w	#$7FF,d1			; Apply wrapping
-	andi.w	#$7FF,objPlayerSlot+oY.w
+	andi.w	#$7FF,oY(a6)
 	andi.w	#$7FF,cameraY.w
 	andi.w	#$3FF,cameraBgY.w
 	bra.s	.MoveCam
@@ -742,7 +542,7 @@ ScrollCamY:
 	blt.s	.MoveCam			; If not, branch
 	subi.w	#$800,d1			; Should we wrap?
 	bcs.s	.CapBottom			; If not, branch
-	andi.w	#$7FF,objPlayerSlot+oY.w	; Apply wrapping
+	andi.w	#$7FF,oY(a6)			; Apply wrapping
 	subi.w	#$800,cameraY.w
 	andi.w	#$3FF,cameraBgY.w
 	bra.s	.MoveCam
@@ -814,6 +614,14 @@ DrawLevel:
 	lea	levelLayout+$40.w,a4
 	move.w	#$6000,d2
 	bsr.w	DrawLevelBG1
+
+	lea	lvlScrollFlagsCopy+4,a2		; Update background 2
+	lea	lvlCamXBg2Copy,a3
+	bsr.w	DrawLevelBG2
+
+	lea	lvlScrollFlagsCopy+6,a2		; Update background 3
+	lea	lvlCamXBg3Copy,a3
+	bsr.w	DrawLevelBG3
 
 	lea	lvlScrollFlagsCopy,a2		; Update foreground
 	lea	lvlCamXCopy,a3
@@ -894,7 +702,7 @@ DrawLevelBG1:
 	lea	BGCameraSectIDs,a0		; Prepare background section camera IDs
 	adda.w	#1,a0
 
-	moveq	#-$10,d4			; Prepare to draw a row at the top
+	move.w	#-$10,d4			; Prepare to draw a row at the top
 
 	bclr	#0,(a2)				; Should we draw a row at the top?
 	bne.s	.GotRowPos			; If so, branch
@@ -975,7 +783,6 @@ DrawLevelBG1:
 .Loop:
 	moveq	#0,d0				; Get camera ID for this block section
 	move.b	(a0)+,d0
-	beq.s	.NextBlock			; If this is a static row of blocks, branch
 	btst	d0,(a2)				; Has this block section scrolled enough to warrant a new block to be drawn?
 	beq.s	.NextBlock			; If not, branch
 
@@ -1060,7 +867,7 @@ InitLevelDraw:
 ; -------------------------------------------------------------------------
 
 InitLevelDrawFG:
-	moveq	#-16,d4				; Start drawing at the top of the screen
+	move.w	#-16,d4				; Start drawing at the top of the screen
 	moveq	#((224+(16*2))/16)-1,d6		; 16 blocks in a column
 
 .Draw:
@@ -1091,7 +898,7 @@ InitLevelDrawFG:
 ; -------------------------------------------------------------------------
 
 InitLevelDrawBG:
-	moveq	#-16,d4				; Start drawing at the top of the screen
+	move.w	#-16,d4				; Start drawing at the top of the screen
 	moveq	#((224+(16*2))/16)-1,d6		; 16 blocks in a column
 
 .Draw:
@@ -1100,7 +907,7 @@ InitLevelDrawBG:
 	adda.w	#1,a0
 	move.w	cameraBgY.w,d0
 	add.w	d4,d0
-	andi.w	#$7F0,d0
+	andi.w	#$1F0,d0
 	bsr.w	DrawBGBlockRow
 	movem.l	(sp)+,d4-d6/a0
 
@@ -1108,6 +915,10 @@ InitLevelDrawBG:
 	dbf	d6,.Draw			; Loop until finished
 
 	rts
+
+; -------------------------------------------------------------------------
+	
+	dc.w	0
 
 ; -------------------------------------------------------------------------
 ; Background camera sections
@@ -1123,38 +934,10 @@ InitLevelDrawBG:
 
 BGCameraSectIDs:
 	BGSECT	16,  BGSTATIC			; Offscreen top row, required to be here
-
-	BGSECT	16,  BGSTATIC			; Top clouds
-	BGSECT	32,  BGSTATIC
-	BGSECT	48,  BGSTATIC
-	BGSECT	64,  BGSTATIC
-	BGSECT	64,  BGSTATIC
-	BGSECT	64,  BGSTATIC
-	BGSECT	32,  BGSTATIC
-	BGSECT	48,  BGSTATIC
-	BGSECT	48,  BGSTATIC
-	BGSECT	32,  BGSTATIC
-	BGSECT	160, BGSTATIC			; Top mountains
-	BGSECT	32,  BGSTATIC			; Top bushes
-	BGSECT	224, BGSTATIC			; Top water
-
-	BGSECT	224, BGSTATIC			; Upside down water
-	BGSECT	32,  BGSTATIC			; Upside down bushes
-	BGSECT	160, BGDYNAMIC2			; Upside down mountains
-	BGSECT	16,  BGSTATIC			; Upside down clouds
-	BGSECT	32,  BGSTATIC
-	BGSECT	48,  BGSTATIC
-	BGSECT	64,  BGSTATIC
-	BGSECT	64,  BGSTATIC
-
-	BGSECT	64,  BGSTATIC			; Bottom clouds
-	BGSECT	32,  BGSTATIC
-	BGSECT	80,  BGSTATIC
-	BGSECT	32,  BGSTATIC
+	BGSECT	64,  BGSTATIC			; Clouds
+	BGSECT	80,  BGDYNAMIC3			; Mountains
+	BGSECT	368, BGDYNAMIC2			; Waterfalls
 	BGSECT	16,  BGSTATIC
-	BGSECT	160, BGDYNAMIC2			; Bottom mountains
-	BGSECT	32,  BGSTATIC			; Bottom bushes
-	BGSECT	144, BGSTATIC			; Bottom water
 
 ; -------------------------------------------------------------------------
 

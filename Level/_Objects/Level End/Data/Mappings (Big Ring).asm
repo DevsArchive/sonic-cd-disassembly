@@ -171,17 +171,3 @@ unk_23F1E6:	dc.b  $A
 		dc.b $51 ; Q
 		dc.b $E8 ; è
 		dc.b   0
-unk_23F21A:	dc.b   0
-		dc.b   2
-		dc.b   1
-		dc.b   0
-		dc.b   1
-		dc.b   2
-		dc.b   4
-		dc.b   3
-		dc.b   3
-		dc.b   1
-		dc.b   2
-		dc.b   4
-		dc.b $FF
-		dc.b   0

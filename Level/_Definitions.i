@@ -341,14 +341,61 @@ fadePalette 		rs.b	$80		; Fade palette buffer
 ; -------------------------------------------------------------------------
 ; Background section
 ; -------------------------------------------------------------------------
+; PARAMETERS:
+;	size - Size of scrion
+;	id   - Section type
+; -------------------------------------------------------------------------
 
 BGSTATIC	EQU	0
 BGDYNAMIC1	EQU	2
 BGDYNAMIC2	EQU	4
 BGDYNAMIC3	EQU	6
 
+; -------------------------------------------------------------------------
+
 BGSECT macro size, id
 	dcb.b	(\size)/16, \id
 	endm
 
-; ----------------------------------------------------------------------------- ;
+; -------------------------------------------------------------------------
+; Start debug item index
+; -------------------------------------------------------------------------
+
+__dbgID = 0
+DBGSTART macro
+	__dbgCount: = 0
+	dc.b	__dbgCount\#__dbgID
+	even
+	endm
+
+; -------------------------------------------------------------------------
+; Debug item
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	id       - Object ID
+;	mappings - Mappings
+;	tile     - Tile ID
+;	flip     - Flip flags
+;	priority - Priority
+;	frame    - Sprite frame
+;	subtype  - Subtype
+;	subtype2 - Subtype 2
+; -------------------------------------------------------------------------
+
+DBGITEM macro id, mappings, tile, flip, priority, frame, subtype, subtype2
+	dc.b	\id, \priority
+	dc.l	\mappings
+	dc.w	\tile
+	dc.b	\subtype, \flip, \subtype2, \frame
+	__dbgCount: = __dbgCount+1
+	endm
+
+; -------------------------------------------------------------------------
+; End debug item index
+; -------------------------------------------------------------------------
+
+DBGEND macro
+	__dbgCount\#__dbgID: EQU __dbgCount
+	endm
+
+; -------------------------------------------------------------------------

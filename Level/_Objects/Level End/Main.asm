@@ -582,7 +582,7 @@ ObjSignpost_Main:
 ; -------------------------------------------------------------------------
 
 ObjSignpost_Spin:
-	lea	unk_23F21A,a1
+	lea	Ani_Signpost,a1
 	jsr	AnimateObject
 	subq.b	#1,oVar2A(a0)
 	bne.s	.End
