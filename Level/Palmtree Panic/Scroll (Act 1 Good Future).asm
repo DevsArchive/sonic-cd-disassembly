@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Palmtree Panic Act 1 Past level scrolling/drawing
+; Palmtree Panic Act 1 Good Future level scrolling/drawing
 ; -------------------------------------------------------------------------
 
 ; -------------------------------------------------------------------------
@@ -159,16 +159,16 @@ InitLevelScroll:
 	swap	d0
 	move.w	d0,cameraBg2Y.w
 	move.w	d0,cameraBg3Y.w
-
-	lsr.w	#1,d1				; Get background X positions
-	move.w	d1,cameraBgX.w
-	lsr.w	#2,d1
+	
+	lsr.w	#2,d1				; Get background X positions
+	move.w	d1,cameraBg2X.w
+	lsr.w	#1,d1
 	move.w	d1,cameraBg3X.w
 	lsr.w	#1,d1
 	move.w	d1,d2
 	add.w	d2,d2
-	add.w	d1,d2
-	move.w	d2,cameraBg2X.w
+	add.w	d2,d1
+	move.w	d1,cameraBgX.w
 
 	lea	deformBuffer.w,a2		; Clear cloud speeds
 	clr.l	(a2)+
@@ -215,20 +215,20 @@ LevelScroll:
 	moveq	#6,d6
 	bsr.w	SetHorizScrollFlagsBG3
 
-	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the waterfalls
+	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the waterfalls and water
 	ext.l	d4
-	asl.l	#4,d4
-	move.l	d4,d3
-	add.l	d3,d3
-	add.l	d3,d4
+	asl.l	#6,d4
 	moveq	#4,d6
 	bsr.w	SetHorizScrollFlagsBG2
 
 	lea	deformBuffer+$10.w,a1		; Prepare deformation buffer
 
-	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the rest + vertical scrolling
+	move.w	scrollXDiff.w,d4		; Set scroll offset and flags for the bushes + vertical scrolling
 	ext.l	d4
-	asl.l	#7,d4
+	asl.l	#4,d4
+	move.l	d4,d3
+	add.l	d3,d3
+	add.l	d3,d4
 	move.w	scrollYDiff.w,d5
 	ext.l	d5
 	asl.l	#4,d5
@@ -258,7 +258,7 @@ LevelScroll:
 	move.w	deformBuffer.w,d0		; Scroll top clouds
 	add.w	cameraBg3X.w,d0
 	neg.w	d0
-	move.w	#2-1,d1
+	move.w	#4-1,d1
 	
 .ScrollClouds1:
 	move.w	d0,(a1)+
@@ -267,7 +267,7 @@ LevelScroll:
 	move.w	deformBuffer+4.w,d0		; Scroll top middle clouds
 	add.w	cameraBg3X.w,d0
 	neg.w	d0
-	move.w	#2-1,d1
+	move.w	#4-1,d1
 	
 .ScrollClouds2:
 	move.w	d0,(a1)+
@@ -291,7 +291,7 @@ LevelScroll:
 	move.w	d0,(a1)+
 	dbf	d1,.ScrollClouds4
 	
-	move.w	#10-1,d1			; Scroll mountains
+	move.w	#6-1,d1				; Scroll mountains
 	move.w	cameraBg3X.w,d0
 	neg.w	d0
 
@@ -299,7 +299,15 @@ LevelScroll:
 	move.w	d0,(a1)+
 	dbf	d1,.ScrollMountains
 	
-	move.w	#24-1,d1			; Scroll waterfalls
+	move.w	#2-1,d1				; Scroll bushes
+	move.w	cameraBgX.w,d0
+	neg.w	d0
+
+.ScrollBushes:
+	move.w	d0,(a1)+
+	dbf	d1,.ScrollBushes
+	
+	move.w	#8-1,d1				; Scroll waterfalls
 	move.w	cameraBg2X.w,d0
 	neg.w	d0
 
@@ -314,22 +322,78 @@ LevelScroll:
 	move.w	d0,d2
 	andi.w	#$1F8,d0
 	lsr.w	#2,d0
+	move.w	d0,d3
+	lsr.w	#1,d3
 	
-	moveq	#(240/8)-1,d1			; Max number of blocks to scroll
-	lea	(a2,d0.w),a2			; Get starting scroll block
+	moveq	#(224/8)-1,d1			; Max number of blocks to scroll
+	moveq	#(224/8),d5
+	sub.w	d3,d1				; Get number of blocks scrolled on screen
+	bcs.s	.ScrollWater			; If there are none, branch
+	sub.w	d1,d5				; Get number of blocks unscrolled on screen
+	lea	(a2,d0.w),a2			; Scroll blocks
+	bsr.w	ScrollBlocks
+
+.ScrollWater:
+	move.w	cameraBg2X.w,d0			; Get scroll delta
+	move.w	cameraX.w,d2
+	sub.w	d0,d2
+	ext.l	d2
+	asl.l	#8,d2
+	divs.w	#$100,d2
+	ext.l	d2
+	asl.l	#8,d2
+	
+	moveq	#0,d3				; Get starting scroll offset
+	move.w	d0,d3
+	
+	move.w	d5,d1				; Get number of remaining scanlines on screen
+	lsl.w	#3,d1
+	subq.w	#1,d1
+	
+.ScrollWaterLoop:
+	move.w	d3,d0				; Set scroll offset
+	neg.w	d0
+	move.l	d0,(a1)+
+	swap	d3				; Add delta
+	add.l	d2,d3
+	swap	d3
+	dbf	d1,.ScrollWaterLoop		; Loop until finished
+	rts
+
+; -------------------------------------------------------------------------
+
+ScrollBlocks:
 	andi.w	#7,d2				; Get the number of lines to scroll for the first block of lines
 	add.w	d2,d2
 	move.w	(a2)+,d0			; Start scrolling
+	jmp	ScrollBlockStart(pc,d2.w)
+
+ScrollBlockLoop:
+	move.w	(a2)+,d0			; Scroll another block of lines
+
+ScrollBlockStart:
+	rept	8				; Scroll a block of 8 lines
+		move.l	d0,(a1)+
+	endr
+	dbf	d1,ScrollBlockLoop		; Loop until finished
+
+.End:
+	rts
+
+; -------------------------------------------------------------------------
+
+ScrollBlocksAlt:
+	neg.w	d0				; Start scrolling
 	jmp	.ScrollBlock(pc,d2.w)
 
 .ScrollLoop:
-	move.w	(a2)+,d0			; Scroll another block of lines
-
+	neg.w	d0				; Alternate offset
+	
 .ScrollBlock:
 	rept	8				; Scroll a block of 8 lines
 		move.l	d0,(a1)+
 	endr
-	dbf	d1,.ScrollLoop			; Loop until finished
+	dbf	d1,ScrollBlockLoop		; Loop until finished
 
 .End:
 	rts
@@ -702,7 +766,7 @@ DrawLevelBG1:
 	lea	BGCameraSectIDs,a0		; Prepare background section camera IDs
 	adda.w	#1,a0
 
-	move.w	#-$10,d4			; Prepare to draw a row at the top
+	moveq	#-$10,d4			; Prepare to draw a row at the top
 
 	bclr	#0,(a2)				; Should we draw a row at the top?
 	bne.s	.GotRowPos			; If so, branch
@@ -867,7 +931,7 @@ InitLevelDraw:
 ; -------------------------------------------------------------------------
 
 InitLevelDrawFG:
-	move.w	#-16,d4				; Start drawing at the top of the screen
+	moveq	#-16,d4				; Start drawing at the top of the screen
 	moveq	#((224+(16*2))/16)-1,d6		; 16 blocks in a column
 
 .Draw:
@@ -898,7 +962,7 @@ InitLevelDrawFG:
 ; -------------------------------------------------------------------------
 
 InitLevelDrawBG:
-	move.w	#-16,d4				; Start drawing at the top of the screen
+	moveq	#-16,d4				; Start drawing at the top of the screen
 	moveq	#((224+(16*2))/16)-1,d6		; 16 blocks in a column
 
 .Draw:
@@ -917,10 +981,6 @@ InitLevelDrawBG:
 	rts
 
 ; -------------------------------------------------------------------------
-	
-	dc.w	0
-
-; -------------------------------------------------------------------------
 ; Background camera sections
 ; -------------------------------------------------------------------------
 ; Each row of blocks is assigned a background camera section to help
@@ -934,10 +994,11 @@ InitLevelDrawBG:
 
 BGCameraSectIDs:
 	BGSECT	16,  BGSTATIC			; Offscreen top row, required to be here
-	BGSECT	64,  BGSTATIC			; Clouds
-	BGSECT	80,  BGDYNAMIC3			; Mountains
-	BGSECT	368, BGDYNAMIC2			; Waterfalls
-	BGSECT	16,  BGSTATIC
+	BGSECT	96,  BGSTATIC			; Clouds
+	BGSECT	48,  BGDYNAMIC3			; Mountains
+	BGSECT	16,  BGDYNAMIC1			; Bushes
+	BGSECT	64,  BGDYNAMIC2			; Waterfalls
+	BGSECT	304, BGSTATIC			; Water
 
 ; -------------------------------------------------------------------------
 

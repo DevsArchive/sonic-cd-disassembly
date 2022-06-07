@@ -19,7 +19,7 @@ ObjAmyRose:
 	beq.s	.End
 
 .ResetPal:
-	lea	Pal_PPZPresentEnd,a3
+	lea	Pal_LevelEnd,a3
 	bsr.w	ObjAmyRose_ResetPal
 
 .End:

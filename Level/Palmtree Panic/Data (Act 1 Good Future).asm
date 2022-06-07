@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Palmtree Panic Act 1 Present data
+; Palmtree Panic Act 1 Good Future data
 ; -------------------------------------------------------------------------
 
 ; -------------------------------------------------------------------------
@@ -17,8 +17,8 @@ LevelDataIndex:
 	dc.b	$81
 
 LevelPaletteID:
-	dc.b	5
-	dc.b	5
+	dc.b	4
+	dc.b	4
 
 ; -------------------------------------------------------------------------
 ; PLC lists
@@ -36,24 +36,22 @@ PLCLists:
 	dc.w	PLC_Cam1_Incr-PLCLists
 	dc.w	PLC_Cam2_Incr-PLCLists
 	dc.w	PLC_Cam3_Incr-PLCLists
-	dc.w	PLC_Cam4_Incr-PLCLists
-	dc.w	PLC_Cam5_Incr-PLCLists
-	dc.w	PLC_Cam1_Full-PLCLists
-	dc.w	PLC_Cam1_Full-PLCLists
-	dc.w	PLC_Cam1_Full-PLCLists
+	dc.w	PLC_Level-PLCLists
+	dc.w	PLC_Level-PLCLists
+	dc.w	PLC_Level-PLCLists
+	dc.w	PLC_Level-PLCLists
+	dc.w	PLC_Level-PLCLists
 	dc.w	PLC_Results-PLCLists
 	dc.w	PLC_Cam1_Full-PLCLists
 	dc.w	PLC_Signpost-PLCLists
 
 PLC_Level:
-	dc.w	1
+	dc.w	0
 	dc.l	Art_LevelTiles
 	dc.w	0
-	dc.l	Art_Checkpoint
-	dc.w	$D960
-
+	
 PLC_Std:
-	dc.w	$D
+	dc.w	$E
 	dc.l	Art_Spikes
 	dc.w	$6400
 	dc.l	Art_TunnelDoor
@@ -64,6 +62,8 @@ PLC_Std:
 	dc.w	$6C00
 	dc.l	Art_TitleCardText
 	dc.w	$7A00
+	dc.l	Art_Checkpoint
+	dc.w	$9000
 	dc.l	Art_DiagonalSpring
 	dc.w	$9200
 	dc.l	Art_Platform
@@ -82,158 +82,140 @@ PLC_Std:
 	dc.w	$DAE0
 	dc.l	Art_Rings
 	dc.w	$F5C0
-
+	
 PLC_Cam1_Full:
-	dc.w	6
+	dc.w	9
 	dc.l	Art_Boulder
-	dc.w	$6E80
-	dc.l	Art_Animals
-	dc.w	$7100
-	dc.l	Art_Mosqui
-	dc.w	$7400
+	dc.w	$68C0
+	dc.l	Art_Springboard
+	dc.w	$6B40
+	dc.l	Art_SpringWheel
+	dc.w	$6DE0
+	dc.l	Art_SpinningDisc
+	dc.w	$6EE0
 	dc.l	Art_Anton
-	dc.w	$8120
-	dc.l	Art_3DPlant
-	dc.w	$8480
-	dc.l	Art_3DRampBoost
-	dc.w	$8820
+	dc.w	$70C0
+	dc.l	Art_PataBata
+	dc.w	$7380
+	dc.l	Art_Mosqui
+	dc.w	$7A00
+	dc.l	Art_TagaTaga
+	dc.w	$8320
+	dc.l	Art_Animals
+	dc.w	$8C60
 	dc.l	Art_GoalPost
 	dc.w	$9EE0
-
+	
 PLC_Cam2_Full:
-	dc.w	5
+	dc.w	9
 	dc.l	Art_Boulder
-	dc.w	$6E80
-	dc.l	Art_Animals
-	dc.w	$7100
-	dc.l	Art_PataBata
-	dc.w	$7600
+	dc.w	$68C0
+	dc.l	Art_Springboard
+	dc.w	$6B40
+	dc.l	Art_SpringWheel
+	dc.w	$6DE0
+	dc.l	Art_SpinningDisc
+	dc.w	$6EE0
 	dc.l	Art_Anton
-	dc.w	$8120
+	dc.w	$70C0
+	dc.l	Art_PataBata
+	dc.w	$7380
 	dc.l	Art_Kamemusi
-	dc.w	$8500
+	dc.w	$7A00
+	dc.l	Art_TagaTaga
+	dc.w	$8320
+	dc.l	Art_Animals
+	dc.w	$8C60
 	dc.l	Art_GoalPost
 	dc.w	$9EE0
-
+	
 PLC_Cam3_Full:
-	dc.w	8
+	dc.w	$B
 	dc.l	Art_Boulder
-	dc.w	$6E80
-	dc.l	Art_Animals
-	dc.w	$7100
-	dc.l	Art_SonicHole
-	dc.w	$7400
-	dc.l	Art_PataBata
-	dc.w	$7600
-	dc.l	Art_TunnelWaterfall
-	dc.w	$7C80
+	dc.w	$68C0
+	dc.l	Art_Springboard
+	dc.w	$6B40
+	dc.l	Art_SpringWheel
+	dc.w	$6DE0
 	dc.l	Art_SpinningDisc
-	dc.w	$8120
-	dc.l	Art_LogShadow
-	dc.w	$8300
+	dc.w	$6EE0
+	dc.l	Art_Anton
+	dc.w	$70C0
+	dc.l	Art_PataBata
+	dc.w	$7380
 	dc.l	Art_Kamemusi
+	dc.w	$7A00
+	dc.l	Art_TunnelWaterfall
+	dc.w	$8160
+	dc.l	Art_LogShadowUnused
 	dc.w	$8500
+	dc.l	Art_Scenery
+	dc.w	$8700
+	dc.l	Art_Animals
+	dc.w	$8C60
 	dc.l	Art_GoalPost
 	dc.w	$9EE0
-
+	
 PLC_Cam4_Full:
-	dc.w	6
-	dc.l	Art_Anton
-	dc.w	$6E00
-	dc.l	Art_Animals
-	dc.w	$7100
-	dc.l	Art_Mosqui
-	dc.w	$7400
+	dc.w	9
+	dc.l	Art_Boulder
+	dc.w	$68C0
+	dc.l	Art_Springboard
+	dc.w	$6B40
+	dc.l	Art_SpringWheel
+	dc.w	$6DE0
 	dc.l	Art_SpinningDisc
-	dc.w	$8120
-	dc.l	Art_3DPlant
-	dc.w	$8480
-	dc.l	Art_3DRampBoost
-	dc.w	$8820
+	dc.w	$6EE0
+	dc.l	Art_Anton
+	dc.w	$70C0
+	dc.l	Art_PataBata
+	dc.w	$7380
+	dc.l	Art_Mosqui
+	dc.w	$7A00
+	dc.l	Art_TagaTaga
+	dc.w	$8320
+	dc.l	Art_Animals
+	dc.w	$8C60
 	dc.l	Art_GoalPost
 	dc.w	$9EE0
-
+	
 PLC_Cam5_Full:
-	dc.w	4
-	dc.l	Art_AmyRose
-	dc.w	$6E00
-	dc.l	Art_RobotGenWithered
-	dc.w	$8120
-	dc.l	Art_3DPlant
-	dc.w	$8480
-	dc.l	Art_3DRampBoost
-	dc.w	$8820
-	dc.l	Art_GoalPost
-	dc.w	$9EE0
-
-PLC_Cam1_Incr:
-	dc.w	5
-	dc.l	Art_Boulder
-	dc.w	$6E80
-	dc.l	Art_Animals
-	dc.w	$7100
-	dc.l	Art_Mosqui
-	dc.w	$7400
-	dc.l	Art_Anton
-	dc.w	$8120
-	dc.l	Art_3DPlant
-	dc.w	$8480
-	dc.l	Art_3DRampBoost
-	dc.w	$8820
-
-PLC_Cam2_Incr:
-	dc.w	2
-	dc.l	Art_PataBata
-	dc.w	$7600
-	dc.l	Art_Anton
-	dc.w	$8120
-	dc.l	Art_Kamemusi
-	dc.w	$8500
-
-PLC_Cam3_Incr:
-	dc.w	6
-	dc.l	Art_Boulder
-	dc.w	$6E80
-	dc.l	Art_SonicHole
-	dc.w	$7400
-	dc.l	Art_PataBata
-	dc.w	$7600
-	dc.l	Art_TunnelWaterfall
-	dc.w	$7C80
-	dc.l	Art_SpinningDisc
-	dc.w	$8120
-	dc.l	Art_LogShadow
-	dc.w	$8300
-	dc.l	Art_Kamemusi
-	dc.w	$8500
-
-PLC_Cam4_Incr:
-	dc.w	5
-	dc.l	Art_Anton
-	dc.w	$6E00
-	dc.l	Art_Animals
-	dc.w	$7100
-	dc.l	Art_Mosqui
-	dc.w	$7400
-	dc.l	Art_SpinningDisc
-	dc.w	$8120
-	dc.l	Art_3DPlant
-	dc.w	$8480
-	dc.l	Art_3DRampBoost
-	dc.w	$8820
-
-PLC_Cam5_Incr:
 	dc.w	1
-	dc.l	Art_AmyRose
-	dc.w	$6E00
-	dc.l	Art_RobotGenWithered
-	dc.w	$8120
-
+	dc.l	Art_Mosqui
+	dc.w	$7A00
+	dc.l	Art_TagaTaga
+	dc.w	$8320
+	
+PLC_Cam1_Incr:
+	dc.w	1
+	dc.l	Art_Kamemusi
+	dc.w	$7A00
+	dc.l	Art_TagaTaga
+	dc.w	$8320
+	
+PLC_Cam2_Incr:
+	dc.w	3
+	dc.l	Art_Kamemusi
+	dc.w	$7A00
+	dc.l	Art_TunnelWaterfall
+	dc.w	$8160
+	dc.l	Art_LogShadowUnused
+	dc.w	$8500
+	dc.l	Art_Scenery
+	dc.w	$8700
+	
+PLC_Cam3_Incr:
+	dc.w	1
+	dc.l	Art_Mosqui
+	dc.w	$7A00
+	dc.l	Art_TagaTaga
+	dc.w	$8320
+	
 PLC_Results:
 	dc.w	0
 	dc.l	Art_Results
 	dc.w	$7880
-
+	
 PLC_Signpost:
 	dc.w	2
 	dc.l	Art_Signpost
@@ -249,24 +231,93 @@ PLC_Signpost:
 ; -------------------------------------------------------------------------
 
 	if REGION=USA
-	incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Present, U).bin"
+	incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Good Future, U).bin"
 	else
-	incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Present, JE).bin"
+	incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Good Future, JE).bin"
 	endif
 
 ; -------------------------------------------------------------------------
 
 LevelChunks:
-	incbin	"Level/Palmtree Panic/Data/Chunks (Act 1 Present).bin"
+	incbin	"Level/Palmtree Panic/Data/Chunks (Act 1 Good Future).bin"
+	even
+Ani_Powerup:
+	include	"Level/_Objects/Powerup/Data/Animations.asm"
+	even
+MapSpr_Powerup:
+	include	"Level/_Objects/Powerup/Data/Mappings.asm"
+	even
+Ani_TunnelDoorSplash:
+	include	"Level/_Objects/Spin Tunnel/Data/Animations (Door Splash).asm"
+	even
+MapSpr_TunnelDoorSplash:
+	include	"Level/_Objects/Spin Tunnel/Data/Mappings (Door Splash).asm"
+	even
+Ani_TunnelDoor:
+	include	"Level/_Objects/Spin Tunnel/Data/Animations (Door).asm"
+	even
+MapSpr_TunnelDoor:
+	include	"Level/_Objects/Spin Tunnel/Data/Mappings (Door).asm"
+	even
+Ani_TunnelWaterfall:
+	include	"Level/_Objects/Spin Tunnel/Data/Animations (Waterfall Splash).asm"
+	even
+MapSpr_TunnelWaterfall:
+	include	"Level/_Objects/Spin Tunnel/Data/Mappings (Waterfall Splash).asm"
+	even
+Ani_Explosion:
+	include	"Level/_Objects/Explosion/Data/Animations.asm"
+	even
+MapSpr_Explosion:
+	include	"Level/_Objects/Explosion/Data/Mappings.asm"
+	even
+	
+	incbin	"Level/Palmtree Panic/Data/Unused/Unknown Data.bin"
+	even
+	
+Ani_Checkpoint:
+	include	"Level/_Objects/Checkpoint/Data/Animations.asm"
+	even
+MapSpr_Checkpoint:
+	include	"Level/_Objects/Checkpoint/Data/Mappings.asm"
+	even
+Ani_BigRing:
+	include	"Level/_Objects/Level End/Data/Animations (Big Ring).asm"
+	even
+MapSpr_BigRing:
+	include	"Level/_Objects/Level End/Data/Mappings (Big Ring).asm"
+	even
+Ani_Signpost:
+	include	"Level/_Objects/Level End/Data/Animations (Signpost).asm"
+	even
+MapSpr_GoalSignpost:
+	include	"Level/_Objects/Level End/Data/Mappings (Post).asm"
+	even
+Ani_FlowerCapsule:
+	include	"Level/_Objects/Level End/Data/Animations (Flower Capsule).asm"
+	even
+MapSpr_FlowerCapsule:
+	include	"Level/_Objects/Level End/Data/Mappings (Flower Capsule).asm"
+	even
+	
+; -------------------------------------------------------------------------
+; Leftover data from other level files used as padding, can be replaced
+; with a "align $20000"
+; -------------------------------------------------------------------------
+
+	if REGION=USA
+	incbin	"Level/Palmtree Panic/Data/Padding/2 (Act 1 Good Future, U).bin"
+	else
+	incbin	"Level/Palmtree Panic/Data/Padding/2 (Act 1 Good Future, JE).bin"
+	endif
+
+; -------------------------------------------------------------------------
+	
+Art_Sonic:
+	incbin	"Level/_Objects/Sonic/Data/Art.bin"
 	even
 MapSpr_Sonic:
 	include	"Level/_Objects/Sonic/Data/Mappings.asm"
-	even
-MapSpr_3DRamp:
-	include	"Level/Palmtree Panic/Objects/3D Ramp/Data/Mappings (Booster).asm"
-	even
-Art_Sonic:
-	incbin	"Level/_Objects/Sonic/Data/Art.bin"
 	even
 DPLC_Sonic:
 	include	"Level/_Objects/Sonic/Data/DPLCs.asm"
@@ -430,7 +481,7 @@ ColWidthMap:
 	incbin	"Level/_Data/Collision Width Map.bin"
 	even
 LevelCollision:
-	incbin	"Level/Palmtree Panic/Data/Collision (Act 1 Present).bin"
+	incbin	"Level/Palmtree Panic/Data/Collision (Act 1 Good Future).bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -438,109 +489,53 @@ LevelCollision:
 ; -------------------------------------------------------------------------
 
 LevelLayouts:
-	dc.w .FG-LevelLayouts,   .BG-LevelLayouts,   .Null-LevelLayouts
-	dc.w .Null-LevelLayouts, .Null-LevelLayouts, .Null-LevelLayouts
-	dc.w .Null-LevelLayouts, .Null-LevelLayouts, .Null-LevelLayouts
-	dc.w .Null-LevelLayouts, .Null-LevelLayouts, .Null-LevelLayouts
-	dc.w .FG-LevelLayouts,   .BG-LevelLayouts,   .Null-LevelLayouts
-	dc.w .Null-LevelLayouts, .Null-LevelLayouts, .Null-LevelLayouts
-	dc.w .Null-LevelLayouts, .Null-LevelLayouts, .Null-LevelLayouts
-	dc.w .Null-LevelLayouts, .Null-LevelLayouts, .Null-LevelLayouts
-	dc.w .FG-LevelLayouts,   .BG-LevelLayouts,   .Null-LevelLayouts
-	dc.w .Null-LevelLayouts, .Null-LevelLayouts, .Null-LevelLayouts
-	dc.w .Null-LevelLayouts, .Null-LevelLayouts, .Null-LevelLayouts
-	dc.w .Null-LevelLayouts, .Null-LevelLayouts, .Null-LevelLayouts
+	dc.w	.FG-LevelLayouts,    .BG-LevelLayouts,    .Null-LevelLayouts
+	dc.w	.FG2-LevelLayouts,   .Null3-LevelLayouts, .Null2-LevelLayouts
+	dc.w	.FG3-LevelLayouts,   .Null3-LevelLayouts, .Null3-LevelLayouts
+	dc.w	.Null4-LevelLayouts, .Null4-LevelLayouts, .Null4-LevelLayouts
+	dc.w	.FG-LevelLayouts,    .BG-LevelLayouts,    .Null-LevelLayouts
+	dc.w	.FG2-LevelLayouts,   .Null3-LevelLayouts, .Null2-LevelLayouts
+	dc.w	.FG3-LevelLayouts,   .Null3-LevelLayouts, .Null3-LevelLayouts
+	dc.w	.Null4-LevelLayouts, .Null4-LevelLayouts, .Null4-LevelLayouts
+	dc.w	.FG-LevelLayouts,    .BG-LevelLayouts,    .Null-LevelLayouts
+	dc.w	.FG2-LevelLayouts,   .Null3-LevelLayouts, .Null2-LevelLayouts
+	dc.w	.FG3-LevelLayouts,   .Null3-LevelLayouts, .Null3-LevelLayouts
+	dc.w	.Null4-LevelLayouts, .Null4-LevelLayouts, .Null4-LevelLayouts
 
 .FG:
-	incbin	"Level/Palmtree Panic/Data/Foreground (Act 1 Present).bin"
+	incbin	"Level/Palmtree Panic/Data/Foreground (Act 1 Good Future).bin"
 	even
 .BG:
-	incbin	"Level/Palmtree Panic/Data/Background (Act 1 Present).bin"
+	incbin	"Level/Palmtree Panic/Data/Background (Act 1 Good Future).bin"
 	even
 .Null:
+	dc.b	0, 0, 0, 0
+.FG2:
+	incbin	"Level/Palmtree Panic/Data/Unused/Unknown Layout 1.bin"
+	even
+.Null2:
+	dc.b	0, 0, 0, 0
+.FG3:
+	incbin	"Level/Palmtree Panic/Data/Unused/Unknown Layout 2.bin"
+	even
+.Null3:
+	dc.b	0, 0, 0, 0
+.Null4:
+	dc.b	0, 0, 0, 0
 
 ; -------------------------------------------------------------------------
 
-Art_SonicHole:
-	incbin	"Level/Palmtree Panic/Objects/Hidden Tunnel/Data/Art (Hole).nem"
-	even
-Art_3DPlant:
-	incbin	"Level/Palmtree Panic/Objects/3D Ramp/Data/Art (Plant).nem"
-	even
-Art_3DRampBoost:
-	incbin	"Level/Palmtree Panic/Objects/3D Ramp/Data/Art (Booster).nem"
+Art_Scenery:
+	incbin	"Level/Palmtree Panic/Objects/Scenery/Data/Art (Good Future).nem"
 	even
 LevelBlocks:
-	incbin	"Level/Palmtree Panic/Data/Blocks (Act 1 Present).nem"
+	incbin	"Level/Palmtree Panic/Data/Blocks (Act 1 Good Future).nem"
 	even
 Art_LevelTiles:
-	incbin	"Level/Palmtree Panic/Data/Tiles (Act 1 Present).nem"
+	incbin	"Level/Palmtree Panic/Data/Tiles (Act 1 Good Future).nem"
 	even
-Ani_Powerup:
-	include	"Level/_Objects/Powerup/Data/Animations.asm"
-	even
-MapSpr_Powerup:
-	include	"Level/_Objects/Powerup/Data/Mappings.asm"
-	even
-Ani_TunnelDoorSplash:
-	include	"Level/_Objects/Spin Tunnel/Data/Animations (Door Splash).asm"
-	even
-MapSpr_TunnelDoorSplash:
-	include	"Level/_Objects/Spin Tunnel/Data/Mappings (Door Splash).asm"
-	even
-Ani_TunnelDoor:
-	include	"Level/_Objects/Spin Tunnel/Data/Animations (Door).asm"
-	even
-MapSpr_TunnelDoor:
-	include	"Level/_Objects/Spin Tunnel/Data/Mappings (Door).asm"
-	even
-Ani_TunnelWaterfall:
-	include	"Level/_Objects/Spin Tunnel/Data/Animations (Waterfall Splash).asm"
-	even
-MapSpr_TunnelWaterfall:
-	include	"Level/_Objects/Spin Tunnel/Data/Mappings (Waterfall Splash).asm"
-	even
-Ani_Explosion:
-	include	"Level/_Objects/Explosion/Data/Animations.asm"
-	even
-MapSpr_Explosion:
-	include	"Level/_Objects/Explosion/Data/Mappings.asm"
-	even
-Ani_Checkpoint:
-	include	"Level/_Objects/Checkpoint/Data/Animations.asm"
-	even
-MapSpr_Checkpoint:
-	include	"Level/_Objects/Checkpoint/Data/Mappings.asm"
-	even
-Ani_BigRing:
-	include	"Level/_Objects/Level End/Data/Animations (Big Ring).asm"
-	even
-MapSpr_BigRing:
-	include	"Level/_Objects/Level End/Data/Mappings (Big Ring).asm"
-	even
-Ani_Signpost:
-	include	"Level/_Objects/Level End/Data/Animations (Signpost).asm"
-	even
-MapSpr_GoalSignpost:
-	include	"Level/_Objects/Level End/Data/Mappings (Post).asm"
-	even
-MapSpr_FlowerCapsule:
-;	include	"Level/_Objects/Level End/Data/Mappings (Flower Capsule).asm"
-;	even
-Ani_FlowerCapsule:
-;	include	"Level/_Objects/Level End/Data/Animations (Flower Capsule).asm"
-;	even
 Art_Projector:
-;	incbin	"Level/_Objects/Projector/Data/Art.nem"
-;	even
-Art_AmyRose:
-	incbin	"Level/Palmtree Panic/Objects/Amy Rose/Data/Art.nem"
-	even
-MapSpr_AmyRose:	
-	include	"Level/Palmtree Panic/Objects/Amy Rose/Data/Mappings.asm"
-	even
-Ani_AmyRose:
-	include	"Level/Palmtree Panic/Objects/Amy Rose/Data/Animations.asm"
+	incbin	"Level/_Objects/Projector/Data/Art.nem"
 	even
 
 ; -------------------------------------------------------------------------
@@ -548,6 +543,6 @@ Ani_AmyRose:
 ; with a "align $40000"
 ; -------------------------------------------------------------------------
 
-	incbin	"Level/Palmtree Panic/Data/Padding/2 (Act 1 Present).bin"
+	incbin	"Level/Palmtree Panic/Data/Padding/3 (Act 1 Good Future).bin"
 
 ; -------------------------------------------------------------------------

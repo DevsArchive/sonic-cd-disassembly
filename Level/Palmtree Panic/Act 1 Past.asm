@@ -11,8 +11,11 @@
 
 	include	"Level/Initialization.asm"
 	include	"Level/Palmtree Panic/Palette Cycle (Past).asm"
-	include	"Level/Palette.asm"
-	include	"Level/Palmtree Panic/Palette Load (Act 1 Past).asm"
+	include	"Level/Palette Fade.asm"
+	include	"Level/Palette Load (Fade).asm"
+	include	"Level/Palette Load.asm"
+	include	"Level/Palette Load (Water).asm"
+	include	"Level/Palmtree Panic/Palette Data (Act 1 Past).asm"
 	include	"Level/Functions (Misc).asm"
 	include	"Level/Collision Floor.asm"
 	include	"Level/Main.asm"

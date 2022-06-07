@@ -14,7 +14,7 @@ PaletteCycle:
 
 	; Dead code: this is the palette cycling routine from the v0.02 prototype
 
-	lea	PPZ_ProtoPalCyc1,a0		; Prepare first palette data set
+	lea	PalCycProtoData1,a0		; Prepare first palette data set
 	subq.b	#1,palCycleTimers.w		; Decrement timer
 	bpl.s	.SkipCycle1			; If this cycle's timer isn't done, branch
 	move.b	#7,palCycleTimers.w		; Reset the timer
@@ -39,7 +39,7 @@ PaletteCycle:
 
 .SkipCycle1:
 						; Prepare second palette data set
-	adda.w	#PPZ_ProtoPalCyc2-PPZ_ProtoPalCyc1,a0
+	adda.w	#PalCycProtoData2-PalCycProtoData1,a0
 	subq.b	#1,palCycleTimers+1.w		; Decrement timer
 	bpl.s	.End				; If this cycle's timer isn't done, branch
 	move.b	#5,palCycleTimers+1.w		; Reset the timer
@@ -70,12 +70,12 @@ PaletteCycle:
 ; Prototype palette cycle data
 ; -------------------------------------------------------------------------
 
-PPZ_ProtoPalCyc1:
+PalCycProtoData1:
 	dc.w	$EEA, $CE6, $EEE, $8C4
 	dc.w	$8C4, $EEA, $EEA, $CE6
 	dc.w	$CE6, $8C4, $CE6, $EEA
 
-PPZ_ProtoPalCyc2:
+PalCycProtoData2:
 	dc.w	$EEC, $CE6, $AA0, $8C4
 	dc.w	$CE6, $8C4, $AA0, $EEC
 	dc.w	$8C4, $EEC, $AA0, $CE6
@@ -88,28 +88,28 @@ PalCycle_Do:
 	lea	palCycleTimers.w,a5		; Prepare palette cycle variables
 	lea	palCycleSteps.w,a4
 
-	lea	PPZ_PalCyc_Script1,a1		; Cycle color 1
-	lea	PPZ_PalCyc_Colors1,a2
-	bsr.s	PalCycle_OneColor
+	lea	PalCycleScript1,a1		; Cycle color 1
+	lea	PalCycleColors1,a2
+	bsr.s	CycleColor
 
-	lea	PPZ_PalCyc_Script2,a1		; Cycle color 2
-	lea	PPZ_PalCyc_Colors2,a2
-	bsr.s	PalCycle_OneColor
+	lea	PalCycleScript2,a1		; Cycle color 2
+	lea	PalCycleColors2,a2
+	bsr.s	CycleColor
 
-	lea	PPZ_PalCyc_Script3,a1		; Cycle color 3
-	lea	PPZ_PalCyc_Colors3,a2
-	bsr.s	PalCycle_OneColor
+	lea	PalCycleScript3,a1		; Cycle color 3
+	lea	PalCycleColors3,a2
+	bsr.s	CycleColor
 
-	lea	PPZ_PalCyc_Script4,a1		; Cycle color 4
-	lea	PPZ_PalCyc_Colors4,a2
-	bsr.s	PalCycle_OneColor
+	lea	PalCycleScript4,a1		; Cycle color 4
+	lea	PalCycleColors4,a2
+	bsr.s	CycleColor
 
-	lea	PPZ_PalCyc_Script5,a1		; Cycle color 5
-	lea	PPZ_PalCyc_Colors5,a2
-	bsr.s	PalCycle_OneColor
+	lea	PalCycleScript5,a1		; Cycle color 5
+	lea	PalCycleColors5,a2
+	bsr.s	CycleColor
 
-	lea	PPZ_PalCyc_Script6,a1		; Cycle color 6
-	lea	PPZ_PalCyc_Colors6,a2
+	lea	PalCycleScript6,a1		; Cycle color 6
+	lea	PalCycleColors6,a2
 
 ; -------------------------------------------------------------------------
 ; Cycle a color in the palette
@@ -119,7 +119,7 @@ PalCycle_Do:
 ;	a5.l - Pointer to timer
 ; -------------------------------------------------------------------------
 
-PalCycle_OneColor:
+CycleColor:
 	subq.b	#1,(a5)				; Decrement timer
 	bpl.s	.End				; If it hasn't run out, branch
 
@@ -156,57 +156,57 @@ PalCycle_OneColor:
 ; -------------------------------------------------------------------------
 
 ; Color 1
-PPZ_PalCyc_Script1:
+PalCycleScript1:
 	dc.b	$31, 3				; Palette index, number of frames
 	dc.b	8, 0				; Frame length, color index
 	dc.b	8, 1
 	dc.b	8, 2
-PPZ_PalCyc_Colors1:
+PalCycleColors1:
 	dc.w	$EEA, $CE6, $8C4
 
 ; Color 2
-PPZ_PalCyc_Script2:
+PalCycleScript2:
 	dc.b	$32, 3
 	dc.b	8, 0
 	dc.b	8, 1
 	dc.b	8, 2
-PPZ_PalCyc_Colors2:
+PalCycleColors2:
 	dc.w	$8C4, $EEA, $CE6
 
 ; Color 3
-PPZ_PalCyc_Script3:
+PalCycleScript3:
 	dc.b	$33, 3
 	dc.b	8, 0
 	dc.b	8, 1
 	dc.b	8, 2
-PPZ_PalCyc_Colors3:
+PalCycleColors3:
 	dc.w	$CE6, $8C4, $EEA
 
 ; Color 4
-PPZ_PalCyc_Script4:
+PalCycleScript4:
 	dc.b	$2C, 3
 	dc.b	6, 0
 	dc.b	6, 1
 	dc.b	6, 2
-PPZ_PalCyc_Colors4:
+PalCycleColors4:
 	dc.w	$EEC, $CE6, $8C4
 
 ; Color 5
-PPZ_PalCyc_Script5:
+PalCycleScript5:
 	dc.b	$2D, 3
 	dc.b	6, 0
 	dc.b	6, 1
 	dc.b	6, 2
-PPZ_PalCyc_Colors5:
+PalCycleColors5:
 	dc.w	$CE6, $8C4, $EEC
 
 ; Color 6
-PPZ_PalCyc_Script6:
+PalCycleScript6:
 	dc.b	$2F, 3
 	dc.b	6, 0
 	dc.b	6, 1
 	dc.b	6, 2
-PPZ_PalCyc_Colors6:
+PalCycleColors6:
 	dc.w	$8C4, $EEC, $CE6
 
 ; -------------------------------------------------------------------------

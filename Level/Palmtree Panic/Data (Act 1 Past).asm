@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Palmtree Panic Act 1 data
+; Palmtree Panic Act 1 Past data
 ; -------------------------------------------------------------------------
 
 ; -------------------------------------------------------------------------
@@ -278,7 +278,7 @@ MapSpr_Explosion:
 	include	"Level/_Objects/Explosion/Data/Mappings.asm"
 	even
 	
-	incbin	"Level/Palmtree Panic/Data/Unused/Unknown (Act 1 Past).bin"
+	incbin	"Level/Palmtree Panic/Data/Unused/Unknown Data.bin"
 	even
 	
 Ani_Checkpoint:
@@ -517,12 +517,12 @@ LevelLayouts:
 .Null:
 	dc.b	0, 0, 0, 0
 .FG2:
-	incbin	"Level/Palmtree Panic/Data/Unknown Layout 1 (Act 1 Past).bin"
+	incbin	"Level/Palmtree Panic/Data/Unused/Unknown Layout 1.bin"
 	even
 .Null2:
 	dc.b	0, 0, 0, 0
 .FG3:
-	incbin	"Level/Palmtree Panic/Data/Unknown Layout 2 (Act 1 Past).bin"
+	incbin	"Level/Palmtree Panic/Data/Unused/Unknown Layout 2.bin"
 	even
 .Null3:
 	dc.b	0, 0, 0, 0
@@ -535,7 +535,7 @@ Art_SonicHole:
 	incbin	"Level/Palmtree Panic/Objects/Hidden Tunnel/Data/Art (Hole).nem"
 	even
 Art_Scenery:
-	incbin	"Level/Palmtree Panic/Objects/Scenery/Data/Art.nem"
+	incbin	"Level/Palmtree Panic/Objects/Scenery/Data/Art (Past).nem"
 	even
 LevelBlocks:
 	incbin	"Level/Palmtree Panic/Data/Blocks (Act 1 Past).nem"

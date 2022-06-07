@@ -31,8 +31,7 @@
     </ImageFromMappings>
   </Images>
   <Properties>
-    <BitsProperty name="Sprite" type="PlatformSprite" startbit="0" length="1" />
-    <BitsProperty name="Size" type="PlatformSizes" startbit="1" length="3" />
+    <BitsProperty name="Sprite" type="PlatformSprites" startbit="0" length="4" />
     <BitsProperty name="Flipped" type="FlippedFlag" startbit="4" length="1" />
     <BitsProperty name="Collapse Direction" type="CollapseDirection" startbit="5" length="1" />
     <BitsProperty name="Collapse Direction Dependency" type="CollapseDirDependent" startbit="6" length="1" />
@@ -55,14 +54,13 @@
       <EnumMember name="False" />
       <EnumMember name="True" />
     </Enum>
-    <Enum name="PlatformSizes">
-      <EnumMember name="Wide" />
-      <EnumMember name="Square" />
-      <EnumMember name="Tall" />
-    </Enum>
-    <Enum name="PlatformSprite">
-      <EnumMember name="Sprite 1" />
-      <EnumMember name="Sprite 2" />
+    <Enum name="PlatformSprites">
+      <EnumMember name="Wide 1" />
+      <EnumMember name="Wide 2" />
+      <EnumMember name="Square 1" />
+      <EnumMember name="Square 2" />
+      <EnumMember name="Tall 1" />
+      <EnumMember name="Tall 2" />
     </Enum>
   </Enums>
   <Display>
@@ -79,87 +77,75 @@
     <DisplayOption>
       <Condition property="Flipped" value="False" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Wide" />
-      <Condition property="Sprite" value="Sprite 1" />
+      <Condition property="Sprite" value="Wide 1" />
       <ImageRef image="wide1" xflip="NeverFlip" />
     </DisplayOption>
     <DisplayOption>
       <Condition property="Flipped" value="True" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Wide" />
-      <Condition property="Sprite" value="Sprite 1" />
+      <Condition property="Sprite" value="Wide 1" />
       <ImageRef image="wide1" xflip="AlwaysFlip" />
     </DisplayOption>
     <DisplayOption>
       <Condition property="Flipped" value="False" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Wide" />
-      <Condition property="Sprite" value="Sprite 2" />
+      <Condition property="Sprite" value="Wide 2" />
       <ImageRef image="wide2" xflip="NeverFlip" />
     </DisplayOption>
     <DisplayOption>
       <Condition property="Flipped" value="True" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Wide" />
-      <Condition property="Sprite" value="Sprite 2" />
+      <Condition property="Sprite" value="Wide 2" />
       <ImageRef image="wide2" xflip="AlwaysFlip" />
     </DisplayOption>
 
     <DisplayOption>
       <Condition property="Flipped" value="False" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Square" />
-      <Condition property="Sprite" value="Sprite 1" />
+      <Condition property="Sprite" value="Square 1" />
       <ImageRef image="square1" xflip="NeverFlip" />
     </DisplayOption>
     <DisplayOption>
       <Condition property="Flipped" value="True" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Square" />
-      <Condition property="Sprite" value="Sprite 1" />
+      <Condition property="Sprite" value="Square 1" />
       <ImageRef image="square1" xflip="AlwaysFlip" />
     </DisplayOption>
     <DisplayOption>
       <Condition property="Flipped" value="False" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Square" />
-      <Condition property="Sprite" value="Sprite 2" />
+      <Condition property="Sprite" value="Square 2" />
       <ImageRef image="square2" xflip="NeverFlip" />
     </DisplayOption>
     <DisplayOption>
       <Condition property="Flipped" value="True" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Square" />
-      <Condition property="Sprite" value="Sprite 2" />
+      <Condition property="Sprite" value="Square 2" />
       <ImageRef image="square2" xflip="AlwaysFlip" />
     </DisplayOption>
 
     <DisplayOption>
       <Condition property="Flipped" value="False" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Tall" />
-      <Condition property="Sprite" value="Sprite 1" />
+      <Condition property="Sprite" value="Tall 1" />
       <ImageRef image="tall1" xflip="NeverFlip" />
     </DisplayOption>
     <DisplayOption>
       <Condition property="Flipped" value="True" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Tall" />
-      <Condition property="Sprite" value="Sprite 1" />
+      <Condition property="Sprite" value="Tall 1" />
       <ImageRef image="tall1" xflip="AlwaysFlip" />
     </DisplayOption>
     <DisplayOption>
       <Condition property="Flipped" value="False" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Tall" />
-      <Condition property="Sprite" value="Sprite 2" />
+      <Condition property="Sprite" value="Tall 2" />
       <ImageRef image="tall2" xflip="NeverFlip" />
     </DisplayOption>
     <DisplayOption>
       <Condition property="Flipped" value="True" />
       <Condition property="Type" value="Normal" />
-      <Condition property="Size" value="Tall" />
-      <Condition property="Sprite" value="Sprite 2" />
+      <Condition property="Sprite" value="Tall 2" />
       <ImageRef image="tall2" xflip="AlwaysFlip" />
     </DisplayOption>
   </Display>
