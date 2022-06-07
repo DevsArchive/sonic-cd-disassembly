@@ -3,31 +3,31 @@
   <Images>
     <ImageFromMappings id="ledge">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Ledge).asm" frame="0" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Ledge, Present).asm" frame="0" startpal="2" />
     </ImageFromMappings>
     <ImageFromMappings id="wide1">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings.asm" frame="0" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Present).asm" frame="0" startpal="2" />
     </ImageFromMappings>
     <ImageFromMappings id="wide2">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings.asm" frame="1" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Present).asm" frame="1" startpal="2" />
     </ImageFromMappings>
     <ImageFromMappings id="square1">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings.asm" frame="2" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Present).asm" frame="2" startpal="2" />
     </ImageFromMappings>
     <ImageFromMappings id="square2">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings.asm" frame="3" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Present).asm" frame="3" startpal="2" />
     </ImageFromMappings>
     <ImageFromMappings id="tall1">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings.asm" frame="4" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Present).asm" frame="4" startpal="2" />
     </ImageFromMappings>
     <ImageFromMappings id="tall2">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings.asm" frame="5" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Present).asm" frame="5" startpal="2" />
     </ImageFromMappings>
   </Images>
   <Properties>

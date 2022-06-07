@@ -58,12 +58,9 @@ ObjScenery_SetBaseTile:
 
 ; -------------------------------------------------------------------------
 ObjScenery_BaseTileList:
-	dc.w	$3DB
-	dc.w	$46E
-	dc.w	$438
-	dc.w	$39F
-	dc.w	$438
-	dc.w	$38F
+	dc.w	$3DB, $46E
+	dc.w	$438, $39F
+	dc.w	$438, $38F
 MapSpr_Scenery:
 	include	"Level/Palmtree Panic/Objects/Scenery/Data/Mappings.asm"
 	even
