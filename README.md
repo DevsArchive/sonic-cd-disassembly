@@ -1,4 +1,4 @@
-# Misc. Sonic CD File Disassemblies
+Sonic CD Disassemblies
 This is a collection of mostly documented disassemblies of various misc. files from Sonic CD. Builds a working ISO, as long as you provide the rest of the files.
 
 ## Currently Contains
@@ -16,4 +16,4 @@ This is a collection of mostly documented disassemblies of various misc. files f
 * Sound test (SOSEL)
     - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
 * Level
-    - Palmtree Panic Act 1 (R11A, R11B, R11C)
+    - Palmtree Panic Act 1 (R11A, R11B, R11C, R11D)
