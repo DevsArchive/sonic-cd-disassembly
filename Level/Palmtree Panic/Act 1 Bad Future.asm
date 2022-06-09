@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Palmtree Panic Act 1 Good Future
+; Palmtree Panic Act 1 Bad Future
 ; -------------------------------------------------------------------------
 
 	include	"Level/_Definitions.i"
@@ -10,23 +10,23 @@
 ; -------------------------------------------------------------------------
 
 	include	"Level/Initialization.asm"
-	include	"Level/Palmtree Panic/Palette Cycle (Good Future).asm"
+	include	"Level/Palmtree Panic/Palette Cycle (Bad Future).asm"
 	include	"Level/Palette Fade.asm"
 	include	"Level/Palette Load (Fade).asm"
 	include	"Level/Palette Load.asm"
 	include	"Level/Palette Load (Water).asm"
 	include	"Level/Palette Load (Water Fade).asm"
-	include	"Level/Palmtree Panic/Palette Data (Act 1 Good Future).asm"
+	include	"Level/Palmtree Panic/Palette Data (Act 1 Bad Future).asm"
 	include	"Level/Functions (Misc).asm"
 	include	"Level/Collision Floor.asm"
 	include	"Level/Main.asm"
 	include	"Level/Functions (General).asm"
 	include	"Level/Get Player.asm"
-	include	"Level/Palmtree Panic/Scroll (Act 1 Good Future).asm"
+	include	"Level/Palmtree Panic/Scroll (Act 1 Bad Future).asm"
 	include	"Level/Load Level Data.asm"
 	include	"Level/_Events.asm"
 	include	"Level/Object Functions.asm"
-	include	"Level/Palmtree Panic/Object Index (Act 1 Good Future).asm"
+	include	"Level/Palmtree Panic/Object Index (Act 1 Bad Future).asm"
 	include	"Level/_Objects/Sonic/Main.asm"
 	include	"Level/Sub CPU.asm"
 	include	"Level/Object Animate.asm"
@@ -45,7 +45,7 @@
 	include	"Level/Palmtree Panic/Player Object Collision.asm"
 	include	"Level/Palmtree Panic/Objects/Effects/Main.asm"
 	include	"Level/Debug Mode.asm"
-	include	"Level/Palmtree Panic/Debug Objects (Act 1 Good Future).asm"
+	include	"Level/Palmtree Panic/Debug Objects (Act 1 Bad Future).asm"
 	include	"Level/Object Manager.asm"
 	include	"Level/Palmtree Panic/Object Layout (Act 1).asm"
 	include	"Level/Palmtree Panic/Objects/Scenery/Main.asm"
@@ -71,7 +71,7 @@
 	include	"Level/Palmtree Panic/Objects/Collapsing Platform/Data (Future).asm"
 	include	"Level/Palmtree Panic/Objects/Platform/Main.asm"
 	include	"Level/Palmtree Panic/Objects/Tunnel Door/Main.asm"
-	include	"Level/Palmtree Panic/Object Art Manager (Act 1 Good Future).asm"
+	include	"Level/Palmtree Panic/Object Art Manager (Act 1 Bad Future).asm"
 	include	"Level/_Objects/Animal/Main.asm"
 	include	"Level/_Objects/Level End/Main.asm"
 	include	"Level/_Objects/Game Over/Main.asm"
@@ -83,6 +83,6 @@
 	include	"Level/Object Time Check.asm"
 	include	"Level/Palmtree Panic/Objects/Breakable Wall/Main.asm"
 	include	"Level/Load Powerup Art Jump.asm"
-	include	"Level/Palmtree Panic/Data (Act 1 Good Future).asm"
+	include	"Level/Palmtree Panic/Data (Act 1 Bad Future).asm"
 
 ; -------------------------------------------------------------------------

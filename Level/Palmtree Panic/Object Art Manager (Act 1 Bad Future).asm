@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Palmtree Panic Act 1 Past object art manager
+; Palmtree Panic Act 1 Bad Future object art manager
 ; -------------------------------------------------------------------------
 
 LoadCamPLCFull:
@@ -55,20 +55,20 @@ LoadCamPLCIncr:
 
 ; -------------------------------------------------------------------------
 CameraPLC_Ranges:
+	dc.w	$700
 	dc.w	$1100
 	dc.w	$1A00
-	dc.w	$2000
 	dc.w	$FFFF
 CameraPLCs_Incr:
-	dc.w	9
-	dc.w	$A
-	dc.w	$B
-	dc.w	$C
-CameraPLCs_Full:
-	dc.w	2
-	dc.w	6
 	dc.w	7
 	dc.w	8
+	dc.w	9
+	dc.w	$A
+CameraPLCs_Full:
+	dc.w	2
+	dc.w	4
+	dc.w	5
+	dc.w	6
 ; -------------------------------------------------------------------------
 
 LevelObj_SetBaseTile:
@@ -86,41 +86,39 @@ LevelObj_SetBaseTile:
 
 ; -------------------------------------------------------------------------
 LevelObj_BaseTileList:
-	dc.w	word_20CFB8-LevelObj_BaseTileList
-	dc.w	word_20CFBA-LevelObj_BaseTileList
-	dc.w	word_20CFBC-LevelObj_BaseTileList
-	dc.w	word_20CFBE-LevelObj_BaseTileList
-	dc.w	word_20CFC0-LevelObj_BaseTileList
-	dc.w	word_20CFC2-LevelObj_BaseTileList
-	dc.w	word_20CFCC-LevelObj_BaseTileList
-	dc.w	word_20CFC6-LevelObj_BaseTileList
-	dc.w	word_20CFCA-LevelObj_BaseTileList
-	dc.w	word_20CFC8-LevelObj_BaseTileList
-	dc.w	word_20CFC4-LevelObj_BaseTileList
-	dc.w	word_20CFCE-LevelObj_BaseTileList
-	dc.w	word_20CFD0-LevelObj_BaseTileList
-	dc.w	word_20CFD2-LevelObj_BaseTileList
-	dc.w	word_20CFD4-LevelObj_BaseTileList
-	dc.w	word_20CFD6-LevelObj_BaseTileList
-	dc.w	word_20CFD8-LevelObj_BaseTileList
-	dc.w	word_20CFDA-LevelObj_BaseTileList
-word_20CFB8:	dc.w	$2396
-word_20CFBA:	dc.w	$243F
-word_20CFBC:	dc.w	$23ED
-word_20CFBE:	dc.w	$2000
-word_20CFC0:	dc.w	$2403
-word_20CFC2:	dc.w	$4334
-word_20CFC4:	dc.w	$320
-word_20CFC6:	dc.w	$381
-word_20CFC8:	dc.w	$4000
-word_20CFCA:	dc.w	$4000
-word_20CFCC:	dc.w	$372
-word_20CFCE:	dc.w	$346
-word_20CFD0:	dc.w	$8328
-word_20CFD2:	dc.w	0
-word_20CFD4:	dc.w	0
-word_20CFD6:	dc.w	$490
-word_20CFD8:	dc.w	$39E
-word_20CFDA:	dc.w	0
+	dc.w	word_20CB2A-LevelObj_BaseTileList
+	dc.w	word_20CB2C-LevelObj_BaseTileList
+	dc.w	word_20CB2E-LevelObj_BaseTileList
+	dc.w	word_20CB30-LevelObj_BaseTileList
+	dc.w	word_20CB32-LevelObj_BaseTileList
+	dc.w	word_20CB34-LevelObj_BaseTileList
+	dc.w	word_20CB3A-LevelObj_BaseTileList
+	dc.w	word_20CB38-LevelObj_BaseTileList
+	dc.w	word_20CB48-LevelObj_BaseTileList
+	dc.w	word_20CB48-LevelObj_BaseTileList
+	dc.w	word_20CB36-LevelObj_BaseTileList
+	dc.w	word_20CB3C-LevelObj_BaseTileList
+	dc.w	word_20CB3E-LevelObj_BaseTileList
+	dc.w	word_20CB40-LevelObj_BaseTileList
+	dc.w	word_20CB42-LevelObj_BaseTileList
+	dc.w	word_20CB44-LevelObj_BaseTileList
+	dc.w	word_20CB46-LevelObj_BaseTileList
+	dc.w	word_20CB48-LevelObj_BaseTileList
+word_20CB2A:	dc.w	$23D0
+word_20CB2C:	dc.w	$239C
+word_20CB2E:	dc.w	$2386
+word_20CB30:	dc.w	$2419
+word_20CB32:	dc.w	$23D0
+word_20CB34:	dc.w	$4334
+word_20CB36:	dc.w	$320
+word_20CB38:	dc.w	$35A
+word_20CB3A:	dc.w	$377
+word_20CB3C:	dc.w	$346
+word_20CB3E:	dc.w	$8328
+word_20CB40:	dc.w	0
+word_20CB42:	dc.w	$36F
+word_20CB44:	dc.w	$490
+word_20CB46:	dc.w	$40B
+word_20CB48:	dc.w	0
 
 ; -------------------------------------------------------------------------

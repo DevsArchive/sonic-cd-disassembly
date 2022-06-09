@@ -6,7 +6,7 @@
 ; -------------------------------------------------------------------------
 
 DebugItemIndex:
-	DBGSTART
+	DBSTART
 	DBGITEM	$35, MapSpr_FlapDoorV,         $328,  0, 1, 0,  0,   0
 	DBGITEM	$2F, MapSpr_AmyRose,           $2370, 0, 1, $F, 0,   0
 	DBGITEM	$2D, MapSpr_RobotGenerator,    $409,  0, 1, 0,  0,   0

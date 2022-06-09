@@ -6,7 +6,7 @@
 ; -------------------------------------------------------------------------
 
 DebugItemIndex:
-	DBGSTART
+	DBSTART
 	DBGITEM	$35, MapSpr_FlapDoorV,         $328,  0, 1, 0,  0,   0
 	DBGITEM	$26, MapSpr_Spikes,            $320,  0, 1, 0,  0,   0
 	DBGITEM	$28, MapSpr_Springboard,       $35A,  0, 1, 0,  0,   0

@@ -147,7 +147,7 @@ PLC_Cam3_Full:
 	dc.w	$7A00
 	dc.l	Art_TunnelWaterfall
 	dc.w	$8160
-	dc.l	Art_LogShadowUnused
+	dc.l	Art_LogShadowWithered
 	dc.w	$8500
 	dc.l	Art_Scenery
 	dc.w	$8700
@@ -199,7 +199,7 @@ PLC_Cam2_Incr:
 	dc.w	$7A00
 	dc.l	Art_TunnelWaterfall
 	dc.w	$8160
-	dc.l	Art_LogShadowUnused
+	dc.l	Art_LogShadowWithered
 	dc.w	$8500
 	dc.l	Art_Scenery
 	dc.w	$8700
@@ -385,8 +385,8 @@ Art_HUD:
 Art_Checkpoint:
 	incbin	"Level/_Objects/Checkpoint/Data/Art.Nem"
 	even
-Art_LogShadowUnused:
-	incbin	"Level/Palmtree Panic/Objects/Log Shadow/Data/Art (Unused).nem"
+Art_LogShadowWithered:
+	incbin	"Level/Palmtree Panic/Objects/Log Shadow/Data/Art (Withered).nem"
 	even
 Art_LogShadow:
 	incbin	"Level/Palmtree Panic/Objects/Log Shadow/Data/Art.nem"
@@ -526,7 +526,7 @@ LevelLayouts:
 ; -------------------------------------------------------------------------
 
 Art_Scenery:
-	incbin	"Level/Palmtree Panic/Objects/Scenery/Data/Art (Good Future).nem"
+	incbin	"Level/Palmtree Panic/Objects/Scenery/Data/Art (Future).nem"
 	even
 LevelBlocks:
 	incbin	"Level/Palmtree Panic/Data/Blocks (Act 1 Good Future).nem"

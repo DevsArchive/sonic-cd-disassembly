@@ -3,15 +3,15 @@
   <Images>
     <ImageFromMappings id="ledge">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Ledge, Good Future).asm" frame="0" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Ledge, Future).asm" frame="0" startpal="2" />
     </ImageFromMappings>
     <ImageFromMappings id="normal1">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Good Future).asm" frame="0" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Future).asm" frame="0" startpal="2" />
     </ImageFromMappings>
     <ImageFromMappings id="normal2">
       <ArtFile filename="../Level/Palmtree Panic/Objects/Platform/Data/Art.nem" />
-      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Good Future).asm" frame="1" startpal="2" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Collapsing Platform/Data/Mappings (Future).asm" frame="1" startpal="2" />
     </ImageFromMappings>
   </Images>
   <Properties>

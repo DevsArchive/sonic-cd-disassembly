@@ -335,7 +335,7 @@ Art_Checkpoint:
 	incbin	"Level/_Objects/Checkpoint/Data/Art.Nem"
 	even
 Art_LogShadowUnused:
-	incbin	"Level/Palmtree Panic/Objects/Log Shadow/Data/Art (Unused).nem"
+	incbin	"Level/Palmtree Panic/Objects/Log Shadow/Data/Art (Withered).nem"
 	even
 Art_LogShadow:
 	incbin	"Level/Palmtree Panic/Objects/Log Shadow/Data/Art.nem"

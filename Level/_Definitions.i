@@ -360,11 +360,18 @@ BGSECT macro size, id
 ; -------------------------------------------------------------------------
 ; Start debug item index
 ; -------------------------------------------------------------------------
+; PARAMETERS:
+;	off - (OPTION) Count offset
+; -------------------------------------------------------------------------
 
 __dbgID = 0
-DBGSTART macro
+DBSTART macro off
 	__dbgCount: = 0
-	dc.b	__dbgCount\#__dbgID
+	if narg>0
+		dc.b	(__dbgCount\#__dbgID\)+(\off)
+	else
+		dc.b	__dbgCount\#__dbgID
+	endif
 	even
 	endm
 

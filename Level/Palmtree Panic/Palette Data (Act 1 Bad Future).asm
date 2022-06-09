@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Palmtree Panic Act 1 Good Future palette data
+; Palmtree Panic Act 1 Bad Future palette data
 ; -------------------------------------------------------------------------
 
 ; -------------------------------------------------------------------------
@@ -51,12 +51,12 @@ Pal_Sonic:
 
 ; Level palette
 Pal_Level:
-	incbin	"Level/Palmtree Panic/Data/Palette (Good Future).bin"
+	incbin	"Level/Palmtree Panic/Data/Palette (Bad Future).bin"
 	even
 
 ; Unknown flower capsule palette
 Pal_UnkCapsule:
-	incbin	"Level/Palmtree Panic/Data/Unused/Palette (Flower Capsule, Good Future).bin"
+	incbin	"Level/Palmtree Panic/Data/Unused/Palette (Flower Capsule, Bad Future).bin"
 	even
 
 ; -------------------------------------------------------------------------
