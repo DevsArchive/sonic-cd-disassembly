@@ -248,17 +248,39 @@ PLC_Signpost:
 ; with a "align $10000"
 ; -------------------------------------------------------------------------
 
-	if REGION=USA
-	incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Present, U).bin"
+	if DEMO=0
+		if REGION=USA
+		incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Present, U).bin"
+		else
+		incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Present, JE).bin"
+		endif
 	else
-	incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Present, JE).bin"
+		if REGION=USA
+		incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Present Demo, U).bin"
+		else
+		incbin	"Level/Palmtree Panic/Data/Padding/1 (Act 1 Present Demo, JE).bin"
+		endif
 	endif
 
 ; -------------------------------------------------------------------------
 
 LevelChunks:
-	incbin	"Level/Palmtree Panic/Data/Chunks (Act 1 Present).bin"
-	even
+	if DEMO=0
+		incbin	"Level/Palmtree Panic/Data/Chunks (Act 1 Present).bin"
+		even
+	else
+		if REGION=USA
+		incbin	"Level/Palmtree Panic/Data/Chunks (Act 1 Present).bin",0,DemoDataRel
+		incbin	"Level/Palmtree Panic/Data/Demo (Act 1 Present, U).bin"
+		incbin	"Level/Palmtree Panic/Data/Chunks (Act 1 Present).bin", &
+			DemoDataRel+filesize("Level/Palmtree Panic/Data/Demo (Act 1 Present, U).bin")
+		else
+		incbin	"Level/Palmtree Panic/Data/Chunks (Act 1 Present Demo, JE).bin",0,DemoDataRel
+		incbin	"Level/Palmtree Panic/Data/Demo (Act 1 Present, JE).bin"
+		incbin	"Level/Palmtree Panic/Data/Chunks (Act 1 Present Demo, JE).bin", &
+			DemoDataRel+filesize("Level/Palmtree Panic/Data/Demo (Act 1 Present, JE).bin")
+		endif
+	endif
 MapSpr_Sonic:
 	include	"Level/_Objects/Sonic/Data/Mappings.asm"
 	even

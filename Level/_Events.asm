@@ -256,8 +256,12 @@ LevEvents_QQZ3:
 
 	tst.b	bossFlags.w			; Is the boss active?
 	bne.s	.BossActive			; If so, branch
-	move.w	#$320,destBottomBound.w		; Set default bottom boundary
-
+	if (REGION=USA)|((REGION<>USA)&(DEMO=0)); Set default bottom boundary
+		move.w	#$320,destBottomBound.w
+	else
+		move.w	#$310,destBottomBound.w
+	endif
+	
 .End:
 	rts
 

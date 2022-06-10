@@ -1,5 +1,5 @@
-# Sonic CD Disassemblies
-This is a collection of mostly documented disassemblies of various misc. files from Sonic CD. Builds a working ISO, as long as you provide the rest of the files.
+# Sonic CD Disassembly
+This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as long as you provide the rest of the files.
 
 ## Currently Contains
 * Initial program
@@ -16,7 +16,7 @@ This is a collection of mostly documented disassemblies of various misc. files f
 * Sound test (SOSEL)
     - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
 * Level
-    - Palmtree Panic Act 1 (R11A, R11B, R11C, R11D)
+    - Palmtree Panic Act 1 (R11A, R11B, R11C, R11D, DEMO11A)
 
 # Special Thanks
 Special thanks to flamewing and TheStoneBanana for helping out and contributing, especially for R11A in the disassembly's infancy stages back in 2015.

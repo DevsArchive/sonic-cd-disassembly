@@ -10,7 +10,14 @@
 	include	"_Include/Main CPU Variables.i"
 	include	"_Include/Sound.i"
 	include	"_Include/MMD.i"
-	
+
+; -------------------------------------------------------------------------
+; Constants
+; -------------------------------------------------------------------------
+
+DemoDataRel	EQU	$6C00			; Demo data location within chunk data
+DemoData	EQU	LevelChunks+DemoDataRel	; Demo data location
+
 ; -------------------------------------------------------------------------
 ; Object structure
 ; -------------------------------------------------------------------------
@@ -302,8 +309,8 @@ timeWarpDir		rs.b	1		; Time warp direction
 timeWarpTimer		rs.w	1		; Time warp timer
 lookMode 		rs.b	1		; Look mode
 			rs.b	1
-demoPtr 		rs.l	1		; Demo data pointer
-demoTimer 		rs.w	1		; Demo timer
+demoDataPtr 		rs.l	1		; Demo data pointer
+demoDataIndex 		rs.w	1		; Demo data index
 demoS1Index 		rs.w	1		; Demo index (Sonic 1 leftover)
 			rs.l	1
 collisionPtr		rs.l	1		; Collision data pointer

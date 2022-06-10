@@ -55,15 +55,24 @@ ObjSonic_ChkBoredom:
 ; -------------------------------------------------------------------------
 
 ObjSonic:
-	tst.b	timeAttackMode			; Are we in time attack mode?
-	bne.s	.NormalMode			; If so, branch
-	cmpa.w	#objPlayerSlot2,a0		; Are we the second player?
-	beq.s	.NormalMode			; If so, branch
-	tst.b	lvlDebugMode			; Are we in debug mode?
-	beq.s	.NormalMode			; If not, branch
-	jmp	DebugMode			; Handle debug mode
+	if (REGION<>USA)|((REGION=USA)&(DEMO=0))
+		tst.b	timeAttackMode		; Are we in time attack mode?
+		bne.s	.NormalMode		; If so, branch
+		cmpa.w	#objPlayerSlot2,a0	; Are we the second player?
+		beq.s	.NormalMode		; If so, branch
+		if DEMO<>0
+			btst	#7,p2CtrlTap.w	; Did player 2 press the start button?
+			beq.s	.CheckDebug	; If not, branch
+			eori.b	#1,debugCheat	; Swap debug cheat flag
+			
+.CheckDebug:
+		endif
+		tst.b	lvlDebugMode		; Are we in debug mode?
+		beq.s	.NormalMode		; If not, branch
+		jmp	DebugMode		; Handle debug mode
 
 .NormalMode:
+	endif
 	move.b	oPlayerCharge(a0),d0		; Get charge time
 	beq.s	.RunRoutines			; If it's 0, branch
 	addq.b	#1,d0				; Increment the charge time

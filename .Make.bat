@@ -27,10 +27,11 @@ del _Built\Files\.gitkeep > nul
 %ASM68K% /e EASTEREGG=2 "Sound Test\Easter Egg\Main.asm", "_Built\Files\DUMMY1.MMD", , "Sound Test\Easter Egg\Main (Tails).lst"
 %ASM68K% /e EASTEREGG=3 "Sound Test\Easter Egg\Main.asm", "_Built\Files\DUMMY2.MMD", , "Sound Test\Easter Egg\Main (Batman).lst"
 %ASM68K% /e EASTEREGG=4 "Sound Test\Easter Egg\Main.asm", "_Built\Files\DUMMY3.MMD", , "Sound Test\Easter Egg\Main (Cute Sonic).lst"
-%ASM68K% "Level\Palmtree Panic\Act 1 Present.asm", "_Built\Files\R11A__.MMD", , "Level\Palmtree Panic\Act 1 Present.lst"
-%ASM68K% "Level\Palmtree Panic\Act 1 Past.asm", "_Built\Files\R11B__.MMD", , "Level\Palmtree Panic\Act 1 Past.lst"
-%ASM68K% "Level\Palmtree Panic\Act 1 Good Future.asm", "_Built\Files\R11C__.MMD", , "Level\Palmtree Panic\Act 1 Good Future.lst"
-%ASM68K% "Level\Palmtree Panic\Act 1 Bad Future.asm", "_Built\Files\R11D__.MMD", , "Level\Palmtree Panic\Act 1 Bad Future.lst"
+%ASM68K% /e DEMO=0 "Level\Palmtree Panic\Act 1 Present.asm", "_Built\Files\R11A__.MMD", , "Level\Palmtree Panic\Act 1 Present.lst"
+%ASM68K% /e DEMO=1 "Level\Palmtree Panic\Act 1 Present.asm", "_Built\Files\DEMO11A.MMD", , "Level\Palmtree Panic\Act 1 Present (Demo).lst"
+%ASM68K% /e DEMO=0 "Level\Palmtree Panic\Act 1 Past.asm", "_Built\Files\R11B__.MMD", , "Level\Palmtree Panic\Act 1 Past.lst"
+%ASM68K% /e DEMO=0 "Level\Palmtree Panic\Act 1 Good Future.asm", "_Built\Files\R11C__.MMD", , "Level\Palmtree Panic\Act 1 Good Future.lst"
+%ASM68K% /e DEMO=0 "Level\Palmtree Panic\Act 1 Bad Future.asm", "_Built\Files\R11D__.MMD", , "Level\Palmtree Panic\Act 1 Bad Future.lst"
 
 echo.
 echo Compiling filesystem...

@@ -208,8 +208,12 @@ ObjSpring_Init:
 	btst	#3,d0
 	beq.s	.SubtypeB3Clear
 	move.b	#$14,oRoutine(a0)
-	move.b	#$18,oWidth(a0)
-	move.b	#$C,oYRadius(a0)
+	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
+		move.b	#$18,oWidth(a0)
+		move.b	#$C,oYRadius(a0)
+	else
+		move.b	#$10,oYRadius(a0)
+	endif
 	move.l	#MapSpr_Spring3,oMap(a0)
 	move.l	d0,-(sp)
 	moveq	#$F,d0

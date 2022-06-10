@@ -19,6 +19,7 @@ fc /b _Original\%REGPATH%\DUMMY1.MMD _built\files\DUMMY1.MMD
 fc /b _Original\%REGPATH%\DUMMY2.MMD _built\files\DUMMY2.MMD
 fc /b _Original\%REGPATH%\DUMMY3.MMD _built\files\DUMMY3.MMD
 fc /b _Original\%REGPATH%\R11A__.MMD _built\files\R11A__.MMD
+fc /b _Original\%REGPATH%\DEMO11A.MMD _built\files\DEMO11A.MMD
 fc /b _Original\%REGPATH%\R11B__.MMD _built\files\R11B__.MMD
 fc /b _Original\%REGPATH%\R11C__.MMD _built\files\R11C__.MMD
 fc /b _Original\%REGPATH%\R11D__.MMD _built\files\R11D__.MMD

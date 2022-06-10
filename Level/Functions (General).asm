@@ -55,6 +55,29 @@ ReadControllers:
 	lea	p1CtrlData.w,a0			; Read player 1 controller
 	lea	IODATA1,a1
 	bsr.s	ReadController
+	
+	if DEMO<>0
+		movea.l	demoDataPtr.w,a2	; Get demo data
+		tst.w	demoMode		; Are we in a demo?
+		beq.s	.NotDemo		; If not, branch
+		
+		move.w	demoDataIndex.w,d0	; Get data index
+		cmpi.w	#$800,d0		; Has the demo run out?
+		bcc.s	.NotDemo		; If so, branch
+		move.w	d0,d1
+		add.w	d0,d0
+		
+		move.w	-2(a0),d2		; Retain start button
+		andi.w	#$80,d2
+		move.w	(a2,d0.w),-2(a0)	; Read demo data
+		or.w	d2,-2(a0)
+		
+		addq.w	#1,d1			; Advance demo
+		move.w	d1,demoDataIndex.w
+		
+.NotDemo:
+	endif
+	
 	addq.w	#p2CtrlData-p1CtrlData,a1	; Read player 2 controller
 
 ; -------------------------------------------------------------------------
@@ -254,22 +277,24 @@ InitZ80Dummy:
 ; -------------------------------------------------------------------------
 
 PlayFMSound:
-	tst.b	fmSndQueue1.w			; Is queue 1 full?
-	bne.s	.CheckQueue2			; If so, branch
-	move.b	d0,fmSndQueue1.w		; Set ID in queue 1
-	rts
-
+	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
+		tst.b	fmSndQueue1.w		; Is queue 1 full?
+		bne.s	.CheckQueue2		; If so, branch
+		move.b	d0,fmSndQueue1.w	; Set ID in queue 1
+		rts
 
 .CheckQueue2:
+	endif
 	tst.b	fmSndQueue2.w			; Is queue 2 full?
 	bne.s	.CheckQueue3			; If so, branch
 	move.b	d0,fmSndQueue2.w		; Set ID in queue 2
 	rts
 
-
 .CheckQueue3:
-	tst.b	fmSndQueue3.w			; Is queue 3 full?
-	bne.s	.End				; If so, branch
+	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
+		tst.b	fmSndQueue3.w		; Is queue 3 full?
+		bne.s	.End			; If so, branch
+	endif
 	move.b	d0,fmSndQueue3.w		; Set ID in queue 3
 
 .End:
@@ -282,24 +307,32 @@ PlayFMSound:
 UpdateFMQueues:
 	jsr	StopZ80				; Stop the Z80
 
-	tst.b	fmSndQueue1.w			; Is queue 1 full?
-	beq.s	.CheckQueue2			; If not, branch
-	move.b	fmSndQueue1.w,FMDrvQueue1	; Update Z80 queue 1
-	move.b	#0,fmSndQueue1.w		; Empty out queue 1
+	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
+		tst.b	fmSndQueue1.w		; Update queue 1
+		beq.s	.CheckQueue2
+		move.b	fmSndQueue1.w,FMDrvQueue1
+		move.b	#0,fmSndQueue1.w
 
 .CheckQueue2:
-	tst.b	fmSndQueue2.w			; Is queue 2 full?
-	beq.s	.CheckQueue3			; If not, branch
-	move.b	fmSndQueue2.w,FMDrvQueue2	; Update Z80 queue 2
-	move.b	#0,fmSndQueue2.w		; Empty out queue 2
+		tst.b	fmSndQueue2.w		; Update queue 2
+		beq.s	.CheckQueue3
+		move.b	fmSndQueue2.w,FMDrvQueue2
+		move.b	#0,fmSndQueue2.w
 
 .CheckQueue3:
-	tst.b	fmSndQueue3.w			; Is queue 3 full?
-	beq.s	.End				; If not, branch
-	move.b	fmSndQueue3.w,FMDrvQueue3	; Update Z80 queue 3
-	move.b	#0,fmSndQueue3.w		; Empty out queue 3
-
+		tst.b	fmSndQueue3.w		; Update queue 3
+		beq.s	.End
+		move.b	fmSndQueue3.w,FMDrvQueue3
+		move.b	#0,fmSndQueue3.w
+		
 .End:
+	else
+		tst.b	fmSndQueue2.w		; Update queues
+		beq.w	StartZ80
+		move.b	fmSndQueue2.w,FMDrvQueue1
+		move.b	fmSndQueue3.w,fmSndQueue2.w
+		move.b	#0,fmSndQueue3.w
+	endif
 	bra.w	StartZ80			; Start the Z80
 
 ; -------------------------------------------------------------------------

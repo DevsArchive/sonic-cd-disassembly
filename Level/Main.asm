@@ -30,6 +30,9 @@ LevelStart:
 	move.b	#0,levelStarted			; Mark the level as not started yet
 	clr.b	vintRoutine.w			; Reset V-INT routine ID
 	clr.b	usePlayer2			; Clear unused "use player 2" flag
+	if DEMO<>0
+		move.b	#0,lastCheckpoint	; Reset checkpoint if in a demo
+	endif
 	move.b	#0,paused.w			; Clear pause flag
 
 	bset	#0,plcLoadFlags			; Mark PLCs as loaded
@@ -115,9 +118,9 @@ LevelStart:
 ; -------------------------------------------------------------------------
 
 .CheckNormalLoad:
-	cmpi.w	#$800,demoTimer.w		; Was a demo running?
+	cmpi.w	#$800,demoDataIndex.w		; Was a demo running?
 	bne.s	.NormalLoad			; If not, branch
-	move.w	#0,demoTimer.w			; Reset demo timer
+	move.w	#0,demoDataIndex.w		; Reset demo timer
 	clr.w	demoMode			; Clear demo mode flag
 	move.b	#0,palFadeFlags			; Mark palette fading as inactive
 	rts
@@ -214,9 +217,11 @@ LevelStart:
 	dbf	d1,.ClearCamera
 
 	move	#$2700,sr			; Disable interrupts
-	move.l	#LevelChunks+$6C00,demoPtr.w	; Set demo data pointer (in DEMO11A, part of the chunk data
-						; is overwritten with the demo input data. Here, it's unused)
-	move.w	#0,demoTimer.w			; Reset demo timer
+	move.l	#DemoData,demoDataPtr.w		; Set demo data pointer
+	if DEMO<>0
+		move.w	#1,demoMode		; Set demo mode flag
+	endif
+	move.w	#0,demoDataIndex.w		; Reset demo data index
 
 	bsr.w	ClearScreen			; Clear the screen
 	lea	VDPCTRL,a6
@@ -345,7 +350,11 @@ Level_MainLoop:
 	beq.w	.NotPaused			; If not, branch
 
 	bsr.w	PauseMusic			; Pause music
-
+	
+	if DEMO<>0
+		tst.w	demoMode		; Are we in a demo?
+		bne.s	.IsDemo			; If so, branch
+	endif
 	move.b	p1CtrlTap.w,d0			; Get pressed buttons
 	tst.b	timeAttackMode			; Are we in time attack mode?
 	bne.s	.CheckReset			; If so, branch
@@ -373,12 +382,17 @@ Level_MainLoop:
 .CheckReset:
 	andi.b	#$70,d0				; Was A, B, or C pressed?
 	beq.w	Level_MainLoop			; If not, branch
+	
+.IsDemo:
 	clr.b	lifeCount			; Set lives to 0
 
 .DoReset:
 	clr.b	paused.w			; Clear pause flag
 	clr.w	demoMode			; Clear demo mode flag
 	clr.b	lastCheckpoint			; Clear checkpoint flag
+	if DEMO<>0
+		move.w	#$800,demoDataIndex.w	; Stop the demo
+	endif
 	bra.w	LevelStart			; Restart the level
 
 .NotPaused:
@@ -389,7 +403,7 @@ Level_MainLoop:
 	jsr	ObjectManager			; Load level objects
 	jsr	RunObjects			; Run objects
 
-	cmpi.w	#$800,demoTimer.w		; Has the demo time run out (not applicable here)?
+	cmpi.w	#$800,demoDataIndex.w		; Is the demo over?
 	beq.w	LevelStart			; If so, restart the level
 	tst.w	levelRestart			; Is the level restarting?
 	bne.w	LevelStart			; If so, restart the level
