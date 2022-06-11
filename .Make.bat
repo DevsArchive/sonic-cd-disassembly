@@ -1,5 +1,5 @@
 @echo off
-set REGION=0
+set REGION=1
 set OUTPUT=SCD.iso
 set ASM68K=_Bin\asm68k.exe /p /o ae- /o l. /e REGION=%REGION%
 
