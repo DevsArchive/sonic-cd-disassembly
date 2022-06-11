@@ -60,7 +60,7 @@ SPInit:
 	andi.b	#$FA,GAMEMMODE.w		; Set to 2M mode
 	
 	move.w	#FFUNC_INIT,d0			; Initialize file engine
-	jsr	FileEngineFunc
+	jsr	FileFunc
 
 SPNull:
 	rts
@@ -80,13 +80,13 @@ SPXFile:
 
 SPMain:
 	move.w	#FFUNC_GETFILES,d0		; Get files
-	jsr	FileEngineFunc
+	jsr	FileFunc
 
 .Wait:
 	jsr	_WAITVSYNC.w			; VSync
 
 	move.w	#FFUNC_STATUS,d0		; Is the operation finished?
-	jsr	FileEngineFunc
+	jsr	FileFunc
 	bcs.s	.Wait				; If not, wait
 
 	cmpi.w	#FSTAT_OK,d0			; Was the operation a success?
@@ -124,7 +124,7 @@ SPMain:
 	ALIGN	SPIRQ2
 	movem.l	d0-a6,-(sp)			; Save registers
 	move.w	#FFUNC_OPER,d0			; Perform engine operation
-	jsr	FileEngineFunc
+	jsr	FileFunc
 	movem.l	(sp)+,d0-a6			; Restore registers
 	rts
 
@@ -138,13 +138,13 @@ SPMain:
 
 	ALIGN	LoadFile
 	move.w	#FFUNC_LOADFILE,d0		; Start file loading
-	jsr	FileEngineFunc
+	jsr	FileFunc
 
 .WaitFileLoad:
 	jsr	_WAITVSYNC.w			; VSync
 	
 	move.w	#FFUNC_STATUS,d0		; Is the operation finished?
-	jsr	FileEngineFunc
+	jsr	FileFunc
 	bcs.s	.WaitFileLoad			; If not, wait
 
 	cmpi.w	#FSTAT_OK,d0			; Was the operation a success?
@@ -173,9 +173,9 @@ SPMain:
 ;	d0.w - File engine function ID
 ; -------------------------------------------------------------------------
 
-	ALIGN	FileEngineFunc
+	ALIGN	FileFunc
 	movem.l	a0-a6,-(sp)			; Save registers
-	lea	FileEngineVars,a5		; Perform function
+	lea	FileVars,a5			; Perform function
 	add.w	d0,d0
 	move.w	.Functions(pc,d0.w),d0
 	jsr	.Functions(pc,d0.w)
@@ -201,7 +201,7 @@ SPMain:
 
 FileFunc_GetFiles:
 	move.w	#FMODE_GETFILES,feOperMode(a5)	; Set operation mode to "get files"
-	move.b	#1<<FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+	move.b	#1<<FMVF_SECT,feFMV(a5)		; Mark as reading data section 1
 	move.l	#0,feFMVFailCount(a5)		; Reset fail counter
 	rts
 
@@ -210,7 +210,7 @@ FileFunc_GetFiles:
 ; -------------------------------------------------------------------------
 
 FileFunc_EngineInit:
-	move.l	#FileEngineOper,feOperMark(a5)	; Reset operation bookmark
+	move.l	#FileOperation,feOperMark(a5)	; Reset operation bookmark
 	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
 	rts
 
@@ -226,7 +226,7 @@ FileFunc_Operation:
 ; Handle file engine operation
 ; -------------------------------------------------------------------------
 
-FileEngineOper:
+FileOperation:
 	bsr.w	FileEngine_SetOperMark		; Set bookmark
 	
 	move.w	feOperMode(a5),d0		; Perform operation
@@ -237,7 +237,7 @@ FileEngineOper:
 ; -------------------------------------------------------------------------
 
 .Opers:
-	dc.w	FileEngineOper-.Opers		; None
+	dc.w	FileOperation-.Opers		; None
 	dc.w	FileEngine_GetFiles-.Opers	; Get files
 	dc.w	FileEngine_LoadFile-.Opers	; Load file
 	dc.w	FileEngine_LoadFMV-.Opers	; Load FMV
@@ -338,7 +338,7 @@ FileEngine_GetFiles:
 
 .Done:
 	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
-	bra.w	FileEngineOper			; Loop back
+	bra.w	FileOperation			; Loop back
 
 .Failed:
 	move.w	#FSTAT_GETFAIL,feStatus(a5)	; Mark operation as successful
@@ -374,7 +374,7 @@ FileEngine_LoadFile:
 
 .Done:
 	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
-	bra.w	FileEngineOper			; Loop back
+	bra.w	FileOperation			; Loop back
 
 .FileNotFound:
 	move.w	#FSTAT_NOTFOUND,feStatus(a5)	; Mark as not found
@@ -410,7 +410,7 @@ FileFunc_GetStatus:
 	rts
 
 .Busy:
-	move	#1,ccr				; Mark as bust
+	move	#1,ccr				; Mark as busy
 	rts
 
 ; -------------------------------------------------------------------------
@@ -663,11 +663,11 @@ CompareStrings:
 ; -------------------------------------------------------------------------
 
 FileFunc_LoadFMV:
-	move.b	#1<<FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+	move.b	#1<<FMVF_SECT,feFMV(a5)		; Mark as reading data section 1
 	move.w	#FMODE_LOADFMV,feOperMode(a5)	; Set operation mode to "load FMV"
 	move.l	#FMVPCMBUF,feReadBuffer(a5)	; Prepare to read PCM data
 	move.w	#0,feFMVSectFrame(a5)		; Reset FMV sector frame
-	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+	bset	#FMVF_SECT,feFMV(a5)		; Mark as reading data section 1
 
 	movea.l	a0,a1				; Copy file name
 	lea	feFileName(a5),a2
@@ -708,7 +708,7 @@ FileEngine_LoadFMV:
 
 .Done:
 	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
-	bra.w	FileEngineOper			; Loop back
+	bra.w	FileOperation			; Loop back
 
 .FileNotFound:
 	move.w	#FSTAT_NOTFOUND,feStatus(a5)	; Mark as not found
@@ -831,14 +831,14 @@ ReadFMVSectors:
 
 .PCMDone:
 	move.b	#FMVT_GFX,feFMVDataType(a5)	; Set graphics data type
-	bclr	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 2
+	bclr	#FMVF_SECT,feFMV(a5)		; Mark as reading data section 2
 	move.l	#FMVGFXBUF,feReadBuffer(a5)	; Set read buffer for graphics data
 	bra.w	.Advance
 
 .GfxDone:
 	bset	#0,GASUBFLAG.w			; Sync with Main CPU
-	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
-	bset	#FMVF_READY,feFMVFlags(a5)	; Mark as ready
+	bset	#FMVF_SECT,feFMV(a5)		; Mark as reading data section 1
+	bset	#FMVF_READY,feFMV(a5)		; Mark as ready
 
 .WaitMain:
 	btst	#0,GAMAINFLAG.w			; Wait for Main CPU
@@ -855,7 +855,7 @@ ReadFMVSectors:
 	
 	move.b	#FMVT_PCM,feFMVDataType(a5)	; Set PCM data type
 	move.l	#FMVPCMBUF,feReadBuffer(a5)	; Set read buffer for PCM data
-	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+	bset	#FMVF_SECT,feFMV(a5)		; Mark as reading data section 1
 
 .Advance:
 	addq.w	#1,feSectorsRead(a5)		; Increment sectors read counter
@@ -886,14 +886,14 @@ ReadFMVSectors:
 
 .PCMDone2:
 	move.b	#FMVT_GFX,feFMVDataType(a5)	; Set graphics data type
-	bclr	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 2
+	bclr	#FMVF_SECT,feFMV(a5)		; Mark as reading data section 2
 	move.l	#FMVGFXBUF,feReadBuffer(a5)	; Set read buffer for graphics data
 	bra.w	.Advance2
 
 .GfxDone2:
 	bset	#0,GASUBFLAG.w			; Sync with Main CPU
-	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
-	bset	#FMVF_READY,feFMVFlags(a5)	; Mark as ready
+	bset	#FMVF_SECT,feFMV(a5)		; Mark as reading data section 1
+	bset	#FMVF_READY,feFMV(a5)		; Mark as ready
 
 .WaitMain2:
 	btst	#0,GAMAINFLAG.w			; Wait for Main CPU
@@ -910,7 +910,7 @@ ReadFMVSectors:
 	
 	move.b	#FMVT_PCM,feFMVDataType(a5)	; Set PCM data type
 	move.l	#FMVPCMBUF,feReadBuffer(a5)	; Set read buffer for PCM data
-	bset	#FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+	bset	#FMVF_SECT,feFMV(a5)		; Mark as reading data section 1
 
 .Advance2:
 	addq.w	#1,feSectorsRead(a5)		; Increment sectors read counter
@@ -945,7 +945,7 @@ ReadFMVSectors:
 ; -------------------------------------------------------------------------
 
 FileFunc_LoadMuteFMV:
-	move.b	#1<<FMVF_SECT,feFMVFlags(a5)	; Mark as reading data section 1
+	move.b	#1<<FMVF_SECT,feFMV(a5)		; Mark as reading data section 1
 	move.w	#FMODE_LOADFMVM,feOperMode(a5)	; Set operation mode to "load mute FMV"
 	move.l	#FMVGFXBUF,feReadBuffer(a5)	; Prepare to read graphics data
 	move.w	#0,feFMVSectFrame(a5)		; Reset FMV sector frame
@@ -989,7 +989,7 @@ FileEngine_LoadMuteFMV:
 
 .Done:
 	move.w	#FMODE_NONE,feOperMode(a5)	; Set operation mode to "none"
-	bra.w	FileEngineOper			; Loop back
+	bra.w	FileOperation			; Loop back
 
 .FileNotFound:
 	move.w	#FSTAT_NOTFOUND,feStatus(a5)	; Mark as not found

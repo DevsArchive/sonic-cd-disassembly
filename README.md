@@ -13,6 +13,9 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
     - Palmtree Panic (SNCBNK1B)
 * Title screen (TITLEM and TITLES)
     - A couple bits still need to be figured out
+* FMVs
+    - Good ending Sub CPU program (BADEND.BIN, not a typo)
+    - Bad ending Sub CPU program (GOODEND.BIN, not a typo)
 * Sound test (SOSEL)
     - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
 * Level

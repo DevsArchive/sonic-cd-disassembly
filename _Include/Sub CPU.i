@@ -37,7 +37,23 @@ PCMST		EQU	PCMREGS+($0006*2+1)	; Wave memory start address
 PCMCTRL		EQU	PCMREGS+($0007*2+1)	; Control
 PCMONOFF	EQU	PCMREGS+($0008*2+1)	; On/Off
 PCMADDR		EQU	PCMREGS+($0010*2+1)	; Wave address
-PCMWAVE		EQU	PCMREGS+($1000*2+1)	; Wave data
+PCMADDR1L	EQU	PCMADDR			; PCM1 address (low)
+PCMADDR1H	EQU	PCMADDR+2		; PCM1 address (high)
+PCMADDR2L	EQU	PCMADDR+4		; PCM2 address (low)
+PCMADDR2H	EQU	PCMADDR+6		; PCM2 address (high)
+PCMADDR3L	EQU	PCMADDR+8		; PCM2 address (low)
+PCMADDR3H	EQU	PCMADDR+$A		; PCM2 address (high)
+PCMADDR4L	EQU	PCMADDR+$C		; PCM2 address (low)
+PCMADDR4H	EQU	PCMADDR+$E		; PCM2 address (high)
+PCMADDR5L	EQU	PCMADDR+$10		; PCM2 address (low)
+PCMADDR5H	EQU	PCMADDR+$12		; PCM2 address (high)
+PCMADDR6L	EQU	PCMADDR+$14		; PCM2 address (low)
+PCMADDR6H	EQU	PCMADDR+$16		; PCM2 address (high)
+PCMADDR7L	EQU	PCMADDR+$18		; PCM2 address (low)
+PCMADDR7H	EQU	PCMADDR+$1A		; PCM2 address (high)
+PCMADDR8L	EQU	PCMADDR+$1C		; PCM2 address (low)
+PCMADDR8H	EQU	PCMADDR+$1E		; PCM2 address (high)
+PCMWAVE		EQU	PCMREGS+($1000*2+1)	; Wave RAM
 
 ; Gate array
 GATEARRAY	EQU	$FFFF8000		; Gate array base
