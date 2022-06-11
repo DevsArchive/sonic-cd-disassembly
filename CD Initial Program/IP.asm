@@ -20,7 +20,7 @@
 		incbin	"CD Initial Program/Security/Japan.bin"
 	elseif REGION=USA
 		incbin	"CD Initial Program/Security/USA.bin"
-	elseif REGION=EUROPE
+	else
 		incbin	"CD Initial Program/Security/Europe.bin"
 	endif
 
@@ -123,16 +123,5 @@ VInterrupt:
 
 HInterrupt:
 	rte
-
-; -------------------------------------------------------------------------
-; Version number?	
-; -------------------------------------------------------------------------
-
-	align	WORKRAM+$DFE
-	if REGION=JAPAN
-		dc.w	$0106
-	else
-		dc.w	$0109
-	endif
 
 ; -------------------------------------------------------------------------
