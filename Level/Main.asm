@@ -310,7 +310,7 @@ LevelStart:
 	move.w	#0,demoS1Index.w		; Clear demo data index (Sonic 1 leftover)
 	move.w	#$202F,palFadeInfo.w		; Set to fade palette lines 1-3
 
-	jsr	JmpTo_LoadShieldArt		; Load shield art
+	jsr	UpdateAnimTiles			; Update animated tiles
 
 	move.b	#1,lvlEnableDisplay		; Set to enable display on palette fade
 	bclr	#7,timeZone			; Stop time travelling
@@ -754,23 +754,11 @@ VInt_Lag:
 
 	tst.b	waterFullscreen.w		; Is water filling the screen?
 	bne.s	.WaterPal			; If so, branch
-	lea	VDPCTRL,a5			; DMA palette buffer
-	move.l	#$94009340,(a5)
-	move.l	#$96FD9580,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$C000,(a5)
-	move.w	#$80,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	palette,$0000,$80,CRAM		; DMA palette
 	bra.s	.Done
 
 .WaterPal:
-	lea	VDPCTRL,a5			; DMA water palette buffer
-	move.l	#$94009340,(a5)
-	move.l	#$96FD9540,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$C000,(a5)
-	move.w	#$80,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	waterPalette,$0000,$80,CRAM	; DMA water palette
 
 .Done:
 	move.w	vdpReg0A.w,(a5)			; Update H-INT counter
@@ -835,45 +823,19 @@ VInt_Level:
 	jsr	StopZ80				; Stop the Z80
 	bsr.w	ReadControllers			; Read controllers
 
-	lea	VDPCTRL,a5			; DMA palette
-	move.l	#$94009340,(a5)
-	move.l	#$96FD9580,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$C000,(a5)
-	move.w	#$80,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
-
-	lea	VDPCTRL,a5			; DMA HScroll
-	move.l	#$940193C0,(a5)
-	move.l	#$96E69500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7C00,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
-
-	lea	VDPCTRL,a5			; DMA sprites
-	move.l	#$94019340,(a5)
-	move.l	#$96FC9500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7800,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	palette,$0000,$80,CRAM		; DMA palette
+	LVLDMA	hscroll,$FC00,$380,VRAM		; DMA horizontal scroll data
+	LVLDMA	sprites,$F800,$280,VRAM		; DMA sprites
 
 	lea	objPlayerSlot.w,a0		; Load player sprite art
 	bsr.w	LoadSonicDynPLC
 	tst.b	updateSonicArt.w
 	beq.s	.NoArtLoad
-	lea	VDPCTRL,a5
-	move.l	#$94019370,(a5)
-	move.l	#$96E49500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7000,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	sonicArtBuf,$F000,$2E0,VRAM
 	move.b	#0,updateSonicArt.w
 
 .NoArtLoad:
-	jsr	JmpTo_LoadShieldArt		; Load shield art
+	jsr	UpdateAnimTiles			; Update animated tiles
 	jsr	StartZ80			; Start the Z80
 
 	movem.l	cameraX.w,d0-d7			; Draw level
@@ -900,29 +862,9 @@ VInt_LevelLoad:
 	jsr	StopZ80				; Stop the Z80
 	bsr.w	ReadControllers			; Read controllers
 
-	lea	VDPCTRL,a5			; DMA palette
-	move.l	#$94009340,(a5)
-	move.l	#$96FD9580,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$C000,(a5)
-	move.w	#$80,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
-
-	lea	VDPCTRL,a5			; DMA HScroll
-	move.l	#$940193C0,(a5)
-	move.l	#$96E69500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7C00,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
-
-	lea	VDPCTRL,a5			; DMA sprites
-	move.l	#$94019340,(a5)
-	move.l	#$96FC9500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7800,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	palette,$0000,$80,CRAM		; DMA palette
+	LVLDMA	hscroll,$FC00,$380,VRAM		; DMA horizontal scroll data
+	LVLDMA	sprites,$F800,$280,VRAM		; DMA sprites
 
 	jsr	StartZ80			; Start the Z80
 
@@ -973,29 +915,9 @@ VInt_S1ContScr:
 	jsr	StopZ80				; Stop the Z80
 	bsr.w	ReadControllers			; Read controllers
 
-	lea	VDPCTRL,a5			; DMA palette
-	move.l	#$94009340,(a5)
-	move.l	#$96FD9580,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$C000,(a5)
-	move.w	#$80,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
-
-	lea	VDPCTRL,a5			; DMA sprites
-	move.l	#$94019340,(a5)
-	move.l	#$96FC9500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7800,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
-
-	lea	VDPCTRL,a5			; DMA HScroll
-	move.l	#$940193C0,(a5)
-	move.l	#$96E69500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7C00,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	palette,$0000,$80,CRAM		; DMA palette
+	LVLDMA	sprites,$F800,$280,VRAM		; DMA sprites
+	LVLDMA	hscroll,$FC00,$380,VRAM		; DMA horizontal scroll data
 
 	jsr	StartZ80			; Start the Z80
 
@@ -1003,13 +925,7 @@ VInt_S1ContScr:
 	bsr.w	LoadSonicDynPLC
 	tst.b	updateSonicArt.w
 	beq.s	.NoArtLoad
-	lea	VDPCTRL,a5
-	move.l	#$94019370,(a5)
-	move.l	#$96E49500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7000,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	sonicArtBuf,$F000,$2E0,VRAM
 	move.b	#0,updateSonicArt.w
 
 .NoArtLoad:
@@ -1030,40 +946,15 @@ DoVIntUpdates:
 
 	tst.b	waterFullscreen.w		; Is water filling the screen?
 	bne.s	.WaterPal			; If so, branch
-	lea	VDPCTRL,a5			; DMA palette buffer
-	move.l	#$94009340,(a5)
-	move.l	#$96FD9580,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$C000,(a5)
-	move.w	#$80,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	palette,$0000,$80,CRAM		; DMA palette
 	bra.s	.LoadedPal
 
 .WaterPal:
-	lea	VDPCTRL,a5			; DMA water palette buffer
-	move.l	#$94009340,(a5)
-	move.l	#$96FD9540,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$C000,(a5)
-	move.w	#$80,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	waterPalette,$0000,$80,CRAM	; DMA water palette
 
 .LoadedPal:
-	lea	VDPCTRL,a5			; DMA sprites
-	move.l	#$94019340,(a5)
-	move.l	#$96FC9500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7800,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
-
-	lea	VDPCTRL,a5			; DMA HScroll
-	move.l	#$940193C0,(a5)
-	move.l	#$96E69500,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$7C00,(a5)
-	move.w	#$83,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+	LVLDMA	sprites,$F800,$280,VRAM		; DMA sprites
+	LVLDMA	hscroll,$FC00,$380,VRAM		; DMA horizontal scroll data
 
 	jmp	StartZ80			; Start the Z80
 

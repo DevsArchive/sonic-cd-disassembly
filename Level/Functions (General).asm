@@ -1152,3 +1152,19 @@ KosDec_Done:
 	rts
 
 ; -------------------------------------------------------------------------
+; Get player object
+; -------------------------------------------------------------------------
+; RETURNS:
+;	a6.l - Player object RAM
+; -------------------------------------------------------------------------
+
+GetPlayerObject:
+	lea	objPlayerSlot.w,a6		; Player 1
+	tst.b	usePlayer2			; Are we using player 2?
+	beq.s	.Done				; If not, branch
+	lea	objPlayerSlot2.w,a6		; Player 2
+
+.Done:
+	rts
+
+; -------------------------------------------------------------------------

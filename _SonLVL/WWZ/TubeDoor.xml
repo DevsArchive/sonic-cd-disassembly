@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Name="Tube Door" Image="door" RememberState="true">
+  <Images>
+    <ImageFromMappings id="door">
+      <ArtFile filename="../Level/Wacky Workbench/Objects/Tube Door/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Wacky Workbench/Objects/Tube Door/Data/Mappings.asm" startpal="2" />
+    </ImageFromMappings>
+  </Images>
+  <Properties>
+    <BitsProperty name="Flipped" type="FlippedFlag" startbit="0" length="1" />
+  </Properties>
+  <Enums>
+    <Enum name="FlippedFlag">
+      <EnumMember name="False" />
+      <EnumMember name="True" />
+    </Enum>
+  </Enums>
+  <Display>
+    <DisplayOption>
+      <Condition property="Flipped" value="False" />
+      <ImageRef image="door" xflip="NeverFlip" />
+    </DisplayOption>
+    <DisplayOption>
+      <Condition property="Flipped" value="True" />
+      <ImageRef image="door" xflip="AlwaysFlip" />
+    </DisplayOption>
+  </Display>
+</ObjDef>

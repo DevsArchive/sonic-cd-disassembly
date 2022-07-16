@@ -309,7 +309,6 @@ ObjSonic_Main:
 	clr.b	timeWarpFlag
 	bra.s	.SkipControl
 
-
 .NotMMZ:
 	bsr.w	ObjSonic_TimeWarp		; Handle time warping
 	bra.s	.SkipControl
@@ -383,7 +382,7 @@ ObjSonic_Display:
 	bcc.s	.SkipDisplay			; If so, branch
 
 .NotFlashing:
-	btst	#6,oPlayerCtrl(a0)		; Is our sprite disabled?
+	btst	#6,oPlayerCtrl(a0)		; Are we invisible?
 	bne.s	.SkipDisplay			; If so, branch
 	jsr	DrawObject			; Draw sprite
 

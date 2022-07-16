@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Name="Spinning Platform" Image="platform" RememberState="true">
+  <Images>
+    <ImageFromMappings id="platform">
+      <ArtFile filename="../Level/Wacky Workbench/Objects/Platform/Data/Art (Normal, Present).nem" />
+      <MapFile type="ASM" filename="../Level/Wacky Workbench/Objects/Platform/Data/Mappings (Spinning).asm" startpal="2" />
+    </ImageFromMappings>
+  </Images>
+  <Subtypes>
+    <Subtype id="00" name="Right -> Left" image="platform" />
+    <Subtype id="01" name="Left -> Right" image="platform" />
+    <Subtype id="02" name="Up -> Down" image="platform" />
+    <Subtype id="03" name="Down -> Up" image="platform" />
+  </Subtypes>
+</ObjDef>

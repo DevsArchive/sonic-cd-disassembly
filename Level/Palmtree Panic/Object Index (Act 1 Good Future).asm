@@ -12,7 +12,7 @@ ObjectIndex:
 	dc.l	ObjWaterfall			; 04 - Unused (broken) waterfall generator
 	dc.l	ObjEarthquake			; 05 - Earthquake (scrapped)
 	dc.l	ObjTestBadnik			; 06 - Test badnik
-	dc.l	ObjHiddenTunnel			; 07 - Hidden tunnel
+	dc.l	ObjTunnelPath			; 07 - Tunnel Path
 	dc.l	ObjEarthquakeSet		; 08 - Earthquake setup (scrapped)
 	dc.l	ObjSpinningDisc			; 09 - Spinning disc
 	dc.l	ObjSpring			; 0A - Spring

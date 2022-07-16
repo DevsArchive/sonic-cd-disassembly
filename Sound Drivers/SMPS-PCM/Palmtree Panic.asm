@@ -15,14 +15,14 @@
 
 	org	PCMDriver
 	dc.b	"SNCBNK25.S28    "
-	include	"Sound/SMPS-PCM/_Driver.asm"
+	include	"Sound Drivers/SMPS-PCM/_Driver.asm"
 
 ; -------------------------------------------------------------------------
 ; Sound effect index
 ; -------------------------------------------------------------------------
 
 SFXIndex:
-	dc.l	SFX_MusicLoop
+	dc.l	SFX_Unknown
 	dc.l	SFX_Future
 	dc.l	SFX_Past
 	dc.l	SFX_Alright
@@ -86,45 +86,45 @@ SongIndex:
 ; -------------------------------------------------------------------------
 
 Song_PPZPast:
-	incbin	"Sound/SMPS-PCM/Music/Palmtree Panic Past.bin"
+	incbin	"Sound Drivers/SMPS-PCM/Music/Palmtree Panic Past.bin"
 	even
 
 ; -------------------------------------------------------------------------
 ; Sound effects
 ; -------------------------------------------------------------------------
 
-SFX_MusicLoop:
-	incbin	"Sound/SMPS-PCM/SFX/Music Loop.bin"
+SFX_Unknown:
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Unknown.bin"
 	even
 SFX_Future:
-	incbin	"Sound/SMPS-PCM/SFX/Future.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Future.bin"
 	even
 SFX_Past:
-	incbin	"Sound/SMPS-PCM/SFX/Past.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Past.bin"
 	even
 SFX_Alright:
-	incbin	"Sound/SMPS-PCM/SFX/Alright.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Alright.bin"
 	even
 SFX_OuttaHere:
-	incbin	"Sound/SMPS-PCM/SFX/Outta Here.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Outta Here.bin"
 	even
 SFX_Yes:
-	incbin	"Sound/SMPS-PCM/SFX/Yes.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Yes.bin"
 	even
 SFX_Yeah:
-	incbin	"Sound/SMPS-PCM/SFX/Yeah.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Yeah.bin"
 	even
 SFX_AmyGiggle:
-	incbin	"Sound/SMPS-PCM/SFX/Amy Giggle.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Amy Giggle.bin"
 	even
 SFX_AmyYelp:
-	incbin	"Sound/SMPS-PCM/SFX/Amy Yelp.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Amy Yelp.bin"
 	even
 SFX_BossStomp:
-	incbin	"Sound/SMPS-PCM/SFX/Boss Stomp.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Boss Stomp.bin"
 	even
 SFX_Bumper:
-	incbin	"Sound/SMPS-PCM/SFX/Bumper.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Bumper.bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -178,31 +178,31 @@ SampleIndex:
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	Samp_DrumLoop,		"Sound/SMPS-PCM/Samples/Palmtree Panic/Drum Loop.bin"
+	SAMPDAT	Samp_DrumLoop,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Drum Loop.bin"
 	even
-	SAMPDAT	Samp_Bass,		"Sound/SMPS-PCM/Samples/Palmtree Panic/Bass.bin"
+	SAMPDAT	Samp_Bass,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Bass.bin"
 	even
-	SAMPDAT	Samp_Flute,		"Sound/SMPS-PCM/Samples/Palmtree Panic/Flute.bin"
+	SAMPDAT	Samp_Flute,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Flute.bin"
 	even
-	SAMPDAT	Samp_Piano,		"Sound/SMPS-PCM/Samples/Palmtree Panic/Piano.bin"
+	SAMPDAT	Samp_Piano,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Piano.bin"
 	even
-	SAMPDAT	Samp_TomDrum,		"Sound/SMPS-PCM/Samples/Palmtree Panic/Tom Drum.bin"
+	SAMPDAT	Samp_TomDrum,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Tom Drum.bin"
 	even
-	SAMPDAT	Samp_ElecPianoLow,	"Sound/SMPS-PCM/Samples/Palmtree Panic/Electric Piano (Low).bin"
+	SAMPDAT	Samp_ElecPianoLow,	"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Electric Piano (Low).bin"
 	even
-	SAMPDAT	Samp_ElecPianoHigh,	"Sound/SMPS-PCM/Samples/Palmtree Panic/Electric Piano (High).bin"
+	SAMPDAT	Samp_ElecPianoHigh,	"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Electric Piano (High).bin"
 	even
-	SAMPDAT	Samp_Strings,		"Sound/SMPS-PCM/Samples/Palmtree Panic/Strings.bin"
+	SAMPDAT	Samp_Strings,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Strings.bin"
 	even
 
-	SAMPDAT	Samp_Future,		"Sound/SMPS-PCM/Samples/Future.bin"
-	SAMPDAT	Samp_Past,		"Sound/SMPS-PCM/Samples/past.bin"
-	SAMPDAT	Samp_BossStomp,		"Sound/SMPS-PCM/Samples/Boss Stomp.bin"
-	SAMPDAT	Samp_AmyGiggle,		"Sound/SMPS-PCM/Samples/Amy Giggle.bin"
-	SAMPDAT	Samp_AmyYelp,		"Sound/SMPS-PCM/Samples/Amy Yelp.bin"
-	SAMPDAT	Samp_Alright,		"Sound/SMPS-PCM/Samples/Alright.bin"
-	SAMPDAT	Samp_OuttaHere,		"Sound/SMPS-PCM/Samples/Outta Here.bin"
-	SAMPDAT	Samp_Yes,		"Sound/SMPS-PCM/Samples/Yes.bin"
-	SAMPDAT	Samp_Yeah,		"Sound/SMPS-PCM/Samples/Yeah.bin"
+	SAMPDAT	Samp_Future,		"Sound Drivers/SMPS-PCM/Samples/Future.bin"
+	SAMPDAT	Samp_Past,		"Sound Drivers/SMPS-PCM/Samples/past.bin"
+	SAMPDAT	Samp_BossStomp,		"Sound Drivers/SMPS-PCM/Samples/Boss Stomp.bin"
+	SAMPDAT	Samp_AmyGiggle,		"Sound Drivers/SMPS-PCM/Samples/Amy Giggle.bin"
+	SAMPDAT	Samp_AmyYelp,		"Sound Drivers/SMPS-PCM/Samples/Amy Yelp.bin"
+	SAMPDAT	Samp_Alright,		"Sound Drivers/SMPS-PCM/Samples/Alright.bin"
+	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/SMPS-PCM/Samples/Outta Here.bin"
+	SAMPDAT	Samp_Yes,		"Sound Drivers/SMPS-PCM/Samples/Yes.bin"
+	SAMPDAT	Samp_Yeah,		"Sound Drivers/SMPS-PCM/Samples/Yeah.bin"
 
 ; -------------------------------------------------------------------------

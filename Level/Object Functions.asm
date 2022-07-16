@@ -51,7 +51,7 @@ ObjMoveGrv:
 
 	move.w	oYVel(a0),d0			; Get Y velocity
 
-	btst	#3,oPlayerCtrl(a0)		; Is gravity disabled (ignores the 3D ramp)?
+	btst	#3,oPlayerCtrl(a0)		; Are we on a rotating pole?
 	bne.s	.NoGravity			; If so, branch
 
 	bpl.s	.CheckGravity			; If we are moving downwards, branch
@@ -62,7 +62,7 @@ ObjMoveGrv:
 	bcs.s	.NoGravity			; If so, branch
 
 .CheckGravity:
-	btst	#2,oPlayerCtrl(a0)		; Is gravity disabled?
+	btst	#2,oPlayerCtrl(a0)		; Are we hanging from a bar?
 	bne.s	.NoGravity			; If so, branch
 	addi.w	#$38,oYVel(a0)			; Apply gravity
 
@@ -313,7 +313,6 @@ DrawObjects:
 ; onscreen check. However, since DrawObject handles the onscreen check now, this
 ; is left unused.
 ; -------------------------------------------------------------------------
-
 
 .NoYRadChk:
 	move.w	oY(a0),d2			; Get object's Y position onscreen

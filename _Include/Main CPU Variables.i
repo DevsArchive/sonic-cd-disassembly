@@ -176,10 +176,11 @@ lvlDebugSubtype2	rs.b	1		; Level debug subtype 2 ID
 lvlDrawLowPlane		rs.b	1		; Level draw on low plane flag
 levelStarted		rs.b	1		; Level started flag
 bossMusicPlaying	rs.b	1		; Boss music playing flag
-			rs.w	1
+			rs.b	1
+wwzBeamMode		rs.b	1		; Wacky Workbench electric beam mode
 miniSonic 		rs.b	1		; Mini Sonic flag
 			rs.b	$24
-lvlDMABuffer 		rs.b	$480		; Level DMA buffer
+aniArtBuffer 		rs.b	$480		; Animated art buffer
 lvlLayerSpeeds 		rs.b	$200		; Level layer speeds
 MAINVARSSZ		EQU	__rs-MAINVARS	; Size of Main CPU global variables area
 

@@ -5,7 +5,7 @@
 ; SMPS-PCM driver
 ; -------------------------------------------------------------------------
 
-	include	"Sound/SMPS-PCM/_Macros.i"
+	include	"Sound Drivers/SMPS-PCM/_Macros.i"
 
 ; -------------------------------------------------------------------------
 ; Driver origin point
@@ -1107,7 +1107,7 @@ TrackCommand:
 	jmp	TrkCmd_Panning(pc)		; Set panning
 	jmp	TrkCmd_Detune(pc)		; Set detune
 	jmp	TrkCmd_CommFlag(pc)		; Set communication flag
-	jmp	TrkCmd_UnkFlag(pc)		; Set unknown flag
+	jmp	TrkCmd_SetCDDALoop(pc)		; Set CDDA loop flag
 	jmp	TrkCmd_Null(pc)			; Null
 	jmp	TrkCmd_Null(pc)			; Null
 	jmp	TrkCmd_Volume(pc)		; Add volume
@@ -1186,14 +1186,17 @@ TrkCmd_CommFlag:
 	rts
 
 ; -------------------------------------------------------------------------
-; Unknown flag track command
+; CDDA loop flag track command
+; -------------------------------------------------------------------------
+; This was called in the prototype PCM music loop segments, but still
+; didn't function.
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a5.l - Pointer to driver variables
 ; -------------------------------------------------------------------------
 
-TrkCmd_UnkFlag:
-	move.b	#1,pdrvUnkFlag(a5)		; Set unknown flag
+TrkCmd_SetCDDALoop:
+	move.b	#1,pdrvCDDALoop(a5)		; Set CDDA loop flag
 	rts
 
 ; -------------------------------------------------------------------------

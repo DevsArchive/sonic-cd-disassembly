@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Name="Animal" Image="flying" RememberState="false">
+  <Images>
+    <ImageFromMappings id="flying">
+      <ArtFile filename="../Level/Wacky Workbench/Objects/Animal/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Wacky Workbench/Objects/Animal/Data/Mappings (Flying).asm" frame="0" startpal="0" />
+    </ImageFromMappings>
+    <ImageFromMappings id="ground">
+      <ArtFile filename="../Level/Wacky Workbench/Objects/Animal/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Wacky Workbench/Objects/Animal/Data/Mappings (Ground).asm" frame="0" startpal="0" />
+    </ImageFromMappings>
+  </Images>
+  <Subtypes>
+    <Subtype id="00" name="Flying" image="flying" />
+    <Subtype id="01" name="Ground" image="ground" />
+    <Subtype id="80" name="Flying (Holographic)" image="flying" />
+    <Subtype id="81" name="Ground (Holographic)" image="ground" />
+  </Subtypes>
+  <Properties>
+    <BitsProperty name="Animal" type="AnimalType" startbit="0" length="1" />
+    <BitsProperty name="Holographic" type="HolographicFlag" startbit="7" length="1" />
+  </Properties>
+  <Enums>
+    <Enum name="AnimalType">
+      <EnumMember name="Flying" />
+      <EnumMember name="Ground" />
+    </Enum>
+    <Enum name="HolographicFlag">
+      <EnumMember name="False" />
+      <EnumMember name="True" />
+    </Enum>
+  </Enums>
+</ObjDef>

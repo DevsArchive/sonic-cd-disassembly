@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Saved data loading functions
+; Common objects
 ; -------------------------------------------------------------------------
 
 TimeTravel_LoadData:

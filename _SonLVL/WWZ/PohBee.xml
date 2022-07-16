@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Name="Poh-Bee" Image="normal" RememberState="true">
+  <Images>
+    <ImageFromMappings id="normal">
+      <ArtFile filename="../Level/Wacky Workbench/Objects/Poh-Bee/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Wacky Workbench/Objects/Poh-Bee/Data/Mappings (Normal).asm" startpal="1" />
+    </ImageFromMappings>
+    <ImageFromMappings id="damaged">
+      <ArtFile filename="../Level/Wacky Workbench/Objects/Poh-Bee/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Wacky Workbench/Objects/Poh-Bee/Data/Mappings (Damaged).asm" startpal="1" />
+    </ImageFromMappings>
+  </Images>
+  <Subtypes>
+    <Subtype id="00" name="Normal" image="normal" />
+    <Subtype id="01" name="Damaged" image="damaged" />
+  </Subtypes>
+</ObjDef>

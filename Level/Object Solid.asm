@@ -119,17 +119,14 @@ RideObject:
 ; End of function RideObject
 
 ; -------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR ObjSpring_SolidObject3
 
 SolidObject2:
 	move.b	#2,oRoutine2(a0)
 	bra.s	SolidObject
-; END OF FUNCTION CHUNK	FOR ObjSpring_SolidObject3
 ; -------------------------------------------------------------------------
 
 SolidObject1:
 	move.b	#1,oRoutine2(a0)
-; End of function SolidObject1
 
 ; -------------------------------------------------------------------------
 

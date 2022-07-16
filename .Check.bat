@@ -30,5 +30,6 @@ fc /b _Original\%REGPATH%\DEMO11A.MMD _Built\Files\DEMO11A.MMD
 fc /b _Original\%REGPATH%\R11B__.MMD _Built\Files\R11B__.MMD
 fc /b _Original\%REGPATH%\R11C__.MMD _Built\Files\R11C__.MMD
 fc /b _Original\%REGPATH%\R11D__.MMD _Built\Files\R11D__.MMD
+fc /b _Original\%REGPATH%\R61A__.MMD _Built\Files\R61A__.MMD
 
 pause

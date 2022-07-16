@@ -157,6 +157,8 @@ Player_GetPriAngle:
 
 CheckFloorEdge:
 	move.w	oX(a0),d3
+
+CheckFloorEdge2:
 	move.w	oY(a0),d2
 	moveq	#0,d0
 	move.b	oYRadius(a0),d0

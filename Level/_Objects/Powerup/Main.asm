@@ -163,19 +163,15 @@ LoadShieldArt:
 	subq.b	#2,d0
 	add.w	d0,d0
 	movea.l	ShieldArtIndex(pc,d0.w),a1
-	lea	lvlDMABuffer,a2
+	
+	lea	aniArtBuffer,a2
 	move.w	#$FF,d0
 
 .Loop:
 	move.l	(a1)+,(a2)+
 	dbf	d0,.Loop
-	lea	VDPCTRL,a5
-	move.l	#$94029340,(a5)
-	move.l	#$968C95C0,(a5)
-	move.w	#$977F,(a5)
-	move.w	#$6880,(a5)
-	move.w	#$82,dmaCmdLow.w
-	move.w	dmaCmdLow.w,(a5)
+
+	LVLDMA	aniArtBuffer,$A880,$480,VRAM
 
 .End:
 	rts

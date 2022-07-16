@@ -111,7 +111,7 @@ ObjMan_Main:
 	bcs.s	.ScanLeft
 
 .Loop:
-	cmp.w -8(a0),d6
+	cmp.w	-8(a0),d6
 	bge.s	.ScanLeft
 	subq.w	#8,a0
 	tst.b	4(a0)

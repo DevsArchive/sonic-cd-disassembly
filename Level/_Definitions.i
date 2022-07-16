@@ -9,6 +9,7 @@
 	include	"_Include/Main CPU.i"
 	include	"_Include/Main CPU Variables.i"
 	include	"_Include/Sound.i"
+	include	"_Include/System.i"
 	include	"_Include/MMD.i"
 
 ; -------------------------------------------------------------------------
@@ -116,11 +117,14 @@ oPlayerInvinc		EQU	oVar32		; Invincibility timer
 oPlayerShoes		EQU	oVar34		; Speed shoes timer
 oPlayerReset		EQU	oVar3A		; Reset timer
 
-oPlayerRotAngle		EQU	oVar2B		; Platform rotation angle
-oPlayerRotDist		EQU	oVar39		; Platform rotation distance
+oPlayerRotAngle		EQU	oVar2B		; Rotation angle
+oPlayerRotDist		EQU	oVar39		; Rotation distance
+oPlayerRotCenter	EQU	oVar3E		; Rotation center
 
 oPlayerPushObj		EQU	oVar20		; ID of object being pushed on
 oPlayerStandObj		EQU	oVar3D		; ID of object being stood on
+
+oPlayerHangAni		EQU	oVar1F		; Hanging animation timer
 
 ; -------------------------------------------------------------------------
 ; RAM
@@ -283,8 +287,9 @@ scrollFlagsBg		rs.w	1		; Scroll flags (background)
 scrollFlagsBg2		rs.w	1		; Scroll flags (background 2)
 scrollFlagsBg3		rs.w	1		; Scroll flags (background 3)
 btmBoundShift		rs.w	1		; Bottom boundary shifting flag
-			rs.w	1
-			
+			rs.b	1
+sneezeFlag		rs.b	1		; Sneeze flag (prototype leftover)
+
 sonicTopSpeed		rs.w	1		; Sonic top speed
 sonicAcceleration	rs.w	1		; Sonic acceleration
 sonicDeceleration	rs.w	1		; Sonic deceleration
@@ -338,12 +343,33 @@ bonusCount2		rs.w	1		; Bonus countdown 2
 updateResultsBonus	rs.b	1		; Update results bonus flag
 			rs.b	3
 savedSR 		rs.w	1		; Saved status register
-			rs.b	$24
+			rs.b	4
+switchFlags		rs.b	$20		; Switch press flags
 sprites 		rs.b	$200		; Sprite buffer
 waterFadePal		rs.b	$80		; Water fade palette buffer (uses part of sprite buffer)
 waterPalette		rs.b	$80		; Water palette buffer
 palette 		rs.b	$80		; Palette buffer
 fadePalette 		rs.b	$80		; Fade palette buffer
+
+; -------------------------------------------------------------------------
+; VDP DMA from 68000 memory to VDP memory
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	src  - Source address in 68000 memory
+;	dest - Destination address in VDP memory
+;	len  - Length of data in bytes
+;	type - Type of VDP memory
+; -------------------------------------------------------------------------
+
+LVLDMA macro src, dest, len, type
+	lea	VDPCTRL,a5
+	move.l	#$94009300|((((\len)/2)&$FF00)<<8)|(((\len)/2)&$FF),(a5)
+	move.l	#$96009500|((((\src)/2)&$FF00)<<8)|(((\src)/2)&$FF),(a5)
+	move.w	#$9700|(((\src)>>17)&$7F),(a5)
+	VDPCMD	move.w,\dest,\type,DMA,>>16,(a5)
+	VDPCMD	move.w,\dest,\type,DMA,&$FFFF,dmaCmdLow.w
+	move.w	dmaCmdLow.w,(a5)
+	endm
 
 ; -------------------------------------------------------------------------
 ; Background section
@@ -387,16 +413,16 @@ DBSTART macro off
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	id       - Object ID
+;	priority - Priority
 ;	mappings - Mappings
 ;	tile     - Tile ID
-;	flip     - Flip flags
-;	priority - Priority
-;	frame    - Sprite frame
 ;	subtype  - Subtype
+;	flip     - Flip flags
 ;	subtype2 - Subtype 2
+;	frame    - Sprite frame
 ; -------------------------------------------------------------------------
 
-DBGITEM macro id, mappings, tile, flip, priority, frame, subtype, subtype2
+DBGITEM macro id, priority, mappings, tile, subtype, flip, subtype2, frame
 	dc.b	\id, \priority
 	dc.l	\mappings
 	dc.w	\tile

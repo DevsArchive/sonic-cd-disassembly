@@ -209,9 +209,5 @@ ObjRobotGenerator_ExplosionLocs:
 	dc.b	$23, $D, $F6
 	dc.b	$28, $F6, $A
 	dc.b	$FF
-ObjRobotGenerator_BaseTileList:
-	dc.w	$43F, $409, 0, 0
-	dc.w	$454, $400, 0, 0
-	dc.w	0, 0, 0
 
 ; -------------------------------------------------------------------------

@@ -272,7 +272,7 @@ MapSpr_Explosion:
 	include	"Level/_Objects/Explosion/Data/Mappings.asm"
 	even
 	
-	incbin	"Level/Palmtree Panic/Data/Unused/Unknown Data.bin"
+	incbin	"Level/_Data/Unused/Unknown Data.bin"
 	even
 	
 Ani_Checkpoint:
@@ -306,13 +306,13 @@ Art_LogShadow:
 	incbin	"Level/Palmtree Panic/Objects/Log Shadow/Data/Art.nem"
 	even
 Ani_Flower:
-	include	"Level/_Objects/Flower/Data/Animations.asm"
+	include	"Level/Palmtree Panic/Objects/Flower/Data/Animations.asm"
 	even
 MapSpr_Flower:
-	include	"Level/_Objects/Flower/Data/Mappings.asm"
+	include	"Level/Palmtree Panic/Objects/Flower/Data/Mappings.asm"
 	even
 Art_Flower:
-	incbin	"Level/_Objects/Flower/Data/Art.nem"
+	incbin	"Level/Palmtree Panic/Objects/Flower/Data/Art.nem"
 	even
 Art_TitleCardText:
 	incbin	"Level/Palmtree Panic/Objects/Title Card/Art.nem"
@@ -458,7 +458,7 @@ Art_SwingingPlatform:
 	incbin	"Level/Palmtree Panic/Data/Unused/Art (Swinging Platform).nem"
 	even
 Art_Animals:
-	incbin	"Level/_Objects/Animal/Data/Art.nem"
+	incbin	"Level/Palmtree Panic/Objects/Animal/Data/Art.nem"
 	even
 Art_SpinningDiscDrill:
 	incbin	"Level/Palmtree Panic/Data/Unused/Art (Spinning Disc Drill).nem"
@@ -511,12 +511,12 @@ LevelLayouts:
 .Null:
 	dc.b	0, 0, 0, 0
 .FG2:
-	incbin	"Level/Palmtree Panic/Data/Unused/Unknown Layout 1.bin"
+	incbin	"Level/_Data/Unused/Unknown Layout 1.bin"
 	even
 .Null2:
 	dc.b	0, 0, 0, 0
 .FG3:
-	incbin	"Level/Palmtree Panic/Data/Unused/Unknown Layout 2.bin"
+	incbin	"Level/_Data/Unused/Unknown Layout 2.bin"
 	even
 .Null3:
 	dc.b	0, 0, 0, 0
@@ -535,7 +535,7 @@ Art_LevelTiles:
 	incbin	"Level/Palmtree Panic/Data/Tiles (Act 1 Bad Future).nem"
 	even
 Art_Projector:
-	incbin	"Level/_Objects/Projector/Data/Art.nem"
+	incbin	"Level/Palmtree Panic/Objects/Projector/Data/Art.nem"
 	even
 
 ; -------------------------------------------------------------------------

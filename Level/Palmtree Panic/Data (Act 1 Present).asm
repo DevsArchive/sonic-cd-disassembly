@@ -363,13 +363,13 @@ Art_LogShadow:
 	incbin	"Level/Palmtree Panic/Objects/Log Shadow/Data/Art.nem"
 	even
 Ani_Flower:
-	include	"Level/_Objects/Flower/Data/Animations.asm"
+	include	"Level/Palmtree Panic/Objects/Flower/Data/Animations.asm"
 	even
 MapSpr_Flower:
-	include	"Level/_Objects/Flower/Data/Mappings.asm"
+	include	"Level/Palmtree Panic/Objects/Flower/Data/Mappings.asm"
 	even
 Art_Flower:
-	incbin	"Level/_Objects/Flower/Data/Art.nem"
+	incbin	"Level/Palmtree Panic/Objects/Flower/Data/Art.nem"
 	even
 Art_TitleCardText:
 	incbin	"Level/Palmtree Panic/Objects/Title Card/Art.nem"
@@ -429,7 +429,7 @@ Art_SwingingPlatform:
 	incbin	"Level/Palmtree Panic/Data/Unused/Art (Swinging Platform).nem"
 	even
 Art_Animals:
-	incbin	"Level/_Objects/Animal/Data/Art.nem"
+	incbin	"Level/Palmtree Panic/Objects/Animal/Data/Art.nem"
 	even
 Art_SpinningDiscDrill:
 	incbin	"Level/Palmtree Panic/Data/Unused/Art (Spinning Disc Drill).nem"
@@ -484,7 +484,7 @@ LevelLayouts:
 ; -------------------------------------------------------------------------
 
 Art_SonicHole:
-	incbin	"Level/Palmtree Panic/Objects/Hidden Tunnel/Data/Art (Hole).nem"
+	incbin	"Level/Palmtree Panic/Objects/Tunnel Path/Data/Art (Hole).nem"
 	even
 Art_3DPlant:
 	incbin	"Level/Palmtree Panic/Objects/3D Ramp/Data/Art (Plant).nem"
@@ -553,7 +553,7 @@ Ani_FlowerCapsule:
 ;	include	"Level/_Objects/Level End/Data/Animations (Flower Capsule).asm"
 ;	even
 Art_Projector:
-;	incbin	"Level/_Objects/Projector/Data/Art.nem"
+;	incbin	"Level/Palmtree Panic/Objects/Projector/Data/Art.nem"
 ;	even
 Art_AmyRose:
 	incbin	"Level/Palmtree Panic/Objects/Amy Rose/Data/Art.nem"
