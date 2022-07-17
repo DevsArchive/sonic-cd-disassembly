@@ -15,6 +15,9 @@ fc /b _Original\%REGPATH%\BRAMINIT.MMD _Built\Files\BRAMINIT.MMD
 fc /b _Original\%REGPATH%\BRAMSUB.BIN _Built\Files\BRAMSUB.BIN
 fc /b _Original\%REGPATH%\MDINIT.MMD _Built\Files\MDINIT.MMD
 fc /b _Original\%REGPATH%\SNCBNK1B.BIN _Built\Files\SNCBNK1B.BIN
+fc /b _Original\%REGPATH%\SNCBNK3B.BIN _Built\Files\SNCBNK3B.BIN
+fc /b _Original\%REGPATH%\SNCBNK4B.BIN _Built\Files\SNCBNK4B.BIN
+fc /b _Original\%REGPATH%\SNCBNK6B.BIN _Built\Files\SNCBNK6B.BIN
 fc /b _Original\%REGPATH%\TITLEM.MMD _Built\Files\TITLEM.MMD
 fc /b _Original\%REGPATH%\TITLES.BIN _Built\Files\TITLES.BIN
 fc /b _Original\%REGPATH%\GOODEND.BIN _Built\Files\GOODEND.BIN

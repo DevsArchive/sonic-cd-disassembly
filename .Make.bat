@@ -18,12 +18,18 @@ del _Built\Files\.gitkeep > nul
 %ASM68K% "Backup RAM\Initialization\Main.asm", "_Built\Files\BRAMINIT.MMD", , "Backup RAM\Initialization\Main.lst"
 %ASM68K% "Backup RAM\Sub.asm", "_Built\Files\BRAMSUB.BIN", , "Backup RAM\Sub.lst"
 %ASM68K% "Mega Drive Init\Main.asm", "_Built\Files\MDINIT.MMD", , "Mega Drive Init\Main.lst"
+
 %ASM68K% "Sound Drivers\SMPS-PCM\Palmtree Panic.asm", "_Built\Files\SNCBNK1B.BIN", , "Sound Drivers\SMPS-PCM\Palmtree Panic.lst"
+%ASM68K% "Sound Drivers\SMPS-PCM\Collision Chaos.asm", "_Built\Files\SNCBNK3B.BIN", , "Sound Drivers\SMPS-PCM\Collision Chaos.lst"
+%ASM68K% "Sound Drivers\SMPS-PCM\Tidal Tempest.asm", "_Built\Files\SNCBNK4B.BIN", , "Sound Drivers\SMPS-PCM\Tidal Tempest.lst"
+%ASM68K% "Sound Drivers\SMPS-PCM\Wacky Workbench.asm", "_Built\Files\SNCBNK6B.BIN", , "Sound Drivers\SMPS-PCM\Wacky Workbench.lst"
+
 %ASM68K% "Title Screen\Main.asm", "_Built\Files\TITLEM.MMD", , "Title Screen\Main.lst"
 %ASM68K% "Title Screen\Sub.asm", "_Built\Files\TITLES.BIN", , "Title Screen\Sub.lst"
 %ASM68K% /e DATAFILE=0 "FMV\Sub.asm", "_Built\Files\GOODEND.BIN", , "FMV\Sub (Good Ending).lst"
 %ASM68K% /e DATAFILE=1 "FMV\Sub.asm", "_Built\Files\BADEND.BIN", , "FMV\Sub (Bad Ending).lst"
 %ASM68K% "Sound Test\Main.asm", "_Built\Files\SOSEL_.MMD", , "Sound Test\Main.lst"
+
 %ASM68K% /e EASTEREGG=0 "Sound Test\Easter Egg\Main.asm", "_Built\Files\NISI.MMD", , "Sound Test\Easter Egg\Main (Fun Is Infinite).lst"
 %ASM68K% /e EASTEREGG=1 "Sound Test\Easter Egg\Main.asm", "_Built\Files\DUMMY0.MMD", , "Sound Test\Easter Egg\Main (M.C. Sonic).lst"
 %ASM68K% /e EASTEREGG=2 "Sound Test\Easter Egg\Main.asm", "_Built\Files\DUMMY1.MMD", , "Sound Test\Easter Egg\Main (Tails).lst"

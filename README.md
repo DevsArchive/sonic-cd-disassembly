@@ -11,6 +11,9 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
 * Mega Drive initialization file (MDINIT)
 * SMPS-PCM
     - Palmtree Panic (SNCBNK1B)
+    - Collision Chaos (SNCBNK3B)
+    - Tidal Tempest (SNCBNK4B)
+    - Wacky Workbench (SNCBNK6B)
 * Title screen (TITLEM and TITLES)
     - A couple bits still need to be figured out
 * FMVs

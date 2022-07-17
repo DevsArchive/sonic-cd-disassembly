@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; SMPS-PCM driver (Palmtree Panic Zone)
+; SMPS-PCM driver (Tidal Tempest Zone)
 ; -------------------------------------------------------------------------
 
 	include	"_Include/Common.i"
@@ -14,7 +14,7 @@
 ; -------------------------------------------------------------------------
 
 	org	PCMDriver
-	dc.b	"SNCBNK25.S28    "
+	dc.b	"SNCBNK28.S28    "
 	include	"Sound Drivers/SMPS-PCM/_Driver.asm"
 
 ; -------------------------------------------------------------------------
@@ -39,9 +39,7 @@ SFXIndex:
 ; -------------------------------------------------------------------------
 
 SongPriorities:
-	dc.b	$80				; Palmtree Panic Zone Past
-	dc.b	$80				; Invalid
-	dc.b	$80				; Invalid
+	dc.b	$80				; Tidal Tempest Zone Past
 	even
 
 ; -------------------------------------------------------------------------
@@ -79,14 +77,14 @@ CmdPriorities:
 ; -------------------------------------------------------------------------
 
 SongIndex:
-	dc.l	Song_PPZPast
+	dc.l	Song_TTZPast
 
 ; -------------------------------------------------------------------------
 ; Songs
 ; -------------------------------------------------------------------------
 
-Song_PPZPast:
-	incbin	"Sound Drivers/SMPS-PCM/Music/Palmtree Panic Past.bin"
+Song_TTZPast:
+	incbin	"Sound Drivers/SMPS-PCM/Music/Tidal Tempest Past.bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -94,37 +92,37 @@ Song_PPZPast:
 ; -------------------------------------------------------------------------
 
 SFX_Unknown:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Unknown.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Unknown.bin"
 	even
 SFX_Future:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Future.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Future.bin"
 	even
 SFX_Past:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Past.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Past.bin"
 	even
 SFX_Alright:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Alright.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Alright.bin"
 	even
 SFX_OuttaHere:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Outta Here.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Outta Here.bin"
 	even
 SFX_Yes:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Yes.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Yes.bin"
 	even
 SFX_Yeah:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Yeah.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Yeah.bin"
 	even
 SFX_AmyGiggle:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Amy Giggle.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Amy Giggle.bin"
 	even
 SFX_AmyYelp:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Amy Yelp.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Amy Yelp.bin"
 	even
 SFX_BossStomp:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Boss Stomp.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Boss Stomp.bin"
 	even
 SFX_Bumper:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Palmtree Panic/Bumper.bin"
+	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Bumper.bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -133,19 +131,21 @@ SFX_Bumper:
 
 SampleIndex:
 	SAMPTBLSTART
-	dc.l	Samp_DrumLoop_Metadata
+	dc.l	Samp_Marimba_Metadata
+	dc.l	Samp_Piano1_Metadata
+	dc.l	Samp_MarimbaChord_Metadata
 	dc.l	Samp_Bass_Metadata
-	dc.l	Samp_Flute_Metadata
-	dc.l	Samp_Piano_Metadata
-	dc.l	Samp_TomDrum_Metadata
-	dc.l	Samp_ElecPianoLow_Metadata
-	dc.l	Samp_ElecPianoHigh_Metadata
-	dc.l	Samp_Strings_Metadata
+	dc.l	Samp_BongoLow_Metadata
+	dc.l	Samp_BongoHigh_Metadata
+	dc.l	Samp_SynthKick_Metadata
+	dc.l	Samp_Snare_Metadata
+	dc.l	Samp_Shaker_Metadata
+	dc.l	Samp_Harp_Metadata
+	dc.l	Samp_Tamborine_Metadata
+	dc.l	Samp_Piano2_Metadata
+	dc.l	Samp_Piano3_Metadata
 	dc.l	Samp_Future_Metadata
 	dc.l	Samp_Past_Metadata
-	dc.l	Samp_BossStomp_Metadata
-	dc.l	Samp_AmyGiggle_Metadata
-	dc.l	Samp_AmyYelp_Metadata
 	dc.l	Samp_Alright_Metadata
 	dc.l	Samp_OuttaHere_Metadata
 	dc.l	Samp_Yes_Metadata
@@ -156,49 +156,45 @@ SampleIndex:
 ; Sample metadata
 ; -------------------------------------------------------------------------
 
-	SAMPLE	Samp_DrumLoop,		$0000, 0, 0, 0
-	SAMPLE	Samp_Bass,		$0000, 0, 0, 0
-	SAMPLE	Samp_Flute,		$0FA3, 0, 0, 0
-	SAMPLE	Samp_Piano,		$22CD, 0, 0, 0
-	SAMPLE	Samp_TomDrum,		$0000, 0, 0, 0
-	SAMPLE	Samp_ElecPianoLow,	$2EE9, 0, 0, 0
-	SAMPLE	Samp_ElecPianoHigh,	$3240, 0, 0, 0
-	SAMPLE	Samp_Strings,		$06CC, 0, 0, 0
-	SAMPLE	Samp_Future,		$0000, 0, 0, 0
-	SAMPLE	Samp_Past,		$0000, 0, 0, 0
-	SAMPLE	Samp_BossStomp,		$0000, 0, 0, 0
-	SAMPLE	Samp_AmyGiggle,		$0000, 0, 0, 0
-	SAMPLE	Samp_AmyYelp,		$0000, 0, 0, 0
-	SAMPLE	Samp_Alright,		$0000, 0, 0, 0
-	SAMPLE	Samp_OuttaHere,		$0000, 0, 0, 0
-	SAMPLE	Samp_Yes,		$0000, 0, 0, 0
-	SAMPLE	Samp_Yeah,		$0000, 0, 0, 0
+	SAMPLE	Samp_Marimba,		$18FB, 0,   0, 0
+	SAMPLE	Samp_Piano1,		$3850, 0,   0, 0
+	SAMPLE	Samp_MarimbaChord,	$3C78, $18, 0, 0
+	SAMPLE	Samp_Bass,		$25BD, $24, 0, 0
+	SAMPLE	Samp_BongoLow,		$1B74, $C,  0, 0
+	SAMPLE	Samp_BongoHigh,		$1849, $10, 0, 0
+	SAMPLE	Samp_SynthKick,		$0F25, $D,  0, 0
+	SAMPLE	Samp_Snare,		$4652, 0,   0, 0
+	SAMPLE	Samp_Shaker,		$15C6, $C,  0, 0
+	SAMPLE	Samp_Harp,		$2DC5, $1F, 0, 0
+	SAMPLE	Samp_Tamborine,		$0C4C, $F,  0, 0
+	SAMPLE	Samp_Piano2,		$27CA, $20, 0, 0
+	SAMPLE	Samp_Piano3,		$202C, $20, 0, 0
+	SAMPLE	Samp_Future,		$0000, 0,   0, 0
+	SAMPLE	Samp_Past,		$0000, 0,   0, 0
+	SAMPLE	Samp_Alright,		$0000, 0,   0, 0
+	SAMPLE	Samp_OuttaHere,		$0000, 0,   0, 0
+	SAMPLE	Samp_Yes,		$0000, 0,   0, 0
+	SAMPLE	Samp_Yeah,		$0000, 0,   0, 0
 
 ; -------------------------------------------------------------------------
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	Samp_DrumLoop,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Drum Loop.bin"
-	even
-	SAMPDAT	Samp_Bass,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Bass.bin"
-	even
-	SAMPDAT	Samp_Flute,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Flute.bin"
-	even
-	SAMPDAT	Samp_Piano,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Piano.bin"
-	even
-	SAMPDAT	Samp_TomDrum,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Tom Drum.bin"
-	even
-	SAMPDAT	Samp_ElecPianoLow,	"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Electric Piano (Low).bin"
-	even
-	SAMPDAT	Samp_ElecPianoHigh,	"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Electric Piano (High).bin"
-	even
-	SAMPDAT	Samp_Strings,		"Sound Drivers/SMPS-PCM/Samples/Palmtree Panic/Strings.bin"
-	even
+	SAMPDAT	Samp_Marimba,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Marimba.bin"
+	SAMPDAT	Samp_Piano1,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Piano 1.bin"
+	SAMPDAT	Samp_MarimbaChord,	"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Marimba Chord.bin"
+	SAMPDAT	Samp_Bass,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Bass.bin"
+	SAMPDAT	Samp_BongoLow,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Bongo (Low).bin"
+	SAMPDAT	Samp_BongoHigh,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Bongo (High).bin"
+	SAMPDAT	Samp_SynthKick,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Synth Kick.bin"
+	SAMPDAT	Samp_Snare,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Snare.bin"
+	SAMPDAT	Samp_Shaker,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Shaker.bin"
+	SAMPDAT	Samp_Harp,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Harp.bin"
+	SAMPDAT	Samp_Tamborine,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Tamborine.bin"
+	SAMPDAT	Samp_Piano2,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Piano 2.bin"
+	SAMPDAT	Samp_Piano3,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Piano 3.bin"
 	SAMPDAT	Samp_Future,		"Sound Drivers/SMPS-PCM/Samples/Future.bin"
 	SAMPDAT	Samp_Past,		"Sound Drivers/SMPS-PCM/Samples/Past.bin"
-	SAMPDAT	Samp_BossStomp,		"Sound Drivers/SMPS-PCM/Samples/Boss Stomp.bin"
-	SAMPDAT	Samp_AmyGiggle,		"Sound Drivers/SMPS-PCM/Samples/Amy Giggle.bin"
-	SAMPDAT	Samp_AmyYelp,		"Sound Drivers/SMPS-PCM/Samples/Amy Yelp.bin"
 	SAMPDAT	Samp_Alright,		"Sound Drivers/SMPS-PCM/Samples/Alright.bin"
 	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/SMPS-PCM/Samples/Outta Here.bin"
 	SAMPDAT	Samp_Yes,		"Sound Drivers/SMPS-PCM/Samples/Yes.bin"
