@@ -224,9 +224,10 @@ paused 			rs.w	1		; Paused flag
 			rs.l	1
 dmaCmdLow		rs.w	1		; DMA command low word buffer
 			rs.l	1
-waterHeight 		rs.w	1		; Water height (actual)
-waterHeight2		rs.w	1		; Water height (average)
-			rs.b	3
+waterHeight 		rs.w	1		; Water height (with swaying)
+waterHeight2		rs.w	1		; Water height (without swaying)
+destWaterHeight		rs.w	1		; Water height destination
+waterMoveSpeed		rs.b	1		; Water height move speed
 waterRoutine		rs.b	1		; Water routine ID
 waterFullscreen 	rs.b	1		; Water fullscreen flag
 			rs.b	$17

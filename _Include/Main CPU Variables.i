@@ -172,7 +172,7 @@ lvlScrollFlagsCopy	rs.l	1		; Level scroll flags copy
 lvlDebugBlock 		rs.w	1		; Level debug block ID
 			rs.l	1
 lvlDebugSubtype2	rs.b	1		; Level debug subtype 2 ID
-			rs.b	1
+waterSwayAngle		rs.b	1		; Water sway angle
 lvlDrawLowPlane		rs.b	1		; Level draw on low plane flag
 levelStarted		rs.b	1		; Level started flag
 bossMusicPlaying	rs.b	1		; Boss music playing flag
