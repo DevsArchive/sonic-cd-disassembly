@@ -14,9 +14,9 @@
 ; -------------------------------------------------------------------------
 
 	rsreset
-gfxX		rs.w	1			; X position
-gfxY		rs.w	1			; Y position
-gfxZoom		rs.w	1			; Zoom
+gfxCamX		rs.w	1			; Camera X
+gfxCamY		rs.w	1			; Camera Y
+gfxCamZ		rs.w	1			; Camera Z
 gfxPitch	rs.w	1			; Pitch
 gfxPitchSin	rs.w	1			; Sine of pitch
 gfxPitchCos	rs.w	1			; Cosine of pitch
@@ -25,21 +25,21 @@ gfxYawSin	rs.w	1			; Sine of yaw
 gfxYawCos	rs.w	1			; Cosine of yaw
 gfxYawSinN	rs.w	1			; Negative sine of yaw
 gfxYawCosN	rs.w	1			; Negative cosine of yaw
-gfx16		rs.w	1
+gfxFOV		rs.w	1			; FOV
 gfx18		rs.w	1
 		rs.b	$16			; Unused
-gfx30		rs.l	1
-gfx34		rs.l	1
+gfxPsYsFOV	rs.l	1
+gfxPsYcFOV	rs.l	1
 		rs.b	8			; Unused
-gfx40		rs.l	1
+gfxPcFOV	rs.l	1
 		rs.b	16			; Unused
 gfx54		rs.w	1
 		rs.b	2			; Unused
 gfx58		rs.w	1
 		rs.b	2			; Unused
-gfx5C		rs.w	1
+gfxPcYs		rs.w	1
 		rs.b	2			; Unused
-gfx60		rs.w	1
+gfxPcYc		rs.w	1
 gfxSize		rs.b	0			; size of structure
 
 ; -------------------------------------------------------------------------
@@ -155,9 +155,9 @@ MainLoop:
 
 InitGfxParams:
 	lea	gfxVars,a1			; Graphics operations variables
-	move.w	#$480,gfxX(a1)			; X position
-	move.w	#$480,gfxY(a1)			; Y position
-	move.w	#$140,gfxZoom(a1)		; Zoom
+	move.w	#$480,gfxCamX(a1)		; Camera X
+	move.w	#$480,gfxCamY(a1)		; Camera Y
+	move.w	#$140,gfxCamZ(a1)		; Camera Z
 	move.w	#$44,gfxPitch(a1)		; Pitch
 	move.w	#$100,gfxYaw(a1)		; Yaw
 	rts
@@ -189,7 +189,7 @@ ControlClouds:
 	moveq	#4,d0				; Fast scroll speed
 
 .ScrollClouds:
-	add.w	d0,gfxY(a1)			; Scroll clouds
+	add.w	d0,gfxCamY(a1)			; Scroll clouds
 
 	btst	#0,p2CtrlData.w			; Is up being held?
 	beq.s	.CheckDown			; If not, branch
@@ -208,18 +208,18 @@ ControlClouds:
 .CheckLeft:
 	btst	#2,p2CtrlData.w			; Is up being held?
 	beq.s	.CheckRight			; If not, branch
-	addq.w	#8,gfxZoom(a1)			; Rotate pitch
-	cmpi.w	#$7FF,gfxZoom(a1)		; Have we zoomed too much?
+	addq.w	#8,gfxCamZ(a1)			; Rotate pitch
+	cmpi.w	#$7FF,gfxCamZ(a1)		; Have we zoomed too much?
 	bcs.s	.CheckRight			; If not, branch
-	move.w	#$7FF,gfxZoom(a1)		; Cap pitch rotation
+	move.w	#$7FF,gfxCamZ(a1)		; Cap camera Z
 
 .CheckRight:
 	btst	#3,p2CtrlData.w			; Is down being held?
 	beq.s	.End				; If not, branch
-	subq.w	#8,gfxZoom(a1)			; Rotate pitch
-	cmpi.w	#$80,gfxZoom(a1)		; Have we zoomed too much?
+	subq.w	#8,gfxCamZ(a1)			; Rotate pitch
+	cmpi.w	#$80,gfxCamZ(a1)		; Have we zoomed too much?
 	bcc.s	.End				; If not, branch
-	move.w	#$80,gfxZoom(a1)		; Cap pitch rotation
+	move.w	#$80,gfxCamZ(a1)		; Cap camera Z
 
 .End:
 	rts
@@ -273,7 +273,7 @@ InitGfxOperation:
 	move.w	#0,GAIMGOFFSET.w		; Image buffer offset
 	move.w	#IMGWIDTH,GAIMGHDOT.w		; Image buffer width
 	
-	move.w	#$80,gfx16(a1)
+	move.w	#$80,gfxFOV(a1)
 	move.w	#-$40,gfx18(a1)
 	rts
 
@@ -284,28 +284,28 @@ InitGfxOperation:
 GetGfxSines:
 	lea	gfxVars,a6			; Graphics operations variables
 	
-	move.w	gfxPitch(a6),d3			; Get sine of pitch
+	move.w	gfxPitch(a6),d3			; sin(pitch)
 	bsr.w	GetSine
 	move.w	d3,gfxPitchSin(a6)
 
-	move.w	gfxPitch(a6),d3			; Get cosine of pitch
+	move.w	gfxPitch(a6),d3			; cos(pitch)
 	bsr.w	GetCosine
 	move.w	d3,gfxPitchCos(a6)
 
-	move.w	gfxYaw(a6),d3			; Get sine of yaw
+	move.w	gfxYaw(a6),d3			; sin(yaw)
 	bsr.w	GetSine
 	move.w	d3,gfxYawSin(a6)
 	
-	move.w	gfxYaw(a6),d3			; Get cosine of yaw
+	move.w	gfxYaw(a6),d3			; cos(yaw)
 	bsr.w	GetCosine
 	move.w	d3,gfxYawCos(a6)
 
-	move.w	gfxYaw(a6),d3			; Get negative sine of yaw
+	move.w	gfxYaw(a6),d3			; -sin(yaw)
 	addi.w	#$100,d3
 	bsr.w	GetSine
 	move.w	d3,gfxYawSinN(a6)
 	
-	move.w	gfxYaw(a6),d3			; Get negative cosine of yaw
+	move.w	gfxYaw(a6),d3			; -cos(yaw)
 	addi.w	#$100,d3
 	bsr.w	GetCosine
 	move.w	d3,gfxYawCosN(a6)
@@ -332,74 +332,74 @@ GenGfxTraceTbl:
 	lea	WORDRAM2M+TRACETBL,a5		; Trace table buffer
 	lea	gfxVars,a6			; Graphics operations variables
 	
-	move.w	gfxX(a6),d0			; X position
+	move.w	gfxCamX(a6),d0			; Camera X
 	lsl.w	#3,d0
-	move.w	gfxY(a6),d1			; Y position
+	move.w	gfxCamY(a6),d1			; Camera Y
 	lsl.w	#3,d1
 
-	move.w	#-3,d2				; Initial line(?)
+	move.w	#-3,d2				; Initial line ID
 	moveq	#8,d6				; 8 bit shifts
 
 	move.w	gfxPitchCos(a6),d3		; cos(pitch) * sin(yaw)
 	muls.w	gfxYawSin(a6),d3
 	asr.l	#5,d3
-	move.w	d3,gfx5C(a6)
+	move.w	d3,gfxPcYs(a6)
 
 	move.w	gfxPitchCos(a6),d3		; cos(pitch) * cos(yaw)
 	muls.w	gfxYawCos(a6),d3
 	asr.l	#5,d3
-	move.w	d3,gfx60(a6)
+	move.w	d3,gfxPcYc(a6)
 
-	move.w	gfx16(a6),d4			; gfx16 * sin(pitch) * sin(yaw)
+	move.w	gfxFOV(a6),d4			; FOV * sin(pitch) * sin(yaw)
 	move.w	d4,d3
 	muls.w	gfxPitchSin(a6),d3
 	muls.w	gfxYawSin(a6),d3
 	asr.l	#5,d3
-	move.l	d3,gfx30(a6)
+	move.l	d3,gfxPsYsFOV(a6)
 
-	move.w	d4,d3				; gfx16 * sin(pitch) * cos(yaw)
+	move.w	d4,d3				; FOV * sin(pitch) * cos(yaw)
 	muls.w	gfxPitchSin(a6),d3
 	muls.w	gfxYawCos(a6),d3
 	asr.l	#5,d3
-	move.l	d3,gfx34(a6)
+	move.l	d3,gfxPsYcFOV(a6)
 
-	move.w	d4,d3				; gfx16 * cos(pitch)
+	move.w	d4,d3				; FOV * cos(pitch)
 	muls.w	gfxPitchCos(a6),d3
-	move.l	d3,gfx40(a6)
+	move.l	d3,gfxPcFOV(a6)
 
-	move.w	#-$80,d3			; -$80 * cos(yaw)
+	move.w	#-128,d3			; -128 * cos(yaw)
 	muls.w	gfxYawCos(a6),d3
 	lsl.l	#3,d3
 	movea.l	d3,a1
 
-	move.w	#-$80,d3			; -$80 * sin(yaw)
+	move.w	#-128,d3			; -128 * sin(yaw)
 	muls.w	gfxYawSin(a6),d3
 	lsl.l	#3,d3
 	movea.l	d3,a2
 
-	move.w	#$7F,d3				; $7F * cos(yaw)
+	move.w	#127,d3				; 127 * cos(yaw)
 	muls.w	gfxYawCos(a6),d3
 	lsl.l	#3,d3
 	movea.l	d3,a3
 
-	move.w	#$7F,d3				; $7F * sin(yaw)
+	move.w	#127,d3				; 127 * sin(yaw)
 	muls.w	gfxYawSin(a6),d3
 	lsl.l	#3,d3
 	movea.l	d3,a4
 
-	move.w	gfxPitchSin(a6),d4		; (sin(pitch) * sin(yaw)) * (gfx16 + gfx18)
+	move.w	gfxPitchSin(a6),d4		; (sin(pitch) * sin(yaw)) * (FOV + gfx18)
 	muls.w	gfxYawSin(a6),d4
 	asr.l	#5,d4
-	move.w	gfx16(a6),d3
+	move.w	gfxFOV(a6),d3
 	add.w	gfx18(a6),d3
 	muls.w	d4,d3
 	asr.l	d6,d3
 	move.w	d3,gfx54(a6)
 
-	move.w	gfxPitchSin(a6),d4		; (sin(pitch) * cos(yaw)) * (gfx16 + gfx18)
+	move.w	gfxPitchSin(a6),d4		; (sin(pitch) * cos(yaw)) * (FOV + gfx18)
 	muls.w	gfxYawCos(a6),d4
 	asr.l	#5,d4
-	move.w	gfx16(a6),d3
+	move.w	gfxFOV(a6),d3
 	add.w	gfx18(a6),d3
 	muls.w	d4,d3
 	asr.l	d6,d3
@@ -410,58 +410,67 @@ GenGfxTraceTbl:
 ; -------------------------------------------------------------------------
 
 .GenLoop:
-	move.w	d2,d3				; (line * sin(pitch)) + gfx40
+	; X point = -(line * cos(pitch) * sin(yaw)) + (FOV * sin(pitch) * sin(yaw))
+	; Y point =  (line * cos(pitch) * cos(yaw)) - (FOV * sin(pitch) * cos(yaw))
+	; Z point =  (line * sin(pitch)) + (FOV * cos(pitch))
+	
+	; Shear left X  = Camera X + (((127 * cos(yaw)) + X point) * (Camera Z / Z point)) - gfx54
+	; Shear left Y  = Camera Y + (((127 * sin(yaw)) + Y point) * (Camera Z / Z point)) + gfx58
+	; Shear right X = Camera X + (((-128 * cos(yaw)) + X point) * (Camera Z / Z point)) - gfx54
+	; Shear right Y = Camera Y + (((-128 * sin(yaw)) + Y point) * (Camera Z / Z point)) + gfx58
+
+	move.w	d2,d3				; Z point
 	muls.w	gfxPitchSin(a6),d3
-	add.l	gfx40(a6),d3
+	add.l	gfxPcFOV(a6),d3
 	asr.l	#5,d3
 	bne.s	.NotZero
 	moveq	#1,d3
 
 .NotZero:
-	move.l	a3,d4				; ((((a3 - (gfx5C * line)) + gfx30) * zoom) / d3) + X - gfx54
-	move.w	gfx5C(a6),d5
+	move.l	a3,d4				; X start = Shear left X
+	move.w	gfxPcYs(a6),d5
 	muls.w	d2,d5
 	sub.l	d5,d4
-	add.l	gfx30(a6),d4
+	add.l	gfxPsYsFOV(a6),d4
 	asr.l	d6,d4
-	muls.w	gfxZoom(a6),d4
+	muls.w	gfxCamZ(a6),d4
 	divs.w	d3,d4
 	add.w	d0,d4
 	sub.w	gfx54(a6),d4
 	move.w	d4,(a5)+
 	
-	move.l	a4,d4				; ((((a3 + (gfx60 * line)) - gfx34) * zoom) / d3) + Y + gfx58
-	move.w	gfx60(a6),d5
+	move.l	a4,d4				; Y start = Shear left Y
+	move.w	gfxPcYc(a6),d5
 	muls.w	d2,d5
 	add.l	d5,d4
-	sub.l	gfx34(a6),d4
+	sub.l	gfxPsYcFOV(a6),d4
 	asr.l	d6,d4
-	muls.w	gfxZoom(a6),d4
+	muls.w	gfxCamZ(a6),d4
 	divs.w	d3,d4
 	add.w	d1,d4
 	add.w	gfx58(a6),d4
 	move.w	d4,(a5)+
 	
-	move.l	a1,d4				; ((((a1 - (gfx5C * line)) + gfx30) * zoom) / d3) + X - gfx54 - X start
-	move.w	gfx5C(a6),d5
+	move.l	a1,d4				; X delta = Shear right X - Shear left X
+	move.w	gfxPcYs(a6),d5
 	muls.w	d2,d5
 	sub.l	d5,d4
-	add.l	gfx30(a6),d4
+	add.l	gfxPsYsFOV(a6),d4
 	asr.l	d6,d4
-	muls.w	gfxZoom(a6),d4
+	muls.w	gfxCamZ(a6),d4
 	divs.w	d3,d4
 	add.w	d0,d4
 	sub.w	gfx54(a6),d4
 	sub.w	-4(a5),d4
 	move.w	d4,(a5)+
 	
-	move.l	a2,d4				; ((((a2 + (gfx60 * line)) - gfx34) * zoom) / d3) + Y + gfx58 - Y start
-	move.w	gfx60(a6),d5
+	move.l	a2,d4				; Y delta = Shear right Y - Shear left Y
+	move.w	gfxPcYc(a6),d5
 	muls.w	d2,d5
 	add.l	d5,d4
-	sub.l	gfx34(a6),d4
+	sub.l	gfxPsYcFOV(a6),d4
 	asr.l	d6,d4
-	muls.w	gfxZoom(a6),d4
+	muls.w	gfxCamZ(a6),d4
 	divs.w	d3,d4
 	add.w	d1,d4
 	add.w	gfx58(a6),d4
