@@ -92,37 +92,37 @@ Song_TTZPast:
 ; -------------------------------------------------------------------------
 
 SFX_Unknown:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Unknown.bin"
+	include	"Sound Drivers/PCM/SFX/Unknown (Tidal Tempest).asm"
 	even
 SFX_Future:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Future.bin"
+	include	"Sound Drivers/PCM/SFX/Future.asm"
 	even
 SFX_Past:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Past.bin"
+	include	"Sound Drivers/PCM/SFX/Past.asm"
 	even
 SFX_Alright:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Alright.bin"
+	include	"Sound Drivers/PCM/SFX/Alright.asm"
 	even
 SFX_OuttaHere:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Outta Here.bin"
+	include	"Sound Drivers/PCM/SFX/Outta Here.asm"
 	even
 SFX_Yes:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Yes.bin"
+	include	"Sound Drivers/PCM/SFX/Yes.asm"
 	even
 SFX_Yeah:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Yeah.bin"
+	include	"Sound Drivers/PCM/SFX/Yeah.asm"
 	even
 SFX_AmyGiggle:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Amy Giggle.bin"
+	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
 	even
 SFX_AmyYelp:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Amy Yelp.bin"
+	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
 	even
 SFX_BossStomp:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Boss Stomp.bin"
+	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
 	even
 SFX_Bumper:
-	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Bumper.bin"
+	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
 	even
 
 ; -------------------------------------------------------------------------
@@ -131,73 +131,73 @@ SFX_Bumper:
 
 SampleIndex:
 	SAMPTBLSTART
-	dc.l	Samp_Marimba_Metadata
-	dc.l	Samp_Piano1_Metadata
-	dc.l	Samp_MarimbaChord_Metadata
-	dc.l	Samp_Bass_Metadata
-	dc.l	Samp_BongoLow_Metadata
-	dc.l	Samp_BongoHigh_Metadata
-	dc.l	Samp_SynthKick_Metadata
-	dc.l	Samp_Snare_Metadata
-	dc.l	Samp_Shaker_Metadata
-	dc.l	Samp_Harp_Metadata
-	dc.l	Samp_Tamborine_Metadata
-	dc.l	Samp_Piano2_Metadata
-	dc.l	Samp_Piano3_Metadata
-	dc.l	Samp_Future_Metadata
-	dc.l	Samp_Past_Metadata
-	dc.l	Samp_Alright_Metadata
-	dc.l	Samp_OuttaHere_Metadata
-	dc.l	Samp_Yes_Metadata
-	dc.l	Samp_Yeah_Metadata
+	SAMPPTR	Marimba
+	SAMPPTR	Piano1
+	SAMPPTR	MarimbaChord
+	SAMPPTR	Bass
+	SAMPPTR	BongoLow
+	SAMPPTR	BongoHigh
+	SAMPPTR	SynthKick
+	SAMPPTR	Snare
+	SAMPPTR	Shaker
+	SAMPPTR	Harp
+	SAMPPTR	Tamborine
+	SAMPPTR	Piano2
+	SAMPPTR	Piano3
+	SAMPPTR	Future
+	SAMPPTR	Past
+	SAMPPTR	Alright
+	SAMPPTR	OuttaHere
+	SAMPPTR	Yes
+	SAMPPTR	Yeah
 	SAMPTBLEND
 
 ; -------------------------------------------------------------------------
 ; Sample metadata
 ; -------------------------------------------------------------------------
 
-	SAMPLE	Samp_Marimba,		$18FB, 0,   0, 0
-	SAMPLE	Samp_Piano1,		$3850, 0,   0, 0
-	SAMPLE	Samp_MarimbaChord,	$3C78, $18, 0, 0
-	SAMPLE	Samp_Bass,		$25BD, $24, 0, 0
-	SAMPLE	Samp_BongoLow,		$1B74, $C,  0, 0
-	SAMPLE	Samp_BongoHigh,		$1849, $10, 0, 0
-	SAMPLE	Samp_SynthKick,		$0F25, $D,  0, 0
-	SAMPLE	Samp_Snare,		$4652, 0,   0, 0
-	SAMPLE	Samp_Shaker,		$15C6, $C,  0, 0
-	SAMPLE	Samp_Harp,		$2DC5, $1F, 0, 0
-	SAMPLE	Samp_Tamborine,		$0C4C, $F,  0, 0
-	SAMPLE	Samp_Piano2,		$27CA, $20, 0, 0
-	SAMPLE	Samp_Piano3,		$202C, $20, 0, 0
-	SAMPLE	Samp_Future,		$0000, 0,   0, 0
-	SAMPLE	Samp_Past,		$0000, 0,   0, 0
-	SAMPLE	Samp_Alright,		$0000, 0,   0, 0
-	SAMPLE	Samp_OuttaHere,		$0000, 0,   0, 0
-	SAMPLE	Samp_Yes,		$0000, 0,   0, 0
-	SAMPLE	Samp_Yeah,		$0000, 0,   0, 0
+	SAMPLE	Marimba,	$18FB, 0,   0, 0
+	SAMPLE	Piano1,		$3850, 0,   0, 0
+	SAMPLE	MarimbaChord,	$3C78, $18, 0, 0
+	SAMPLE	Bass,		$25BD, $24, 0, 0
+	SAMPLE	BongoLow,	$1B74, $C,  0, 0
+	SAMPLE	BongoHigh,	$1849, $10, 0, 0
+	SAMPLE	SynthKick,	$0F25, $D,  0, 0
+	SAMPLE	Snare,		$4652, 0,   0, 0
+	SAMPLE	Shaker,		$15C6, $C,  0, 0
+	SAMPLE	Harp,		$2DC5, $1F, 0, 0
+	SAMPLE	Tamborine,	$0C4C, $F,  0, 0
+	SAMPLE	Piano2,		$27CA, $20, 0, 0
+	SAMPLE	Piano3,		$202C, $20, 0, 0
+	SAMPLE	Future,		$0000, 0,   0, 0
+	SAMPLE	Past,		$0000, 0,   0, 0
+	SAMPLE	Alright,	$0000, 0,   0, 0
+	SAMPLE	OuttaHere,	$0000, 0,   0, 0
+	SAMPLE	Yes,		$0000, 0,   0, 0
+	SAMPLE	Yeah,		$0000, 0,   0, 0
 
 ; -------------------------------------------------------------------------
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	Samp_Marimba,		"Sound Drivers/PCM/Samples/Tidal Tempest/Marimba.bin"
-	SAMPDAT	Samp_Piano1,		"Sound Drivers/PCM/Samples/Tidal Tempest/Piano 1.bin"
-	SAMPDAT	Samp_MarimbaChord,	"Sound Drivers/PCM/Samples/Tidal Tempest/Marimba Chord.bin"
-	SAMPDAT	Samp_Bass,		"Sound Drivers/PCM/Samples/Tidal Tempest/Bass.bin"
-	SAMPDAT	Samp_BongoLow,		"Sound Drivers/PCM/Samples/Tidal Tempest/Bongo (Low).bin"
-	SAMPDAT	Samp_BongoHigh,		"Sound Drivers/PCM/Samples/Tidal Tempest/Bongo (High).bin"
-	SAMPDAT	Samp_SynthKick,		"Sound Drivers/PCM/Samples/Tidal Tempest/Synth Kick.bin"
-	SAMPDAT	Samp_Snare,		"Sound Drivers/PCM/Samples/Tidal Tempest/Snare.bin"
-	SAMPDAT	Samp_Shaker,		"Sound Drivers/PCM/Samples/Tidal Tempest/Shaker.bin"
-	SAMPDAT	Samp_Harp,		"Sound Drivers/PCM/Samples/Tidal Tempest/Harp.bin"
-	SAMPDAT	Samp_Tamborine,		"Sound Drivers/PCM/Samples/Tidal Tempest/Tamborine.bin"
-	SAMPDAT	Samp_Piano2,		"Sound Drivers/PCM/Samples/Tidal Tempest/Piano 2.bin"
-	SAMPDAT	Samp_Piano3,		"Sound Drivers/PCM/Samples/Tidal Tempest/Piano 3.bin"
-	SAMPDAT	Samp_Future,		"Sound Drivers/PCM/Samples/Future.bin"
-	SAMPDAT	Samp_Past,		"Sound Drivers/PCM/Samples/Past.bin"
-	SAMPDAT	Samp_Alright,		"Sound Drivers/PCM/Samples/Alright.bin"
-	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/PCM/Samples/Outta Here.bin"
-	SAMPDAT	Samp_Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
-	SAMPDAT	Samp_Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
+	SAMPDAT	Marimba,	"Sound Drivers/PCM/Samples/Tidal Tempest/Marimba.bin"
+	SAMPDAT	Piano1,		"Sound Drivers/PCM/Samples/Tidal Tempest/Piano 1.bin"
+	SAMPDAT	MarimbaChord,	"Sound Drivers/PCM/Samples/Tidal Tempest/Marimba Chord.bin"
+	SAMPDAT	Bass,		"Sound Drivers/PCM/Samples/Tidal Tempest/Bass.bin"
+	SAMPDAT	BongoLow,	"Sound Drivers/PCM/Samples/Tidal Tempest/Bongo (Low).bin"
+	SAMPDAT	BongoHigh,	"Sound Drivers/PCM/Samples/Tidal Tempest/Bongo (High).bin"
+	SAMPDAT	SynthKick,	"Sound Drivers/PCM/Samples/Tidal Tempest/Synth Kick.bin"
+	SAMPDAT	Snare,		"Sound Drivers/PCM/Samples/Tidal Tempest/Snare.bin"
+	SAMPDAT	Shaker,		"Sound Drivers/PCM/Samples/Tidal Tempest/Shaker.bin"
+	SAMPDAT	Harp,		"Sound Drivers/PCM/Samples/Tidal Tempest/Harp.bin"
+	SAMPDAT	Tamborine,	"Sound Drivers/PCM/Samples/Tidal Tempest/Tamborine.bin"
+	SAMPDAT	Piano2,		"Sound Drivers/PCM/Samples/Tidal Tempest/Piano 2.bin"
+	SAMPDAT	Piano3,		"Sound Drivers/PCM/Samples/Tidal Tempest/Piano 3.bin"
+	SAMPDAT	Future,		"Sound Drivers/PCM/Samples/Future.bin"
+	SAMPDAT	Past,		"Sound Drivers/PCM/Samples/Past.bin"
+	SAMPDAT	Alright,	"Sound Drivers/PCM/Samples/Alright.bin"
+	SAMPDAT	OuttaHere,	"Sound Drivers/PCM/Samples/Outta Here.bin"
+	SAMPDAT	Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
+	SAMPDAT	Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
 
 ; -------------------------------------------------------------------------

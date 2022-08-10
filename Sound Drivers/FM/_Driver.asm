@@ -5,12 +5,12 @@
 ; SMPS FM sound effect driver
 ; -------------------------------------------------------------------------
 
-	listing	purecode
 	CPU	68000
+	listing	purecode
 	
 	include	"Sound Drivers/FM/_Compatibility.i"
 	include	"Sound Drivers/FM/_Sound IDs.i"
-	include	"_smps2asm_inc.asm"
+	include	"_smps2asm_inc.i"
 
 	CPU	Z80UNDOC
 	dephase

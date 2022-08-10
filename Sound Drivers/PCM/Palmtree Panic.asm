@@ -94,37 +94,37 @@ Song_PPZPast:
 ; -------------------------------------------------------------------------
 
 SFX_Unknown:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Unknown.bin"
+	include	"Sound Drivers/PCM/SFX/Unknown (Palmtree Panic).asm"
 	even
 SFX_Future:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Future.bin"
+	include	"Sound Drivers/PCM/SFX/Future.asm"
 	even
 SFX_Past:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Past.bin"
+	include	"Sound Drivers/PCM/SFX/Past.asm"
 	even
 SFX_Alright:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Alright.bin"
+	include	"Sound Drivers/PCM/SFX/Alright.asm"
 	even
 SFX_OuttaHere:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Outta Here.bin"
+	include	"Sound Drivers/PCM/SFX/Outta Here.asm"
 	even
 SFX_Yes:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Yes.bin"
+	include	"Sound Drivers/PCM/SFX/Yes.asm"
 	even
 SFX_Yeah:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Yeah.bin"
+	include	"Sound Drivers/PCM/SFX/Yeah.asm"
 	even
 SFX_AmyGiggle:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Amy Giggle.bin"
+	include	"Sound Drivers/PCM/SFX/Amy Giggle.asm"
 	even
 SFX_AmyYelp:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Amy Yelp.bin"
+	include	"Sound Drivers/PCM/SFX/Amy Yelp.asm"
 	even
 SFX_BossStomp:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Boss Stomp.bin"
+	include	"Sound Drivers/PCM/SFX/Boss Stomp.asm"
 	even
 SFX_Bumper:
-	incbin	"Sound Drivers/PCM/SFX/Palmtree Panic/Bumper.bin"
+	include	"Sound Drivers/PCM/SFX/Blank 1.asm"
 	even
 
 ; -------------------------------------------------------------------------
@@ -133,75 +133,75 @@ SFX_Bumper:
 
 SampleIndex:
 	SAMPTBLSTART
-	dc.l	Samp_DrumLoop_Metadata
-	dc.l	Samp_Bass_Metadata
-	dc.l	Samp_Flute_Metadata
-	dc.l	Samp_Piano_Metadata
-	dc.l	Samp_TomDrum_Metadata
-	dc.l	Samp_ElecPianoLow_Metadata
-	dc.l	Samp_ElecPianoHigh_Metadata
-	dc.l	Samp_Strings_Metadata
-	dc.l	Samp_Future_Metadata
-	dc.l	Samp_Past_Metadata
-	dc.l	Samp_BossStomp_Metadata
-	dc.l	Samp_AmyGiggle_Metadata
-	dc.l	Samp_AmyYelp_Metadata
-	dc.l	Samp_Alright_Metadata
-	dc.l	Samp_OuttaHere_Metadata
-	dc.l	Samp_Yes_Metadata
-	dc.l	Samp_Yeah_Metadata
+	SAMPPTR	DrumLoop
+	SAMPPTR	Bass
+	SAMPPTR	Flute
+	SAMPPTR	Piano
+	SAMPPTR	TomDrum
+	SAMPPTR	ElecPianoLow
+	SAMPPTR	ElecPianoHigh
+	SAMPPTR	Strings
+	SAMPPTR	Future
+	SAMPPTR	Past
+	SAMPPTR	BossStomp
+	SAMPPTR	AmyGiggle
+	SAMPPTR	AmyYelp
+	SAMPPTR	Alright
+	SAMPPTR	OuttaHere
+	SAMPPTR	Yes
+	SAMPPTR	Yeah
 	SAMPTBLEND
 
 ; -------------------------------------------------------------------------
 ; Sample metadata
 ; -------------------------------------------------------------------------
 
-	SAMPLE	Samp_DrumLoop,		$0000, 0, 0, 0
-	SAMPLE	Samp_Bass,		$0000, 0, 0, 0
-	SAMPLE	Samp_Flute,		$0FA3, 0, 0, 0
-	SAMPLE	Samp_Piano,		$22CD, 0, 0, 0
-	SAMPLE	Samp_TomDrum,		$0000, 0, 0, 0
-	SAMPLE	Samp_ElecPianoLow,	$2EE9, 0, 0, 0
-	SAMPLE	Samp_ElecPianoHigh,	$3240, 0, 0, 0
-	SAMPLE	Samp_Strings,		$06CC, 0, 0, 0
-	SAMPLE	Samp_Future,		$0000, 0, 0, 0
-	SAMPLE	Samp_Past,		$0000, 0, 0, 0
-	SAMPLE	Samp_BossStomp,		$0000, 0, 0, 0
-	SAMPLE	Samp_AmyGiggle,		$0000, 0, 0, 0
-	SAMPLE	Samp_AmyYelp,		$0000, 0, 0, 0
-	SAMPLE	Samp_Alright,		$0000, 0, 0, 0
-	SAMPLE	Samp_OuttaHere,		$0000, 0, 0, 0
-	SAMPLE	Samp_Yes,		$0000, 0, 0, 0
-	SAMPLE	Samp_Yeah,		$0000, 0, 0, 0
+	SAMPLE	DrumLoop,	$0000, 0, 0, 0
+	SAMPLE	Bass,		$0000, 0, 0, 0
+	SAMPLE	Flute,		$0FA3, 0, 0, 0
+	SAMPLE	Piano,		$22CD, 0, 0, 0
+	SAMPLE	TomDrum,	$0000, 0, 0, 0
+	SAMPLE	ElecPianoLow,	$2EE9, 0, 0, 0
+	SAMPLE	ElecPianoHigh,	$3240, 0, 0, 0
+	SAMPLE	Strings,	$06CC, 0, 0, 0
+	SAMPLE	Future,		$0000, 0, 0, 0
+	SAMPLE	Past,		$0000, 0, 0, 0
+	SAMPLE	BossStomp,	$0000, 0, 0, 0
+	SAMPLE	AmyGiggle,	$0000, 0, 0, 0
+	SAMPLE	AmyYelp,	$0000, 0, 0, 0
+	SAMPLE	Alright,	$0000, 0, 0, 0
+	SAMPLE	OuttaHere,	$0000, 0, 0, 0
+	SAMPLE	Yes,		$0000, 0, 0, 0
+	SAMPLE	Yeah,		$0000, 0, 0, 0
 
 ; -------------------------------------------------------------------------
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	Samp_DrumLoop,		"Sound Drivers/PCM/Samples/Palmtree Panic/Drum Loop.bin"
+	SAMPDAT	DrumLoop,	"Sound Drivers/PCM/Samples/Palmtree Panic/Drum Loop.bin"
 	even
-	SAMPDAT	Samp_Bass,		"Sound Drivers/PCM/Samples/Palmtree Panic/Bass.bin"
+	SAMPDAT	Bass,		"Sound Drivers/PCM/Samples/Palmtree Panic/Bass.bin"
 	even
-	SAMPDAT	Samp_Flute,		"Sound Drivers/PCM/Samples/Palmtree Panic/Flute.bin"
+	SAMPDAT	Flute,		"Sound Drivers/PCM/Samples/Palmtree Panic/Flute.bin"
 	even
-	SAMPDAT	Samp_Piano,		"Sound Drivers/PCM/Samples/Palmtree Panic/Piano.bin"
+	SAMPDAT	Piano,		"Sound Drivers/PCM/Samples/Palmtree Panic/Piano.bin"
 	even
-	SAMPDAT	Samp_TomDrum,		"Sound Drivers/PCM/Samples/Palmtree Panic/Tom Drum.bin"
+	SAMPDAT	TomDrum,	"Sound Drivers/PCM/Samples/Palmtree Panic/Tom Drum.bin"
 	even
-	SAMPDAT	Samp_ElecPianoLow,	"Sound Drivers/PCM/Samples/Palmtree Panic/Electric Piano (Low).bin"
+	SAMPDAT	ElecPianoLow,	"Sound Drivers/PCM/Samples/Palmtree Panic/Electric Piano (Low).bin"
 	even
-	SAMPDAT	Samp_ElecPianoHigh,	"Sound Drivers/PCM/Samples/Palmtree Panic/Electric Piano (High).bin"
+	SAMPDAT	ElecPianoHigh,	"Sound Drivers/PCM/Samples/Palmtree Panic/Electric Piano (High).bin"
 	even
-	SAMPDAT	Samp_Strings,		"Sound Drivers/PCM/Samples/Palmtree Panic/Strings.bin"
+	SAMPDAT	Strings,	"Sound Drivers/PCM/Samples/Palmtree Panic/Strings.bin"
 	even
-	SAMPDAT	Samp_Future,		"Sound Drivers/PCM/Samples/Future.bin"
-	SAMPDAT	Samp_Past,		"Sound Drivers/PCM/Samples/Past.bin"
-	SAMPDAT	Samp_BossStomp,		"Sound Drivers/PCM/Samples/Boss Stomp.bin"
-	SAMPDAT	Samp_AmyGiggle,		"Sound Drivers/PCM/Samples/Amy Giggle.bin"
-	SAMPDAT	Samp_AmyYelp,		"Sound Drivers/PCM/Samples/Amy Yelp.bin"
-	SAMPDAT	Samp_Alright,		"Sound Drivers/PCM/Samples/Alright.bin"
-	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/PCM/Samples/Outta Here.bin"
-	SAMPDAT	Samp_Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
-	SAMPDAT	Samp_Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
+	SAMPDAT	Future,		"Sound Drivers/PCM/Samples/Future.bin"
+	SAMPDAT	Past,		"Sound Drivers/PCM/Samples/Past.bin"
+	SAMPDAT	BossStomp,	"Sound Drivers/PCM/Samples/Boss Stomp.bin"
+	SAMPDAT	AmyGiggle,	"Sound Drivers/PCM/Samples/Amy Giggle.bin"
+	SAMPDAT	AmyYelp,	"Sound Drivers/PCM/Samples/Amy Yelp.bin"
+	SAMPDAT	Alright,	"Sound Drivers/PCM/Samples/Alright.bin"
+	SAMPDAT	OuttaHere,	"Sound Drivers/PCM/Samples/Outta Here.bin"
+	SAMPDAT	Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
+	SAMPDAT	Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
 
 ; -------------------------------------------------------------------------

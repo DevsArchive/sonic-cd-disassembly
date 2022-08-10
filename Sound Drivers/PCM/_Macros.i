@@ -6,16 +6,17 @@
 ; -------------------------------------------------------------------------
 
 ; -------------------------------------------------------------------------
-; Sample table start
+; Sample index start
 ; -------------------------------------------------------------------------
 
 SAMPTBLSTART macro
+sampCount = 0
 SampleTable:
 	dc.l	(SampleTable_End-SampleTable)/4-1	; BUG: that "-1" shouldn't be there
 	endm
 
 ; -------------------------------------------------------------------------
-; Sample table end
+; Sample index end
 ; -------------------------------------------------------------------------
 
 SAMPTBLEND macro
@@ -26,6 +27,19 @@ SampleTable_End:
 ; Sample index entry
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
+;	name - Sample name
+; -------------------------------------------------------------------------
+
+SAMPPTR macro name
+s\name\	EQU	sampCount
+sampCount = sampCount+1
+	dc.l	Samp_\name\_Metadata
+	endm
+
+; -------------------------------------------------------------------------
+; Sample metadata
+; -------------------------------------------------------------------------
+; PARAMETERS:
 ;	name     - Sample name
 ;	loop     - Loop point
 ;	staccato - Staccato time
@@ -34,9 +48,9 @@ SampleTable_End:
 ; -------------------------------------------------------------------------
 
 SAMPLE macro name, loop, staccato, mode, dest
-\name\_Metadata:
-	dc.l	\name
-	dc.l	(\name\_End)-(\name\)
+Samp_\name\_Metadata:
+	dc.l	Samp_\name
+	dc.l	(Samp_\name\_End)-(Samp_\name\)
 	dc.l	\loop
 	dc.b	\staccato
 	dc.b	\mode
@@ -52,9 +66,9 @@ SAMPLE macro name, loop, staccato, mode, dest
 ; -------------------------------------------------------------------------
 
 SAMPDAT macro name, file
-\name\:
+Samp_\name\:
 	incbin	\file
-\name\_End:
+Samp_\name\_End:
 	endm
 
 ; -------------------------------------------------------------------------

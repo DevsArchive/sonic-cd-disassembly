@@ -108,40 +108,40 @@ Song_CCZPast:
 ; -------------------------------------------------------------------------
 
 SFX_Unknown:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Unknown.bin"
+	include	"Sound Drivers/PCM/SFX/Unknown (Collision Chaos).asm"
 	even
 SFX_Future:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Future.bin"
+	include	"Sound Drivers/PCM/SFX/Future.asm"
 	even
 SFX_Past:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Past.bin"
+	include	"Sound Drivers/PCM/SFX/Past.asm"
 	even
 SFX_Alright:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Alright.bin"
+	include	"Sound Drivers/PCM/SFX/Alright.asm"
 	even
 SFX_OuttaHere:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Outta Here.bin"
+	include	"Sound Drivers/PCM/SFX/Outta Here.asm"
 	even
 SFX_Yes:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Yes.bin"
+	include	"Sound Drivers/PCM/SFX/Yes.asm"
 	even
 SFX_Yeah:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Yeah.bin"
+	include	"Sound Drivers/PCM/SFX/Yeah.asm"
 	even
 SFX_AmyGiggle:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Amy Giggle.bin"
+	include	"Sound Drivers/PCM/SFX/Amy Giggle.asm"
 	even
 SFX_AmyYelp:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Amy Yelp.bin"
+	include	"Sound Drivers/PCM/SFX/Amy Yelp.asm"
 	even
 SFX_BossStomp:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Boss Stomp.bin"
+	include	"Sound Drivers/PCM/SFX/Boss Stomp.asm"
 	even
 SFX_Bumper:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Bumper.bin"
+	include	"Sound Drivers/PCM/SFX/Bumper.asm"
 	even
 SFX_Shatter:
-	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Shatter.bin"
+	include	"Sound Drivers/PCM/SFX/Shatter.asm"
 	even
 
 ; -------------------------------------------------------------------------
@@ -150,125 +150,125 @@ SFX_Shatter:
 
 SampleIndex:
 	SAMPTBLSTART
-	dc.l	Samp_Synth1_Metadata
-	dc.l	Samp_SynthFlute_Metadata
-	dc.l	Samp_Snare1_Metadata
-	dc.l	Samp_Kick_Metadata
-	dc.l	Samp_SynthHit_Metadata
-	dc.l	Samp_Snare2_Metadata
-	dc.l	Samp_HiHat1_Metadata
-	dc.l	Samp_Scratch_Metadata
-	dc.l	Samp_Rattle_Metadata
-	dc.l	Samp_Synth2_Metadata
-	dc.l	Samp_SynthBass_Metadata
-	dc.l	Samp_HiHat2_Metadata
-	dc.l	Samp_Strings_Metadata
-	dc.l	Samp_SynthPiano_Metadata
-	dc.l	Samp_Timpani_Metadata
-	dc.l	Samp_Squeak_Metadata
-	dc.l	Samp_JamesBrownHit_Metadata
-	dc.l	Samp_SynthKick_Metadata
-	dc.l	Samp_Blip_Metadata
-	dc.l	Samp_Future_Metadata
-	dc.l	Samp_Past_Metadata
-	dc.l	Samp_Bumper_Metadata
-	dc.l	Samp_BossStomp_Metadata
-	dc.l	Samp_AmyGiggle_Metadata
-	dc.l	Samp_AmyYelp_Metadata
-	dc.l	Samp_Alright_Metadata
-	dc.l	Samp_OuttaHere_Metadata
-	dc.l	Samp_Yes_Metadata
-	dc.l	Samp_Yeah_Metadata
-	dc.l	Samp_Shatter_Metadata
+	SAMPPTR	Synth1
+	SAMPPTR	SynthFlute
+	SAMPPTR	Snare1
+	SAMPPTR	Kick
+	SAMPPTR	SynthHit
+	SAMPPTR	Snare2
+	SAMPPTR	HiHat1
+	SAMPPTR	Scratch
+	SAMPPTR	Rattle
+	SAMPPTR	Synth2
+	SAMPPTR	SynthBass
+	SAMPPTR	HiHat2
+	SAMPPTR	Strings
+	SAMPPTR	SynthPiano
+	SAMPPTR	Timpani
+	SAMPPTR	Squeak
+	SAMPPTR	JamesBrownHit
+	SAMPPTR	SynthKick
+	SAMPPTR	Blip
+	SAMPPTR	Future
+	SAMPPTR	Past
+	SAMPPTR	Bumper
+	SAMPPTR	BossStomp
+	SAMPPTR	AmyGiggle
+	SAMPPTR	AmyYelp
+	SAMPPTR	Alright
+	SAMPPTR	OuttaHere
+	SAMPPTR	Yes
+	SAMPPTR	Yeah
+	SAMPPTR	Shatter
 	SAMPTBLEND
 
 ; -------------------------------------------------------------------------
 ; Sample metadata
 ; -------------------------------------------------------------------------
 
-	SAMPLE	Samp_Synth1,		$1A63, 0, 0, 0
-	SAMPLE	Samp_SynthFlute,	$25C8, 0, 0, 0
-	SAMPLE	Samp_Snare1,		$2685, 0, 0, 0
-	SAMPLE	Samp_Kick,		$0950, 0, 0, 0
-	SAMPLE	Samp_SynthHit,		$3AA8, 0, 0, 0
-	SAMPLE	Samp_Snare2,		$08A0, 0, 0, 0
-	SAMPLE	Samp_HiHat1,		$0D88, 0, 0, 0
-	SAMPLE	Samp_Scratch,		$1528, 0, 0, 0
-	SAMPLE	Samp_Rattle,		$4982, 0, 0, 0
-	SAMPLE	Samp_Synth2,		$0A97, 0, 0, 0
-	SAMPLE	Samp_SynthBass,		$19E8, 0, 0, 0
-	SAMPLE	Samp_HiHat2,		$063B, 0, 0, 0
-	SAMPLE	Samp_Strings,		$1480, 0, 0, 0
-	SAMPLE	Samp_SynthPiano,	$1460, 0, 0, 0
-	SAMPLE	Samp_Timpani,		$1D18, 0, 0, 0
-	SAMPLE	Samp_Squeak,		$1136, 0, 0, 0
-	SAMPLE	Samp_JamesBrownHit,	$1880, 0, 0, 0
-	SAMPLE	Samp_SynthKick,		$0798, 0, 0, 0
-	SAMPLE	Samp_Blip,		$045B, 0, 0, 0
-	SAMPLE	Samp_Future,		$0000, 0, 0, 0
-	SAMPLE	Samp_Past,		$0000, 0, 0, 0
-	SAMPLE	Samp_Bumper,		$0000, 0, 0, 0
-	SAMPLE	Samp_BossStomp,		$0000, 0, 0, 0
-	SAMPLE	Samp_AmyGiggle,		$0000, 0, 0, 0
-	SAMPLE	Samp_AmyYelp,		$0000, 0, 0, 0
-	SAMPLE	Samp_Alright,		$0000, 0, 0, 0
-	SAMPLE	Samp_OuttaHere,		$0000, 0, 0, 0
-	SAMPLE	Samp_Yes,		$0000, 0, 0, 0
-	SAMPLE	Samp_Yeah,		$0000, 0, 0, 0
-	SAMPLE	Samp_Shatter,		$0000, 0, 0, 0
+	SAMPLE	Synth1,		$1A63, 0, 0, 0
+	SAMPLE	SynthFlute,	$25C8, 0, 0, 0
+	SAMPLE	Snare1,		$2685, 0, 0, 0
+	SAMPLE	Kick,		$0950, 0, 0, 0
+	SAMPLE	SynthHit,	$3AA8, 0, 0, 0
+	SAMPLE	Snare2,		$08A0, 0, 0, 0
+	SAMPLE	HiHat1,		$0D88, 0, 0, 0
+	SAMPLE	Scratch,	$1528, 0, 0, 0
+	SAMPLE	Rattle,		$4982, 0, 0, 0
+	SAMPLE	Synth2,		$0A97, 0, 0, 0
+	SAMPLE	SynthBass,	$19E8, 0, 0, 0
+	SAMPLE	HiHat2,		$063B, 0, 0, 0
+	SAMPLE	Strings,	$1480, 0, 0, 0
+	SAMPLE	SynthPiano,	$1460, 0, 0, 0
+	SAMPLE	Timpani,	$1D18, 0, 0, 0
+	SAMPLE	Squeak,		$1136, 0, 0, 0
+	SAMPLE	JamesBrownHit,	$1880, 0, 0, 0
+	SAMPLE	SynthKick,	$0798, 0, 0, 0
+	SAMPLE	Blip,		$045B, 0, 0, 0
+	SAMPLE	Future,		$0000, 0, 0, 0
+	SAMPLE	Past,		$0000, 0, 0, 0
+	SAMPLE	Bumper,		$0000, 0, 0, 0
+	SAMPLE	BossStomp,	$0000, 0, 0, 0
+	SAMPLE	AmyGiggle,	$0000, 0, 0, 0
+	SAMPLE	AmyYelp,	$0000, 0, 0, 0
+	SAMPLE	Alright,	$0000, 0, 0, 0
+	SAMPLE	OuttaHere,	$0000, 0, 0, 0
+	SAMPLE	Yes,		$0000, 0, 0, 0
+	SAMPLE	Yeah,		$0000, 0, 0, 0
+	SAMPLE	Shatter,	$0000, 0, 0, 0
 
 ; -------------------------------------------------------------------------
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	Samp_Synth1,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth 1.bin"
+	SAMPDAT	Synth1,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth 1.bin"
 	even
-	SAMPDAT	Samp_SynthFlute,	"Sound Drivers/PCM/Samples/Collision Chaos/Synth Flute.bin"
+	SAMPDAT	SynthFlute,	"Sound Drivers/PCM/Samples/Collision Chaos/Synth Flute.bin"
 	even
-	SAMPDAT	Samp_Snare1,		"Sound Drivers/PCM/Samples/Collision Chaos/Snare 1.bin"
+	SAMPDAT	Snare1,		"Sound Drivers/PCM/Samples/Collision Chaos/Snare 1.bin"
 	even
-	SAMPDAT	Samp_Kick,		"Sound Drivers/PCM/Samples/Collision Chaos/Kick.bin"
+	SAMPDAT	Kick,		"Sound Drivers/PCM/Samples/Collision Chaos/Kick.bin"
 	even
-	SAMPDAT	Samp_SynthHit,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth Hit.bin"
+	SAMPDAT	SynthHit,	"Sound Drivers/PCM/Samples/Collision Chaos/Synth Hit.bin"
 	even
-	SAMPDAT	Samp_Snare2,		"Sound Drivers/PCM/Samples/Collision Chaos/Snare 2.bin"
+	SAMPDAT	Snare2,		"Sound Drivers/PCM/Samples/Collision Chaos/Snare 2.bin"
 	even
-	SAMPDAT	Samp_HiHat1,		"Sound Drivers/PCM/Samples/Collision Chaos/Hi-Hat 1.bin"
+	SAMPDAT	HiHat1,		"Sound Drivers/PCM/Samples/Collision Chaos/Hi-Hat 1.bin"
 	even
-	SAMPDAT	Samp_Scratch,		"Sound Drivers/PCM/Samples/Collision Chaos/Scratch.bin"
+	SAMPDAT	Scratch,	"Sound Drivers/PCM/Samples/Collision Chaos/Scratch.bin"
 	even
-	SAMPDAT	Samp_Rattle,		"Sound Drivers/PCM/Samples/Collision Chaos/Rattle.bin"
+	SAMPDAT	Rattle,		"Sound Drivers/PCM/Samples/Collision Chaos/Rattle.bin"
 	even
-	SAMPDAT	Samp_Synth2,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth 2.bin"
+	SAMPDAT	Synth2,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth 2.bin"
 	even
-	SAMPDAT	Samp_SynthBass,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth Bass.bin"
+	SAMPDAT	SynthBass,	"Sound Drivers/PCM/Samples/Collision Chaos/Synth Bass.bin"
 	even
-	SAMPDAT	Samp_HiHat2,		"Sound Drivers/PCM/Samples/Collision Chaos/Hi-Hat 2.bin"
+	SAMPDAT	HiHat2,		"Sound Drivers/PCM/Samples/Collision Chaos/Hi-Hat 2.bin"
 	even
-	SAMPDAT	Samp_Strings,		"Sound Drivers/PCM/Samples/Collision Chaos/Strings.bin"
+	SAMPDAT	Strings,	"Sound Drivers/PCM/Samples/Collision Chaos/Strings.bin"
 	even
-	SAMPDAT	Samp_SynthPiano,	"Sound Drivers/PCM/Samples/Collision Chaos/Synth Piano.bin"
+	SAMPDAT	SynthPiano,	"Sound Drivers/PCM/Samples/Collision Chaos/Synth Piano.bin"
 	even
-	SAMPDAT	Samp_Timpani,		"Sound Drivers/PCM/Samples/Collision Chaos/Timpani.bin"
+	SAMPDAT	Timpani,	"Sound Drivers/PCM/Samples/Collision Chaos/Timpani.bin"
 	even
-	SAMPDAT	Samp_Squeak,		"Sound Drivers/PCM/Samples/Collision Chaos/Squeak.bin"
+	SAMPDAT	Squeak,		"Sound Drivers/PCM/Samples/Collision Chaos/Squeak.bin"
 	even
-	SAMPDAT	Samp_JamesBrownHit,	"Sound Drivers/PCM/Samples/Collision Chaos/James Brown Is Dead Hit.bin"
+	SAMPDAT	JamesBrownHit,	"Sound Drivers/PCM/Samples/Collision Chaos/James Brown Is Dead Hit.bin"
 	even
-	SAMPDAT	Samp_SynthKick,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth Kick.bin"
+	SAMPDAT	SynthKick,	"Sound Drivers/PCM/Samples/Collision Chaos/Synth Kick.bin"
 	even
-	SAMPDAT	Samp_Blip,		"Sound Drivers/PCM/Samples/Collision Chaos/Blip.bin"
+	SAMPDAT	Blip,		"Sound Drivers/PCM/Samples/Collision Chaos/Blip.bin"
 	even
-	SAMPDAT	Samp_Future,		"Sound Drivers/PCM/Samples/Future.bin"
-	SAMPDAT	Samp_Past,		"Sound Drivers/PCM/Samples/Past.bin"
-	SAMPDAT	Samp_Bumper,		"Sound Drivers/PCM/Samples/Bumper.bin"
-	SAMPDAT	Samp_BossStomp,		"Sound Drivers/PCM/Samples/Boss Stomp.bin"
-	SAMPDAT	Samp_AmyGiggle,		"Sound Drivers/PCM/Samples/Amy Giggle.bin"
-	SAMPDAT	Samp_AmyYelp,		"Sound Drivers/PCM/Samples/Amy Yelp.bin"
-	SAMPDAT	Samp_Alright,		"Sound Drivers/PCM/Samples/Alright.bin"
-	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/PCM/Samples/Outta Here.bin"
-	SAMPDAT	Samp_Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
-	SAMPDAT	Samp_Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
-	SAMPDAT	Samp_Shatter,		"Sound Drivers/PCM/Samples/Shatter.bin"
+	SAMPDAT	Future,		"Sound Drivers/PCM/Samples/Future.bin"
+	SAMPDAT	Past,		"Sound Drivers/PCM/Samples/Past.bin"
+	SAMPDAT	Bumper,		"Sound Drivers/PCM/Samples/Bumper.bin"
+	SAMPDAT	BossStomp,	"Sound Drivers/PCM/Samples/Boss Stomp.bin"
+	SAMPDAT	AmyGiggle,	"Sound Drivers/PCM/Samples/Amy Giggle.bin"
+	SAMPDAT	AmyYelp,	"Sound Drivers/PCM/Samples/Amy Yelp.bin"
+	SAMPDAT	Alright,	"Sound Drivers/PCM/Samples/Alright.bin"
+	SAMPDAT	OuttaHere,	"Sound Drivers/PCM/Samples/Outta Here.bin"
+	SAMPDAT	Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
+	SAMPDAT	Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
+	SAMPDAT	Shatter,	"Sound Drivers/PCM/Samples/Shatter.bin"
 
 ; -------------------------------------------------------------------------
