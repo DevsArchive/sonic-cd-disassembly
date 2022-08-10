@@ -84,7 +84,7 @@ SongIndex:
 ; -------------------------------------------------------------------------
 
 Song_TTZPast:
-	incbin	"Sound Drivers/PCM/Music/Tidal Tempest Past.bin"
+	include	"Sound Drivers/PCM/Music/Tidal Tempest Past.asm"
 	even
 
 ; -------------------------------------------------------------------------

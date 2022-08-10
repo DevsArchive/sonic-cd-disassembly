@@ -86,7 +86,7 @@ SongIndex:
 ; -------------------------------------------------------------------------
 
 Song_WWZPast:
-	incbin	"Sound Drivers/PCM/Music/Wacky Workbench Past.bin"
+	include	"Sound Drivers/PCM/Music/Wacky Workbench Past.asm"
 	even
 
 ; -------------------------------------------------------------------------

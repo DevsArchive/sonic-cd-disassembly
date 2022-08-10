@@ -127,6 +127,23 @@ songStart set *
 	dc.w	$0000
 	endm
 
+; Header macros for music (not for SFX)
+; Header - Set up Channel Usage
+smpsHeaderChan macro pcm
+	dc.b	pcm,0
+	endm
+
+; Header - Set up Tempo
+smpsHeaderTempo macro div,mod
+	dc.b	div,mod
+	endm
+
+; Header - Set up PCM Channel
+smpsHeaderPCM macro loc,pitch,vol
+	dc.w	loc-songStart
+	dc.b	pitch,vol
+	endm
+
 ; Header macros for SFX
 ; Header - Set up Tempo
 smpsHeaderTempoSFX macro div

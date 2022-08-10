@@ -86,7 +86,7 @@ SongIndex:
 ; -------------------------------------------------------------------------
 
 Song_PPZPast:
-	incbin	"Sound Drivers/PCM/Music/Palmtree Panic Past.bin"
+	include	"Sound Drivers/PCM/Music/Palmtree Panic Past.asm"
 	even
 
 ; -------------------------------------------------------------------------

@@ -100,7 +100,7 @@ UnkIndex:
 ; -------------------------------------------------------------------------
 
 Song_CCZPast:
-	incbin	"Sound Drivers/PCM/Music/Collision Chaos Past.bin"
+	include	"Sound Drivers/PCM/Music/Collision Chaos Past.asm"
 	even
 
 ; -------------------------------------------------------------------------
