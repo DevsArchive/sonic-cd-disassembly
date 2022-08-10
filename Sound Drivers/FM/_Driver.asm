@@ -18,6 +18,7 @@
 	dephase
 	include	"_Include/Z80.i"
 	include	"Sound Drivers/FM/_Variables.i"
+	include	"_smps2asm_inc.asm"
 
 ; -------------------------------------------------------------------------
 ; Driver entry point
@@ -1152,7 +1153,7 @@ TrackCommand:
 	dw	TrkCmd_CommFlag			; Set communication flag
 	dw	TrkCmd_Silence			; Silence track
 	dw	TrkCmd_Stop			; Stop
-	dw	TrkCmd_RepeatAbort		; Abort repeat
+	dw	TrkCmd_RepeatEnd		; End repeat
 	dw	TrkCmd_Volume			; Add volume
 	dw	TrkCmd_Legato			; Set legato
 	dw	TrkCmd_Staccato			; Set staccato
@@ -1463,7 +1464,6 @@ TrkCmd_Legato:
 ;	ix - Pointer to track variables
 ; -------------------------------------------------------------------------
 
-
 TrkCmd_FM3Detune:
 	ld	a,(ix+ftrkChannel)		; Is this FM3?
 	cp	2
@@ -1661,7 +1661,6 @@ TrkCmd_TrackTickMult:
 	ld	(ix+ftrkTickMult),a		; Set new tick multiplier
 	ret
 
-
 ; -------------------------------------------------------------------------
 ; Jump track command
 ; -------------------------------------------------------------------------
@@ -1845,14 +1844,14 @@ TrkCmd_Repeat:
 	ret
 
 ; -------------------------------------------------------------------------
-; Repeat abort track command
+; Repeat end track command
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	de - Pointer to track data
 ;	ix - Pointer to track variables
 ; -------------------------------------------------------------------------
 
-TrkCmd_RepeatAbort:
+TrkCmd_RepeatEnd:
 	inc	de				; Get repeat index
 	add	a,ftrkRepeatCnts
 	ld	c,a
@@ -1864,13 +1863,13 @@ TrkCmd_RepeatAbort:
 	ld	a,(hl)				; Decrement repeat count
 	dec	a
 	jp	z,.Jump				; If it's running out, branch
-	inc	de				; If not, just abort now
+	inc	de				; If not, just continue as normal
 	ret
 
 .Jump:
 	xor	a				; Clear repeat count
 	ld	(hl),a
-	jp	TrkCmd_Jump			; Do final jump
+	jp	TrkCmd_Jump			; Jump
 
 ; -------------------------------------------------------------------------
 ; Driver info

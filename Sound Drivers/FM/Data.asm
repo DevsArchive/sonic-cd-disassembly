@@ -185,164 +185,164 @@ SFXPriorities:
 ; -------------------------------------------------------------------------
 
 SFX_90:
-	binclude "Sound Drivers/FM/SFX/90.bin"
+	include	"Sound Drivers/FM/SFX/90.asm"
 SFX_91:
-	binclude "Sound Drivers/FM/SFX/91.bin"
+	include	"Sound Drivers/FM/SFX/91.asm"
 SFX_92:
-	binclude "Sound Drivers/FM/SFX/92.bin"
+	include	"Sound Drivers/FM/SFX/92.asm"
 SFX_93:
-	binclude "Sound Drivers/FM/SFX/93.bin"
+	include	"Sound Drivers/FM/SFX/93.asm"
 SFX_94:
-	binclude "Sound Drivers/FM/SFX/94.bin"
+	include	"Sound Drivers/FM/SFX/94.asm"
 SFX_95:
-	binclude "Sound Drivers/FM/SFX/95.bin"
+	include	"Sound Drivers/FM/SFX/95.asm"
 SFX_96:
-	binclude "Sound Drivers/FM/SFX/96.bin"
+	include	"Sound Drivers/FM/SFX/96.asm"
 SFX_97:
-	binclude "Sound Drivers/FM/SFX/97.bin"
+	include	"Sound Drivers/FM/SFX/97.asm"
 SFX_98:
-	binclude "Sound Drivers/FM/SFX/98.bin"
+	include	"Sound Drivers/FM/SFX/98.asm"
 SFX_99:
-	binclude "Sound Drivers/FM/SFX/99.bin"
+	include	"Sound Drivers/FM/SFX/99.asm"
 SFX_9A:
-	binclude "Sound Drivers/FM/SFX/9A.bin"
+	include	"Sound Drivers/FM/SFX/9A.asm"
 SFX_9B:
-	binclude "Sound Drivers/FM/SFX/9B.bin"
+	include	"Sound Drivers/FM/SFX/9B.asm"
 SFX_9C:
-	binclude "Sound Drivers/FM/SFX/9C.bin"
+	include	"Sound Drivers/FM/SFX/9C.asm"
 SFX_9D:
-	binclude "Sound Drivers/FM/SFX/9D.bin"
+	include	"Sound Drivers/FM/SFX/9D.asm"
 SFX_9E:
-	binclude "Sound Drivers/FM/SFX/9E.bin"
+	include	"Sound Drivers/FM/SFX/9E.asm"
 SFX_9F:
-	binclude "Sound Drivers/FM/SFX/9F.bin"
+	include	"Sound Drivers/FM/SFX/9F.asm"
 SFX_A0:
-	binclude "Sound Drivers/FM/SFX/A0.bin"
+	include	"Sound Drivers/FM/SFX/A0.asm"
 SFX_A1:
-	binclude "Sound Drivers/FM/SFX/A1.bin"
+	include	"Sound Drivers/FM/SFX/A1.asm"
 SFX_A2:
-	binclude "Sound Drivers/FM/SFX/A2.bin"
+	include	"Sound Drivers/FM/SFX/A2.asm"
 SFX_A3:
-	binclude "Sound Drivers/FM/SFX/A3.bin"
+	include	"Sound Drivers/FM/SFX/A3.asm"
 SFX_A4:
-	binclude "Sound Drivers/FM/SFX/A4.bin"
+	include	"Sound Drivers/FM/SFX/A4.asm"
 SFX_A5:
-	binclude "Sound Drivers/FM/SFX/A5.bin"
+	include	"Sound Drivers/FM/SFX/A5.asm"
 SFX_A6:
-	binclude "Sound Drivers/FM/SFX/A6.bin"
+	include	"Sound Drivers/FM/SFX/A6.asm"
 SFX_A7:
-	binclude "Sound Drivers/FM/SFX/A7.bin"
+	include	"Sound Drivers/FM/SFX/A7.asm"
 SFX_A8:
-	binclude "Sound Drivers/FM/SFX/A8.bin"
+	include	"Sound Drivers/FM/SFX/A8.asm"
 SFX_A9:
-	binclude "Sound Drivers/FM/SFX/A9.bin"
+	include	"Sound Drivers/FM/SFX/A9.asm"
 SFX_AA:
-	binclude "Sound Drivers/FM/SFX/AA.bin"
+	include	"Sound Drivers/FM/SFX/AA.asm"
 SFX_AB:
-	binclude "Sound Drivers/FM/SFX/AB.bin"
+	include	"Sound Drivers/FM/SFX/AB.asm"
 SFX_AC:
-	binclude "Sound Drivers/FM/SFX/AC.bin"
+	include	"Sound Drivers/FM/SFX/AC.asm"
 SFX_AD:
-	binclude "Sound Drivers/FM/SFX/AD.bin"
+	include	"Sound Drivers/FM/SFX/AD.asm"
 SFX_AE:
-	binclude "Sound Drivers/FM/SFX/AE.bin"
+	include	"Sound Drivers/FM/SFX/AE.asm"
 SFX_AF:
-	binclude "Sound Drivers/FM/SFX/AF.bin"
+	include	"Sound Drivers/FM/SFX/AF.asm"
 SFX_B0:
-	binclude "Sound Drivers/FM/SFX/B0.bin"
+	include	"Sound Drivers/FM/SFX/B0.asm"
 SFX_B1:
-	binclude "Sound Drivers/FM/SFX/B1.bin"
+	include	"Sound Drivers/FM/SFX/B1.asm"
 SFX_B2:
-	binclude "Sound Drivers/FM/SFX/B2.bin"
+	include	"Sound Drivers/FM/SFX/B2.asm"
 SFX_B3:
-	binclude "Sound Drivers/FM/SFX/B3.bin"
+	include	"Sound Drivers/FM/SFX/B3.asm"
 SFX_B4:
-	binclude "Sound Drivers/FM/SFX/B4.bin"
+	include	"Sound Drivers/FM/SFX/B4.asm"
 SFX_B5:
-	binclude "Sound Drivers/FM/SFX/B5.bin"
+	include	"Sound Drivers/FM/SFX/B5.asm"
 SFX_B6:
-	binclude "Sound Drivers/FM/SFX/B6.bin"
+	include	"Sound Drivers/FM/SFX/B6.asm"
 SFX_B7:
-	binclude "Sound Drivers/FM/SFX/B7.bin"
+	include	"Sound Drivers/FM/SFX/B7.asm"
 SFX_B8:
-	binclude "Sound Drivers/FM/SFX/B8.bin"
+	include	"Sound Drivers/FM/SFX/B8.asm"
 SFX_B9:
-	binclude "Sound Drivers/FM/SFX/B9.bin"
+	include	"Sound Drivers/FM/SFX/B9.asm"
 SFX_BA:
-	binclude "Sound Drivers/FM/SFX/BA.bin"
+	include	"Sound Drivers/FM/SFX/BA.asm"
 SFX_BB:
-	binclude "Sound Drivers/FM/SFX/BB.bin"
+	include	"Sound Drivers/FM/SFX/BB.asm"
 SFX_BC:
-	binclude "Sound Drivers/FM/SFX/BC.bin"
+	include	"Sound Drivers/FM/SFX/BC.asm"
 SFX_BD:
-	binclude "Sound Drivers/FM/SFX/BD.bin"
+	include	"Sound Drivers/FM/SFX/BD.asm"
 SFX_BE:
-	binclude "Sound Drivers/FM/SFX/BE.bin"
+	include	"Sound Drivers/FM/SFX/BE.asm"
 SFX_BF:
-	binclude "Sound Drivers/FM/SFX/BF.bin"
+	include	"Sound Drivers/FM/SFX/BF.asm"
 SFX_C0:
-	binclude "Sound Drivers/FM/SFX/C0.bin"
+	include	"Sound Drivers/FM/SFX/C0.asm"
 SFX_C1:
-	binclude "Sound Drivers/FM/SFX/C1.bin"
+	include	"Sound Drivers/FM/SFX/C1.asm"
 SFX_C2:
-	binclude "Sound Drivers/FM/SFX/C2.bin"
+	include	"Sound Drivers/FM/SFX/C2.asm"
 SFX_C3:
-	binclude "Sound Drivers/FM/SFX/C3.bin"
+	include	"Sound Drivers/FM/SFX/C3.asm"
 SFX_C4:
-	binclude "Sound Drivers/FM/SFX/C4.bin"
+	include	"Sound Drivers/FM/SFX/C4.asm"
 SFX_C5:
-	binclude "Sound Drivers/FM/SFX/C5.bin"
+	include	"Sound Drivers/FM/SFX/C5.asm"
 SFX_C6:
-	binclude "Sound Drivers/FM/SFX/C6.bin"
+	include	"Sound Drivers/FM/SFX/C6.asm"
 SFX_C7:
-	binclude "Sound Drivers/FM/SFX/C7.bin"
+	include	"Sound Drivers/FM/SFX/C7.asm"
 SFX_C8:
-	binclude "Sound Drivers/FM/SFX/C8.bin"
+	include	"Sound Drivers/FM/SFX/C8.asm"
 SFX_C9:
-	binclude "Sound Drivers/FM/SFX/C9.bin"
+	include	"Sound Drivers/FM/SFX/C9.asm"
 SFX_CA:
-	binclude "Sound Drivers/FM/SFX/CA.bin"
+	include	"Sound Drivers/FM/SFX/CA.asm"
 SFX_CB:
-	binclude "Sound Drivers/FM/SFX/CB.bin"
+	include	"Sound Drivers/FM/SFX/CB.asm"
 SFX_CC:
-	binclude "Sound Drivers/FM/SFX/CC.bin"
+	include	"Sound Drivers/FM/SFX/CC.asm"
 SFX_CD:
-	binclude "Sound Drivers/FM/SFX/CD.bin"
+	include	"Sound Drivers/FM/SFX/CD.asm"
 SFX_CE:
-	binclude "Sound Drivers/FM/SFX/CE.bin"
+	include	"Sound Drivers/FM/SFX/CE.asm"
 SFX_CF:
-	binclude "Sound Drivers/FM/SFX/CF.bin"
+	include	"Sound Drivers/FM/SFX/CF.asm"
 SFX_D0:
-	binclude "Sound Drivers/FM/SFX/D0.bin"
+	include	"Sound Drivers/FM/SFX/D0.asm"
 SFX_D1:
-	binclude "Sound Drivers/FM/SFX/D1.bin"
+	include	"Sound Drivers/FM/SFX/D1.asm"
 SFX_D2:
-	binclude "Sound Drivers/FM/SFX/D2.bin"
+	include	"Sound Drivers/FM/SFX/D2.asm"
 SFX_D3:
-	binclude "Sound Drivers/FM/SFX/D3.bin"
+	include	"Sound Drivers/FM/SFX/D3.asm"
 SFX_D4:
-	binclude "Sound Drivers/FM/SFX/D4.bin"
+	include	"Sound Drivers/FM/SFX/D4.asm"
 SFX_D5:
-	binclude "Sound Drivers/FM/SFX/D5.bin"
+	include	"Sound Drivers/FM/SFX/D5.asm"
 SFX_D6:
-	binclude "Sound Drivers/FM/SFX/D6.bin"
+	include	"Sound Drivers/FM/SFX/D6.asm"
 SFX_D7:
-	binclude "Sound Drivers/FM/SFX/D7.bin"
+	include	"Sound Drivers/FM/SFX/D7.asm"
 SFX_D8:
-	binclude "Sound Drivers/FM/SFX/D8.bin"
+	include	"Sound Drivers/FM/SFX/D8.asm"
 SFX_D9:
-	binclude "Sound Drivers/FM/SFX/D9.bin"
+	include	"Sound Drivers/FM/SFX/D9.asm"
 SFX_DA:
-	binclude "Sound Drivers/FM/SFX/DA.bin"
+	include	"Sound Drivers/FM/SFX/DA.asm"
 SFX_DB:
-	binclude "Sound Drivers/FM/SFX/DB.bin"
+	include	"Sound Drivers/FM/SFX/DB.asm"
 SFX_DC:
-	binclude "Sound Drivers/FM/SFX/DC.bin"
+	include	"Sound Drivers/FM/SFX/DC.asm"
 SFX_DD:
-	binclude "Sound Drivers/FM/SFX/DD.bin"
+	include	"Sound Drivers/FM/SFX/DD.asm"
 SFX_DE:
-	binclude "Sound Drivers/FM/SFX/DE.bin"
+	include	"Sound Drivers/FM/SFX/DE.asm"
 SFX_DF:
-	binclude "Sound Drivers/FM/SFX/DF.bin"
+	include	"Sound Drivers/FM/SFX/DF.asm"
 
 ; -------------------------------------------------------------------------
