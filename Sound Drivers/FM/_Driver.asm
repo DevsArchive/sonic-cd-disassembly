@@ -5,20 +5,17 @@
 ; SMPS FM sound effect driver
 ; -------------------------------------------------------------------------
 
-	CPU	68000
-	padding	off
 	listing	purecode
-	page	0
-	supmode	on
-
+	CPU	68000
+	
 	include	"Sound Drivers/FM/_Compatibility.i"
 	include	"Sound Drivers/FM/_Sound IDs.i"
+	include	"_smps2asm_inc.asm"
 
 	CPU	Z80UNDOC
 	dephase
 	include	"_Include/Z80.i"
 	include	"Sound Drivers/FM/_Variables.i"
-	include	"_smps2asm_inc.asm"
 
 ; -------------------------------------------------------------------------
 ; Driver entry point

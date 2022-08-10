@@ -1,44 +1,44 @@
 SonicCD_90_Header:
-	smpsHeaderStartSong	06h
+	smpsHeaderStartSong	$06
 	smpsHeaderVoice		SonicCD_90_Voices
-	smpsHeaderTempoSFX	01h
-	smpsHeaderChanSFX	02h
-	smpsHeaderSFXChannel	cFM1, SonicCD_90_FM1, 0F6h, 10h
-	smpsHeaderSFXChannel	cFM2, SonicCD_90_FM2, 0F7h, 10h
+	smpsHeaderTempoSFX	$01
+	smpsHeaderChanSFX	$02
+	smpsHeaderSFXChannel	cFM1, SonicCD_90_FM1, $F6, $10
+	smpsHeaderSFXChannel	cFM2, SonicCD_90_FM2, $F7, $10
 
 SonicCD_90_FM1:
-	smpsSetvoice	00h
+	smpsSetvoice	$00
 
 SonicCD_90_Loop1:
-	db	nBb3, 01h, nRst, 01h
-	smpsLoop	00h, 0Bh, SonicCD_90_Loop1
+	dc.b	nBb3, $01, nRst, $01
+	smpsLoop	$00, $0B, SonicCD_90_Loop1
 	smpsStop
 
 SonicCD_90_FM2:
-	smpsSetvoice	00h
-	db	nRst, 01h
+	smpsSetvoice	$00
+	dc.b	nRst, $01
 
 SonicCD_90_Loop2:
-	db	nAb3, 01h, nRst, 01h
-	smpsLoop	00h, 0Bh, SonicCD_90_Loop2
+	dc.b	nAb3, $01, nRst, $01
+	smpsLoop	$00, $0B, SonicCD_90_Loop2
 	smpsStop
 
 SonicCD_90_Voices:
-;	Voice 00h
-;	07h
-;	07h, 07h, 08h, 08h,	1Fh, 1Fh, 1Fh, 1Fh,	00h, 00h, 00h, 00h
-;	00h, 00h, 00h, 00h,	0Fh, 0Fh, 0Fh, 0Fh,	80h, 80h, 80h, 80h
-	smpsVcAlgorithm		07h
-	smpsVcFeedback		00h
-	smpsVcUnusedBits	00h
-	smpsVcDetune		00h, 00h, 00h, 00h
-	smpsVcCoarseFreq	08h, 08h, 07h, 07h
-	smpsVcRateScale		00h, 00h, 00h, 00h
-	smpsVcAttackRate	1Fh, 1Fh, 1Fh, 1Fh
-	smpsVcAmpMod		00h, 00h, 00h, 00h
-	smpsVcDecayRate1	00h, 00h, 00h, 00h
-	smpsVcDecayLevel	00h, 00h, 00h, 00h
-	smpsVcDecayRate2	00h, 00h, 00h, 00h
-	smpsVcReleaseRate	0Fh, 0Fh, 0Fh, 0Fh
-	smpsVcTotalLevel	80h, 80h, 80h, 80h
+;	Voice $00
+;	$07
+;	$07, $07, $08, $08,	$1F, $1F, $1F, $1F,	$00, $00, $00, $00
+;	$00, $00, $00, $00,	$0F, $0F, $0F, $0F,	$80, $80, $80, $80
+	smpsVcAlgorithm		$07
+	smpsVcFeedback		$00
+	smpsVcUnusedBits	$00
+	smpsVcDetune		$00, $00, $00, $00
+	smpsVcCoarseFreq	$08, $08, $07, $07
+	smpsVcRateScale		$00, $00, $00, $00
+	smpsVcAttackRate	$1F, $1F, $1F, $1F
+	smpsVcAmpMod		$00, $00, $00, $00
+	smpsVcDecayRate1	$00, $00, $00, $00
+	smpsVcDecayLevel	$00, $00, $00, $00
+	smpsVcDecayRate2	$00, $00, $00, $00
+	smpsVcReleaseRate	$0F, $0F, $0F, $0F
+	smpsVcTotalLevel	$80, $80, $80, $80
 	

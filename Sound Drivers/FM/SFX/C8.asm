@@ -1,32 +1,32 @@
 SonicCD_C8_Header:
-	smpsHeaderStartSong	06h
+	smpsHeaderStartSong	$06
 	smpsHeaderVoice		SonicCD_C8_Voices
-	smpsHeaderTempoSFX	01h
-	smpsHeaderChanSFX	01h
-	smpsHeaderSFXChannel	cFM6, SonicCD_C8_FM6, 00h, 02h
+	smpsHeaderTempoSFX	$01
+	smpsHeaderChanSFX	$01
+	smpsHeaderSFXChannel	cFM6, SonicCD_C8_FM6, $00, $02
 
 SonicCD_C8_FM6:
-	smpsSetvoice	00h
-	smpsModSet	01h, 01h, 50h, 02h
-	db	nEb6, 65h
+	smpsSetvoice	$00
+	smpsModSet	$01, $01, $50, $02
+	dc.b	nEb6, $65
 	smpsStop
 
 SonicCD_C8_Voices:
-;	Voice 00h
-;	20h
-;	36h, 35h, 30h, 31h,	41h, 49h, 3Bh, 4Bh,	09h, 06h, 09h, 08h
-;	01h, 03h, 02h, 0A9h,	0Fh, 0Fh, 0Fh, 0Fh,	29h, 27h, 23h, 80h
-	smpsVcAlgorithm		00h
-	smpsVcFeedback		04h
-	smpsVcUnusedBits	00h
-	smpsVcDetune		03h, 03h, 03h, 03h
-	smpsVcCoarseFreq	01h, 00h, 05h, 06h
-	smpsVcRateScale		01h, 00h, 01h, 01h
-	smpsVcAttackRate	0Bh, 3Bh, 09h, 01h
-	smpsVcAmpMod		00h, 00h, 00h, 00h
-	smpsVcDecayRate1	08h, 09h, 06h, 09h
-	smpsVcDecayLevel	00h, 00h, 00h, 00h
-	smpsVcDecayRate2	0A9h, 02h, 03h, 01h
-	smpsVcReleaseRate	0Fh, 0Fh, 0Fh, 0Fh
-	smpsVcTotalLevel	80h, 23h, 27h, 29h
+;	Voice $00
+;	$20
+;	$36, $35, $30, $31,	$41, $49, $3B, $4B,	$09, $06, $09, $08
+;	$01, $03, $02, $A9,	$0F, $0F, $0F, $0F,	$29, $27, $23, $80
+	smpsVcAlgorithm		$00
+	smpsVcFeedback		$04
+	smpsVcUnusedBits	$00
+	smpsVcDetune		$03, $03, $03, $03
+	smpsVcCoarseFreq	$01, $00, $05, $06
+	smpsVcRateScale		$01, $00, $01, $01
+	smpsVcAttackRate	$0B, $3B, $09, $01
+	smpsVcAmpMod		$00, $00, $00, $00
+	smpsVcDecayRate1	$08, $09, $06, $09
+	smpsVcDecayLevel	$00, $00, $00, $00
+	smpsVcDecayRate2	$A9, $02, $03, $01
+	smpsVcReleaseRate	$0F, $0F, $0F, $0F
+	smpsVcTotalLevel	$80, $23, $27, $29
 	

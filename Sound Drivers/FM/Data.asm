@@ -184,6 +184,9 @@ SFXPriorities:
 
 ; -------------------------------------------------------------------------
 
+	CPU	68000
+	padding	off
+	
 SFX_90:
 	include	"Sound Drivers/FM/SFX/90.asm"
 SFX_91:

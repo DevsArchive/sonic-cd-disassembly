@@ -1,34 +1,34 @@
 SonicCD_BD_Header:
-	smpsHeaderStartSong	06h
+	smpsHeaderStartSong	$06
 	smpsHeaderVoice		SonicCD_BD_Voices
-	smpsHeaderTempoSFX	01h
-	smpsHeaderChanSFX	01h
-	smpsHeaderSFXChannel	cFM6, SonicCD_BD_FM6, 07h, 05h
+	smpsHeaderTempoSFX	$01
+	smpsHeaderChanSFX	$01
+	smpsHeaderSFXChannel	cFM6, SonicCD_BD_FM6, $07, $05
 
 SonicCD_BD_FM6:
-	smpsSetvoice	00h
+	smpsSetvoice	$00
 
 SonicCD_BD_Loop1:
-	db	nEb5, 09h
-	smpsLoop	00h, 08h, SonicCD_BD_Loop1
+	dc.b	nEb5, $09
+	smpsLoop	$00, $08, SonicCD_BD_Loop1
 	smpsStop
 
 SonicCD_BD_Voices:
-;	Voice 00h
-;	02h
-;	02h, 51h, 20h, 01h,	1Eh, 1Eh, 1Eh, 1Eh,	10h, 0Ah, 14h, 13h
-;	01h, 00h, 00h, 00h,	0FFh, 0FFh, 0FFh, 0FFh,	24h, 0Eh, 1Fh, 80h
-	smpsVcAlgorithm		02h
-	smpsVcFeedback		00h
-	smpsVcUnusedBits	00h
-	smpsVcDetune		00h, 02h, 05h, 00h
-	smpsVcCoarseFreq	01h, 00h, 01h, 02h
-	smpsVcRateScale		00h, 00h, 00h, 00h
-	smpsVcAttackRate	1Eh, 1Eh, 1Eh, 1Eh
-	smpsVcAmpMod		00h, 00h, 00h, 00h
-	smpsVcDecayRate1	13h, 14h, 0Ah, 10h
-	smpsVcDecayLevel	0Fh, 0Fh, 0Fh, 0Fh
-	smpsVcDecayRate2	00h, 00h, 00h, 01h
-	smpsVcReleaseRate	0Fh, 0Fh, 0Fh, 0Fh
-	smpsVcTotalLevel	80h, 1Fh, 0Eh, 24h
+;	Voice $00
+;	$02
+;	$02, $51, $20, $01,	$1E, $1E, $1E, $1E,	$10, $0A, $14, $13
+;	$01, $00, $00, $00,	$FF, $FF, $FF, $FF,	$24, $0E, $1F, $80
+	smpsVcAlgorithm		$02
+	smpsVcFeedback		$00
+	smpsVcUnusedBits	$00
+	smpsVcDetune		$00, $02, $05, $00
+	smpsVcCoarseFreq	$01, $00, $01, $02
+	smpsVcRateScale		$00, $00, $00, $00
+	smpsVcAttackRate	$1E, $1E, $1E, $1E
+	smpsVcAmpMod		$00, $00, $00, $00
+	smpsVcDecayRate1	$13, $14, $0A, $10
+	smpsVcDecayLevel	$0F, $0F, $0F, $0F
+	smpsVcDecayRate2	$00, $00, $00, $01
+	smpsVcReleaseRate	$0F, $0F, $0F, $0F
+	smpsVcTotalLevel	$80, $1F, $0E, $24
 	

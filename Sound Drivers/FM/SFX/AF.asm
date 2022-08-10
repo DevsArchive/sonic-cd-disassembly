@@ -1,81 +1,81 @@
 SonicCD_AF_Header:
-	smpsHeaderStartSong	06h
+	smpsHeaderStartSong	$06
 	smpsHeaderVoice		SonicCD_AF_Voices
-	smpsHeaderTempoSFX	01h
-	smpsHeaderChanSFX	02h
-	smpsHeaderSFXChannel	cFM3, SonicCD_AF_FM3, 0Ch, 00h
-	smpsHeaderSFXChannel	cFM4, SonicCD_AF_FM4, 00h, 13h
+	smpsHeaderTempoSFX	$01
+	smpsHeaderChanSFX	$02
+	smpsHeaderSFXChannel	cFM3, SonicCD_AF_FM3, $0C, $00
+	smpsHeaderSFXChannel	cFM4, SonicCD_AF_FM4, $00, $13
 
 SonicCD_AF_FM3:
-	smpsSetvoice	01h
-	db	nRst, 01h, nA2, 08h
-	smpsSetvoice	00h
-	db	smpsNoAttack, nAb3, 26h
+	smpsSetvoice	$01
+	dc.b	nRst, $01, nA2, $08
+	smpsSetvoice	$00
+	dc.b	smpsNoAttack, nAb3, $26
 	smpsStop
 
 SonicCD_AF_FM4:
-	smpsSetvoice	02h
-	smpsModSet	06h, 01h, 03h, 0FFh
-	db	nRst, 0Ah
+	smpsSetvoice	$02
+	smpsModSet	$06, $01, $03, $FF
+	dc.b	nRst, $0A
 
 SonicCD_AF_Loop1:
-	db	nFs5, 06h
-	smpsLoop	00h, 05h, SonicCD_AF_Loop1
-	db	nFs5, 17h
+	dc.b	nFs5, $06
+	smpsLoop	$00, $05, SonicCD_AF_Loop1
+	dc.b	nFs5, $17
 	smpsStop
 
 SonicCD_AF_Voices:
-;	Voice 00h
-;	30h
-;	30h, 5Ch, 34h, 30h,	9Eh, 0A8h, 0ACh, 0DCh,	0Eh, 0Ah, 04h, 05h
-;	08h, 08h, 08h, 08h,	0BFh, 0BFh, 0BFh, 0BFh,	24h, 1Ch, 04h, 80h
-	smpsVcAlgorithm		00h
-	smpsVcFeedback		06h
-	smpsVcUnusedBits	00h
-	smpsVcDetune		03h, 03h, 05h, 03h
-	smpsVcCoarseFreq	00h, 04h, 0Ch, 00h
-	smpsVcRateScale		03h, 02h, 02h, 02h
-	smpsVcAttackRate	1Ch, 2Ch, 28h, 1Eh
-	smpsVcAmpMod		00h, 00h, 00h, 00h
-	smpsVcDecayRate1	05h, 04h, 0Ah, 0Eh
-	smpsVcDecayLevel	0Bh, 0Bh, 0Bh, 0Bh
-	smpsVcDecayRate2	08h, 08h, 08h, 08h
-	smpsVcReleaseRate	0Fh, 0Fh, 0Fh, 0Fh
-	smpsVcTotalLevel	80h, 04h, 1Ch, 24h
+;	Voice $00
+;	$30
+;	$30, $5C, $34, $30,	$9E, $A8, $AC, $DC,	$0E, $0A, $04, $05
+;	$08, $08, $08, $08,	$BF, $BF, $BF, $BF,	$24, $1C, $04, $80
+	smpsVcAlgorithm		$00
+	smpsVcFeedback		$06
+	smpsVcUnusedBits	$00
+	smpsVcDetune		$03, $03, $05, $03
+	smpsVcCoarseFreq	$00, $04, $0C, $00
+	smpsVcRateScale		$03, $02, $02, $02
+	smpsVcAttackRate	$1C, $2C, $28, $1E
+	smpsVcAmpMod		$00, $00, $00, $00
+	smpsVcDecayRate1	$05, $04, $0A, $0E
+	smpsVcDecayLevel	$0B, $0B, $0B, $0B
+	smpsVcDecayRate2	$08, $08, $08, $08
+	smpsVcReleaseRate	$0F, $0F, $0F, $0F
+	smpsVcTotalLevel	$80, $04, $1C, $24
 	
-;	Voice 01h
-;	30h
-;	30h, 5Ch, 34h, 30h,	9Eh, 0A8h, 0ACh, 0DCh,	0Eh, 0Ah, 04h, 05h
-;	08h, 08h, 08h, 08h,	0BFh, 0BFh, 0BFh, 0BFh,	24h, 2Ch, 04h, 80h
-	smpsVcAlgorithm		00h
-	smpsVcFeedback		06h
-	smpsVcUnusedBits	00h
-	smpsVcDetune		03h, 03h, 05h, 03h
-	smpsVcCoarseFreq	00h, 04h, 0Ch, 00h
-	smpsVcRateScale		03h, 02h, 02h, 02h
-	smpsVcAttackRate	1Ch, 2Ch, 28h, 1Eh
-	smpsVcAmpMod		00h, 00h, 00h, 00h
-	smpsVcDecayRate1	05h, 04h, 0Ah, 0Eh
-	smpsVcDecayLevel	0Bh, 0Bh, 0Bh, 0Bh
-	smpsVcDecayRate2	08h, 08h, 08h, 08h
-	smpsVcReleaseRate	0Fh, 0Fh, 0Fh, 0Fh
-	smpsVcTotalLevel	80h, 04h, 2Ch, 24h
+;	Voice $01
+;	$30
+;	$30, $5C, $34, $30,	$9E, $A8, $AC, $DC,	$0E, $0A, $04, $05
+;	$08, $08, $08, $08,	$BF, $BF, $BF, $BF,	$24, $2C, $04, $80
+	smpsVcAlgorithm		$00
+	smpsVcFeedback		$06
+	smpsVcUnusedBits	$00
+	smpsVcDetune		$03, $03, $05, $03
+	smpsVcCoarseFreq	$00, $04, $0C, $00
+	smpsVcRateScale		$03, $02, $02, $02
+	smpsVcAttackRate	$1C, $2C, $28, $1E
+	smpsVcAmpMod		$00, $00, $00, $00
+	smpsVcDecayRate1	$05, $04, $0A, $0E
+	smpsVcDecayLevel	$0B, $0B, $0B, $0B
+	smpsVcDecayRate2	$08, $08, $08, $08
+	smpsVcReleaseRate	$0F, $0F, $0F, $0F
+	smpsVcTotalLevel	$80, $04, $2C, $24
 	
-;	Voice 02h
-;	04h
-;	37h, 72h, 77h, 49h,	1Fh, 1Fh, 1Fh, 1Fh,	07h, 0Ah, 07h, 0Dh
-;	00h, 0Bh, 00h, 0Bh,	1Fh, 0Fh, 1Fh, 0Fh,	13h, 81h, 13h, 88h
-	smpsVcAlgorithm		04h
-	smpsVcFeedback		00h
-	smpsVcUnusedBits	00h
-	smpsVcDetune		04h, 07h, 07h, 03h
-	smpsVcCoarseFreq	09h, 07h, 02h, 07h
-	smpsVcRateScale		00h, 00h, 00h, 00h
-	smpsVcAttackRate	1Fh, 1Fh, 1Fh, 1Fh
-	smpsVcAmpMod		00h, 00h, 00h, 00h
-	smpsVcDecayRate1	0Dh, 07h, 0Ah, 07h
-	smpsVcDecayLevel	00h, 01h, 00h, 01h
-	smpsVcDecayRate2	0Bh, 00h, 0Bh, 00h
-	smpsVcReleaseRate	0Fh, 0Fh, 0Fh, 0Fh
-	smpsVcTotalLevel	88h, 13h, 81h, 13h
+;	Voice $02
+;	$04
+;	$37, $72, $77, $49,	$1F, $1F, $1F, $1F,	$07, $0A, $07, $0D
+;	$00, $0B, $00, $0B,	$1F, $0F, $1F, $0F,	$13, $81, $13, $88
+	smpsVcAlgorithm		$04
+	smpsVcFeedback		$00
+	smpsVcUnusedBits	$00
+	smpsVcDetune		$04, $07, $07, $03
+	smpsVcCoarseFreq	$09, $07, $02, $07
+	smpsVcRateScale		$00, $00, $00, $00
+	smpsVcAttackRate	$1F, $1F, $1F, $1F
+	smpsVcAmpMod		$00, $00, $00, $00
+	smpsVcDecayRate1	$0D, $07, $0A, $07
+	smpsVcDecayLevel	$00, $01, $00, $01
+	smpsVcDecayRate2	$0B, $00, $0B, $00
+	smpsVcReleaseRate	$0F, $0F, $0F, $0F
+	smpsVcTotalLevel	$88, $13, $81, $13
 	
