@@ -10,7 +10,6 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
 * Sub CPU Backup RAM functions file (BRAMSUB)
 * Mega Drive initialization file (MDINIT)
 * FM sound driver (SMPS Z80)
-    - Data still needs to be split out
 * SMPS-PCM
     - Palmtree Panic (SNCBNK1B)
     - Collision Chaos (SNCBNK3B)
