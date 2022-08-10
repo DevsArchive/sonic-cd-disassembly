@@ -2,90 +2,91 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; SMPS FM sound effect IDs
+; FM sound effect IDs
 ; -------------------------------------------------------------------------
 
-FM_START	EQU	$90			; Starting ID
-FM_SKID		EQU	FM_START		; Skid
-FM_91		EQU	FM_SKID+1
-FM_JUMP		EQU	FM_91+1			; Jump
-FM_HURT		EQU	FM_JUMP+1		; Hurt
-FM_RINGLOSS	EQU	FM_HURT+1		; Ring loss
-FM_RING		EQU	FM_RINGLOSS+1		; Ring
-FM_DESTROY	EQU	FM_RING+1		; Destroy
-FM_SHIELD	EQU	FM_DESTROY+1		; Shield
-FM_SPRING	EQU	FM_SHIELD+1		; Spring
-FM_99		EQU	FM_SPRING+1
-FM_KACHING	EQU	FM_99+1
-FM_9B		EQU	FM_KACHING+1
-FM_9C		EQU	FM_9B+1
-FM_SIGNPOST	EQU	FM_9C+1
-FM_9E		EQU	FM_SIGNPOST+1
-FM_9F		EQU	FM_9E+1
-FM_A0		EQU	FM_9F+1
-FM_A1		EQU	FM_A0+1
-FM_A2		EQU	FM_A1+1
-FM_A3		EQU	FM_A2+1
-FM_A4		EQU	FM_A3+1
-FM_A5		EQU	FM_A4+1
-FM_A6		EQU	FM_A5+1
-FM_A7		EQU	FM_A6+1
-FM_RINGL	EQU	FM_A7+1			; Ring (left channel)
-FM_A9		EQU	FM_RINGL+1
-FM_AA		EQU	FM_A9+1
-FM_AB		EQU	FM_AA+1
-FM_AC		EQU	FM_AB+1
-FM_AD		EQU	FM_AC+1
-FM_CHECKPOINT	EQU	FM_AD+1			; Checkpoint
-FM_AF		EQU	FM_CHECKPOINT+1
-FM_B0		EQU	FM_AF+1
-FM_B1		EQU	FM_B0+1
-FM_B2		EQU	FM_B1+1
-FM_B3		EQU	FM_B2+1
-FM_B4		EQU	FM_B3+1
-FM_B5		EQU	FM_B4+1
-FM_B6		EQU	FM_B5+1
-FM_B7		EQU	FM_B6+1
-FM_B8		EQU	FM_B7+1
-FM_B9		EQU	FM_B8+1
-FM_BA		EQU	FM_B9+1
-FM_BB		EQU	FM_BA+1
-FM_BC		EQU	FM_BB+1
-FM_BD		EQU	FM_BC+1
-FM_BE		EQU	FM_BD+1
-FM_BF		EQU	FM_BE+1
-FM_C0		EQU	FM_BF+1
-FM_C1		EQU	FM_C0+1
-FM_C2		EQU	FM_C1+1
-FM_C3		EQU	FM_C2+1
-FM_C4		EQU	FM_C3+1
-FM_C5		EQU	FM_C4+1
-FM_C6		EQU	FM_C5+1
-FM_C7		EQU	FM_C6+1
-FM_SSWARP	EQU	FM_C7+1			; Special stage warp
-FM_C9		EQU	FM_SSWARP+1
-FM_CA		EQU	FM_C9+1
-FM_CB		EQU	FM_CA+1
-FM_CC		EQU	FM_CB+1
-FM_CD		EQU	FM_CC+1
-FM_CE		EQU	FM_CD+1
-FM_CF		EQU	FM_CE+1
-FM_D0		EQU	FM_CF+1
-FM_D1		EQU	FM_D0+1
-FM_D2		EQU	FM_D1+1
-FM_D3		EQU	FM_D2+1
-FM_D4		EQU	FM_D3+1
-FM_D5		EQU	FM_D4+1
-FM_D6		EQU	FM_D5+1
-FM_D7		EQU	FM_D6+1
-FM_D8		EQU	FM_D7+1
-FM_D9		EQU	FM_D8+1
-FM_DA		EQU	FM_D9+1
-FM_DB		EQU	FM_DA+1
-FM_DC		EQU	FM_DB+1
-FM_DD		EQU	FM_DC+1
-FM_DE		EQU	FM_DD+1
-FM_DF		EQU	FM_DE+1
-FM_END		EQU	FM_DF			; Ending ID
+	rsset	$90
+FM_START	rs.w	0			; Starting ID
+FM_SKID		rs.b	1			; Skid
+FM_91		rs.b	1
+FM_JUMP		rs.b	1			; Jump
+FM_HURT		rs.b	1			; Hurt
+FM_RINGLOSS	rs.b	1			; Ring loss
+FM_RING		rs.b	1			; Ring
+FM_DESTROY	rs.b	1			; Destroy
+FM_SHIELD	rs.b	1			; Shield
+FM_SPRING	rs.b	1			; Spring
+FM_99		rs.b	1
+FM_KACHING	rs.b	1
+FM_9B		rs.b	1
+FM_9C		rs.b	1
+FM_SIGNPOST	rs.b	1
+FM_9E		rs.b	1
+FM_9F		rs.b	1
+FM_A0		rs.b	1
+FM_A1		rs.b	1
+FM_A2		rs.b	1
+FM_A3		rs.b	1
+FM_A4		rs.b	1
+FM_A5		rs.b	1
+FM_A6		rs.b	1
+FM_A7		rs.b	1
+FM_RINGL	rs.b	1			; Ring (left channel)
+FM_A9		rs.b	1
+FM_AA		rs.b	1
+FM_AB		rs.b	1
+FM_AC		rs.b	1
+FM_AD		rs.b	1
+FM_CHECKPOINT	rs.b	1			; Checkpoint
+FM_AF		rs.b	1
+FM_B0		rs.b	1
+FM_B1		rs.b	1
+FM_B2		rs.b	1
+FM_B3		rs.b	1
+FM_B4		rs.b	1
+FM_B5		rs.b	1
+FM_B6		rs.b	1
+FM_B7		rs.b	1
+FM_B8		rs.b	1
+FM_B9		rs.b	1
+FM_BA		rs.b	1
+FM_BB		rs.b	1
+FM_BC		rs.b	1
+FM_BD		rs.b	1
+FM_BE		rs.b	1
+FM_BF		rs.b	1
+FM_C0		rs.b	1
+FM_C1		rs.b	1
+FM_C2		rs.b	1
+FM_C3		rs.b	1
+FM_C4		rs.b	1
+FM_C5		rs.b	1
+FM_C6		rs.b	1
+FM_C7		rs.b	1
+FM_SSWARP	rs.b	1			; Special stage warp
+FM_C9		rs.b	1
+FM_CA		rs.b	1
+FM_CB		rs.b	1
+FM_CC		rs.b	1
+FM_CD		rs.b	1
+FM_CE		rs.b	1
+FM_CF		rs.b	1
+FM_D0		rs.b	1
+FM_D1		rs.b	1
+FM_D2		rs.b	1
+FM_D3		rs.b	1
+FM_D4		rs.b	1
+FM_D5		rs.b	1
+FM_D6		rs.b	1
+FM_D7		rs.b	1
+FM_D8		rs.b	1
+FM_D9		rs.b	1
+FM_DA		rs.b	1
+FM_DB		rs.b	1
+FM_DC		rs.b	1
+FM_DD		rs.b	1
+FM_DE		rs.b	1
+FM_DF		rs.b	0
+FM_END		rs.b	0			; Ending ID
 
 ; -------------------------------------------------------------------------
