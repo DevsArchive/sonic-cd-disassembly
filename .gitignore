@@ -1,4 +1,5 @@
 *.lst
+*.log
 _Built
 _Original/Japan/*.TXT
 _Original/Japan/*.BIN

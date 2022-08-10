@@ -15,7 +15,7 @@
 
 	org	PCMDriver
 	dc.b	"SNCBNK27.S28    "
-	include	"Sound Drivers/SMPS-PCM/_Driver.asm"
+	include	"Sound Drivers/PCM/_Driver.asm"
 
 ; -------------------------------------------------------------------------
 ; Sound effect index
@@ -100,7 +100,7 @@ UnkIndex:
 ; -------------------------------------------------------------------------
 
 Song_CCZPast:
-	incbin	"Sound Drivers/SMPS-PCM/Music/Collision Chaos Past.bin"
+	incbin	"Sound Drivers/PCM/Music/Collision Chaos Past.bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -108,40 +108,40 @@ Song_CCZPast:
 ; -------------------------------------------------------------------------
 
 SFX_Unknown:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Unknown.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Unknown.bin"
 	even
 SFX_Future:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Future.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Future.bin"
 	even
 SFX_Past:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Past.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Past.bin"
 	even
 SFX_Alright:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Alright.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Alright.bin"
 	even
 SFX_OuttaHere:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Outta Here.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Outta Here.bin"
 	even
 SFX_Yes:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Yes.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Yes.bin"
 	even
 SFX_Yeah:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Yeah.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Yeah.bin"
 	even
 SFX_AmyGiggle:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Amy Giggle.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Amy Giggle.bin"
 	even
 SFX_AmyYelp:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Amy Yelp.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Amy Yelp.bin"
 	even
 SFX_BossStomp:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Boss Stomp.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Boss Stomp.bin"
 	even
 SFX_Bumper:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Bumper.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Bumper.bin"
 	even
 SFX_Shatter:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Collision Chaos/Shatter.bin"
+	incbin	"Sound Drivers/PCM/SFX/Collision Chaos/Shatter.bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -221,54 +221,54 @@ SampleIndex:
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	Samp_Synth1,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Synth 1.bin"
+	SAMPDAT	Samp_Synth1,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth 1.bin"
 	even
-	SAMPDAT	Samp_SynthFlute,	"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Synth Flute.bin"
+	SAMPDAT	Samp_SynthFlute,	"Sound Drivers/PCM/Samples/Collision Chaos/Synth Flute.bin"
 	even
-	SAMPDAT	Samp_Snare1,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Snare 1.bin"
+	SAMPDAT	Samp_Snare1,		"Sound Drivers/PCM/Samples/Collision Chaos/Snare 1.bin"
 	even
-	SAMPDAT	Samp_Kick,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Kick.bin"
+	SAMPDAT	Samp_Kick,		"Sound Drivers/PCM/Samples/Collision Chaos/Kick.bin"
 	even
-	SAMPDAT	Samp_SynthHit,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Synth Hit.bin"
+	SAMPDAT	Samp_SynthHit,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth Hit.bin"
 	even
-	SAMPDAT	Samp_Snare2,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Snare 2.bin"
+	SAMPDAT	Samp_Snare2,		"Sound Drivers/PCM/Samples/Collision Chaos/Snare 2.bin"
 	even
-	SAMPDAT	Samp_HiHat1,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Hi-Hat 1.bin"
+	SAMPDAT	Samp_HiHat1,		"Sound Drivers/PCM/Samples/Collision Chaos/Hi-Hat 1.bin"
 	even
-	SAMPDAT	Samp_Scratch,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Scratch.bin"
+	SAMPDAT	Samp_Scratch,		"Sound Drivers/PCM/Samples/Collision Chaos/Scratch.bin"
 	even
-	SAMPDAT	Samp_Rattle,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Rattle.bin"
+	SAMPDAT	Samp_Rattle,		"Sound Drivers/PCM/Samples/Collision Chaos/Rattle.bin"
 	even
-	SAMPDAT	Samp_Synth2,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Synth 2.bin"
+	SAMPDAT	Samp_Synth2,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth 2.bin"
 	even
-	SAMPDAT	Samp_SynthBass,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Synth Bass.bin"
+	SAMPDAT	Samp_SynthBass,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth Bass.bin"
 	even
-	SAMPDAT	Samp_HiHat2,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Hi-Hat 2.bin"
+	SAMPDAT	Samp_HiHat2,		"Sound Drivers/PCM/Samples/Collision Chaos/Hi-Hat 2.bin"
 	even
-	SAMPDAT	Samp_Strings,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Strings.bin"
+	SAMPDAT	Samp_Strings,		"Sound Drivers/PCM/Samples/Collision Chaos/Strings.bin"
 	even
-	SAMPDAT	Samp_SynthPiano,	"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Synth Piano.bin"
+	SAMPDAT	Samp_SynthPiano,	"Sound Drivers/PCM/Samples/Collision Chaos/Synth Piano.bin"
 	even
-	SAMPDAT	Samp_Timpani,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Timpani.bin"
+	SAMPDAT	Samp_Timpani,		"Sound Drivers/PCM/Samples/Collision Chaos/Timpani.bin"
 	even
-	SAMPDAT	Samp_Squeak,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Squeak.bin"
+	SAMPDAT	Samp_Squeak,		"Sound Drivers/PCM/Samples/Collision Chaos/Squeak.bin"
 	even
-	SAMPDAT	Samp_JamesBrownHit,	"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/James Brown Is Dead Hit.bin"
+	SAMPDAT	Samp_JamesBrownHit,	"Sound Drivers/PCM/Samples/Collision Chaos/James Brown Is Dead Hit.bin"
 	even
-	SAMPDAT	Samp_SynthKick,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Synth Kick.bin"
+	SAMPDAT	Samp_SynthKick,		"Sound Drivers/PCM/Samples/Collision Chaos/Synth Kick.bin"
 	even
-	SAMPDAT	Samp_Blip,		"Sound Drivers/SMPS-PCM/Samples/Collision Chaos/Blip.bin"
+	SAMPDAT	Samp_Blip,		"Sound Drivers/PCM/Samples/Collision Chaos/Blip.bin"
 	even
-	SAMPDAT	Samp_Future,		"Sound Drivers/SMPS-PCM/Samples/Future.bin"
-	SAMPDAT	Samp_Past,		"Sound Drivers/SMPS-PCM/Samples/Past.bin"
-	SAMPDAT	Samp_Bumper,		"Sound Drivers/SMPS-PCM/Samples/Bumper.bin"
-	SAMPDAT	Samp_BossStomp,		"Sound Drivers/SMPS-PCM/Samples/Boss Stomp.bin"
-	SAMPDAT	Samp_AmyGiggle,		"Sound Drivers/SMPS-PCM/Samples/Amy Giggle.bin"
-	SAMPDAT	Samp_AmyYelp,		"Sound Drivers/SMPS-PCM/Samples/Amy Yelp.bin"
-	SAMPDAT	Samp_Alright,		"Sound Drivers/SMPS-PCM/Samples/Alright.bin"
-	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/SMPS-PCM/Samples/Outta Here.bin"
-	SAMPDAT	Samp_Yes,		"Sound Drivers/SMPS-PCM/Samples/Yes.bin"
-	SAMPDAT	Samp_Yeah,		"Sound Drivers/SMPS-PCM/Samples/Yeah.bin"
-	SAMPDAT	Samp_Shatter,		"Sound Drivers/SMPS-PCM/Samples/Shatter.bin"
+	SAMPDAT	Samp_Future,		"Sound Drivers/PCM/Samples/Future.bin"
+	SAMPDAT	Samp_Past,		"Sound Drivers/PCM/Samples/Past.bin"
+	SAMPDAT	Samp_Bumper,		"Sound Drivers/PCM/Samples/Bumper.bin"
+	SAMPDAT	Samp_BossStomp,		"Sound Drivers/PCM/Samples/Boss Stomp.bin"
+	SAMPDAT	Samp_AmyGiggle,		"Sound Drivers/PCM/Samples/Amy Giggle.bin"
+	SAMPDAT	Samp_AmyYelp,		"Sound Drivers/PCM/Samples/Amy Yelp.bin"
+	SAMPDAT	Samp_Alright,		"Sound Drivers/PCM/Samples/Alright.bin"
+	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/PCM/Samples/Outta Here.bin"
+	SAMPDAT	Samp_Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
+	SAMPDAT	Samp_Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
+	SAMPDAT	Samp_Shatter,		"Sound Drivers/PCM/Samples/Shatter.bin"
 
 ; -------------------------------------------------------------------------

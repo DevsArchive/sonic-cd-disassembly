@@ -15,7 +15,7 @@
 
 	org	PCMDriver
 	dc.b	"SNCBNK30.S28    "
-	include	"Sound Drivers/SMPS-PCM/_Driver.asm"
+	include	"Sound Drivers/PCM/_Driver.asm"
 
 ; -------------------------------------------------------------------------
 ; Sound effect index
@@ -86,7 +86,7 @@ SongIndex:
 ; -------------------------------------------------------------------------
 
 Song_WWZPast:
-	incbin	"Sound Drivers/SMPS-PCM/Music/Wacky Workbench Past.bin"
+	incbin	"Sound Drivers/PCM/Music/Wacky Workbench Past.bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -94,40 +94,40 @@ Song_WWZPast:
 ; -------------------------------------------------------------------------
 
 SFX_Unknown:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Unknown.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Unknown.bin"
 	even
 SFX_Future:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Future.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Future.bin"
 	even
 SFX_Past:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Past.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Past.bin"
 	even
 SFX_Alright:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Alright.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Alright.bin"
 	even
 SFX_OuttaHere:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Outta Here.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Outta Here.bin"
 	even
 SFX_Yes:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Yes.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Yes.bin"
 	even
 SFX_Yeah:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Yeah.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Yeah.bin"
 	even
 SFX_AmyGiggle:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Amy Giggle.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Amy Giggle.bin"
 	even
 SFX_AmyYelp:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Amy Yelp.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Amy Yelp.bin"
 	even
 SFX_BossStomp:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Boss Stomp.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Boss Stomp.bin"
 	even
 SFX_Bumper:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Bumper.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Bumper.bin"
 	even
 SFX_Shatter:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Wacky Workbench/Shatter.bin"
+	incbin	"Sound Drivers/PCM/SFX/Wacky Workbench/Shatter.bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -195,29 +195,29 @@ SampleIndex:
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	Samp_Pad,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Pad.bin"
-	SAMPDAT	Samp_Kick,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Kick.bin"
-	SAMPDAT	Samp_Tamborine,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Tamborine.bin"
-	SAMPDAT	Samp_Beep,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Beep.bin"
-	SAMPDAT	Samp_Honk,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Honk.bin"
-	SAMPDAT	Samp_SynthBass,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Synth Bass.bin"
-	SAMPDAT	Samp_HatClosed,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Hi-Hat (Closed).bin"
-	SAMPDAT	Samp_Snare,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Snare.bin"
-	SAMPDAT	Samp_Clap,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Clap.bin"
-	SAMPDAT	Samp_HatOpen,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Hi-Hat (Open).bin"
-	SAMPDAT	Samp_Flute,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Flute.bin"
-	SAMPDAT	Samp_Piano,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Piano.bin"
-	SAMPDAT	Samp_SynthBell,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Synth Bell.bin"
-	SAMPDAT	Samp_Tom,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Tom.bin"
-	SAMPDAT	Samp_CrashCymbal,	"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Crash Cymbal.bin"
-	SAMPDAT	Samp_Synth,		"Sound Drivers/SMPS-PCM/Samples/Wacky Workbench/Synth.bin"
-	SAMPDAT	Samp_Future,		"Sound Drivers/SMPS-PCM/Samples/Future.bin"
-	SAMPDAT	Samp_Past,		"Sound Drivers/SMPS-PCM/Samples/Past.bin"
-	SAMPDAT	Samp_Alright,		"Sound Drivers/SMPS-PCM/Samples/Alright.bin"
-	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/SMPS-PCM/Samples/Outta Here.bin"
-	SAMPDAT	Samp_Yes,		"Sound Drivers/SMPS-PCM/Samples/Yes.bin"
-	SAMPDAT	Samp_Yeah,		"Sound Drivers/SMPS-PCM/Samples/Yeah.bin"
-	SAMPDAT	Samp_BossStomp,		"Sound Drivers/SMPS-PCM/Samples/Boss Stomp.bin"
-	SAMPDAT	Samp_Shatter,		"Sound Drivers/SMPS-PCM/Samples/Shatter.bin"
+	SAMPDAT	Samp_Pad,		"Sound Drivers/PCM/Samples/Wacky Workbench/Pad.bin"
+	SAMPDAT	Samp_Kick,		"Sound Drivers/PCM/Samples/Wacky Workbench/Kick.bin"
+	SAMPDAT	Samp_Tamborine,		"Sound Drivers/PCM/Samples/Wacky Workbench/Tamborine.bin"
+	SAMPDAT	Samp_Beep,		"Sound Drivers/PCM/Samples/Wacky Workbench/Beep.bin"
+	SAMPDAT	Samp_Honk,		"Sound Drivers/PCM/Samples/Wacky Workbench/Honk.bin"
+	SAMPDAT	Samp_SynthBass,		"Sound Drivers/PCM/Samples/Wacky Workbench/Synth Bass.bin"
+	SAMPDAT	Samp_HatClosed,		"Sound Drivers/PCM/Samples/Wacky Workbench/Hi-Hat (Closed).bin"
+	SAMPDAT	Samp_Snare,		"Sound Drivers/PCM/Samples/Wacky Workbench/Snare.bin"
+	SAMPDAT	Samp_Clap,		"Sound Drivers/PCM/Samples/Wacky Workbench/Clap.bin"
+	SAMPDAT	Samp_HatOpen,		"Sound Drivers/PCM/Samples/Wacky Workbench/Hi-Hat (Open).bin"
+	SAMPDAT	Samp_Flute,		"Sound Drivers/PCM/Samples/Wacky Workbench/Flute.bin"
+	SAMPDAT	Samp_Piano,		"Sound Drivers/PCM/Samples/Wacky Workbench/Piano.bin"
+	SAMPDAT	Samp_SynthBell,		"Sound Drivers/PCM/Samples/Wacky Workbench/Synth Bell.bin"
+	SAMPDAT	Samp_Tom,		"Sound Drivers/PCM/Samples/Wacky Workbench/Tom.bin"
+	SAMPDAT	Samp_CrashCymbal,	"Sound Drivers/PCM/Samples/Wacky Workbench/Crash Cymbal.bin"
+	SAMPDAT	Samp_Synth,		"Sound Drivers/PCM/Samples/Wacky Workbench/Synth.bin"
+	SAMPDAT	Samp_Future,		"Sound Drivers/PCM/Samples/Future.bin"
+	SAMPDAT	Samp_Past,		"Sound Drivers/PCM/Samples/Past.bin"
+	SAMPDAT	Samp_Alright,		"Sound Drivers/PCM/Samples/Alright.bin"
+	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/PCM/Samples/Outta Here.bin"
+	SAMPDAT	Samp_Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
+	SAMPDAT	Samp_Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
+	SAMPDAT	Samp_BossStomp,		"Sound Drivers/PCM/Samples/Boss Stomp.bin"
+	SAMPDAT	Samp_Shatter,		"Sound Drivers/PCM/Samples/Shatter.bin"
 
 ; -------------------------------------------------------------------------

@@ -9,7 +9,7 @@
 ; Constants
 ; -------------------------------------------------------------------------
 
-; Counds
+; Counts
 RHY_TRACK_CNT	EQU	1			; Number of rhythm tracks
 PCM_TRACK_CNT	EQU	8			; Number of PCM tracks
 
@@ -60,7 +60,7 @@ PTRK_LEGATO	rs.b	1			; Legato flag
 PTRK_PLAY	rs.b	1			; Play flag
 
 ; -------------------------------------------------------------------------
-; Track variables
+; Track variables structure
 ; -------------------------------------------------------------------------
 
 	rsreset
@@ -98,7 +98,7 @@ ptrkStackBase	rs.b	0			; Call stack base
 ptrkSize	rs.b	0			; Size of structure
 
 ; -------------------------------------------------------------------------
-; Global driver variables
+; Global driver variables structure
 ; -------------------------------------------------------------------------
 
 	rsreset
@@ -109,7 +109,7 @@ pdrvSFXPrio	rs.b	1			; Saved SFX priority level
 pdrvCommFlag	rs.b	1			; Communication flag
 pdrvCDDALoop	rs.b	1			; CDDA music loop flag
 		rs.b	3
-pdrvSoundID	rs.b	1			; Sound ID
+pdrvSndPlay	rs.b	1			; Sound play queue
 pdrvQueue	rs.b	4			; Sound queue slots
 pdrvSFXMode	rs.b	1			; SFX mode
 pdrvPauseMode	rs.b	1			; Pause mode

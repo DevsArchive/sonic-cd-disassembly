@@ -15,7 +15,7 @@
 
 	org	PCMDriver
 	dc.b	"SNCBNK28.S28    "
-	include	"Sound Drivers/SMPS-PCM/_Driver.asm"
+	include	"Sound Drivers/PCM/_Driver.asm"
 
 ; -------------------------------------------------------------------------
 ; Sound effect index
@@ -84,7 +84,7 @@ SongIndex:
 ; -------------------------------------------------------------------------
 
 Song_TTZPast:
-	incbin	"Sound Drivers/SMPS-PCM/Music/Tidal Tempest Past.bin"
+	incbin	"Sound Drivers/PCM/Music/Tidal Tempest Past.bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -92,37 +92,37 @@ Song_TTZPast:
 ; -------------------------------------------------------------------------
 
 SFX_Unknown:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Unknown.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Unknown.bin"
 	even
 SFX_Future:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Future.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Future.bin"
 	even
 SFX_Past:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Past.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Past.bin"
 	even
 SFX_Alright:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Alright.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Alright.bin"
 	even
 SFX_OuttaHere:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Outta Here.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Outta Here.bin"
 	even
 SFX_Yes:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Yes.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Yes.bin"
 	even
 SFX_Yeah:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Yeah.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Yeah.bin"
 	even
 SFX_AmyGiggle:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Amy Giggle.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Amy Giggle.bin"
 	even
 SFX_AmyYelp:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Amy Yelp.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Amy Yelp.bin"
 	even
 SFX_BossStomp:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Boss Stomp.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Boss Stomp.bin"
 	even
 SFX_Bumper:
-	incbin	"Sound Drivers/SMPS-PCM/SFX/Tidal Tempest/Bumper.bin"
+	incbin	"Sound Drivers/PCM/SFX/Tidal Tempest/Bumper.bin"
 	even
 
 ; -------------------------------------------------------------------------
@@ -180,24 +180,24 @@ SampleIndex:
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	Samp_Marimba,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Marimba.bin"
-	SAMPDAT	Samp_Piano1,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Piano 1.bin"
-	SAMPDAT	Samp_MarimbaChord,	"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Marimba Chord.bin"
-	SAMPDAT	Samp_Bass,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Bass.bin"
-	SAMPDAT	Samp_BongoLow,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Bongo (Low).bin"
-	SAMPDAT	Samp_BongoHigh,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Bongo (High).bin"
-	SAMPDAT	Samp_SynthKick,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Synth Kick.bin"
-	SAMPDAT	Samp_Snare,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Snare.bin"
-	SAMPDAT	Samp_Shaker,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Shaker.bin"
-	SAMPDAT	Samp_Harp,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Harp.bin"
-	SAMPDAT	Samp_Tamborine,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Tamborine.bin"
-	SAMPDAT	Samp_Piano2,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Piano 2.bin"
-	SAMPDAT	Samp_Piano3,		"Sound Drivers/SMPS-PCM/Samples/Tidal Tempest/Piano 3.bin"
-	SAMPDAT	Samp_Future,		"Sound Drivers/SMPS-PCM/Samples/Future.bin"
-	SAMPDAT	Samp_Past,		"Sound Drivers/SMPS-PCM/Samples/Past.bin"
-	SAMPDAT	Samp_Alright,		"Sound Drivers/SMPS-PCM/Samples/Alright.bin"
-	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/SMPS-PCM/Samples/Outta Here.bin"
-	SAMPDAT	Samp_Yes,		"Sound Drivers/SMPS-PCM/Samples/Yes.bin"
-	SAMPDAT	Samp_Yeah,		"Sound Drivers/SMPS-PCM/Samples/Yeah.bin"
+	SAMPDAT	Samp_Marimba,		"Sound Drivers/PCM/Samples/Tidal Tempest/Marimba.bin"
+	SAMPDAT	Samp_Piano1,		"Sound Drivers/PCM/Samples/Tidal Tempest/Piano 1.bin"
+	SAMPDAT	Samp_MarimbaChord,	"Sound Drivers/PCM/Samples/Tidal Tempest/Marimba Chord.bin"
+	SAMPDAT	Samp_Bass,		"Sound Drivers/PCM/Samples/Tidal Tempest/Bass.bin"
+	SAMPDAT	Samp_BongoLow,		"Sound Drivers/PCM/Samples/Tidal Tempest/Bongo (Low).bin"
+	SAMPDAT	Samp_BongoHigh,		"Sound Drivers/PCM/Samples/Tidal Tempest/Bongo (High).bin"
+	SAMPDAT	Samp_SynthKick,		"Sound Drivers/PCM/Samples/Tidal Tempest/Synth Kick.bin"
+	SAMPDAT	Samp_Snare,		"Sound Drivers/PCM/Samples/Tidal Tempest/Snare.bin"
+	SAMPDAT	Samp_Shaker,		"Sound Drivers/PCM/Samples/Tidal Tempest/Shaker.bin"
+	SAMPDAT	Samp_Harp,		"Sound Drivers/PCM/Samples/Tidal Tempest/Harp.bin"
+	SAMPDAT	Samp_Tamborine,		"Sound Drivers/PCM/Samples/Tidal Tempest/Tamborine.bin"
+	SAMPDAT	Samp_Piano2,		"Sound Drivers/PCM/Samples/Tidal Tempest/Piano 2.bin"
+	SAMPDAT	Samp_Piano3,		"Sound Drivers/PCM/Samples/Tidal Tempest/Piano 3.bin"
+	SAMPDAT	Samp_Future,		"Sound Drivers/PCM/Samples/Future.bin"
+	SAMPDAT	Samp_Past,		"Sound Drivers/PCM/Samples/Past.bin"
+	SAMPDAT	Samp_Alright,		"Sound Drivers/PCM/Samples/Alright.bin"
+	SAMPDAT	Samp_OuttaHere,		"Sound Drivers/PCM/Samples/Outta Here.bin"
+	SAMPDAT	Samp_Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
+	SAMPDAT	Samp_Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
 
 ; -------------------------------------------------------------------------

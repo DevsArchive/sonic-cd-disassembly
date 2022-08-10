@@ -5,10 +5,10 @@ if %REGION%==0 (set REGPATH=Japan)
 if %REGION%==1 (set REGPATH=USA)
 if %REGION%==2 (set REGPATH=Europe)
 
-if %REGION%==0 fc /b _Original\IP_JPN.BIN _Built\System\IP.BIN
-if %REGION%==1 fc /b _Original\IP_USA.BIN _Built\System\IP.BIN
-if %REGION%==2 fc /b _Original\IP_EUR.BIN _Built\System\IP.BIN
-fc /b _Original\SP.BIN _Built\System\SP.BIN
+if %REGION%==0 fc /b _Original\IP_JPN.BIN _Built\Misc\IP.BIN
+if %REGION%==1 fc /b _Original\IP_USA.BIN _Built\Misc\IP.BIN
+if %REGION%==2 fc /b _Original\IP_EUR.BIN _Built\Misc\IP.BIN
+fc /b _Original\SP.BIN _Built\Misc\SP.BIN
 fc /b _Original\%REGPATH%\IPX___.MMD _Built\Files\IPX___.MMD
 fc /b _Original\%REGPATH%\SPX___.BIN _Built\Files\SPX___.BIN
 fc /b _Original\%REGPATH%\BRAMINIT.MMD _Built\Files\BRAMINIT.MMD

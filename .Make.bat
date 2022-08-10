@@ -2,27 +2,40 @@
 set REGION=1
 set OUTPUT=SCD.iso
 set ASM68K=_Bin\asm68k.exe /p /o ae- /o l. /e REGION=%REGION%
+set AS=_Bin\asw.exe -q -xx -n -A -L -U -E -i .
+set P2BIN=_Bin\p2bin.exe
 
 if not exist _Built mkdir _Built
 if not exist _Built\Files mkdir _Built\Files
-if not exist _Built\System mkdir _Built\System
+if not exist _Built\Misc mkdir _Built\Misc
 if %REGION%==0 (copy _Original\Japan\*.* _Built\Files > nul)
 if %REGION%==1 (copy _Original\USA\*.* _Built\Files > nul)
 if %REGION%==2 (copy _Original\Europe\*.* _Built\Files > nul)
 del _Built\Files\.gitkeep > nul
 
-%ASM68K% "CD Initial Program\IP.asm", "_Built\System\IP.BIN", , "CD Initial Program\IP.lst"
+%AS% "Sound Drivers\FM\_Driver.asm"
+if exist "Sound Drivers\FM\_Driver.p" (
+    %P2BIN% "Sound Drivers\FM\_Driver.p" "_Built\Misc\FM Sound Driver.bin"
+    del "Sound Drivers\FM\_Driver.p" > nul
+) else (
+    echo **************************************************************************************
+    echo *                                                                                    *
+    echo * FM sound driver failed to build. See "Sound Drivers\FM\_Driver.log" for more info. *
+    echo *                                                                                    *
+    echo **************************************************************************************
+)
+
+%ASM68K% "CD Initial Program\IP.asm", "_Built\Misc\IP.BIN", , "CD Initial Program\IP.lst"
 %ASM68K% "CD Initial Program\IPX.asm", "_Built\Files\IPX___.MMD",  , "CD Initial Program\IPX.lst"
-%ASM68K% "CD System Program\SP.asm", "_Built\System\SP.BIN", , "CD System Program\SP.lst"
+%ASM68K% "CD System Program\SP.asm", "_Built\Misc\SP.BIN", , "CD System Program\SP.lst"
 %ASM68K% "CD System Program\SPX.asm", "_Built\Files\SPX___.BIN", , "CD System Program\SPX.lst"
 %ASM68K% "Backup RAM\Initialization\Main.asm", "_Built\Files\BRAMINIT.MMD", , "Backup RAM\Initialization\Main.lst"
 %ASM68K% "Backup RAM\Sub.asm", "_Built\Files\BRAMSUB.BIN", , "Backup RAM\Sub.lst"
 %ASM68K% "Mega Drive Init\Main.asm", "_Built\Files\MDINIT.MMD", , "Mega Drive Init\Main.lst"
-
-%ASM68K% "Sound Drivers\SMPS-PCM\Palmtree Panic.asm", "_Built\Files\SNCBNK1B.BIN", , "Sound Drivers\SMPS-PCM\Palmtree Panic.lst"
-%ASM68K% "Sound Drivers\SMPS-PCM\Collision Chaos.asm", "_Built\Files\SNCBNK3B.BIN", , "Sound Drivers\SMPS-PCM\Collision Chaos.lst"
-%ASM68K% "Sound Drivers\SMPS-PCM\Tidal Tempest.asm", "_Built\Files\SNCBNK4B.BIN", , "Sound Drivers\SMPS-PCM\Tidal Tempest.lst"
-%ASM68K% "Sound Drivers\SMPS-PCM\Wacky Workbench.asm", "_Built\Files\SNCBNK6B.BIN", , "Sound Drivers\SMPS-PCM\Wacky Workbench.lst"
+%ASM68K% "Sound Drivers\PCM\Palmtree Panic.asm", "_Built\Files\SNCBNK1B.BIN", , "Sound Drivers\PCM\Palmtree Panic.lst"
+%ASM68K% "Sound Drivers\PCM\Collision Chaos.asm", "_Built\Files\SNCBNK3B.BIN", , "Sound Drivers\PCM\Collision Chaos.lst"
+%ASM68K% "Sound Drivers\PCM\Tidal Tempest.asm", "_Built\Files\SNCBNK4B.BIN", , "Sound Drivers\PCM\Tidal Tempest.lst"
+%ASM68K% "Sound Drivers\PCM\Wacky Workbench.asm", "_Built\Files\SNCBNK6B.BIN", , "Sound Drivers\PCM\Wacky Workbench.lst"
 
 %ASM68K% "Title Screen\Main.asm", "_Built\Files\TITLEM.MMD", , "Title Screen\Main.lst"
 %ASM68K% "Title Screen\Sub.asm", "_Built\Files\TITLES.BIN", , "Title Screen\Sub.lst"
@@ -46,9 +59,9 @@ del _Built\Files\.gitkeep > nul
 
 echo.
 echo Compiling filesystem...
-_Bin\mkisofs.exe -quiet -abstract ABS.TXT -biblio BIB.TXT -copyright CPY.TXT -A "SEGA ENTERPRISES" -V "SONIC_CD___" -publisher "SEGA ENTERPRISES" -p "SEGA ENTERPRISES" -sysid "MEGA_CD" -iso-level 1 -o _Built\System\Files.BIN _Built\Files
+_Bin\mkisofs.exe -quiet -abstract ABS.TXT -biblio BIB.TXT -copyright CPY.TXT -A "SEGA ENTERPRISES" -V "SONIC_CD___" -publisher "SEGA ENTERPRISES" -p "SEGA ENTERPRISES" -sysid "MEGA_CD" -iso-level 1 -o _Built\Misc\Files.BIN _Built\Files
 
 %ASM68K% main.asm, _Built\%OUTPUT%
-del _Built\System\Files.BIN > nul
+del _Built\Misc\Files.BIN > nul
 
 pause

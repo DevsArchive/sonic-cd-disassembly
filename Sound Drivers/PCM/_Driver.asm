@@ -5,7 +5,7 @@
 ; SMPS-PCM driver
 ; -------------------------------------------------------------------------
 
-	include	"Sound Drivers/SMPS-PCM/_Macros.i"
+	include	"Sound Drivers/PCM/_Macros.i"
 
 ; -------------------------------------------------------------------------
 ; Driver origin point
@@ -144,7 +144,7 @@ ParseTrackData:
 	bra.w	FinishTrackParse		; Finish up
 
 .Duration:
-	jsr	GetDuration(pc)			; Get duration
+	jsr	CalcDuration(pc)		; Calculate duration
 	bra.w	FinishTrackParse		; Finish up
 
 ; -------------------------------------------------------------------------
@@ -198,14 +198,14 @@ FinishTrackParse:
 	rts
 
 ; -------------------------------------------------------------------------
-; Get note duration
+; Calculate note duration
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d5.b - Base note duration
 ;	a3.l - Pointer to track variables
 ; -------------------------------------------------------------------------
 
-GetDuration:
+CalcDuration:
 	move.b	d5,d0				; Copy duration
 	move.b	pTrkTickMult(a3),d1		; Get tick multiploer
 
@@ -532,7 +532,7 @@ ProcSoundQueue:
 	cmp.b	d3,d2				; Does this sound have a higher priority?
 	bcs.s	.NextSlot			; If not, branch
 	move.b	d2,d3				; Move up to the new priority level
-	move.b	d1,pdrvSoundID(a5)		; Set sound to play
+	move.b	d1,pdrvSndPlay(a5)		; Set sound to play
 
 .NextSlot:
 	dbf	d4,.QueueLoop			; Loop until all slots are checked
@@ -568,10 +568,10 @@ ProcSoundQueue:
 
 PlaySoundID:
 	moveq	#0,d7				; Get sound pulled from the queue
-	move.b	pdrvSoundID(a5),d7
+	move.b	pdrvSndPlay(a5),d7
 	beq.w	InitDriver			; If a sound hasn't been queued yet, initialize the driver
 	bpl.w	Cmd_Stop			; If we are stopping all sound, branch
-	move.b	#$80,pdrvSoundID(a5)		; Mark sound queue as processed
+	move.b	#$80,pdrvSndPlay(a5)		; Mark sound queue as processed
 
 	cmpi.b	#PCMM_START,d7			; Is it a song?
 	bcs.s	.End				; If not, branch
@@ -997,7 +997,7 @@ ResetDriver:
 
 	move.l	d1,pdrvPtrOffset(a5)		; Restore pointer offset
 	move.b	#$FF,pdrvOn(a5)			; Mute all channels
-	move.b	#$80,pdrvSoundID(a5)		; Mark sound queue as processed
+	move.b	#$80,pdrvSndPlay(a5)		; Mark sound queue as processed
 	rts
 
 ; -------------------------------------------------------------------------
@@ -1075,6 +1075,7 @@ GetPointers:
 ; -------------------------------------------------------------------------
 
 FreqTable:
+	;	C      C#/Db  D      D#/Eb  E      F      F#/Gb  G      G#/Ab  A      A#/Bb  B
 	dc.w	0				; Rest
 	dc.w	$0104, $0113, $0124, $0135, $0148, $015B, $0170, $0186, $019D, $01B5, $01D0, $01EB
 	dc.w	$0208, $0228, $0248, $026B, $0291, $02B8, $02E1, $030E, $033C, $036E, $03A3, $03DA
@@ -1494,7 +1495,7 @@ DriverInfo:
 	dc.l	SFXIndex			; SFX index
 	dc.l	*
 	dc.l	*
-	dc.l	$B0
+	dc.l	PCMS_START			; First SFX ID
 	dc.l	PCMDrvOrigin			; Origin
 	dc.l	SFXPriorities			; SFX priority table
 	dc.l	CmdPriorities			; Command priority table
