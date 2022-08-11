@@ -2,9 +2,10 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; FM sound effect IDs
+; FM sound IDs
 ; -------------------------------------------------------------------------
 
+; SFX
 	rsset	$90
 FM_START	rs.w	0			; Starting ID
 FM_SKID		rs.b	1			; Skid
@@ -88,5 +89,9 @@ FM_DD		rs.b	1
 FM_DE		rs.b	1
 FM_DF		rs.b	0
 FM_END		rs.b	0			; Ending ID
+
+; Commands
+	rsset	$E0
+FMC_STOP	rs.b	1			; Stop
 
 ; -------------------------------------------------------------------------

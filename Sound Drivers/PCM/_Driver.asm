@@ -5,6 +5,7 @@
 ; SMPS-PCM driver
 ; -------------------------------------------------------------------------
 
+	include	"Sound Drivers/PCM/_Variables.i"
 	include	"Sound Drivers/PCM/_Macros.i"
 	include	"Sound Drivers/PCM/_smps2asm_inc.i"
 

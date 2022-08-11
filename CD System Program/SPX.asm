@@ -10,6 +10,7 @@
 	include	"_Include/System.i"
 	include	"_Include/Backup RAM.i"
 	include	"_Include/Sound.i"
+	include	"Sound Drivers/PCM/_Variables.i"
 
 ; -------------------------------------------------------------------------
 ; Files

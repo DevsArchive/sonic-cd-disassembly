@@ -19,7 +19,7 @@ FMDrvQueue3	EQU	Z80RAM+$1C0B		; Sound queue 3
 
 ; PCM driver (Sub CPU)
 	if def(SUBCPU)
-		include	"Sound Drivers/PCM/_Variables.i"
+		include	"Sound Drivers/PCM/_Sound IDs.i"
 PCMDriver	EQU	PRGRAM+$40000		; PCM driver location
 PCMDrvOrigin	EQU	PCMDriver+$10		; PCM driver code origin
 PCMDrvRun	EQU	PCMDriver+$10		; Run PCM driver
@@ -66,9 +66,5 @@ CDDA_SPECIAL	rs.b	1			; Special stage
 CDDA_DAGARDEN	rs.b	1			; D.A. Garden
 CDDA_INTRO	rs.b	1			; Opening
 CDDA_ENDING	rs.b	1			; Ending
-
-; FM commands
-	rsset	$E0
-FMC_STOP	rs.b	1			; Stop
 
 ; -------------------------------------------------------------------------
