@@ -1,5 +1,6 @@
 *.lst
 *.log
+*.sym
 _Built
 _Original/Japan/*.TXT
 _Original/Japan/*.BIN
