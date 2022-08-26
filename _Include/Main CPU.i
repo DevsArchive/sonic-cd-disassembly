@@ -375,9 +375,10 @@ cmd	= (\type\\rwd\)|(((\addr)&$3FFF)<<16)|((\addr)/$4000)
 ;	dest - Destination address in VDP memory
 ;	len  - Length of data in bytes
 ;	type - Type of VDP memory
+;	a6.l - VDP control port
 ; -------------------------------------------------------------------------
 
-DMA68K macro src, dest, len, type
+DMA68K2 macro src, dest, len, type
 	; Check if source address is in Word RAM
 	local	srcd
 	if ((\src)>=WORDRAM2M)&((\src)<WORDRAM2ME)
@@ -387,7 +388,6 @@ DMA68K macro src, dest, len, type
 	endif
 
 	; DMA data
-	lea	VDPCTRL,a6
 	move.l	#$93009400|((((\len)/2)&$FF00)>>8)|((((\len)/2)&$FF)<<16),(a6)
 	move.l	#$95009600|((((srcd)/2)&$FF00)>>8)|((((srcd)/2)&$FF)<<16),(a6)
 	move.w	#$9700|(((srcd)>>17)&$7F),(a6)
@@ -402,6 +402,22 @@ DMA68K macro src, dest, len, type
 	else
 		move.w	(\src),VDPDATA
 	endif
+	endm
+
+; -------------------------------------------------------------------------
+; VDP DMA from 68000 memory to VDP memory
+; (Automatically sets VDP control port in a6)
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	src  - Source address in 68000 memory
+;	dest - Destination address in VDP memory
+;	len  - Length of data in bytes
+;	type - Type of VDP memory
+; -------------------------------------------------------------------------
+
+DMA68K macro src, dest, len, type
+	lea	VDPCTRL,a6
+	DMA68K2	\src,\dest,\len,\type
 	endm
 
 ; -------------------------------------------------------------------------

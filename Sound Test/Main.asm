@@ -650,8 +650,8 @@ DrawCDDASel:
 ; PARAMETERS:
 ;	d0.w - Number
 ;	d1.w - Number of digits (minus 1)
-;	d4.l - Upper half VDP command
-;	d5.l - Lower half VDP command
+;	d4.l - Top VDP command
+;	d5.l - Bottom VDP command
 ;	a1.l - Pointer to top of number conversion table
 ; -------------------------------------------------------------------------
 
@@ -660,7 +660,7 @@ DrawNumber:
 	lea	VDPDATA,a3			; VDP data port
 
 .DigitLoop:
-	move.l	d4,(a2)				; Set upper half VDP command
+	move.l	d4,(a2)				; Set top VDP command
 	moveq	#0,d2				; Reset digit counter
 	move.w	(a1)+,d3			; Get digit to isolate
 
@@ -673,13 +673,12 @@ DrawNumber:
 .GotDigit:
 	add.w	d3,d0				; Fix value
 
-	add.w	d2,d2				; Draw upper half
+	add.w	d2,d2				; Draw top
 	move.w	NumTilesUpper(pc,d2.w),(a3)
-
-	move.l	d5,(a2)				; Draw lower half
+	move.l	d5,(a2)				; Draw bottom
 	move.w	NumTilesLower(pc,d2.w),(a3)
 
-	addi.l	#$20000,d4			; Next digit
+	addi.l	#$20000,d4			; Shift right
 	addi.l	#$20000,d5
 	dbf	d1,.DigitLoop			; Loop until number is drawn
 	rts
@@ -736,8 +735,8 @@ DrawText:
 
 .TextLoop:
 	movea.l	(a0)+,a1			; Get string data
-	move.l	(a0)+,d3			; Get upper half VDP command
-	move.l	(a0)+,d4			; Get lower half VDP command
+	move.l	(a0)+,d3			; Get top VDP command
+	move.l	(a0)+,d4			; Get bottom VDP command
 
 .CharLoop:
 	moveq	#0,d1				; Get character
@@ -745,19 +744,19 @@ DrawText:
 	cmpi.b	#$FF,d1				; Is it the termination character?
 	beq.s	.Done				; If so, branch
 
-	move.l	d3,(a2)				; Draw upper half of character
+	move.l	d3,(a2)				; Draw top of character
 	moveq	#0,d2
 	move.b	.TilesUpper(pc,d1.w),d2
 	add.w	d0,d2
 	move.w	d2,(a3)
 
-	move.l	d4,(a2)				; Draw lower half of character
+	move.l	d4,(a2)				; Draw bottom of character
 	moveq	#0,d2
 	move.b	.TilesLower(pc,d1.w),d2
 	add.w	d0,d2
 	move.w	d2,(a3)
 
-	addi.l	#$20000,d3			; Next character
+	addi.l	#$20000,d3			; Shift right
 	addi.l	#$20000,d4
 	bra.s	.CharLoop			; Loop until string is drawn
 

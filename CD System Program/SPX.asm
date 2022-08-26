@@ -11,6 +11,7 @@
 	include	"_Include/Backup RAM.i"
 	include	"_Include/Sound.i"
 	include	"Sound Drivers/PCM/_Variables.i"
+	include	"Special Stage/_Global Variables.i"
 
 ; -------------------------------------------------------------------------
 ; Files
@@ -622,10 +623,10 @@ SPCmd_LoadThankYou:
 
 SPCmd_ResetSSFlags:
 	moveq	#0,d0
-	move.b	d0,GACOMSTATA.w
-	move.b	d0,GACOMSTAT3.w
-	move.l	d0,GACOMSTAT6.w
-	move.w	d0,GACOMSTAT4.w
+	move.b	d0,timeStonesSub.w		; Reset time stones retrieved
+	move.b	d0,specStageID.w		; Reset stage ID
+	move.l	d0,specStageTimer.w		; Reset timer
+	move.w	d0,specStageRings.w		; Reset rings
 	bra.w	SPCmdFinish
 
 ; -------------------------------------------------------------------------
@@ -634,10 +635,10 @@ SPCmd_ResetSSFlags:
 
 SPCmd_ResetSSFlags2:
 	moveq	#0,d0
-	move.b	d0,GACOMSTATA.w
-	move.b	d0,GACOMSTAT3.w
-	move.l	d0,GACOMSTAT6.w
-	move.w	d0,GACOMSTAT4.w
+	move.b	d0,timeStonesSub.w		; Reset time stones retrieved
+	move.b	d0,specStageID.w		; Reset stage ID
+	move.l	d0,specStageTimer.w		; Reset timer
+	move.w	d0,specStageRings.w		; Reset rings
 	bra.w	SPCmdFinish
 
 ; -------------------------------------------------------------------------
@@ -1467,9 +1468,9 @@ SPCmd_LoadGoodEnd:
 SPCmd_LoadSpecStage:
 	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 
-	move.b	GACOMCMD3.w,GACOMSTAT3.w	; Set stage ID
-	move.b	GACOMCMDA.w,GACOMSTATA.w	; Set stages beaten array
-	move.b	GACOMCMDB.w,ssFlags.w		; Set flags
+	move.b	specStageIDCmd.w,specStageID.w	; Set stage ID
+	move.b	timeStonesCmd.w,timeStonesSub.w	; Set time stones retrieved
+	move.b	specStageFlags.w,ssFlagsCopy.w	; Copy flags
 
 	lea	File_SpecialMain(pc),a0		; Load Main CPU file
 	bsr.w	WaitWordRAMAccess
@@ -1480,13 +1481,13 @@ SPCmd_LoadSpecStage:
 	lea	PRGRAM+$10000,a1
 	jsr	LoadFile.w
 
-	moveq	#0,d0				; Copy background graphics data into Word RAM
-	move.b	GACOMSTAT3.w,d0
+	moveq	#0,d0				; Copy stage data into Word RAM
+	move.b	specStageID.w,d0
 	mulu.w	#6,d0
-	lea	PRGRAM+$18000,a0
+	lea	SpecStageData,a0
 	move.w	4(a0,d0.w),d7
 	movea.l	(a0,d0.w),a0
-	lea	WORDRAM2M+$6D00,a1
+	lea	SpecStgDataCopy,a1
 
 .CopyData:
 	move.b	(a0)+,(a1)+
@@ -1503,7 +1504,7 @@ SPCmd_LoadSpecStage:
 
 	move.l	#SPIRQ2,_USERCALL2+2.w		; Restore IRQ2
 	
-	btst	#1,ssFlags.w			; Were we in time attack mode?
+	btst	#1,ssFlagsCopy.w		; Were we in time attack mode?
 	bne.s	.NoLevelEndMusic		; If so, branch
 	
 	bsr.w	ResetCDDAVol			; If not, play level end music
@@ -1512,7 +1513,7 @@ SPCmd_LoadSpecStage:
 	jsr	_CDBIOS.w
 
 .NoLevelEndMusic:
-	move.b	#0,ssFlags.w			; Clear special stage flags
+	move.b	#0,ssFlagsCopy.w		; Clear special stage flags copy
 	move.l	#0,curPCMDriver.w		; Reset current PCM driver
 	rts
 

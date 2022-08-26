@@ -12,6 +12,7 @@
 	include	"_Include/Backup RAM.i"
 	include	"_Include/Sound.i"
 	include	"_Include/MMD.i"
+	include	"Special Stage/_Global Variables.i"
 
 ; -------------------------------------------------------------------------
 ; MMD header
@@ -109,9 +110,9 @@ BuRAMManager:
 ; -------------------------------------------------------------------------
 
 SpecStage1Demo:
-	move.b	#1-1,GACOMCMD3			; Stage 1
-	move.b	#0,GACOMCMDA			; Reset stages beaten
-	bset	#0,GACOMCMDB			; Temporary mode
+	move.b	#1-1,specStageIDCmd		; Stage 1
+	move.b	#0,timeStonesCmd		; Reset time stones retrieved for this stage
+	bset	#0,specStageFlags		; Temporary mode
 	
 	moveq	#SCMD_SPECSTAGE,d0		; Run special stage
 	bsr.w	RunMMD
@@ -122,9 +123,9 @@ SpecStage1Demo:
 ; -------------------------------------------------------------------------
 
 SpecStage6Demo:
-	move.b	#6-1,GACOMCMD3			; Stage 6
-	move.b	#0,GACOMCMDA			; Reset stages beaten
-	bset	#0,GACOMCMDB			; Temporary mode
+	move.b	#6-1,specStageIDCmd		; Stage 6
+	move.b	#0,timeStonesCmd		; Reset time stones retrieved for this stage
+	bset	#0,specStageFlags		; Temporary mode
 	
 	moveq	#SCMD_SPECSTAGE,d0		; Run special stage
 	bsr.w	RunMMD
@@ -584,9 +585,9 @@ RunLevel:
 	rts
 
 .SpecialStage:
-	move.b	curSpecStage,GACOMCMD3		; Set stage ID
-	move.b	timeStones,GACOMCMDA		; Copy time stones retrieved flags
-	bclr	#0,GACOMCMDB			; Normal mode
+	move.b	curSpecStage,specStageIDCmd	; Set stage ID
+	move.b	timeStones,timeStonesCmd	; Copy time stones retrieved flags
+	bclr	#0,specStageFlags		; Normal mode
 
 	moveq	#SCMD_SPECSTAGE,d0		; Run special stage
 	bsr.w	RunMMD
@@ -1063,10 +1064,10 @@ SoundTest_Exit:
 ; -------------------------------------------------------------------------
 
 SoundTest_SpecStg8:
-	move.b	#8-1,GACOMCMD3			; Stage 8
-	move.b	#0,GACOMCMDA			; Reset stages beaten
-	bset	#0,GACOMCMDB			; Temporary mode
-	bset	#2,GACOMCMDB
+	move.b	#8-1,specStageIDCmd		; Stage 8
+	move.b	#0,timeStonesCmd		; Reset time stones retrieved for this stage
+	bset	#0,specStageFlags		; Temporary mode
+	bset	#2,specStageFlags		; Secret mode
 	
 	moveq	#SCMD_SPECSTAGE,d0		; Run special stage
 	bsr.w	RunMMD
@@ -1288,9 +1289,9 @@ TimeAttack_SS:
 	neg.b	d0				; Set special stage ID
 	ext.w	d0
 	subq.w	#1,d0
-	move.b	d0,GACOMCMD3
-	move.b	#0,GACOMCMDA			; Reset stages beaten
-	bset	#1,GACOMCMDB			; Time attack mode
+	move.b	d0,specStageIDCmd
+	move.b	#0,timeStonesCmd		; Reset time stones retrieved for this stage
+	bset	#1,specStageFlags		; Time attack mode
 
 	moveq	#SCMD_SPECSTAGE,d0		; Run special stage
 	bsr.w	RunMMD

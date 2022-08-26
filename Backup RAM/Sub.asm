@@ -193,7 +193,7 @@ UnkDecomp:
 ;	a2.l - Pointer to destination buffer
 ; -------------------------------------------------------------------------
 
-MassCopy:
+Copy128:
 	rept	32
 		move.l	(a1)+,(a2)+
 	endr

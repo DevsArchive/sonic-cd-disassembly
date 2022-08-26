@@ -438,7 +438,7 @@ FILENAMESZ	EQU	12			; File name length
 
 	rsset	SPVariables
 curPCMDriver	rs.l	1			; Current PCM driver
-ssFlags		rs.b	1			; Special stage flags
+ssFlagsCopy	rs.b	1			; Special stage flags copy
 pcmDrvFlags	rs.b	1			; PCM driver flags
 		rs.b	$400-__rs
 SPVARSSZ	rs.b	1			; Size of structure

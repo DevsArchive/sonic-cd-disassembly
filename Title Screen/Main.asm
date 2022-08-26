@@ -26,7 +26,7 @@ oMapFrame	rs.b	1			; Mappings frame
 		rs.b	1
 oX		rs.l	1			; X position
 oY		rs.l	1			; Y position
-oVars		rs.b	$40-__rs
+oVars		rs.b	$40-__rs		; Object specific variables
 oSize		rs.b	0			; Size of structure
 
 ; -------------------------------------------------------------------------
@@ -148,9 +148,9 @@ Start:
 	clr.l	(a0)+
 	dbf	d7,.ClearVars
 	
-	bsr.w	SyncWithSubCPU1			; Wait for Sub CPU to need Word RAM access
-	bsr.w	GiveWordRAMAccess		; Give Sub CPU Word RAM Access
-	bsr.w	SyncWithSubCPU2			; Wait for Sub CPU to finish initializing
+	bsr.w	WaitSubCPUStart			; Wait for the Sub CPU program to start
+	bsr.w	GiveWordRAMAccess		; Give Word RAM access
+	bsr.w	WaitSubCPUInit			; Wait for the Sub CPU program to finish initializing
 	
 	bsr.w	InitMD				; Initialize Mega Drive hardware
 	bsr.w	ClearSprites			; Clear sprites
@@ -240,7 +240,7 @@ Start:
 
 	lea	Pal_Title,a1			; Flash white and fade in title screen paltte
 	lea	fadePalette.w,a2
-	bsr.w	Copy128Bytes
+	bsr.w	Copy128
 	move.w	#($00<<9)|($30-1),palFadeInfo.w
 	bsr.w	FadeFromWhite2
 
@@ -260,7 +260,7 @@ Start:
 MainLoop:
 	move.b	#2,titleMode.w			; Set to "menu" mode
 	
-	; Display clouds buffer 2, render to buffer 1
+	; Show clouds buffer 2, render to buffer 1
 	bsr.w	RenderClouds			; Start rendering clouds
 	jsr	ClearSprites(pc)		; Clear sprites
 	jsr	RunObjects(pc)			; Run objects
@@ -281,7 +281,7 @@ MainLoop:
 	tst.b	exitFlag.w			; Are we exiting the title screen?
 	bne.s	.Exit				; If so, branch
 	
-	; Display clouds buffer 1, render to buffer 2
+	; Show clouds buffer 1, render to buffer 2
 	jsr	ClearSprites(pc)		; Clear sprites
 	jsr	RunObjects(pc)			; Run objects
 	bsr.w	PaletteCycle			; Run palette cycle
@@ -375,16 +375,16 @@ VInterrupt:
 ; -------------------------------------------------------------------------
 
 .Routines:
-	dc.w	VInt_NormalBuf1_1-.Routines	; Copy 1st half of rendered clouds art to buffer 1
-	dc.w	VInt_NormalBuf1_2-.Routines	; Copy 2nd half of rendered clouds art to buffer 1
-	dc.w	VInt_NormalBuf2_1-.Routines	; Copy 1st half of rendered clouds art to buffer 2
-	dc.w	VInt_NormalBuf2_2-.Routines	; Copy 2nd half of rendered clouds art to buffer 2
+	dc.w	VInt_CopyClouds1_1-.Routines	; Copy 1st half of rendered clouds art to buffer 1
+	dc.w	VInt_CopyClouds1_2-.Routines	; Copy 2nd half of rendered clouds art to buffer 1
+	dc.w	VInt_CopyClouds2_1-.Routines	; Copy 1st half of rendered clouds art to buffer 2
+	dc.w	VInt_CopyClouds2_2-.Routines	; Copy 2nd half of rendered clouds art to buffer 2
 	dc.w	VInt_Nothing-.Routines		; Does nothing
 	dc.w	VInt_NoClouds-.Routines		; Don't render clouds
 
 ; -------------------------------------------------------------------------
 
-VInt_NormalBuf1_1:
+VInt_CopyClouds1_1:
 	DMA68K	sprites,$D400,$280,VRAM		; Copy sprite data
 						; Copy rendered clouds art
 	DMA68K	cloudsArt,$0020,IMGLENGTH/2,VRAM
@@ -393,7 +393,7 @@ VInt_NormalBuf1_1:
 
 ; -------------------------------------------------------------------------
 
-VInt_NormalBuf1_2:
+VInt_CopyClouds1_2:
 	DMA68K	sprites,$D400,$280,VRAM		; Copy sprite data
 						; Copy rendered clouds art
 	DMA68K	cloudsArt+(IMGLENGTH/2),$0020+(IMGLENGTH/2),IMGLENGTH/2,VRAM
@@ -402,7 +402,7 @@ VInt_NormalBuf1_2:
 
 ; -------------------------------------------------------------------------
 
-VInt_NormalBuf2_1:
+VInt_CopyClouds2_1:
 	DMA68K	sprites,$D400,$280,VRAM		; Copy sprite data
 						; Copy rendered clouds art
 	DMA68K	cloudsArt,$3020,IMGLENGTH/2,VRAM
@@ -411,7 +411,7 @@ VInt_NormalBuf2_1:
 
 ; -------------------------------------------------------------------------
 
-VInt_NormalBuf2_2:
+VInt_CopyClouds2_2:
 	DMA68K	sprites,$D400,$280,VRAM		; Copy sprite data
 						; Copy rendered clouds art
 	DMA68K	cloudsArt+(IMGLENGTH/2),$3020+(IMGLENGTH/2),IMGLENGTH/2,VRAM
@@ -463,29 +463,29 @@ VInt_Lag:
 	rte
 
 ; -------------------------------------------------------------------------
-; Unused functions to display a clouds buffer
+; Unused functions to show a clouds buffer
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a1.l - VDP control port
 ;	a2.l - VDP data port
 ; -------------------------------------------------------------------------
 
-DisplayCloudsBuf1:
+ShowCloudsBuf1:
 	move.w	#$8F20,(a1)			; Set for every 8 scanlines
 	VDPCMD	move.l,$D002,VRAM,WRITE,VDPCTRL	; Write background scroll data
-	moveq	#0,d0				; Display clouds buffer 1
-	bra.s	DisplayCloudsBuf
+	moveq	#0,d0				; Show clouds buffer 1
+	bra.s	ShowCloudsBuf
 
 ; -------------------------------------------------------------------------
 
-DisplayCloudsBuf2:
+ShowCloudsBuf2:
 	move.w	#$8F20,(a1)			; Set for every 8 scanlines
 	VDPCMD	move.l,$D002,VRAM,WRITE,VDPCTRL	; Write background scroll data
-	move.w	#$100,d0			; Display clouds buffer 2
+	move.w	#$100,d0			; Show clouds buffer 2
 
 ; -------------------------------------------------------------------------
 
-DisplayCloudsBuf:
+ShowCloudsBuf:
 	rept	(IMGHEIGHT-8)/8			; Set scroll offset for clouds
 		move.w	d0,(a2)
 	endr
@@ -493,16 +493,16 @@ DisplayCloudsBuf:
 	rts
 
 ; -------------------------------------------------------------------------
-; Scroll background (display clouds buffer 1)
+; Scroll background (show clouds buffer 1)
 ; -------------------------------------------------------------------------
 
 ScrollBgBuf1:
-	lea	hscroll.w,a1			; Display clouds buffer 1
+	lea	hscroll.w,a1			; Show clouds buffer 1
 	moveq	#(IMGHEIGHT-8)-1,d1
 
-.DisplayClouds:
+.ShowClouds:
 	clr.l	(a1)+
-	dbf	d1,.DisplayClouds
+	dbf	d1,.ShowClouds
 
 	lea	scrollBuf.w,a2			; Water scroll buffer
 	moveq	#64-1,d2			; 64 scanlines
@@ -527,16 +527,16 @@ ScrollBgBuf1:
 	rts
 
 ; -------------------------------------------------------------------------
-; Scroll background (display clouds buffer 2)
+; Scroll background (show clouds buffer 2)
 ; -------------------------------------------------------------------------
 
 ScrollBgBuf2:
-	lea	hscroll.w,a1			; Display clouds buffer 2
+	lea	hscroll.w,a1			; Show clouds buffer 2
 	moveq	#(IMGHEIGHT-8)-1,d1
 
-.DisplayClouds:
+.ShowClouds:
 	move.l	#$100,(a1)+
-	dbf	d1,.DisplayClouds
+	dbf	d1,.ShowClouds
 
 	lea	scrollBuf.w,a2			; Water scroll buffer
 	moveq	#64-1,d2			; 64 scanlines
@@ -596,7 +596,7 @@ ReadController:
 	move.b	(a0),d2				; Mask out tapped buttons
 	eor.b	d2,d0
 	move.b	d1,(a0)+			; Store pressed buttons
-	and.b	d1,d0				; store tapped buttons
+	and.b	d1,d0				; Store tapped buttons
 	move.b	d0,(a0)+
 	rts
 
@@ -645,13 +645,13 @@ DrawCloudsMap:
 	lea	VDPCTRL,a2			; VDP control port
 	lea	VDPDATA,a3			; VDP data port
 
-	move.w	#$8001,d6			; Set buffer 1 tilemap
+	move.w	#$8001,d6			; Draw buffer 1 tilemap
 	VDPCMD	move.l,$E000,VRAM,WRITE,d0
 	moveq	#IMGWTILE-1,d1
 	moveq	#IMGHTILE-1,d2
 	bsr.s	.DrawMap
 
-	move.w	#$8181,d6			; Set buffer 2 tilemap
+	move.w	#$8181,d6			; Draw buffer 2 tilemap
 	VDPCMD	move.l,$E040,VRAM,WRITE,d0
 	moveq	#IMGWTILE-1,d1
 	moveq	#IMGHTILE-1,d2
@@ -687,7 +687,7 @@ RenderClouds:
 	move.b	#1,GACOMCMD2			; Tell Sub CPU to render clouds
 
 .WaitSubCPU:
-	cmpi.b	#1,GACOMSTAT2			; Has the Sub CPU received our tip?
+	cmpi.b	#1,GACOMSTAT2			; Has the Sub CPU responded?
 	beq.s	.CommDone			; If so, branch
 	addq.w	#1,subWaitTime.w		; Increment wait time
 	bcc.s	.WaitSubCPU			; If we should wait some more, loop
@@ -697,7 +697,7 @@ RenderClouds:
 	move.b	#0,GACOMCMD2			; Respond to the Sub CPU
 
 .WaitSubCPU2:
-	tst.b	GACOMSTAT2			; Has the Sub CPU received our tip?
+	tst.b	GACOMSTAT2			; Has the Sub CPU responded?
 	beq.s	.End				; If so, branch
 	addq.w	#1,subWaitTime.w		; Increment wait time
 	bcc.s	.WaitSubCPU2			; If we should wait some more, loop
@@ -707,17 +707,17 @@ RenderClouds:
 	rts
 
 ; -------------------------------------------------------------------------
-; Sync with Sub CPU (wait flag set)
+; Wait for the Sub CPU program to start
 ; -------------------------------------------------------------------------
 
-SyncWithSubCPU1:
+WaitSubCPUStart:
 	cmpi.b	#4,subFailCount.w		; Is the Sub CPU deemed unreliable?
 	bcc.s	.End				; If so, branch
 	
-	btst	#7,GASUBFLAG			; Are we synced with the Sub CPU?
-	bne.s	.End				; If so, wait
+	btst	#7,GASUBFLAG			; Has the Sub CPU program started?
+	bne.s	.End				; If so, branch
 	addq.w	#1,subWaitTime.w		; Increment wait time
-	bcc.s	SyncWithSubCPU1			; If we should wait some more, loop
+	bcc.s	WaitSubCPUStart			; If we should wait some more, loop
 	addq.b	#1,subFailCount.w		; Increment Sub CPU fail count
 
 .End:
@@ -725,17 +725,17 @@ SyncWithSubCPU1:
 	rts
 
 ; -------------------------------------------------------------------------
-; Sync with Sub CPU (wait flag clear)
+; Wait for the Sub CPU program to finish initializing
 ; -------------------------------------------------------------------------
 
-SyncWithSubCPU2:
+WaitSubCPUInit:
 	cmpi.b	#4,subFailCount.w		; Is the Sub CPU deemed unreliable?
 	bcc.s	.End				; If so, branch
 	
-	btst	#7,GASUBFLAG			; Are we synced with the Sub CPU?
-	beq.s	.End				; If so, wait
+	btst	#7,GASUBFLAG			; Has the Sub CPU program initialized?
+	beq.s	.End				; If so, branch
 	addq.w	#1,subWaitTime.w		; Increment wait time
-	bcc.s	SyncWithSubCPU2			; If we should wait some more, loop
+	bcc.s	WaitSubCPUInit			; If we should wait some more, loop
 	addq.b	#1,subFailCount.w		; Increment Sub CPU fail count
 
 .End:
@@ -808,6 +808,7 @@ InitMD:
 	move.b	#$C0,IODATA1
 
 	jsr	StopZ80(pc)			; Stop the Z80
+
 	DMAFILL	0,$10000,0			; Clear VRAM
 
 	lea	.Palette(pc),a0			; Load palette
@@ -894,7 +895,7 @@ GetCloudsArt:
 
 .CopyChunks:
 	rept	$800/$80			; Copy $800 bytes
-		bsr.s	Copy128Bytes
+		bsr.s	Copy128
 	endr
 	dbf	d7,.CopyChunks			; Loop until chunks are copied
 
@@ -922,7 +923,7 @@ GetCloudsArt:
 ;	a2.l - Pointer to destination buffer
 ; -------------------------------------------------------------------------
 
-Copy128Bytes:
+Copy128:
 	movem.l	(a1)+,d0-d5/a3-a4
 	movem.l	d0-d5/a3-a4,(a2)
 	movem.l	(a1)+,d0-d5/a3-a4
@@ -2748,7 +2749,7 @@ DrawBgTilemap:
 
 .WriteTile:
 	move.w	d6,(a3)				; Write tile ID
-	dbf	d3,.DrawTile			; Loop until row is written
+	dbf	d3,.DrawTile			; Loop until row is drawn
 	
 	add.l	d4,d0				; Next row
 	dbf	d2,.DrawRow			; Loop until map is drawn

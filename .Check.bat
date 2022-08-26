@@ -34,5 +34,7 @@ fc /b _Original\%REGPATH%\R11B__.MMD _Built\Files\R11B__.MMD
 fc /b _Original\%REGPATH%\R11C__.MMD _Built\Files\R11C__.MMD
 fc /b _Original\%REGPATH%\R11D__.MMD _Built\Files\R11D__.MMD
 fc /b _Original\%REGPATH%\R61A__.MMD _Built\Files\R61A__.MMD
+fc /b _Original\%REGPATH%\SPMM__.MMD _Built\Files\SPMM__.MMD
+fc /b _Original\%REGPATH%\SPSS__.BIN _Built\Files\SPSS__.BIN
 
 pause

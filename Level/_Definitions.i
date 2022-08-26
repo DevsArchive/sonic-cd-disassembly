@@ -23,79 +23,45 @@ DemoData	EQU	LevelChunks+DemoDataRel	; Demo data location
 ; Object structure
 ; -------------------------------------------------------------------------
 
+oSize		EQU	$40
+c = 0
+	rept	oSize
+oVar\$c		EQU	c
+		c: = c+1
+	endr
+
 	rsreset
-
 oID		rs.b	1			; ID
-
 oRender		rs.b	1			; Render flags
 oTile		rs.w	1			; Base tile ID
 oMap		rs.l	1			; Sprite mappings pointer
-
 oX		rs.w	1			; X position
 oYScr		rs.b	0			; Y position (screen mode)
 oXSub		rs.w	1			; X position subpixel
 oY		rs.l	1			; Y position
-
 oXVel		rs.w	1			; X velocity
 oYVel		rs.w	1			; Y velocity
-
-oVar14		rs.b	1			; Object specific flags
-oVar15		rs.b	1
-
+		rs.b	2
 oYRadius	rs.b	1			; Y radius
 oXRadius	rs.b	1			; X radius
 oPriority	rs.b	1			; Sprite draw priority level
 oWidth		rs.b	1			; Width
-
 oMapFrame	rs.b	1			; Sprite mapping frame ID
 oAnimFrame	rs.b	1			; Animation script frame ID
 oAnim		rs.b	1			; Animation ID
 oPrevAnim	rs.b	1			; Previous previous animation ID
 oAnimTime	rs.b	1			; Animation timer
-
-oVar1F		rs.b	1			; Object specific flag
-
-oVar20		rs.b	0			; Object specific flag
+		rs.b	1
 oColType	rs.b	1			; Collision type
-oVar21		rs.b	0			; Object specific flag
 oColStatus	rs.b	1			; Collision status
-
 oStatus		rs.b	1			; Status flags
 oRespawn	rs.b	1			; Respawn table entry ID
 oRoutine	rs.b	1			; Routine ID
-oVar25		rs.b	0			; Object specific flag
 oRoutine2	rs.b	1			; Secondary routine ID
 oAngle		rs.b	1			; Angle
-
-oVar27		rs.b	1			; Object specific flag
-
+		rs.b	1			; Object specific variable
 oSubtype	rs.b	1			; Subtype ID
 oSubtype2	rs.b	1			; Secondary subtype ID
-
-oVar2A		rs.b	1			; Object specific flags
-oVar2B		rs.b	1
-oVar2C		rs.b	1
-oVar2D		rs.b	1
-oVar2E		rs.b	1
-oVar2F		rs.b	1
-oVar30		rs.b	1
-oVar31		rs.b	1
-oVar32		rs.b	1
-oVar33		rs.b	1
-oVar34		rs.b	1
-oVar35		rs.b	1
-oVar36		rs.b	1
-oVar37		rs.b	1
-oVar38		rs.b	1
-oVar39		rs.b	1
-oVar3A		rs.b	1
-oVar3B		rs.b	1
-oVar3C		rs.b	1
-oVar3D		rs.b	1
-oVar3E		rs.b	1
-oVar3F		rs.b	1
-
-oSize		rs.b	0			; Length of object structure
 
 ; -------------------------------------------------------------------------
 ; Player object variables

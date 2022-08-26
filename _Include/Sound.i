@@ -5,13 +5,15 @@
 ; Sound definitions
 ; -------------------------------------------------------------------------
 
+	include	"Sound Drivers/FM/_Sound IDs.i"
+	include	"Sound Drivers/PCM/_Sound IDs.i"
+	
 ; -------------------------------------------------------------------------
 ; Addresses
 ; -------------------------------------------------------------------------
 
 ; FM driver (Z80)
 	if def(MAINCPU)
-		include	"Sound Drivers/FM/_Sound IDs.i"
 FMDrvQueue1	EQU	Z80RAM+$1C09		; Sound queue 1
 FMDrvQueue2	EQU	Z80RAM+$1C0A		; Sound queue 2
 FMDrvQueue3	EQU	Z80RAM+$1C0B		; Sound queue 3
@@ -19,7 +21,6 @@ FMDrvQueue3	EQU	Z80RAM+$1C0B		; Sound queue 3
 
 ; PCM driver (Sub CPU)
 	if def(SUBCPU)
-		include	"Sound Drivers/PCM/_Sound IDs.i"
 PCMDriver	EQU	PRGRAM+$40000		; PCM driver location
 PCMDrvOrigin	EQU	PCMDriver+$10		; PCM driver code origin
 PCMDrvRun	EQU	PCMDriver+$10		; Run PCM driver

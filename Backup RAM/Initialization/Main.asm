@@ -500,7 +500,7 @@ FlushSoundQueue:
 ;	a1.l - Pointer to destination buffer
 ; -------------------------------------------------------------------------
 
-MassFill:
+Fill128:
 	rept	32
 		move.l	d1,(a1)+
 	endr
@@ -514,7 +514,7 @@ MassFill:
 ;	a1.l - VDP control port
 ; -------------------------------------------------------------------------
 
-MassFillVDP:
+Fill128VDP:
 	rept	32
 		move.l	d1,(a1)
 	endr
@@ -528,7 +528,7 @@ MassFillVDP:
 ;	a2.l - Pointer to destination buffer
 ; -------------------------------------------------------------------------
 
-MassCopy:
+Copy128:
 	rept	32
 		move.l	(a1)+,(a2)+
 	endr
@@ -542,7 +542,7 @@ MassCopy:
 ;	a2.l - VDP control port
 ; -------------------------------------------------------------------------
 
-MassCopyVDP:
+Copy128VDP:
 	rept	32
 		move.l	(a1)+,(a2)
 	endr

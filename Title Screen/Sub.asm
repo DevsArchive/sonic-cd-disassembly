@@ -26,21 +26,25 @@ gfxYawCos	rs.w	1			; Cosine of yaw
 gfxYawSinN	rs.w	1			; Negative sine of yaw
 gfxYawCosN	rs.w	1			; Negative cosine of yaw
 gfxFOV		rs.w	1			; FOV
-gfx18		rs.w	1
-		rs.b	$16			; Unused
-gfxPsYsFOV	rs.l	1
-gfxPsYcFOV	rs.l	1
-		rs.b	8			; Unused
-gfxPcFOV	rs.l	1
-		rs.b	16			; Unused
-gfx54		rs.w	1
-		rs.b	2			; Unused
-gfx58		rs.w	1
-		rs.b	2			; Unused
-gfxPcYs		rs.w	1
-		rs.b	2			; Unused
-gfxPcYc		rs.w	1
-gfxSize		rs.b	0			; size of structure
+gfxCenter	rs.w	1			; Center point
+		rs.b	$16
+gfxPsYsFOV	rs.l	1			; sin(pitch) * sin(yaw) * FOV
+gfxPsYcFOV	rs.l	1			; sin(pitch) * cos(yaw) * FOV
+		rs.b	8
+gfxPcFOV	rs.l	1			; cos(pitch) * FOV
+		rs.b	4
+gfxYsFOV	rs.w	1			; sin(yaw) * FOV
+		rs.b	2
+gfxYcFOV	rs.w	1			; cos(yaw) * FOV
+		rs.b	6
+gfxCenterX	rs.w	1			; Center point X offset
+		rs.b	2
+gfxCenterY	rs.w	1			; Center point Y offset
+		rs.b	2
+gfxPcYs		rs.w	1			; cos(pitch) * sin(yaw)
+		rs.b	2
+gfxPcYc		rs.w	1			; cos(pitch) * cos(yaw)
+gfxSize		rs.b	0			; Size of structure
 
 ; -------------------------------------------------------------------------
 ; Variables
@@ -48,11 +52,11 @@ gfxSize		rs.b	0			; size of structure
 
 	rsset	PRGRAM+$1E000
 VARSSTART	rs.b	0			; Start of variables
-		rs.b	$300			; Unused
+		rs.b	$300
 gfxOpFlag	rs.b	1			; Graphics operation flag
-		rs.b	$AFF			; Unused
+		rs.b	$AFF
 gfxVars		rs.b	gfxSize			; Graphics operation variables
-		rs.b	$119E			; Unused
+		rs.b	$119E
 VARSSZ		EQU	__rs-VARSSTART		; Size of variables area
 
 p2CtrlData	EQU	GACOMCMDE		; Player 2 controller data
@@ -84,9 +88,9 @@ p2CtrlTap	EQU	p2CtrlData+1		; Player 2 controller tapped buttons data
 	lea	VARSSTART,a0			; Clear variables
 	move.w	#VARSSZ/4-1,d7
 
-.ClearVars:
+.ClearVariables:
 	move.l	#0,(a0)+
-	dbf	d7,.ClearVars
+	dbf	d7,.ClearVariables
 
 	bsr.w	InitGfxOperation		; Initialize graphics operation
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
@@ -273,8 +277,8 @@ InitGfxOperation:
 	move.w	#0,GAIMGOFFSET.w		; Image buffer offset
 	move.w	#IMGWIDTH,GAIMGHDOT.w		; Image buffer width
 	
-	move.w	#$80,gfxFOV(a1)
-	move.w	#-$40,gfx18(a1)
+	move.w	#$80,gfxFOV(a1)			; Set FOV
+	move.w	#-$40,gfxCenter(a1)
 	rts
 
 ; -------------------------------------------------------------------------
@@ -387,23 +391,23 @@ GenGfxTraceTbl:
 	lsl.l	#3,d3
 	movea.l	d3,a4
 
-	move.w	gfxPitchSin(a6),d4		; (sin(pitch) * sin(yaw)) * (FOV + gfx18)
+	move.w	gfxPitchSin(a6),d4		; (sin(pitch) * sin(yaw)) * (FOV + center point)
 	muls.w	gfxYawSin(a6),d4
 	asr.l	#5,d4
 	move.w	gfxFOV(a6),d3
-	add.w	gfx18(a6),d3
+	add.w	gfxCenter(a6),d3
 	muls.w	d4,d3
 	asr.l	d6,d3
-	move.w	d3,gfx54(a6)
+	move.w	d3,gfxCenterX(a6)
 
-	move.w	gfxPitchSin(a6),d4		; (sin(pitch) * cos(yaw)) * (FOV + gfx18)
+	move.w	gfxPitchSin(a6),d4		; (sin(pitch) * cos(yaw)) * (FOV + center point)
 	muls.w	gfxYawCos(a6),d4
 	asr.l	#5,d4
 	move.w	gfxFOV(a6),d3
-	add.w	gfx18(a6),d3
+	add.w	gfxCenter(a6),d3
 	muls.w	d4,d3
 	asr.l	d6,d3
-	move.w	d3,gfx58(a6)
+	move.w	d3,gfxCenterY(a6)
 
 	move.w	#IMGHEIGHT-1,d7			; Number of lines
 
@@ -414,10 +418,10 @@ GenGfxTraceTbl:
 	; Y point =  (line * cos(pitch) * cos(yaw)) - (FOV * sin(pitch) * cos(yaw))
 	; Z point =  (line * sin(pitch)) + (FOV * cos(pitch))
 	
-	; Shear left X  = Camera X + (((127 * cos(yaw)) + X point) * (Camera Z / Z point)) - gfx54
-	; Shear left Y  = Camera Y + (((127 * sin(yaw)) + Y point) * (Camera Z / Z point)) + gfx58
-	; Shear right X = Camera X + (((-128 * cos(yaw)) + X point) * (Camera Z / Z point)) - gfx54
-	; Shear right Y = Camera Y + (((-128 * sin(yaw)) + Y point) * (Camera Z / Z point)) + gfx58
+	; Shear left X  = Camera X + (((127 * cos(yaw)) + X point) * (Camera Z / Z point)) - Center X
+	; Shear left Y  = Camera Y + (((127 * sin(yaw)) + Y point) * (Camera Z / Z point)) + Center Y
+	; Shear right X = Camera X + (((-128 * cos(yaw)) + X point) * (Camera Z / Z point)) - Center X
+	; Shear right Y = Camera Y + (((-128 * sin(yaw)) + Y point) * (Camera Z / Z point)) + Center Y
 
 	move.w	d2,d3				; Z point
 	muls.w	gfxPitchSin(a6),d3
@@ -436,7 +440,7 @@ GenGfxTraceTbl:
 	muls.w	gfxCamZ(a6),d4
 	divs.w	d3,d4
 	add.w	d0,d4
-	sub.w	gfx54(a6),d4
+	sub.w	gfxCenterX(a6),d4
 	move.w	d4,(a5)+
 	
 	move.l	a4,d4				; Y start = Shear left Y
@@ -448,7 +452,7 @@ GenGfxTraceTbl:
 	muls.w	gfxCamZ(a6),d4
 	divs.w	d3,d4
 	add.w	d1,d4
-	add.w	gfx58(a6),d4
+	add.w	gfxCenterY(a6),d4
 	move.w	d4,(a5)+
 	
 	move.l	a1,d4				; X delta = Shear right X - Shear left X
@@ -460,7 +464,7 @@ GenGfxTraceTbl:
 	muls.w	gfxCamZ(a6),d4
 	divs.w	d3,d4
 	add.w	d0,d4
-	sub.w	gfx54(a6),d4
+	sub.w	gfxCenterX(a6),d4
 	sub.w	-4(a5),d4
 	move.w	d4,(a5)+
 	
@@ -473,13 +477,12 @@ GenGfxTraceTbl:
 	muls.w	gfxCamZ(a6),d4
 	divs.w	d3,d4
 	add.w	d1,d4
-	add.w	gfx58(a6),d4
+	add.w	gfxCenterY(a6),d4
 	sub.w	-4(a5),d4
 	move.w	d4,(a5)+
 
 	subq.w	#1,d2				; Next line
 	dbf	d7,.GenLoop			; Loop until entire table is generated
-
 	rts
 
 ; -------------------------------------------------------------------------
@@ -511,7 +514,7 @@ GetSine:
 	neg.w	d4				; Negate value
 
 .SetValue:
-	move.w	d4,d3				; Set final valur
+	move.w	d4,d3				; Set final value
 	rts
 
 ; -------------------------------------------------------------------------

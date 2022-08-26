@@ -1,7 +1,7 @@
 @echo off
 set REGION=1
 set OUTPUT=SCD.iso
-set ASM68K=_Bin\asm68k.exe /p /o ae- /o l. /e REGION=%REGION%
+set ASM68K=_Bin\asm68k.exe /p /o ae-,l. /e REGION=%REGION%
 set AS=_Bin\asw.exe -q -xx -n -A -L -U -E -i .
 set P2BIN=_Bin\p2bin.exe
 
@@ -56,6 +56,12 @@ if exist "Sound Drivers\FM\_Driver.p" (
 %ASM68K% /e DEMO=0 "Level\Palmtree Panic\Act 1 Bad Future.asm", "_Built\Files\R11D__.MMD", , "Level\Palmtree Panic\Act 1 Bad Future.lst"
 
 %ASM68K% /e DEMO=0 "Level\Wacky Workbench\Act 1 Present.asm", "_Built\Files\R61A__.MMD", , "Level\Wacky Workbench\Act 1 Present.lst"
+
+%ASM68K% "Special Stage\Stage Data.asm", "Special Stage\Stage Data.bin", "Special Stage\Stage Data.sym"
+_Bin\GetPsyQSyms.exe "Special Stage\Stage Data.sym" "Special Stage\Stage Data Labels.i"
+if exist "Special Stage\Stage Data.sym" ( del "Special Stage\Stage Data.sym" > nul )
+%ASM68K% "Special Stage\Main.asm", "_Built\Files\SPMM__.MMD", , "Special Stage\Main.lst"
+%ASM68K% "Special Stage\SUB.asm", "_Built\Files\SPSS__.BIN", , "Special Stage\Sub.lst"
 
 echo.
 echo Compiling filesystem...
