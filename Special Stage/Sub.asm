@@ -4009,15 +4009,27 @@ ObjSonic_Jump:
 	move.l	oSprY(a0),d0
 	add.l	oPlayerSprYVel(a0),d0
 	move.l	d0,oSprY(a0)
-	addi.l	#$A000,oPlayerSprYVel(a0)
+	if REGION<>EUROPE
+		addi.l	#$A000,oPlayerSprYVel(a0)
+	else
+		addi.l	#$C000,oPlayerSprYVel(a0)
+	endif
 	tst.w	(jumpTimer).l
 	beq.s	.CheckLand
-	addi.l	#$A000,oPlayerSprYVel(a0)
+	if REGION<>EUROPE
+		addi.l	#$A000,oPlayerSprYVel(a0)
+	else
+		addi.l	#$C000,oPlayerSprYVel(a0)
+	endif
 	subq.w	#1,(jumpTimer).l
 	move.b	(playerCtrlData).l,d0
 	andi.b	#$70,d0
 	beq.s	.CheckLand
-	subi.l	#$A000,oPlayerSprYVel(a0)
+	if REGION<>EUROPE
+		subi.l	#$A000,oPlayerSprYVel(a0)
+	else
+		subi.l	#$C000,oPlayerSprYVel(a0)
+	endif
 
 .CheckLand:
 	cmpi.w	#$158,oSprY(a0)
@@ -4043,7 +4055,11 @@ ObjSonic_Float:
 	move.l	oSprY(a0),d0
 	add.l	oPlayerSprYVel(a0),d0
 	move.l	d0,oSprY(a0)
-	addi.l	#$2000,oPlayerSprYVel(a0)
+	if REGION<>EUROPE
+		addi.l	#$2000,oPlayerSprYVel(a0)
+	else
+		addi.l	#$2666,oPlayerSprYVel(a0)
+	endif
 	cmpi.w	#$158,oSprY(a0)
 	bcs.s	.NotLanded
 	move.b	#1,oRoutine(a0)
@@ -4370,9 +4386,12 @@ ObjSonic_TouchPath:
 ; ---------------------------------------------------------------------------
 
 ObjSonic_TouchFan:
-
 	move.b	#3,oRoutine(a0)
-	move.l	#-$40000,oPlayerSprYVel(a0)
+	if REGION<>EUROPE
+		move.l	#-$40000,oPlayerSprYVel(a0)
+	else
+		move.l	#-$48000,oPlayerSprYVel(a0)
+	endif
 	bset	#6,oFlags(a0)
 	move.b	#$B8,d0
 	bsr.w	PlayFMSound
@@ -4382,7 +4401,6 @@ ObjSonic_TouchFan:
 ; ---------------------------------------------------------------------------
 
 ObjSonic_TouchWater:
-
 	tst.b	(timeStopped).l
 	bne.s	.End
 	move.b	#8,(splashObject+oID).l
@@ -4396,8 +4414,11 @@ ObjSonic_TouchWater:
 ; ---------------------------------------------------------------------------
 
 ObjSonic_TouchRough:
-
-	move.w	#$500,oPlayerTopSpeed(a0)
+	if REGION<>EUROPE
+		move.w	#$500,oPlayerTopSpeed(a0)
+	else
+		move.w	#$600,oPlayerTopSpeed(a0)
+	endif
 	cmpi.w	#$100,oPlayerSpeed(a0)
 	bcs.s	.End
 	bsr.w	FindDustObjSlot
@@ -4414,9 +4435,12 @@ ObjSonic_TouchRough:
 ; ---------------------------------------------------------------------------
 
 ObjSonic_TouchSpring:
-
 	move.b	#2,oRoutine(a0)
-	move.l	#-$100000,oPlayerSprYVel(a0)
+	if REGION<>EUROPE
+		move.l	#-$100000,oPlayerSprYVel(a0)
+	else
+		move.l	#-$120000,oPlayerSprYVel(a0)
+	endif
 	bset	#7,oFlags(a0)
 	move.b	#$98,d0
 	bsr.w	PlayFMSound
@@ -4426,7 +4450,6 @@ ObjSonic_TouchSpring:
 ; ---------------------------------------------------------------------------
 
 ObjSonic_TouchHazard:
-
 	cmpi.b	#4,oRoutine(a0)
 	beq.w	.End
 	cmpi.b	#7,oRoutine(a0)
@@ -4482,7 +4505,6 @@ ObjSonic_TouchHazard:
 ; ---------------------------------------------------------------------------
 
 ObjSonic_TouchBigBooster:
-
 	move.b	#$CE,d0
 	bsr.w	PlayFMSound
 	moveq	#$E,d0
@@ -4745,7 +4767,11 @@ ObjSonic_CheckJump:
 	andi.b	#$70,d0
 	beq.s	.End
 	move.b	#2,oRoutine(a0)
-	move.l	#-$80000,oPlayerSprYVel(a0)
+	if REGION<>EUROPE
+		move.l	#-$80000,oPlayerSprYVel(a0)
+	else
+		move.l	#-$90000,oPlayerSprYVel(a0)
+	endif
 	move.w	#$14,(jumpTimer).l
 	bset	#7,oFlags(a0)
 	move.w	#0,oVar16(a0)
@@ -4761,7 +4787,11 @@ ObjSonic_CheckJump:
 ObjSonic_Rotate:
 	tst.b	stageWon
 	bne.s	.End
-	move.l	#$60000,d0
+	if REGION<>EUROPE
+		move.l	#$60000,d0
+	else
+		move.l	#$73333,d0
+	endif
 	btst	#3,(playerCtrlData).l
 	beq.s	.CheckLeft
 	sub.l	d0,oPlayerYaw(a0)
@@ -4781,7 +4811,11 @@ ObjSonic_Rotate:
 ; ---------------------------------------------------------------------------
 
 ObjSonic_RotateSlow:
-	move.l	#$40000,d0
+	if REGION<>EUROPE
+		move.l	#$40000,d0
+	else
+		move.l	#$4CCCC,d0
+	endif
 	btst	#3,(playerCtrlData).l
 	beq.s	.CheckLeft
 	sub.l	d0,oPlayerYaw(a0)
@@ -4810,14 +4844,22 @@ ObjSonic_HandleSpeed:
 	tst.w	oPlayerShoeTime(a0)
 	beq.s	.NoSpeedShoes
 	subq.w	#1,oPlayerShoeTime(a0)
-	move.w	#$E00,d7
+	if REGION<>EUROPE
+		move.w	#$E00,d7
+	else
+		move.w	#$10CC,d7
+	endif
 	bra.s	.Accelerate
 ; ---------------------------------------------------------------------------
 
 .NoSpeedShoes:
 	cmpi.b	#7,oRoutine(a0)
 	bne.s	.NotHurt
-	move.w	#$200,d7
+	if REGION<>EUROPE
+		move.w	#$200,d7
+	else
+		move.w	#$266,d7
+	endif
 	bra.s	.Accelerate
 ; ---------------------------------------------------------------------------
 
@@ -4825,7 +4867,11 @@ ObjSonic_HandleSpeed:
 	move.w	oPlayerTopSpeed(a0),d7
 
 .Accelerate:
-	addi.w	#$20,oPlayerSpeed(a0)
+	if REGION<>EUROPE
+		addi.w	#$20,oPlayerSpeed(a0)
+	else
+		addi.w	#$26,oPlayerSpeed(a0)
+	endif
 	cmp.w	oPlayerSpeed(a0),d7
 	bcc.s	.End
 	move.w	d7,oPlayerSpeed(a0)
@@ -4834,7 +4880,11 @@ ObjSonic_HandleSpeed:
 ; ---------------------------------------------------------------------------
 
 .Decelerate:
-	subi.w	#$40,oPlayerSpeed(a0)
+	if REGION<>EUROPE
+		subi.w	#$40,oPlayerSpeed(a0)
+	else
+		subi.w	#$4C,oPlayerSpeed(a0)
+	endif
 	cmpi.w	#$200,oPlayerSpeed(a0)
 	bge.s	.End
 	move.w	#$200,oPlayerSpeed(a0)
@@ -4850,12 +4900,23 @@ ObjSonic_MoveDown:
 	andi.w	#$1FF,d0
 	move.w	d0,d3
 	bsr.w	GetCosine
-	muls.w	oPlayerSpeed(a0),d3
+	if REGION<>EUROPE
+		muls.w	oPlayerSpeed(a0),d3
+	else
+		move.w	oPlayerSpeed(a0),d5
+		muls.w	#60,d5
+		divs.w	#50,d5
+		muls.w	d5,d3
+	endif
 	add.l	d3,oX(a0)
 	andi.l	#$FFFFFFF,oX(a0)
 	move.w	d0,d3
 	bsr.w	GetSine
-	muls.w	oPlayerSpeed(a0),d3
+	if REGION<>EUROPE
+		muls.w	oPlayerSpeed(a0),d3
+	else
+		muls.w	d5,d3
+	endif
 	add.l	d3,oY(a0)
 	andi.l	#$FFFFFFF,oY(a0)
 	rts
@@ -4888,12 +4949,23 @@ ObjSonic_MoveLeft:
 ObjSonic_Move:
 	move.w	d0,d3
 	bsr.w	GetCosine
-	muls.w	oVar16(a0),d3
+	if REGION<>EUROPE
+		muls.w	oVar16(a0),d3
+	else
+		move.w	oVar16(a0),d5
+		muls.w	#60,d5
+		divs.w	#50,d5
+		muls.w	d5,d3
+	endif
 	add.l	d3,oX(a0)
 	andi.l	#$FFFFFFF,oX(a0)
 	move.w	d0,d3
 	bsr.w	GetSine
-	muls.w	oVar16(a0),d3
+	if REGION<>EUROPE
+		muls.w	oVar16(a0),d3
+	else
+		muls.w	d5,d3
+	endif
 	add.l	d3,oY(a0)
 	andi.l	#$FFFFFFF,oY(a0)
 	rts

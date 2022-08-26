@@ -335,9 +335,11 @@ Results:
 	VDPCMD	move.l,$0000,VRAM,WRITE,VDPCTRL	; Load results art
 	lea	Art_Results(pc),a0
 	bsr.w	NemDec
-	VDPCMD	move.l,$4000,VRAM,WRITE,VDPCTRL	; Load extra players text art
-	lea	Art_ExtraPlayersText(pc),a0
-	bsr.w	NemDec
+	if REGION=USA				; Load extra players text art
+		VDPCMD	move.l,$4000,VRAM,WRITE,VDPCTRL
+		lea	Art_ExtraPlayersText(pc),a0
+		bsr.w	NemDec
+	endif
 	
 	bsr.w	DrawResultsBase			; Draw results base
 	bsr.w	PrepFadeFromWhite		; Prepare to fade from white
@@ -411,8 +413,10 @@ scrollDisable:
 ; ---------------------------------------------------------------------------
 
 TallyScore:
-	move.b	#FM_BD,d0			; Play tally sound
-	bsr.w	PlayFMSound
+	if REGION<>EUROPE
+		move.b	#FM_BD,d0		; Play tally sound
+		bsr.w	PlayFMSound
+	endif
 	moveq	#20,d0				; Add 20 points
 
 ; ---------------------------------------------------------------------------
@@ -550,7 +554,7 @@ DrawResultsBase:
 ; ---------------------------------------------------------------------------
 
 Pal_Stage:
-	incbin	"Special Stage/Data/Palette (Stage).bin"
+	incbin	"Special Stage/Data/Palette.bin"
 	even
 	
 Pal_Results:
@@ -2226,9 +2230,11 @@ CheckLineScroll:
 ; Extra players text art
 ; ---------------------------------------------------------------------------
 
+	if REGION=USA
 Art_ExtraPlayersText:
-	incbin	"Special Stage/Data/Extra Players Text Art.nem"
-	even
+		incbin	"Special Stage/Data/Extra Players Text Art.nem"
+		even
+	endif
 
 ; -------------------------------------------------------------------------
 ; Fade to black
@@ -3901,7 +3907,11 @@ Tilemaps:
 	
 	dc.l	Map_ExtraPlayersText		; "EXTRA PLAYERS"
 	VDPCMD	dc.l,$CB92,VRAM,WRITE
-	dc.w	$E-1
+	if REGION=USA
+		dc.w	$E-1
+	else
+		dc.w	$F-1
+	endif
 	dc.w	2-1
 	
 	dc.l	Map_ExtraPlayer1		; Extra player icon 1 (frame 1)
@@ -4607,8 +4617,13 @@ Map_ResultsBG:
 
 Map_ExtraPlayersText:
 	dc.w	0				; Uncompressed
-	dc.w	$4201, $4202, $4203, $4204, $4205, $4206, $4207, $4208, $4209, $420A, $420B, $420C, $420D, $420E
-	dc.w	$420F, $4210, $4211, $4212, $4213, $4214, $4215, $4216, $4217, $4218, $4216, $4219, $421A, $421B
+	if REGION=USA
+		dc.w	$4201, $4202, $4203, $4204, $4205, $4206, $4207, $4208, $4209, $420A, $420B, $420C, $420D, $420E
+		dc.w	$420F, $4210, $4211, $4212, $4213, $4214, $4215, $4216, $4217, $4218, $4216, $4219, $421A, $421B
+	else
+		dc.w	$401D, $4096, $4097, $4098, $4099, $409A, $409B, $409C, $409D, $409E, $409F, $40A0, $40A1, $40A2, $40A3
+		dc.w	$4020, $40A4, $40A5, $40A6, $40A7, $40A8, $40A9, $40AA, $40AB, $40AC, $40AD, $40AE, $40AC, $40AF, $40A9
+	endif
 
 Map_HUDTimeAttack:
 	dc.w	0				; Uncompressed
@@ -4657,11 +4672,19 @@ Art_UFO:
 	even
 
 Stage1Demo:
-	incbin	"Special Stage/Data/Stage 1/Demo.kos"
+	if REGION<>EUROPE
+		incbin	"Special Stage/Data/Stage 1/Demo (NTSC).kos"
+	else
+		incbin	"Special Stage/Data/Stage 1/Demo (PAL).kos"
+	endif
 	even
 
 Stage6Demo:
-	incbin	"Special Stage/Data/Stage 6/Demo.kos"
+	if REGION<>EUROPE
+		incbin	"Special Stage/Data/Stage 6/Demo (NTSC).kos"
+	else
+		incbin	"Special Stage/Data/Stage 6/Demo (PAL).kos"
+	endif
 	even
 	
 Art_SS6BGWater:
