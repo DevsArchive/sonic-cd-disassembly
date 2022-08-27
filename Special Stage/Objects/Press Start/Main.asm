@@ -24,12 +24,12 @@ ObjPressStart:
 ; -------------------------------------------------------------------------
 
 ObjPressStart_Init:
-	move.w	#$856A,oTile(a0)		; Base sprite ID
-	move.l	#Spr_PressStart,oSprites(a0)	; Sprite data
+	move.w	#$856A,oTile(a0)		; Base tile ID
+	move.l	#MapSpr_PressStart,oMap(a0)	; Mappings
 	move.w	#84+128,oSprX(a0)		; Set position
 	move.w	#80+128,oSprY(a0)
-	moveq	#0,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#0,d0				; Set animation
+	bsr.w	SetObjAnim
 	addq.b	#1,oRoutine(a0)			; Set routine to main
 
 ; -------------------------------------------------------------------------
@@ -46,8 +46,8 @@ ObjPressStart_Main:
 
 ; -------------------------------------------------------------------------
 
-Spr_PressStart:
-	include	"Special Stage/Objects/Press Start/Data/Sprites.asm"
+MapSpr_PressStart:
+	include	"Special Stage/Objects/Press Start/Data/Mappings.asm"
 	even
 
 ; -------------------------------------------------------------------------

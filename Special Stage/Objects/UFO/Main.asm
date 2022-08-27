@@ -6,7 +6,7 @@
 ; -------------------------------------------------------------------------
 
 oUFOPlayerCol	EQU	oVar4F			; Player collision object ID
-oUFOSprite	EQU	oVar52			; Current sprite ID
+oUFOAnim	EQU	oVar52			; Current animation ID
 oUFOExplodeDir	EQU	oVar53			; Explode direction
 oUFOShadow	EQU	oVar54			; Shadow
 oUFOPathStart	EQU	oVar58			; Path data start pointer
@@ -50,7 +50,7 @@ ObjTimeUFO:
 ObjTimeUFO_Init:
 	move.w	#$8440,oTile(a0)		; Base tile ID
 	bsr.w	ObjUFO_FollowPath		; Start following path
-	move.l	#Spr_UFO1,oSprites(a0)		; Sprite data
+	move.l	#MapSpr_UFO1,oMap(a0)		; Mappings
 	
 	move.w	sonicObject+oZ,oZ(a0)		; Shift Z position according to Sonic's Z position
 	subi.w	#$140,oZ(a0)
@@ -93,8 +93,8 @@ ObjTimeUFO_Main:
 	andi.b	#1,d0
 	move.b	d0,oUFOExplodeDir(a0)
 
-	move.b	#0,d0				; Set sprite
-	bsr.w	SetObjSprite
+	move.b	#0,d0				; Set animation
+	bsr.w	SetObjAnim
 	addi.l	#30,specStageTimer.w		; Add 30 seconds to the timer
 
 	lea	itemObject,a1			; Spawn item icon
@@ -176,18 +176,18 @@ ObjUFO:
 ObjUFO_Init:
 	move.w	#$E440,oTile(a0)		; Base tile ID
 	bsr.w	ObjUFO_FollowPath		; Start following path
-	move.l	#Spr_UFO1,oSprites(a0)		; Sprite data (ring)
+	move.l	#MapSpr_UFO1,oMap(a0)		; Mappings (ring)
 	cmpi.b	#0,oUFOItem(a0)			; Does this UFO have rings?
 	beq.s	.GotAnim			; If so, branch
-	move.l	#Spr_UFO2,oSprites(a0)		; Sprite data (speed shoes)
+	move.l	#MapSpr_UFO2,oMap(a0)		; Mappings (speed shoes)
 
 .GotAnim:
 	move.w	sonicObject+oZ,oZ(a0)		; Shift Z position according to Sonic's Z position
 	subi.w	#$140,oZ(a0)
 
-	moveq	#0,d0				; Set sprite
-	move.b	d0,oUFOSprite(a0)
-	bsr.w	SetObjSprite
+	moveq	#0,d0				; Set animation
+	move.b	d0,oUFOAnim(a0)
+	bsr.w	SetObjAnim
 	
 	move.b	#2,oUFODrawDelay(a0)		; Set draw delay
 	addq.b	#1,oRoutine(a0)			; Set routine to main
@@ -229,8 +229,8 @@ ObjUFO_Main:
 	andi.b	#1,d0
 	move.b	d0,oUFOExplodeDir(a0)
 
-	move.b	#0,d0				; Set sprite
-	bsr.w	SetObjSprite
+	move.b	#0,d0				; Set animation
+	bsr.w	SetObjAnim
 	
 	lea	itemObject,a1			; Spawn item icon
 	move.b	#4,(a1)
@@ -398,12 +398,12 @@ ObjUFO_Draw:
 	move.l	#$500,d0			; Cap the distance
 
 .SetFrame:
-	lsr.w	#4,d0				; Get sprite based on distance
+	lsr.w	#4,d0				; Get animation based on distance
 	move.b	.Frames(pc,d0.w),d0
-	cmp.b	oUFOSprite(a0),d0		; Is the sprite different?
+	cmp.b	oUFOAnim(a0),d0			; Is the animation different?
 	beq.s	.End				; If not, branch
-	move.b	d0,oUFOSprite(a0)		; If so, set it
-	bsr.w	ChgObjSprite
+	move.b	d0,oUFOAnim(a0)			; If so, set it
+	bsr.w	ChgObjAnim
 
 .End:
 	rts

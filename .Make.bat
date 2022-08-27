@@ -61,7 +61,7 @@ if exist "Sound Drivers\FM\_Driver.p" (
 _Bin\GetPsyQSyms.exe "Special Stage\Stage Data.sym" "Special Stage\Stage Data Labels.i"
 if exist "Special Stage\Stage Data.sym" ( del "Special Stage\Stage Data.sym" > nul )
 %ASM68K% "Special Stage\Main.asm", "_Built\Files\SPMM__.MMD", , "Special Stage\Main.lst"
-%ASM68K% "Special Stage\SUB.asm", "_Built\Files\SPSS__.BIN", , "Special Stage\Sub.lst"
+%ASM68K% "Special Stage\Sub.asm", "_Built\Files\SPSS__.BIN", , "Special Stage\Sub.lst"
 
 echo.
 echo Compiling filesystem...

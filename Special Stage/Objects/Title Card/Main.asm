@@ -31,11 +31,11 @@ ObjTitleCardText:
 
 ObjTitleCardText_Init:
 	move.w	#$8516,oTile(a0)		; Base tile ID
-	move.l	#Spr_TitleCardText,oSprites(a0)	; Sprite data
+	move.l	#MapSpr_TitleCardText,oMap(a0)	; Mappings
 	move.w	#328+128,oSprX(a0)		; Set position
 	move.w	#112+128,oSprY(a0)
-	moveq	#0,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#0,d0				; Set animation
+	bsr.w	SetObjAnim
 	addq.b	#1,oRoutine(a0)			; Start moving left
 
 ; -------------------------------------------------------------------------
@@ -74,8 +74,8 @@ ObjTitleCardText_MoveRight:
 
 ; -------------------------------------------------------------------------
 
-Spr_TitleCardText:
-	include	"Special Stage/Objects/Title Card/Data/Sprites (Text).asm"
+MapSpr_TitleCardText:
+	include	"Special Stage/Objects/Title Card/Data/Mappings (Text).asm"
 	even
 
 ; -------------------------------------------------------------------------
@@ -104,11 +104,11 @@ ObjTitleCardBar:
 
 ObjTitleCardBar_Init:
 	move.w	#$8516,oTile(a0)		; Base tile ID
-	move.l	#Spr_TitleCardBar,oSprites(a0)	; Sprite data
+	move.l	#MapSpr_TitleCardBar,oMap(a0)	; Mappings
 	move.w	#116+128,oSprX(a0)		; Set position
 	move.w	#-96+128,oSprY(a0)
-	moveq	#0,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#0,d0				; Set animation
+	bsr.w	SetObjAnim
 	addq.b	#1,oRoutine(a0)			; Start moving down
 
 ; -------------------------------------------------------------------------
@@ -165,8 +165,8 @@ ObjTitleCardBar_Done:
 
 ; -------------------------------------------------------------------------
 
-Spr_TitleCardBar:
-	include	"Special Stage/Objects/Title Card/Data/Sprites (Bar).asm"
+MapSpr_TitleCardBar:
+	include	"Special Stage/Objects/Title Card/Data/Mappings (Bar).asm"
 	even
 
 ; -------------------------------------------------------------------------

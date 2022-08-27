@@ -5,23 +5,23 @@
 ; Sonic object
 ; -------------------------------------------------------------------------
 
-oPlayerStampC	EQU	oVarE
-oPlayerStampTL	EQU	oVarF
-oPlayerStampTR	EQU	oVar10
-oPlayerStampBR	EQU	oVar11
-oPlayerStampBL	EQU	oVar12
-oPlayerStampOri	EQU	oVar13
-oPlayerSpeed	EQU	oVar14
-oPlayerBumpTime	EQU	oVar16
-oPlayerBumpSpd	EQU	oVar16
-oPlayerTopSpeed	EQU	oVar18
-oPlayerSprYVel	EQU	oVar40
-oPlayerUFOCol	EQU	oVar4F
-oPlayerPitch	EQU	oVar50
-oPlayerYaw	EQU	oVar54
-oPlayerTilt	EQU	oVar60
-oPlayerTimer	EQU	oVar61
-oPlayerShoes	EQU	oVar62
+oPlayerStampC	EQU	oVarE			; Collided stamp (center)
+oPlayerStampTL	EQU	oVarF			; Collided stamp (top left)
+oPlayerStampTR	EQU	oVar10			; Collided stamp (top right)
+oPlayerStampBR	EQU	oVar11			; Collided stamp (bottom right)
+oPlayerStampBL	EQU	oVar12			; Collided stamp (bottom left)
+oPlayerStampOri	EQU	oVar13			; Center collided stamp orientation
+oPlayerSpeed	EQU	oVar14			; Speed
+oPlayerBumpTime	EQU	oVar16			; Bump/boost timer
+oPlayerBumpSpd	EQU	oVar16			; Bump speed
+oPlayerTopSpeed	EQU	oVar18			; Top speed
+oPlayerSprYVel	EQU	oVar40			; Sprite Y velocity
+oPlayerUFOCol	EQU	oVar4F			; UFO collision object ID
+oPlayerPitch	EQU	oVar50			; Pitch angle
+oPlayerYaw	EQU	oVar54			; Yaw angle
+oPlayerTilt	EQU	oVar60			; Tilt
+oPlayerTimer	EQU	oVar61			; General timer
+oPlayerShoes	EQU	oVar62			; Speed shoes timer
 
 ; -------------------------------------------------------------------------
 
@@ -137,11 +137,11 @@ ObjSonic:
 
 ObjSonic_Init:
 	move.w	#$85E0,oTile(a0)		; Base tile ID
-	move.l	#Spr_Sonic,oSprites(a0)		; Sprite data
+	move.l	#MapSpr_Sonic,oMap(a0)		; Mappings
 	move.w	#128+128,oSprX(a0)		; Set sprite position
 	move.w	#216+128,oSprY(a0)
-	moveq	#9,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#9,d0				; Set animation
+	bsr.w	SetObjAnim
 	move.b	#$14,oRoutine(a0)		; Set to starting post
 	move.w	#0,oPlayerSpeed(a0)		; Reset speed
 	bsr.w	ObjSonic_GetStartPos		; Get start position
@@ -158,8 +158,8 @@ ObjSonic_Start1:
 ; -------------------------------------------------------------------------
 
 ObjSonic_Start2:
-	moveq	#$2C,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#$2C,d0				; Set animation
+	bsr.w	SetObjAnim
 	move.b	#$16,oRoutine(a0)		; Advance routine
 	move.b	#5,oPlayerTimer(a0)		; Set timer
 	rts
@@ -169,8 +169,8 @@ ObjSonic_Start2:
 ObjSonic_Start3:
 	subq.b	#1,oPlayerTimer(a0)		; Decrement timer
 	bne.s	.End				; If it hasn't run out, branch
-	moveq	#$A,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#$A,d0				; Set animation
+	bsr.w	SetObjAnim
 	move.b	#$17,oRoutine(a0)		; Advance routine
 
 .End:
@@ -323,9 +323,10 @@ ObjSonic_Unk2:
 ObjSonic_Hurt:
 	subq.b	#1,oPlayerTimer(a0)		; Decrement timer
 	bne.s	.End				; If it hasn't run out, branch
+	
 	move.b	#1,oRoutine(a0)			; Set to normal ground mode
-	moveq	#0,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#0,d0				; Set animation
+	bsr.w	SetObjAnim
 
 .End:
 	rts
@@ -337,9 +338,10 @@ ObjSonic_Hurt:
 ObjSonic_TimeStone1:
 	cmpi.w	#216+128,oSprY(a0)		; Are we on the ground?
 	bcs.s	.Update				; If not, branch
+	
 	move.b	#60,oPlayerTimer(a0)		; Set timer
-	moveq	#$A,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#$A,d0				; Set animation
+	bsr.w	SetObjAnim
 	move.b	#9,oRoutine(a0)			; Advance routine
 	move.b	#1,stageInactive		; Mark stage as inactive
 	move.w	#0,oPlayerSpeed(a0)		; Stop moving
@@ -378,8 +380,8 @@ ObjSonic_TimeStone3:
 	
 	move.b	#$B,oRoutine(a0)		; Advance routine
 	move.b	#4,oPlayerTimer(a0)		; Set timer
-	moveq	#$24,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#$24,d0				; Set animation
+	bsr.w	SetObjAnim
 
 .End:
 	rts
@@ -396,8 +398,8 @@ ObjSonic_TimeStone4:
 	
 	move.b	#$C,oRoutine(a0)		; Advance routine
 	move.b	#5,oPlayerTimer(a0)		; Set timer
-	moveq	#$25,d0				; Set next sprite
-	bsr.w	SetObjSprite
+	moveq	#$25,d0				; Set next animation
+	bsr.w	SetObjAnim
 
 .End:
 	rts
@@ -414,8 +416,8 @@ ObjSonic_TimeStone5:
 	
 	move.b	#$D,oRoutine(a0)		; Advance routine
 	move.b	#4,oPlayerTimer(a0)		; Set timer
-	moveq	#$26,d0				; Set next sprite
-	bsr.w	SetObjSprite
+	moveq	#$26,d0				; Set next animation
+	bsr.w	SetObjAnim
 
 .End:
 	rts
@@ -432,8 +434,8 @@ ObjSonic_TimeStone6:
 	
 	move.b	#$E,oRoutine(a0)		; Advance routine
 	move.b	#5,oPlayerTimer(a0)		; Set timer
-	moveq	#$27,d0				; Set next sprite
-	bsr.w	SetObjSprite
+	moveq	#$27,d0				; Set next animation
+	bsr.w	SetObjAnim
 
 .End:
 	rts
@@ -450,8 +452,8 @@ ObjSonic_TimeStone7:
 
 	move.b	#$F,oRoutine(a0)		; Advance routine
 	move.b	#4,oPlayerTimer(a0)		; Set timer
-	moveq	#$28,d0				; Set next sprite
-	bsr.w	SetObjSprite
+	moveq	#$28,d0				; Set next animation
+	bsr.w	SetObjAnim
 
 .End:
 	rts
@@ -468,8 +470,8 @@ ObjSonic_TimeStone8:
 
 	move.b	#$10,oRoutine(a0)		; Advance routine
 	move.b	#5,oPlayerTimer(a0)		; Set timer
-	moveq	#$29,d0				; Set next sprite
-	bsr.w	SetObjSprite
+	moveq	#$29,d0				; Set next animation
+	bsr.w	SetObjAnim
 
 .End:
 	rts
@@ -485,8 +487,8 @@ ObjSonic_TimeStone9:
 	bne.s	ObjSonic_TimeStone10		; If it hasn't run out, branch
 
 	move.b	#$11,oRoutine(a0)		; Advance routine
-	moveq	#$2A,d0				; Set next sprite
-	bsr.w	SetObjSprite
+	moveq	#$2A,d0				; Set next animation
+	bsr.w	SetObjAnim
 
 ; -------------------------------------------------------------------------
 
@@ -496,8 +498,8 @@ ObjSonic_TimeStone10:
 ; -------------------------------------------------------------------------
 
 ObjSonic_TimeStone11:
-	moveq	#$2B,d0				; Set next sprite
-	bsr.w	SetObjSprite
+	moveq	#$2B,d0				; Set next animation
+	bsr.w	SetObjAnim
 	rts
 
 ; -------------------------------------------------------------------------
@@ -511,8 +513,8 @@ ObjSonic_Boosted:
 	move.b	#1,oRoutine(a0)			; Set to normal ground mode
 	move.l	#0,oXVel(a0)			; Stop bump movement
 	move.l	#0,oYVel(a0)
-	moveq	#0,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#0,d0				; Set animation
+	bsr.w	SetObjAnim
 	bra.s	.Done
 
 .Move:
@@ -695,8 +697,8 @@ ObjSonic_Hazard:
 
 	move.b	#46,oPlayerTimer(a0)		; Set hurt timer
 	move.b	#7,oRoutine(a0)			; Set to hurt mode
-	moveq	#$D,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#$D,d0				; Set animation
+	bsr.w	SetObjAnim
 
 	move.w	specStageRings.w,d0		; Halve ring count
 	move.w	d0,d1
@@ -748,8 +750,8 @@ ObjSonic_Hazard:
 ObjSonic_BigBooster:
 	move.b	#FM_CE,d0			; Play boost sound
 	bsr.w	PlayFMSound
-	moveq	#$E,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#$E,d0				; Set animation
+	bsr.w	SetObjAnim
 
 	moveq	#0,d0				; Boost towards direction
 	move.b	oPlayerStampOri(a0),d0
@@ -985,8 +987,8 @@ ObjSonic_CheckBumper:
 
 	move.b	#FM_B5,d0			; Play bumper sound
 	bsr.w	PlayFMSound
-	moveq	#0,d0				; Set sprite
-	bsr.w	SetObjSprite
+	moveq	#0,d0				; Set animation
+	bsr.w	SetObjAnim
 
 .End:
 	rts
@@ -1301,15 +1303,15 @@ ObjSonic_Animate:
 	tst.b	stageInactive			; Is the stage inactive?
 	bne.w	.End				; If so, branch
 	
-	moveq	#6,d0				; Jumping sprite
+	moveq	#6,d0				; Jumping animation
 	btst	#7,oFlags(a0)			; Are we jumping?
 	bne.s	.OtherAnim			; If so, branch
 
-	moveq	#$B,d0				; Floating sprite
+	moveq	#$B,d0				; Floating animation
 	btst	#6,oFlags(a0)			; Are we floating?
 	bne.s	.OtherAnim			; If so, branch
 
-	moveq	#$A,d0				; Standing sprite
+	moveq	#$A,d0				; Standing animation
 	move.w	oPlayerSpeed(a0),d1		; Are we moving?
 	beq.s	.OtherAnim			; If not, branch
 
@@ -1317,47 +1319,47 @@ ObjSonic_Animate:
 	add.w	d2,d2
 	andi.w	#$1C,d2
 
-	move.b	.WalkSprites+3(pc,d2.w),d0	; Get slowest sprite
+	move.b	.WalkAnims+3(pc,d2.w),d0	; Get slowest animation
 	cmpi.w	#$300,d1			; Is our speed slow enough?
 	bcs.s	.GroundMoveAnim			; If so, branch
 
-	move.b	.WalkSprites+2(pc,d2.w),d0	; Get faster sprite
+	move.b	.WalkAnims+2(pc,d2.w),d0	; Get faster animation
 	cmpi.w	#$540,d1			; Is our speed slow enough?
 	bcs.s	.GroundMoveAnim			; If so, branch
 
-	move.b	.WalkSprites+1(pc,d2.w),d0	; Get even faster sprite
+	move.b	.WalkAnims+1(pc,d2.w),d0	; Get even faster animation
 	cmpi.w	#$780,d1			; Is our speed slow enough?
 	bcs.s	.GroundMoveAnim			; If so, branch
 
-	move.b	.WalkSprites(pc,d2.w),d0	; Get fastest sprite
+	move.b	.WalkAnims(pc,d2.w),d0		; Get fastest animation
 	cmpi.w	#$B00,d1			; Is our speed slow enough?
 	bcs.s	.GroundMoveAnim			; If so, branch
 
-	move.b	#1,d0				; Set to sprinting sprite
+	move.b	#1,d0				; Set to sprinting animation
 	bra.s	.CheckAnimReset
 
 .OtherAnim:
-	bclr	#4,oFlags(a0)			; Clear ground sprite set flag
+	bclr	#4,oFlags(a0)			; Clear ground animation set flag
 
 .CheckAnimReset:
-	cmp.b	oSprite(a0),d0			; Is the sprite different?
+	cmp.b	oAnim(a0),d0			; Is the animation different?
 	beq.s	.End				; If not, branch
-	bsr.w	SetObjSprite			; Set sprite and reset animation
+	bsr.w	SetObjAnim			; Set animation and reset animation
 	rts
 	
 .GroundMoveAnim:
-	bset	#4,oFlags(a0)			; Is a ground sprite already set?
+	bset	#4,oFlags(a0)			; Is a ground animation already set?
 	beq.s	.CheckAnimReset			; If not, branch
-	cmp.b	oSprite(a0),d0			; Is the sprite different?
+	cmp.b	oAnim(a0),d0			; Is the animation different?
 	beq.s	.End				; If not, branch
-	bsr.w	ChgObjSprite			; Change sprite
+	bsr.w	ChgObjAnim			; Change animation
 
 .End:
 	rts
 
 ; -------------------------------------------------------------------------
 
-.WalkSprites:
+.WalkAnims:
 	dc.b	$04, $19, $1A, $1B		; Furthest left
 	dc.b	$03, $16, $17, $18		; Slightly left
 	dc.b	$00, $10, $11, $12		; Center

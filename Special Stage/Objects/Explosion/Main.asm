@@ -46,9 +46,9 @@ ObjExplosion:
 
 ObjExplosion_Init:
 	move.w	#$87AE,oTile(a0)		; Base tile ID
-	move.l	#Spr_Explosion,oSprites(a0)	; Sprite data
-	moveq	#0,d0				; Set sprite
-	bsr.w	SetObjSprite
+	move.l	#MapSpr_Explosion,oMap(a0)	; Mappings
+	moveq	#0,d0				; Set animation
+	bsr.w	SetObjAnim
 	move.w	#12,oTimer(a0)			; Set timer
 	addq.b	#1,oRoutine(a0)			; Set routine to main
 
@@ -67,8 +67,8 @@ ObjExplosion_Main:
 
 ; -------------------------------------------------------------------------
 
-Spr_Explosion:
-	include	"Special Stage/Objects/Explosion/Data/Sprites.asm"
+MapSpr_Explosion:
+	include	"Special Stage/Objects/Explosion/Data/Mappings.asm"
 	even
 
 ; -------------------------------------------------------------------------

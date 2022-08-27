@@ -32,10 +32,10 @@ ObjSonicShadow:
 
 ObjSonicShadow_Init:
 	move.w	#$E6DC,oTile(a0)		; Base tile ID
-	move.l	#Spr_Shadow,oSprites(a0)	; Sprite data
-	moveq	#5,d0				; Set sprite
+	move.l	#MapSpr_Shadow,oMap(a0)		; Mappings
+	moveq	#5,d0				; Set animation
 	move.b	d0,oShadowSprite(a0)
-	bsr.w	SetObjSprite
+	bsr.w	SetObjAnim
 	addq.b	#1,oRoutine(a0)			; Set routine to main
 
 ; -------------------------------------------------------------------------
@@ -72,10 +72,10 @@ ObjUFOShadow:
 
 ObjUFOShadow_Init:
 	move.w	#$E6DC,oTile(a0)		; Base tile ID
-	move.l	#Spr_Shadow,oSprites(a0)	; Sprite data
-	moveq	#0,d0				; Set sprite
+	move.l	#MapSpr_Shadow,oMap(a0)		; Mappings
+	moveq	#0,d0				; Set animation
 	move.b	d0,oShadowSprite(a0)
-	bsr.w	SetObjSprite
+	bsr.w	SetObjAnim
 	addq.b	#1,oRoutine(a0)			; Set routine to main
 
 ; -------------------------------------------------------------------------

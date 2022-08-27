@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Copyright text object
+; Copyright text object (title screen)
 ; -------------------------------------------------------------------------
 
 ObjCopyright:

@@ -33,11 +33,11 @@ ObjLostRing:
 
 ObjLostRing_Init:
 	move.w	#$E78F,oTile(a0)		; Base tile ID
-	move.l	#Spr_Item,oSprites(a0)		; Sprite data
+	move.l	#MapSpr_Item,oMap(a0)		; Mappings
 
-	moveq	#4,d0				; Set type and sprite
+	moveq	#4,d0				; Set type and animation
 	move.b	d0,oItemType(a0)
-	bsr.w	SetObjSprite
+	bsr.w	SetObjAnim
 
 	move.w	sonicObject+oSprX,oSprX(a0)	; Spawn at Sonic's position
 	move.w	sonicObject+oSprY,oSprY(a0)
@@ -108,12 +108,12 @@ ObjItem:
 
 ObjItem_Init:
 	move.w	#$878F,oTile(a0)		; Base tile ID
-	move.l	#Spr_Item,oSprites(a0)		; Sprite data
+	move.l	#MapSpr_Item,oMap(a0)		; Mappings
 
-	moveq	#0,d0				; Set type and sprite
+	moveq	#0,d0				; Set type and animation
 	move.b	oItemSpawnType(a0),d0
 	move.b	d0,oItemType(a0)
-	bsr.w	SetObjSprite
+	bsr.w	SetObjAnim
 
 	addq.b	#1,oRoutine(a0)			; Set to main routine
 	move.b	#$10,oTimer(a0)			; Set timer
@@ -138,8 +138,8 @@ ObjItem_Main:
 
 ; -------------------------------------------------------------------------
 
-Spr_Item:
-	include	"Special Stage/Objects/Item/Data/Sprites.asm"
+MapSpr_Item:
+	include	"Special Stage/Objects/Item/Data/Mappings.asm"
 	even
 
 ; -------------------------------------------------------------------------
