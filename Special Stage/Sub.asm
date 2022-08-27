@@ -46,22 +46,6 @@ oTimer		rs.b	1			; Timer
 
 oDustXVel	EQU	oVar3C
 
-oPlayerStampC	EQU	oVarE
-oPlayerStampTL	EQU	oVarF
-oPlayerStampTR	EQU	oVar10
-oPlayerStampBR	EQU	oVar11
-oPlayerStampBL	EQU	oVar12
-oPlayerStampOri	EQU	oVar13
-oPlayerSpeed	EQU	oVar14
-oPlayerTopSpeed	EQU	oVar18
-oPlayerSprYVel	EQU	oVar40
-oPlayerUFOCol	EQU	oVar4F
-oPlayerPitch	EQU	oVar50
-oPlayerYaw	EQU	oVar54
-oPlayerTilt	EQU	oVar60
-oPlayerTimer	EQU	oVar61
-oPlayerShoes	EQU	oVar62
-
 ; -------------------------------------------------------------------------
 ; Graphics operation variable structure
 ; -------------------------------------------------------------------------
@@ -116,6 +100,7 @@ ttlCardTextObj	rs.b	oSize			; Title card text object
 timeStoneObject	rs.b	oSize			; Time stone object
 sparkleObject1	rs.b	oSize			; Sparkle object 1
 sparkleObject2	rs.b	oSize			; Sparkle object 2
+dustObjects	rs.b	0
 dustObject1	rs.b	oSize			; Dust object 1
 dustObject2	rs.b	oSize			; Dust object 2
 dustObject3	rs.b	oSize			; Dust object 3
@@ -124,6 +109,7 @@ dustObject5	rs.b	oSize			; Dust object 5
 dustObject6	rs.b	oSize			; Dust object 6
 dustObject7	rs.b	oSize			; Dust object 7
 dustObject8	rs.b	oSize			; Dust object 8
+DUSTOBJCOUNT	EQU	(__rs-dustObjects)/oSize
 OBJ1COUNT	EQU	(__rs-objPrioLevel1)/oSize
 
 objPrioLevel2	rs.b	0			; Priority level 2 objects
@@ -2623,6 +2609,7 @@ ObjSplash:
 	rts
 
 ; -------------------------------------------------------------------------
+
 ObjSplash_Index:
 	dc.w	ObjSplash_Init-ObjSplash_Index
 	dc.w	ObjSplash_Large-ObjSplash_Index
@@ -2732,7 +2719,6 @@ ObjDust_Init:
 ; -------------------------------------------------------------------------
 
 ObjDust_Main:
-
 	subq.w	#1,oTimer(a0)
 	bne.s	.Move
 	bset	#0,oFlags(a0)
