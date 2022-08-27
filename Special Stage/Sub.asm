@@ -1,18 +1,19 @@
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Special stage Sub CPU program
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 	include	"_Include/Common.i"
+	include	"_Include/Sound.i"
 	include	"_Include/Sub CPU.i"
 	include	"Special Stage/_Common.i"
 	include	"Special Stage/_Global Variables.i"
 	
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Object variables structure
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 oSize		EQU	$80
 c = 0
@@ -23,15 +24,15 @@ oVar\$c		EQU	c
 
 	rsreset
 oID		rs.b	1			; ID
-oArtFrame	rs.b	1			; Art frame
+oSpriteFlag	rs.b	1			; Sprite flag
 oFlags		rs.b	1			; Flags
 oRoutine	rs.b	1			; Routine
 oTile		rs.w	1			; Base tile ID
-oAnimData	rs.l	1			; Animation data
-oAnim		rs.b	1			; Animation ID
-oAnimFrame	rs.b	1			; Animation frame
-oAnimTime	rs.b	1			; Animation time
-oAnimTime2	rs.b	1			; Animation time (copy)
+oSprites	rs.l	1			; Sprite data
+oSprite		rs.b	1			; Sprite ID
+oSpriteFrame	rs.b	1			; Sprite frame
+oAnimTime	rs.b	1			; Sprite time
+oAnimTime2	rs.b	1			; Sprite time (copy)
 		rs.b	$E
 oX		rs.l	1			; X position
 oY		rs.l	1			; Y position
@@ -42,21 +43,6 @@ oXVel		rs.l	1			; X velocity
 oYVel		rs.l	1			; Y velocity
 		rs.b	$18
 oTimer		rs.b	1			; Timer
-
-oUFOPlayerCol	EQU	oVar4F
-oUFOAnim	EQU	oVar52
-oUFOExplodeDir	EQU	oVar53
-oUFOShadow	EQU	oVar54
-oUFOPathStart	EQU	oVar58
-oUFOPath	EQU	oVar5C
-oUFOItem	EQU	oVar62
-
-oUFOShadParent	EQU	oVar54
-
-oItemXVel	EQU	oVar3C
-oItemYVel	EQU	oVar40
-oItemType	EQU	oVar51
-oItemType2	EQU	oVar52
 
 oDustXVel	EQU	oVar3C
 
@@ -74,11 +60,11 @@ oPlayerPitch	EQU	oVar50
 oPlayerYaw	EQU	oVar54
 oPlayerTilt	EQU	oVar60
 oPlayerTimer	EQU	oVar61
-oPlayerShoeTime	EQU	oVar62
+oPlayerShoes	EQU	oVar62
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Graphics operation variable structure
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 	rsreset
 gfxCamX		rs.w	1			; Camera X
@@ -113,9 +99,9 @@ gfxPcYs		rs.w	1			; cos(pitch) * sin(yaw)
 gfxPcYc		rs.w	1			; cos(pitch) * cos(yaw)
 gfxSize		rs.b	0			; Size of structure
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Variables
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 	rsset	PRGRAM+$3C000
 VARSSTART	rs.b	0			; Start of variables
@@ -123,7 +109,7 @@ VARSSTART	rs.b	0			; Start of variables
 sonicObject	rs.b	oSize			; Sonic object
 sonicShadowObj	rs.b	oSize			; Sonic's shadow object
 
-objPrioLevel0	rs.b	0			; Priority level 0 objects
+objPrioLevel1	rs.b	0			; Priority level 1 objects
 splashObject	rs.b	oSize			; Splash object
 ttlCardBarObj	rs.b	oSize			; Title card bar object
 ttlCardTextObj	rs.b	oSize			; Title card text object
@@ -138,10 +124,9 @@ dustObject5	rs.b	oSize			; Dust object 5
 dustObject6	rs.b	oSize			; Dust object 6
 dustObject7	rs.b	oSize			; Dust object 7
 dustObject8	rs.b	oSize			; Dust object 8
-objPrioLvl0End	rs.b	0
-OBJ0COUNT	EQU	(objPrioLvl0End-objPrioLevel0)/oSize
+OBJ1COUNT	EQU	(__rs-objPrioLevel1)/oSize
 
-objPrioLevel1	rs.b	0			; Priority level 1 objects
+objPrioLevel2	rs.b	0			; Priority level 2 objects
 itemObject	rs.b	oSize			; Item object
 ringObject1	rs.b	oSize			; Lost ring object 1
 ringObject2	rs.b	oSize			; Lost ring object 2
@@ -150,6 +135,8 @@ ringObject4	rs.b	oSize			; Lost ring object 4
 ringObject5	rs.b	oSize			; Lost ring object 5
 ringObject6	rs.b	oSize			; Lost ring object 6
 ringObject7	rs.b	oSize			; Lost ring object 7
+
+explosionObjs	rs.b	0
 explosionObj1	rs.b	oSize			; Explosion object 1
 explosionObj2	rs.b	oSize			; Explosion object 2
 explosionObj3	rs.b	oSize			; Explosion object 3
@@ -158,18 +145,22 @@ explosionObj5	rs.b	oSize			; Explosion object 5
 explosionObj6	rs.b	oSize			; Explosion object 6
 explosionObj7	rs.b	oSize			; Explosion object 7
 explosionObj8	rs.b	oSize			; Explosion object 8
+EXPLODEOBJCNT	EQU	(__rs-explosionObjs)/oSize
+
+ufoObjects	rs.b	0
 ufoObject1	rs.b	oSize			; UFO object 1
 ufoObject2	rs.b	oSize			; UFO object 2
 ufoObject3	rs.b	oSize			; UFO object 3
 ufoObject4	rs.b	oSize			; UFO object 4
 ufoObject5	rs.b	oSize			; UFO object 5
 ufoObject6	rs.b	oSize			; UFO object 6
+UFOOBJCOUNT	EQU	(__rs-ufoObjects)/oSize
+
 		rs.b	oSize
 timeUFOObject	rs.b	oSize			; Time UFO object
-objPrioLvl1End	rs.b	0
-OBJ1COUNT	EQU	(objPrioLvl1End-objPrioLevel1)/oSize
+OBJ2COUNT	EQU	(__rs-objPrioLevel2)/oSize
 
-objPrioLevel2	rs.b	0			; Priority level 2 objects
+objPrioLevel3	rs.b	0			; Priority level 3 objects
 ufoShadowObj1	rs.b	oSize			; UFO's shadow object 1
 ufoShadowObj2	rs.b	oSize			; UFO's shadow object 2
 ufoShadowObj3	rs.b	oSize			; UFO's shadow object 3
@@ -178,10 +169,13 @@ ufoShadowObj5	rs.b	oSize			; UFO's shadow object 5
 ufoShadowObj6	rs.b	oSize			; UFO's shadow object 6
 		rs.b	oSize
 timeUFOShadObj	rs.b	oSize			; Time UFO's shadow object
-objPrioLvl2End	rs.b	0
-OBJ2COUNT	EQU	(objPrioLvl2End-objPrioLevel2)/oSize
+OBJ3COUNT	EQU	(__rs-objPrioLevel3)/oSize
 
-zBuffer		rs.w	$580			; Z buffer
+ZBUFLEVELS	EQU	64			; Z buffer levels
+ZBUFSLOTS	EQU	8			; Z buffer slots per level
+
+zBuffer		rs.w	ZBUFLEVELS*ZBUFSLOTS	; Z buffer
+		rs.b	$700
 gfxOpFlag	rs.b	1			; Graphics operation flag
 		rs.b	1
 curSpriteSlot	rs.l	1			; Current sprite slot pointer
@@ -193,7 +187,7 @@ stageOver	rs.b	1			; Stage over flag
 gotTimeStone	rs.b	1			; Time stone retrieved flag
 timerSpeedUp	rs.b	1			; Timer speed up counter
 timerFrames	rs.b	1			; Timer frame counter
-stageWon	rs.b	1			; Stage won flag
+stageInactive	rs.b	1			; Stage inactive flag
 timeStopped	rs.b	1			; Time stopped flag
 ufoRingBonus	rs.w	1			; UFO ring bonus counter
 jumpTimer	rs.w	1			; Jump timer
@@ -210,17 +204,17 @@ stampAnim1Delay	rs.w	1			; Stamp animation 1 delay counter
 stampAnim1Frame	rs.w	1			; Stamp animation 1 frame	
 stampAnim2Frame	rs.w	1			; Stamp animation 2 frame
 		rs.b	$CC
-gfxVars		rs.b	gfxSize			; Graphics operation variables
+gfxVars		rs.b	gfxSize			; Graphics operations variables
 		rs.b	$1B9E
 VARSSZ		EQU	__rs-VARSSTART		; Size of variables area
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Program start
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 	org	$10000
 
-	move.l	#IRQ1,_LEVEL1+2.w		; Set IRQ1 handler
+	move.l	#IRQ1,_LEVEL1+2.w		; Set graphics interrupt handler
 	move.b	#0,GAMEMMODE.w			; Set to 2M mode
 
 	moveq	#0,d0
@@ -228,9 +222,9 @@ VARSSZ		EQU	__rs-VARSSTART		; Size of variables area
 	move.w	d0,specStageRings.w		; Reset rings
 	move.b	#6,ufoCount.w			; Reset UFO count
 	
-	bset	#7,GASUBFLAG.w
-	bclr	#1,GAIRQMASK.w
-	move.b	#3,GACDCDEVICE.w
+	bset	#7,GASUBFLAG.w			; Mark as started
+	bclr	#1,GAIRQMASK.w			; Disable graphics interrupt
+	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
 	
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
@@ -251,103 +245,117 @@ VARSSZ		EQU	__rs-VARSSTART		; Size of variables area
 	move.l	#0,(a0)+
 	dbf	d7,.ClearWordRAM
 	
-	bsr.w	LoadStageMap
-	bsr.w	GetStampTypes
-	move.b	#1,sonicObject+oID
-	move.b	#6,sonicShadowObj+oID
-	move.b	#$A,ttlCardBarObj+oID
-	move.b	#$B,ttlCardTextObj+oID
-	bsr.w	SpawnUFOs
-	bsr.w	InitStampAnim
-	move.b	#20,timerFrames
-	move.w	#20,ufoRingBonus
-	move.b	#1,stageWon
-	btst	#1,specStageFlags.w
-	bne.s	.NoCountdown
-	move.l	#100,specStageTimer.w
+	bsr.w	LoadStageMap			; Load stage map
+	bsr.w	GetStampTypes			; Get stamp types
+
+	move.b	#1,sonicObject+oID		; Spawn Sonic
+	move.b	#6,sonicShadowObj+oID		; Spawn Sonic's shadow
+	move.b	#$A,ttlCardBarObj+oID		; Spawn title card bar
+	move.b	#$B,ttlCardTextObj+oID		; Spawn title card text
+	bsr.w	SpawnUFOs			; Spawn UFOs
+
+	bsr.w	InitStampAnim			; Initialize stamp animation
+	move.b	#60/3,timerFrames		; Set timer frame counter
+	move.w	#20,ufoRingBonus		; Set initial UFO ring bonus
+	move.b	#1,stageInactive		; Mark stage as inactive
+
+	btst	#1,specStageFlags.w		; Are we in time attack mode?
+	bne.s	.NoCountdown			; If so, branch
+	move.l	#100,specStageTimer.w		; If not, set timer to 100 seconds
 
 .NoCountdown:
-	bset	#1,GAIRQMASK.w
-	bclr	#7,GASUBFLAG.w
+	bset	#1,GAIRQMASK.w			; Enable graphics interrupt
+	bclr	#7,GASUBFLAG.w			; Mark as initialized
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 MainLoop:
-	btst	#5,GAMAINFLAG.w
-	beq.s	.NotPaused
-	move.w	#MSCPAUSEON,d0
+	btst	#5,GAMAINFLAG.w			; Is the Main CPU side paused?
+	beq.s	.NotPaused			; If not, branch
+	move.w	#MSCPAUSEON,d0			; Pause music
 	jsr	_CDBIOS.w
 
 .PauseLoop:
-	btst	#1,specStageFlags.w
-	beq.s	.CheckUnpause
-	move.b	ctrlData.w,d0
+	btst	#1,specStageFlags.w		; Are we in time attack mode?
+	beq.s	.CheckUnpause			; If not, branch
+	move.b	ctrlData.w,d0			; Have A, B, or C been presed?
 	andi.b	#$70,d0
-	beq.s	.CheckUnpause
-	bset	#5,GASUBFLAG.w
+	beq.s	.CheckUnpause			; If not, branch
+	bset	#5,GASUBFLAG.w			; If so, exit the stage
 	bra.w	.Exit
 
 .CheckUnpause:
-	btst	#5,GAMAINFLAG.w
-	bne.s	.PauseLoop
-	move.w	#MSCPAUSEOFF,d0
+	btst	#5,GAMAINFLAG.w			; Is the Main CPU side paused?
+	bne.s	.PauseLoop			; If so, loop
+	move.w	#MSCPAUSEOFF,d0			; Unpause music
 	jsr	_CDBIOS.w
 
 .NotPaused:
-	btst	#0,GACOMCMD2.w
-	beq.s	MainLoop
-	bsr.w	WaitWordRAMAccess
-	move.l	#0,subSndQueue1
-	bset	#0,GACOMSTAT2.w
+	btst	#0,GACOMCMD2.w			; Should we start updating?
+	beq.s	MainLoop			; If not, wait
+
+	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
+	move.l	#0,subSndQueue1			; Clear sound queues
+
+	bset	#0,GACOMSTAT2.w			; Respond to the Main CPU
 
 .WaitMainCPU:
-	btst	#0,GACOMCMD2.w
-	bne.s	.WaitMainCPU
-	bclr	#0,GACOMSTAT2.w
-	bsr.w	AnimateStamps
-	bsr.w	GetGfxSines
-	bsr.w	RunGfxOperation
-	move.b	#0,spriteCount
+	btst	#0,GACOMCMD2.w			; Has the Main CPU responded?
+	bne.s	.WaitMainCPU			; If not, wait
+	bclr	#0,GACOMSTAT2.w			; Communication is done
+
+	bsr.w	AnimateStamps			; Animate stamps
+	bsr.w	GetGfxSines			; Get sines for graphics operation
+	bsr.w	RunGfxOperation			; Run graphics operation
+	
+	move.b	#0,spriteCount			; Reset sprites
 	move.l	#subSprites,curSpriteSlot
 	bsr.w	Init3DSpritePos
-	bsr.w	RunObjects
-	movea.l	curSpriteSlot,a0
+
+	bsr.w	RunObjects			; Run objects
+
+	movea.l	curSpriteSlot,a0		; Set terminating sprite slot
 	move.l	#0,(a0)
-	bsr.w	UpdateTimer
+
+	bsr.w	UpdateTimer			; Update timer
 
 .WaitGfx:
-	tst.b	GAIMGVDOT+1.w
-	bne.s	.WaitGfx
-	bsr.w	GiveWordRAMAccess
-	bsr.w	CheckUFOPresence
-	bne.s	.NotOver
-	move.b	specStageFlags.w,d0
+	tst.b	GAIMGVDOT+1.w			; Has the graphics operation finished?
+	bne.s	.WaitGfx			; If not, wait
+
+	bsr.w	GiveWordRAMAccess		; Give Word RAM access to the Main CPU
+	
+	bsr.w	CheckUFOPresence		; Are there any UFOs left?
+	bne.s	.NotOver			; If so, branch
+
+	move.b	specStageFlags.w,d0		; Are we in temporary or time attack mode?
 	andi.b	#3,d0
-	beq.s	.NotOver
-	move.b	#1,stageOver
+	beq.s	.NotOver			; If not, branch
+	move.b	#1,stageOver			; Stage is now over
 
 .NotOver:
-	btst	#0,specStageFlags.w
-	beq.s	.CheckExit
-	btst	#7,ctrlData.w
-	bne.s	.Exit
+	btst	#0,specStageFlags.w		; Are we in time attack mode?
+	beq.s	.CheckExit			; If not, branch
+	btst	#7,ctrlData.w			; Has the start button been pressed?
+	bne.s	.Exit				; If so, branch
 
 .CheckExit:
-	tst.b	stageOver
-	bne.s	.Exit
-	tst.b	gotTimeStone
-	bne.s	.StageBeaten
-	bra.w	MainLoop
+	tst.b	stageOver			; Is the stage over?
+	bne.s	.Exit				; If so, branch
+	tst.b	gotTimeStone			; Did we get the time stone?
+	bne.s	.StageBeaten			; If so, branch
+	bra.w	MainLoop			; Loop
 
 .StageBeaten:
-	bset	#0,GASUBFLAG.w
-	moveq	#0,d0
+	bset	#0,GASUBFLAG.w			; Mark stage as over
+	moveq	#0,d0				; Mark time stone as retrieved
 	move.b	specStageID.w,d0
 	bset	d0,timeStonesSub.w
 
-.Exit:	
-	bset	#0,GASUBFLAG.w
-	move.b	specStageID.w,d0
+.Exit:
+	bset	#0,GASUBFLAG.w			; Mark stage as over
+
+	move.b	specStageID.w,d0		; Search for next stage ID
 
 .GetNextStage:
 	addq.b	#1,d0
@@ -356,18 +364,19 @@ MainLoop:
 	moveq	#0,d0
 
 .CheckTimeStone:
-	cmpi.b	#%1111111,timeStonesSub.w
-	beq.s	.SetNextStage
-	btst	d0,timeStonesSub.w
-	bne.s	.GetNextStage
+	cmpi.b	#%1111111,timeStonesSub.w	; Did we get all the time stones?
+	beq.s	.SetNextStage			; If so, branch
+	btst	d0,timeStonesSub.w		; Is the next stage selected already beaten?
+	bne.s	.GetNextStage			; If so, search again
 
 .SetNextStage:
-	move.b	d0,specStageID.w
+	move.b	d0,specStageID.w		; Set next stage ID
 
 .WaitMainCPUDone:
-	btst	#0,GAMAINFLAG.w
+	btst	#0,GAMAINFLAG.w			; Wait for the Main CPU to respond
 	beq.s	.WaitMainCPUDone
-	moveq	#0,d0
+
+	moveq	#0,d0				; Clear communication statuses
 	move.b	d0,GASUBFLAG.w
 	move.l	d0,GACOMSTAT0.w
 	move.l	d0,GACOMSTAT4.w
@@ -375,130 +384,138 @@ MainLoop:
 	move.l	d0,GACOMSTATC.w
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Check for UFO presence
+; -------------------------------------------------------------------------
+; RETURNS:
+;	eq/ne - No UFOs found/UFOs found
+; -------------------------------------------------------------------------
 
 CheckUFOPresence:
-	lea	ufoObject1,a0
+	lea	ufoObject1,a0			; Check UFO 1
 	tst.b	(a0)
 	bne.s	.End
-	tst.b	ufoObject2-ufoObject1(a0)
+	tst.b	ufoObject2-ufoObject1(a0)	; Check UFO 2
 	bne.s	.End
-	tst.b	ufoObject3-ufoObject1(a0)
+	tst.b	ufoObject3-ufoObject1(a0)	; Check UFO 3
 	bne.s	.End
-	tst.b	ufoObject4-ufoObject1(a0)
+	tst.b	ufoObject4-ufoObject1(a0)	; Check UFO 4
 	bne.s	.End
-	tst.b	ufoObject5-ufoObject1(a0)
+	tst.b	ufoObject5-ufoObject1(a0)	; Check UFO 5
 	bne.s	.End
-	tst.b	ufoObject6-ufoObject1(a0)
+	tst.b	ufoObject6-ufoObject1(a0)	; Check UFO 6
 
 .End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Graphics operation interrupt
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 IRQ1:
 	move.b	#0,gfxOpFlag			; Clear graphics operation flag
 	rte
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Load stage map
+; -------------------------------------------------------------------------
 
 LoadStageMap:
-	moveq	#0,d0
+	moveq	#0,d0				; Run routine
 	move.b	specStageID.w,d0
 	add.w	d0,d0
 	move.w	StageMaps(pc,d0.w),d0
 	jmp	StageMaps(pc,d0.w)
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 StageMaps:
-	dc.w	LoadMap_SS1-StageMaps
-	dc.w	LoadMap_SS2-StageMaps
-	dc.w	LoadMap_SS3-StageMaps
-	dc.w	LoadMap_SS4-StageMaps
-	dc.w	LoadMap_SS5-StageMaps
-	dc.w	LoadMap_SS6-StageMaps
-	dc.w	LoadMap_SS7-StageMaps
-	dc.w	LoadMap_SS8-StageMaps
+	dc.w	LoadMap_SS1-StageMaps		; Stage 1
+	dc.w	LoadMap_SS2-StageMaps		; Stage 2
+	dc.w	LoadMap_SS3-StageMaps		; Stage 3
+	dc.w	LoadMap_SS4-StageMaps		; Stage 4
+	dc.w	LoadMap_SS5-StageMaps		; Stage 5
+	dc.w	LoadMap_SS6-StageMaps		; Stage 6
+	dc.w	LoadMap_SS7-StageMaps		; Stage 7
+	dc.w	LoadMap_SS8-StageMaps		; Stage 8
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadMap_SS1:
-	lea	Stamps_SS1,a0
+	lea	Stamps_SS1,a0			; Load stamps and stamp map
 	lea	StampMap_SS1,a1
 	bra.s	LoadStamps
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadMap_SS2:
-	lea	Stamps_SS2,a0
+	lea	Stamps_SS2,a0			; Load stamps and stamp map
 	lea	StampMap_SS2,a1
 	bra.s	LoadStamps
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadMap_SS3:
-	lea	Stamps_SS3_1,a0
+	lea	Stamps_SS3_1,a0			; Load stamps and stamp map
 	lea	StampMap_SS3,a1
 	bsr.s	LoadStamps
-	lea	Stamps_SS3_2,a0
+
+	lea	Stamps_SS3_2,a0			; Load secondary stamps
 	lea	WORDRAM2M+$10000,a1
 	bra.w	KosDec
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadMap_SS4:
-	lea	Stamps_SS4,a0
+	lea	Stamps_SS4,a0			; Load stamps and stamp map
 	lea	StampMap_SS4,a1
 	bra.s	LoadStamps
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadMap_SS5:
-	lea	Stamps_SS5,a0
+	lea	Stamps_SS5,a0			; Load stamps and stamp map
 	lea	StampMap_SS5,a1
 	bra.s	LoadStamps
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadMap_SS6:
-	lea	Stamps_SS6,a0
+	lea	Stamps_SS6,a0			; Load stamps and stamp map
 	lea	StampMap_SS6,a1
 	bra.s	LoadStamps
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadMap_SS7:
-	lea	Stamps_SS7,a0
+	lea	Stamps_SS7,a0			; Load stamps and stamp map
 	lea	StampMap_SS7,a1
 	bra.s	LoadStamps
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadMap_SS8:
-	lea	Stamps_SS8,a0
+	lea	Stamps_SS8,a0			; Load stamps and stamp map
 	lea	StampMap_SS8,a1
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 LoadStamps:
-	move.l	a1,-(sp)
+	move.l	a1,-(sp)			; Load stamps
 	lea	WORDRAM2M+$200,a1
 	bsr.w	KosDec
 	
-	movea.l	(sp)+,a0
+	movea.l	(sp)+,a0			; Load stamp map
 	lea	WORDRAM2M+STAMPMAP,a1
-	bra.w	*+4
+	bra.w	KosDec
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Decompress Kosinski data into RAM
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a0.l - Kosinski data pointer
 ;	a1.l - Destination buffer pointer
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 KosDec:
 	subq.l	#2,sp				; Allocate 2 bytes on the stack
@@ -523,7 +540,7 @@ KosDec_Loop:
 	move.b	(a0)+,(a1)+			; Copy byte as is
 	bra.s	KosDec_Loop
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 KosDec_RLE:
 	moveq	#0,d3
@@ -562,7 +579,7 @@ KosDec_RLE:
 	move.b	(a0)+,d2			; Calculate offset
 	bra.s	KosDec_RLELoop
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 KosDec_SeparateRLE:
 	move.b	(a0)+,d0			; Get first byte
@@ -582,7 +599,7 @@ KosDec_RLELoop:
 	dbf	d3,KosDec_RLELoop
 	bra.s	KosDec_Loop
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 KosDec_SeparateRLE2:
 	move.b	(a0)+,d1
@@ -592,13 +609,15 @@ KosDec_SeparateRLE2:
 	move.b	d1,d3				; Otherwise, copy repeat count
 	bra.s	KosDec_RLELoop
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 KosDec_Done:
 	addq.l	#2,sp				; Deallocate the 2 bytes
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Unknown
+; -------------------------------------------------------------------------
 
 	jmp	$500000
 	jmp	$510000
@@ -617,25 +636,14 @@ KosDec_Done:
 	jmp	$5E0000
 	jmp	$5F0000
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Run objects
+; -------------------------------------------------------------------------
 
 RunObjects:
-	bsr.w	InitZBuffer
+	bsr.w	InitZBuffer			; Initialize Z buffer
 	
-	lea	objPrioLevel0,a0
-	moveq	#OBJ0COUNT-1,d7
-
-.Priority0:
-	bsr.s	RunObject
-	adda.w	#oSize,a0
-	dbf	d7,.Priority0
-	
-	lea	sonicObject,a0
-	bsr.s	RunObject
-	lea	sonicShadowObj,a0
-	bsr.s	RunObject
-	
-	lea	objPrioLevel1,a0
+	lea	objPrioLevel1,a0		; Run priority level 1 objects
 	moveq	#OBJ1COUNT-1,d7
 
 .Priority1:
@@ -643,9 +651,12 @@ RunObjects:
 	adda.w	#oSize,a0
 	dbf	d7,.Priority1
 	
-	bsr.w	Draw3DObjects
+	lea	sonicObject,a0			; Run Sonic object
+	bsr.s	RunObject
+	lea	sonicShadowObj,a0		; Run Sonic's shadow object
+	bsr.s	RunObject
 	
-	lea	objPrioLevel2,a0
+	lea	objPrioLevel2,a0		; Run priority level 2 objects
 	moveq	#OBJ2COUNT-1,d7
 
 .Priority2:
@@ -653,273 +664,344 @@ RunObjects:
 	adda.w	#oSize,a0
 	dbf	d7,.Priority2
 	
+	bsr.w	Draw3DObjects			; Draw 3D objects
+	
+	lea	objPrioLevel3,a0		; Run priority level 3 objects
+	moveq	#OBJ3COUNT-1,d7
+
+.Priority3:
+	bsr.s	RunObject
+	adda.w	#oSize,a0
+	dbf	d7,.Priority3
+	
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Run object
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a0.l - Pointer to object slot
+; -------------------------------------------------------------------------
 
 RunObject:
-	moveq	#0,d0
+	moveq	#0,d0				; Get object address
 	move.b	(a0),d0
 	beq.s	.End
 	lea	ObjectIndex-4(pc),a1
 	add.w	d0,d0
 	add.w	d0,d0
 	movea.l	(a1,d0.w),a1
-	move.w	d7,-(sp)
+
+	move.w	d7,-(sp)			; Run object
 	jsr	(a1)
 	move.w	(sp)+,d7
-	btst	#0,oFlags(a0)
-	beq.s	.End
-	movea.l	a0,a1
+
+	btst	#0,oFlags(a0)			; Should this object be deleted?
+	beq.s	.End				; If not, branch
+	movea.l	a0,a1				; If so, delete it
 	moveq	#0,d1
 	bra.w	Fill128
 	
 .End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Initialize Z buffer
+; -------------------------------------------------------------------------
 
 InitZBuffer:
-	lea	zBuffer,a6
-	moveq	#0,d5
-	moveq	#$10,d6
-	moveq	#$3F,d7
+	lea	zBuffer,a6			; Get Z buffer
+	moveq	#0,d5				; Fill with 0
+	moveq	#ZBUFSLOTS*2,d6			; Number of slots per level
+	moveq	#ZBUFLEVELS-1,d7		; Number of levels
 
-.Clear:	
-	move.w	d5,(a6)
-	adda.w	d6,a6
-	dbf	d7,.Clear
+.Clear:
+	move.w	d5,(a6)				; Reset level
+	adda.w	d6,a6				; Next level
+	dbf	d7,.Clear			; Loop until Z buffer is initialized
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Set an object for drawing in a 3D space
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - Z buffer level
+;	a0.l - Pointer to object slot
+; -------------------------------------------------------------------------
 
 Set3DObjectDraw:
-	move.l	d0,-(sp)
-	cmpi.l	#$1000,d0
-	bcs.s	.GotLevel
-	move.l	#$FFF,d0
+	move.l	d0,-(sp)			; Save d0
+
+	cmpi.l	#ZBUFLEVELS*$40,d0		; Is the Z buffer level too high?
+	bcs.s	.GotLevel			; If not, branch
+	move.l	#(ZBUFLEVELS*$40)-1,d0		; If so, cap it
 
 .GotLevel:
-	lsr.w	#2,d0
+	lsr.w	#2,d0				; Get proper Z buffer level
 	andi.w	#$3F0,d0
-	lea	zBuffer,a6
+
+	lea	zBuffer,a6			; Get Z buffer level
 	lea	(a6,d0.w),a6
-	moveq	#6,d7
+
+	moveq	#ZBUFSLOTS-1-1,d7		; Start searching for free slot
 
 .FindSlot:
-	tst.w	(a6)+
-	beq.s	.Set
-	dbf	d7,.FindSlot
+	tst.w	(a6)+				; Is this slot free?
+	beq.s	.Set				; If so, branch
+	dbf	d7,.FindSlot			; If not, loop
 
-.Set:	
-	move.w	a0,-2(a6)
-	move.w	#0,(a6)
-	move.l	(sp)+,d0
+.Set:
+	move.w	a0,-2(a6)			; Set object in slot
+	move.w	#0,(a6)				; Set termination
+
+	move.l	(sp)+,d0			; Restore d0
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Draw 3D objects
+; -------------------------------------------------------------------------
 
 Draw3DObjects:
-	move.l	#zBuffer,d4
-	move.l	#$30000,d5
-	moveq	#$10,d6
-	moveq	#$3F,d7
+	move.l	#zBuffer,d4			; Get Z buffer
+	move.l	#DataSection,d5			; Use data section
+	moveq	#ZBUFSLOTS*2,d6			; Number of slots per level
+	moveq	#ZBUFLEVELS-1,d7		; Number of levels
 
-.Draw:	
-	movea.l	d4,a6
-	bsr.s	Draw3DObjBatch
-	add.l	d6,d4
-	dbf	d7,.Draw
+.Draw:
+	movea.l	d4,a6				; Draw objects in Z buffer level
+	bsr.s	DrawZBufObjLevel
+	add.l	d6,d4				; Next level
+	dbf	d7,.Draw			; Loop until objects are drawn
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Draw objects in Z buffer level
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a6.l - Pointer to Z buffer level
+; -------------------------------------------------------------------------
 
-Draw3DObjBatch:
-	bsr.s	Draw3DObject
-	bsr.s	Draw3DObject
-	bsr.s	Draw3DObject
-	bsr.s	Draw3DObject
-	bsr.s	Draw3DObject
-	bsr.s	Draw3DObject
-	bsr.s	Draw3DObject
-	bsr.s	Draw3DObject
+DrawZBufObjLevel:
+	rept	ZBUFSLOTS
+		bsr.s	Draw3DObject
+	endr
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Draw 3D object queued in Z buffer
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a6.l - Pointer to Z buffer slot
+; -------------------------------------------------------------------------
 
 Draw3DObject:
-	move.w	(a6)+,d5
-	beq.s	.NoObject
-	movea.l	d5,a0
+	move.w	(a6)+,d5			; Is this slot occupied?
+	beq.s	.NoObject			; If not, branch
+
+	movea.l	d5,a0				; Draw object
 	movem.l	d4-d7,-(sp)
 	bsr.w	DrawObject
 	movem.l	(sp)+,d4-d7
 	rts
-	
-; ---------------------------------------------------------------------------
 
 .NoObject:
-	move.l	(sp)+,d0
+	move.l	(sp)+,d0			; Force out of Z buffer level
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Set object sprite (resets animation)
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.b - Sprite ID
+;	a0.l - Pointer to object slot
+; -------------------------------------------------------------------------
 
-ResetObjAnim:
-	move.b	d0,oAnim(a0)
-	moveq	#0,d0
-	move.b	d0,oAnimFrame(a0)
-	movea.l	oAnimData(a0),a6
-	move.b	oAnim(a0),d0
+SetObjSprite:
+	move.b	d0,oSprite(a0)			; Set sprite ID
+	
+	moveq	#0,d0				; Reset sprite frame
+	move.b	d0,oSpriteFrame(a0)
+
+	movea.l	oSprites(a0),a6		; Get sprite data
+	move.b	oSprite(a0),d0
 	add.w	d0,d0
 	add.w	d0,d0
 	movea.l	(a6,d0.w),a6
-	move.b	(a6)+,d0
-	move.b	(a6),oAnimTime(a0)
+
+	move.b	(a6)+,d0			; Skip over number of frames
+	move.b	(a6),oAnimTime(a0)		; Get animation speed
 	move.b	(a6)+,oAnimTime2(a0)
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Change object sprite (doesn't reset animation)
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.b - Sprite ID
+;	a0.l - Pointer to object slot
+; -------------------------------------------------------------------------
 
-SetObjAnim:
-	move.b	d0,oAnim(a0)
-	movea.l	oAnimData(a0),a6
+ChgObjSprite:
+	move.b	d0,oSprite(a0)			; Set sprite ID
+
+	movea.l	oSprites(a0),a6		; Get sprite data
 	moveq	#0,d0
-	move.b	oAnim(a0),d0
+	move.b	oSprite(a0),d0
 	add.w	d0,d0
 	add.w	d0,d0
 	movea.l	(a6,d0.w),a6
-	move.b	(a6)+,d0
-	move.b	(a6),oAnimTime(a0)
+
+	move.b	(a6)+,d0			; Skip over number of frames
+	move.b	(a6),oAnimTime(a0)		; Get animation speed
 	move.b	(a6)+,oAnimTime2(a0)
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Draw object
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a0.l - Pointer to object slot
+; -------------------------------------------------------------------------
 
 DrawObject:
-	movea.l	oAnimData(a0),a2
+	movea.l	oSprites(a0),a2		; Get sprite data
 	moveq	#0,d0
-	move.b	oAnim(a0),d0
+	move.b	oSprite(a0),d0
 	add.w	d0,d0
 	add.w	d0,d0
 	movea.l	(a2,d0.w),a2
-	move.b	(a2)+,d1
-	move.b	(a2)+,d2
-	btst	#1,oFlags(a0)
-	bne.s	.GetSprite
-	subq.b	#1,oAnimTime(a0)
-	bpl.s	.GetSprite
-	move.b	d2,oAnimTime(a0)
-	addq.b	#1,oAnimFrame(a0)
-	cmp.b	oAnimFrame(a0),d1
-	bhi.s	.GetSprite
-	move.b	#0,oAnimFrame(a0)
+
+	move.b	(a2)+,d1			; Get number of frames
+	move.b	(a2)+,d2			; Get animation speed
+
+	btst	#1,oFlags(a0)			; Should this sprite be animated?
+	bne.s	.GetSprite			; If not, branch
+
+	subq.b	#1,oAnimTime(a0)		; Decrement animation time
+	bpl.s	.GetSprite			; If it hasn't run out, branch
+	move.b	d2,oAnimTime(a0)		; Reset animation time
+
+	addq.b	#1,oSpriteFrame(a0)		; Increment sprite frame
+	cmp.b	oSpriteFrame(a0),d1		; Has it gone past the last frame?
+	bhi.s	.GetSprite			; If not, branch
+	move.b	#0,oSpriteFrame(a0)		; Restart animation
 
 .GetSprite:
-	btst	#2,oFlags(a0)
-	bne.w	.End
-	move.w	oSprX(a0),d4
+	btst	#2,oFlags(a0)			; Should this sprite be drawn?
+	bne.w	.End				; If not, branch
+
+	move.w	oSprX(a0),d4			; Get sprite position
 	move.w	oSprY(a0),d3
-	moveq	#0,d0
-	move.b	oAnimFrame(a0),d0
+
+	moveq	#0,d0				; Get sprite frame data
+	move.b	oSpriteFrame(a0),d0
 	add.w	d0,d0
 	add.w	d0,d0
 	movea.l	(a2,d0.w),a3
-	moveq	#0,d7
-	move.b	(a3)+,d7
-	bmi.w	.End
-	move.b	(a3)+,oArtFrame(a0)
-	tst.b	(a3)+
-	tst.b	(a3)+
-	tst.b	(a3)+
-	movea.l	curSpriteSlot,a4
-	move.w	oTile(a0),d5
-	tst.b	(a2,d0.w)
-	cmpi.b	#1,(a2,d0.w)
-	beq.w	.XFlip
-	cmpi.b	#2,(a2,d0.w)
-	beq.w	.YFlip
-	cmpi.b	#3,(a2,d0.w)
-	beq.w	.XYFlip
 
-; ---------------------------------------------------------------------------
+	moveq	#0,d7				; Get number of sprite pieces
+	move.b	(a3)+,d7
+	bmi.w	.End				; If there are none, branch
+
+	move.b	(a3)+,oSpriteFlag(a0)		; Set sprite flag
+	tst.b	(a3)+				; Skip over padding
+	tst.b	(a3)+
+	tst.b	(a3)+
+
+	movea.l	curSpriteSlot,a4		; Get current sprite slot
+	move.w	oTile(a0),d5			; Get base tile ID
+
+	tst.b	(a2,d0.w)			; Check flip flags
+	cmpi.b	#1,(a2,d0.w)			; Is the sprite horizontally flipped?
+	beq.w	.XFlip				; If so, branch
+	cmpi.b	#2,(a2,d0.w)			; Is the sprite vertically flipped?
+	beq.w	.YFlip				; If so, branch
+	cmpi.b	#3,(a2,d0.w)			; Is the sprite flipped both ways?
+	beq.w	.XYFlip				; If so, branch
+
+; -------------------------------------------------------------------------
 
 .NoFlip:
-	cmpi.b	#$50,spriteCount
-	bcc.s	.NoFlip_Done
-	move.b	(a3)+,d0
+	cmpi.b	#$50,spriteCount		; Is the sprite table full?
+	bcc.s	.NoFlip_Done			; If so, branch
+
+	move.b	(a3)+,d0			; Get Y position
 	ext.w	d0
 	add.w	d3,d0
-	cmpi.w	#$60,d0
-	ble.s	.NoFlip_SkipSprite
-	cmpi.w	#$180,d0
-	bge.s	.NoFlip_SkipSprite
-	move.w	d0,(a4)+
-	move.b	(a3)+,(a4)+
-	addq.b	#1,spriteCount
-	move.b	spriteCount,(a4)+
-	move.b	(a3)+,d0
+	cmpi.w	#-32+128,d0			; Is it offscreen?
+	ble.s	.NoFlip_SkipSprite		; If so, branch
+	cmpi.w	#256+128,d0
+	bge.s	.NoFlip_SkipSprite		; If so, branch
+	move.w	d0,(a4)+			; Set Y position
+
+	move.b	(a3)+,(a4)+			; Set size
+	addq.b	#1,spriteCount			; Increment sprite count
+	move.b	spriteCount,(a4)+		; Set link
+
+	move.b	(a3)+,d0			; Set tile ID
 	lsl.w	#8,d0
 	move.b	(a3)+,d0
 	add.w	d5,d0
 	move.w	d0,(a4)+
-	move.b	(a3)+,d0
+
+	move.b	(a3)+,d0			; Get X position
 	ext.w	d0
 	add.w	d4,d0
-	cmpi.w	#$60,d0
-	ble.s	.NoFlip_Undo
-	cmpi.w	#$1C0,d0
-	bge.s	.NoFlip_Undo
-	andi.w	#$1FF,d0
-	bne.s	.NoFlip_SetX
-	addq.w	#1,d0
+	cmpi.w	#-32+128,d0			; Is it offscreen?
+	ble.s	.NoFlip_Undo			; If so, branch
+	cmpi.w	#320+128,d0
+	bge.s	.NoFlip_Undo			; If so, branch
+	andi.w	#$1FF,d0			; Is it 0?
+	bne.s	.NoFlip_SetX			; If not, branch
+	addq.w	#1,d0				; If so, force it to not be 0
 
 .NoFlip_SetX:
-	move.w	d0,(a4)+
+	move.w	d0,(a4)+			; Set X position
 
 .NoFlip_Next:
-	dbf	d7,.NoFlip
+	dbf	d7,.NoFlip			; Loop until pieces are drawn
 
 .NoFlip_Done:
-	move.l	a4,curSpriteSlot
+	move.l	a4,curSpriteSlot		; Update current sprite slot
 	rts
 
-; ---------------------------------------------------------------------------
-
 .NoFlip_SkipSprite:
-	addq.w	#4,a3
+	addq.w	#4,a3				; Skip over sprite
 	bra.s	.NoFlip_Next
 	
-; ---------------------------------------------------------------------------
-
 .NoFlip_Undo:
-	subq.w	#6,a4
+	subq.w	#6,a4				; Undo sprite data written
 	subq.b	#1,spriteCount
 	bra.s	.NoFlip_Next
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .XFlip:
-	cmpi.b	#$50,spriteCount
-	bcc.s	.XFlip_Done
-	move.b	(a3)+,d0
+	cmpi.b	#$50,spriteCount		; Is the sprite table full?
+	bcc.s	.XFlip_Done			; If so, branch
+
+	move.b	(a3)+,d0			; Get Y position
 	ext.w	d0
 	add.w	d3,d0
-	cmpi.w	#$60,d0
-	ble.s	.XFlip_SkipSprite
-	cmpi.w	#$180,d0
-	bge.s	.XFlip_SkipSprite
-	move.w	d0,(a4)+
-	move.b	(a3),d2
-	move.b	(a3)+,(a4)+
-	addq.b	#1,spriteCount
-	move.b	spriteCount,(a4)+
-	move.b	(a3)+,d0
+	cmpi.w	#-32+128,d0			; Is it offscreen?
+	ble.s	.XFlip_SkipSprite		; If so, branch
+	cmpi.w	#256+128,d0
+	bge.s	.XFlip_SkipSprite		; If so, branch
+	move.w	d0,(a4)+			; Set Y position
+
+	move.b	(a3),d2				; Get size
+	move.b	(a3)+,(a4)+			; Set size
+	addq.b	#1,spriteCount			; Increment sprite count
+	move.b	spriteCount,(a4)+		; Set link
+
+	move.b	(a3)+,d0			; Set tile ID
 	eori.b	#8,d0
 	lsl.w	#8,d0
 	move.b	(a3)+,d0
 	add.w	d5,d0
 	move.w	d0,(a4)+
-	move.b	(a3)+,d0
+
+	move.b	(a3)+,d0			; Get X position
 	add.b	d2,d2
 	addq.b	#8,d2
 	andi.b	#$F8,d2
@@ -927,43 +1009,40 @@ DrawObject:
 	neg.b	d0
 	ext.w	d0
 	add.w	d4,d0
-	cmpi.w	#$60,d0
-	ble.s	.XFlip_Undo
-	cmpi.w	#$1C0,d0
-	bge.s	.XFlip_Undo
-	andi.w	#$1FF,d0
-	bne.s	.XFlip_SetX
-	addq.w	#1,d0
+	cmpi.w	#-32+128,d0			; Is it offscreen?
+	ble.s	.XFlip_Undo			; If so, branch
+	cmpi.w	#320+128,d0
+	bge.s	.XFlip_Undo			; If so, branch
+	andi.w	#$1FF,d0			; Is it 0?
+	bne.s	.XFlip_SetX			; If not, branch
+	addq.w	#1,d0				; If so, force it to not be 0
 
 .XFlip_SetX:
-	move.w	d0,(a4)+
+	move.w	d0,(a4)+			; Set X position
 
 .XFlip_Next:
-	dbf	d7,.XFlip
+	dbf	d7,.XFlip			; Loop until pieces are drawn
 
 .XFlip_Done:
-	move.l	a4,curSpriteSlot
+	move.l	a4,curSpriteSlot		; Update current sprite slot
 	rts
 
-; ---------------------------------------------------------------------------
-
 .XFlip_SkipSprite:
-	addq.w	#4,a3
+	addq.w	#4,a3				; Skip over sprite
 	bra.s	.XFlip_Next
 
-; ---------------------------------------------------------------------------
-
 .XFlip_Undo:
-	subq.w	#6,a4
+	subq.w	#6,a4				; Undo sprite data written
 	subq.b	#1,spriteCount
 	bra.s	.XFlip_Next
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .YFlip:
-	cmpi.b	#$50,spriteCount
-	bcc.s	.YFlip_Done
-	move.b	(a3)+,d0
+	cmpi.b	#$50,spriteCount		; Is the sprite table full?
+	bcc.s	.YFlip_Done			; If so, branch
+
+	move.b	(a3)+,d0			; Get Y position
 	move.b	(a3),d6
 	ext.w	d0
 	neg.w	d0
@@ -972,58 +1051,60 @@ DrawObject:
 	addq.w	#8,d6
 	sub.w	d6,d0
 	add.w	d3,d0
-	cmpi.w	#$60,d0
-	ble.s	.YFlip_SkipSprite
-	cmpi.w	#$180,d0
-	bge.s	.YFlip_SkipSprite
-	move.w	d0,(a4)+
-	move.b	(a3)+,(a4)+
-	addq.b	#1,spriteCount
-	move.b	spriteCount,(a4)+
-	move.b	(a3)+,d0
+	cmpi.w	#-32+128,d0			; Is it offscreen?
+	ble.s	.YFlip_SkipSprite		; If so, branch
+	cmpi.w	#256+128,d0
+	bge.s	.YFlip_SkipSprite		; If so, branch
+	move.w	d0,(a4)+			; Set Y position
+
+	move.b	(a3)+,(a4)+			; Set size
+	addq.b	#1,spriteCount			; Increment sprite count
+	move.b	spriteCount,(a4)+		; Set link
+
+	move.b	(a3)+,d0			; Set tile ID
 	lsl.w	#8,d0
 	move.b	(a3)+,d0
 	add.w	d5,d0
 	eori.w	#$1000,d0
 	move.w	d0,(a4)+
-	move.b	(a3)+,d0
+
+	move.b	(a3)+,d0			; Get X position
 	ext.w	d0
 	add.w	d4,d0
-	cmpi.w	#$60,d0
-	ble.s	.YFlip_Undo
-	cmpi.w	#$1C0,d0
-	bge.s	.YFlip_Undo
-	andi.w	#$1FF,d0
-	bne.s	.YFlip_SetX
-	addq.w	#1,d0
+	cmpi.w	#-32+128,d0			; Is it offscreen?
+	ble.s	.YFlip_Undo			; If so, branch
+	cmpi.w	#320+128,d0
+	bge.s	.YFlip_Undo			; If so, branch
+	andi.w	#$1FF,d0			; Is it 0?
+	bne.s	.YFlip_SetX			; If not, branch
+	addq.w	#1,d0				; If so, force it to not be 0
 
 .YFlip_SetX:
-	move.w	d0,(a4)+
+	move.w	d0,(a4)+			; Set X position
 
 .YFlip_Next:
-	dbf	d7,.YFlip
+	dbf	d7,.YFlip			; Loop until pieces are drawn
 
 .YFlip_Done:
-	move.l	a4,curSpriteSlot
+	move.l	a4,curSpriteSlot		; Update current sprite slot
 	rts
 
 .YFlip_SkipSprite:
-	addq.w	#4,a3
+	addq.w	#4,a3				; Skip over sprite
 	bra.s	.YFlip_Next
-	
-; ---------------------------------------------------------------------------
 
 .YFlip_Undo:
-	subq.w	#6,a4
+	subq.w	#6,a4				; Undo sprite data written
 	subq.b	#1,spriteCount
 	bra.s	.YFlip_Next
 	
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .XYFlip:
-	cmpi.b	#$50,spriteCount
-	bcc.s	.XYFlip_Done
-	move.b	(a3)+,d0
+	cmpi.b	#$50,spriteCount		; Is the sprite table full?
+	bcc.s	.XYFlip_Done			; If so, branch
+
+	move.b	(a3)+,d0			; Get Y position
 	move.b	(a3),d6
 	ext.w	d0
 	neg.w	d0
@@ -1032,22 +1113,25 @@ DrawObject:
 	addq.w	#8,d6
 	sub.w	d6,d0
 	add.w	d3,d0
-	cmpi.w	#$60,d0
-	ble.s	.XYFlip_SkipSprite
-	cmpi.w	#$180,d0
-	bge.s	.XYFlip_SkipSprite
-	move.w	d0,(a4)+
-	move.b	(a3)+,d6
-	move.b	d6,(a4)+
-	addq.b	#1,spriteCount
-	move.b	spriteCount,(a4)+
-	move.b	(a3)+,d0
+	cmpi.w	#-32+128,d0			; Is it offscreen?
+	ble.s	.XYFlip_SkipSprite		; If so, branch
+	cmpi.w	#256+128,d0
+	bge.s	.XYFlip_SkipSprite		; If so, branch
+	move.w	d0,(a4)+			; Set Y position
+		
+	move.b	(a3)+,d6			; Get size
+	move.b	d6,(a4)+			; Set size
+	addq.b	#1,spriteCount			; Increment sprite count
+	move.b	spriteCount,(a4)+		; Set link
+	
+	move.b	(a3)+,d0			; Set tile ID
 	lsl.w	#8,d0
 	move.b	(a3)+,d0
 	add.w	d5,d0
 	eori.w	#$1800,d0
 	move.w	d0,(a4)+
-	move.b	(a3)+,d0
+
+	move.b	(a3)+,d0			; Get X position
 	ext.w	d0
 	neg.w	d0
 	add.b	d6,d6
@@ -1055,62 +1139,66 @@ DrawObject:
 	addq.w	#8,d6
 	sub.w	d6,d0
 	add.w	d4,d0
-	cmpi.w	#$60,d0
-	ble.s	.XYFlip_Undo
-	cmpi.w	#$1C0,d0
-	bge.s	.XYFlip_Undo
-	andi.w	#$1FF,d0
-	bne.s	.XYFlip_SetX
-	addq.w	#1,d0
+	cmpi.w	#-32+128,d0			; Is it offscreen?
+	ble.s	.XYFlip_Undo			; If so, branch
+	cmpi.w	#320+128,d0
+	bge.s	.XYFlip_Undo			; If so, branch
+	andi.w	#$1FF,d0			; Is it 0?
+	bne.s	.XYFlip_SetX			; If not, branch
+	addq.w	#1,d0				; If so, force it to not be 0
 
 .XYFlip_SetX:
-	move.w	d0,(a4)+
+	move.w	d0,(a4)+			; Set X position
 
 .XYFlip_Next:
-	dbf	d7,.XYFlip
+	dbf	d7,.XYFlip			; Loop until pieces are drawn
 
 .XYFlip_Done:
-	move.l	a4,curSpriteSlot
+	move.l	a4,curSpriteSlot		; Update current sprite slot
 	rts
 
 .XYFlip_SkipSprite:
-	addq.w	#4,a3
+	addq.w	#4,a3				; Skip over sprite
 	bra.s	.XYFlip_Next
 
 .XYFlip_Undo:
-	subq.w	#6,a4
+	subq.w	#6,a4				; Undo sprite data written
 	subq.b	#1,spriteCount
 	bra.s	.XYFlip_Next
 	
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Object index
+; -------------------------------------------------------------------------
 
 ObjectIndex:
-	dc.l	ObjSonic
-	dc.l	ObjUFO
-	dc.l	ObjTimeUFO
-	dc.l	ObjItem
-	dc.l	ObjUFOShadow
-	dc.l	ObjSonicShadow
-	dc.l	ObjDust
-	dc.l	ObjSplash
-	dc.l	ObjPressStart
-	dc.l	ObjTitleCardText
-	dc.l	ObjTitleCardBar
-	dc.l	ObjExplosion
-	dc.l	ObjLostRing
-	dc.l	ObjTimeStone
-	dc.l	ObjSparkle1
-	dc.l	ObjSparkle2
+	dc.l	ObjSonic			; Sonic
+	dc.l	ObjUFO				; UFO
+	dc.l	ObjTimeUFO			; Time UFO
+	dc.l	ObjItem				; Item
+	dc.l	ObjUFOShadow			; UFO shadow
+	dc.l	ObjSonicShadow			; Sonic's shadow
+	dc.l	ObjDust				; Dust
+	dc.l	ObjSplash			; Splash
+	dc.l	ObjPressStart			; "Press Start"
+	dc.l	ObjTitleCardText		; Title card text
+	dc.l	ObjTitleCardBar			; Title card bar
+	dc.l	ObjExplosion			; Explosion
+	dc.l	ObjLostRing			; Lost ring
+	dc.l	ObjTimeStone			; Time stone
+	dc.l	ObjSparkle1			; Sparkle 1
+	dc.l	ObjSparkle2			; Sparkle 2
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Initialize stamp animation
+; -------------------------------------------------------------------------
 
 InitStampAnim:
-	moveq	#0,d0
+	moveq	#0,d0				; Get stamp animation data
 	move.b	specStageID.w,d0
 	mulu.w	#$C,d0
 	move.l	.Animations(pc,d0.w),stampAnim1Data
@@ -1119,364 +1207,410 @@ InitStampAnim:
 	move.w	.Animations+$A(pc,d0.w),stampAnim2Count
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .Animations:
-	dc.l	StampAnim1_SS1
-	dc.w	$B
+	dc.l	StampAnim1_SS1			; Stage 1
+	dc.w	$C-1
 	dc.l	StampAnim2_SS1
-	dc.w	7
-	dc.l	StampAnim1_SS2
-	dc.w	9
-	dc.l	StampAnim2_SS2
-	dc.w	7
-	dc.l	StampAnim1_SS3
-	dc.w	7
-	dc.l	StampAnim2_SS3
-	dc.w	$B
-	dc.l	StampAnim1_SS4
-	dc.w	$23
-	dc.l	StampAnim2_SS4
-	dc.w	$F
-	dc.l	StampAnim1_SS5
-	dc.w	$A
-	dc.l	StampAnim2_SS5
-	dc.w	$B
-	dc.l	StampAnim1_SS6
-	dc.w	$A
-	dc.l	StampAnim2_SS6
-	dc.w	$F
-	dc.l	StampAnim1_SS7
-	dc.w	3
-	dc.l	StampAnim2_SS7
-	dc.w	3
-	dc.l	StampAnim1_SS8
-	dc.w	9
-	dc.l	StampAnim2_SS8
-	dc.w	$B
+	dc.w	8-1
 
-; ---------------------------------------------------------------------------
+	dc.l	StampAnim1_SS2			; Stage 2
+	dc.w	$A-1
+	dc.l	StampAnim2_SS2
+	dc.w	8-1
+
+	dc.l	StampAnim1_SS3			; Stage 3
+	dc.w	8-1
+	dc.l	StampAnim2_SS3
+	dc.w	$C-1
+
+	dc.l	StampAnim1_SS4			; Stage 4
+	dc.w	$24-1
+	dc.l	StampAnim2_SS4
+	dc.w	$10-1
+
+	dc.l	StampAnim1_SS5			; Stage 5
+	dc.w	$B-1
+	dc.l	StampAnim2_SS5
+	dc.w	$C-1
+
+	dc.l	StampAnim1_SS6			; Stage 6
+	dc.w	$B-1
+	dc.l	StampAnim2_SS6
+	dc.w	$10-1
+
+	dc.l	StampAnim1_SS7			; Stage 7
+	dc.w	4-1
+	dc.l	StampAnim2_SS7
+	dc.w	4-1
+	
+	dc.l	StampAnim1_SS8			; Stage 8
+	dc.w	$A-1
+	dc.l	StampAnim2_SS8
+	dc.w	$C-1
+
+; -------------------------------------------------------------------------
+; Animate stamps
+; -------------------------------------------------------------------------
 
 AnimateStamps:
-	addq.w	#2,stampAnim2Frame
+	addq.w	#2,stampAnim2Frame		; Update second animation
 	cmpi.w	#6,stampAnim2Frame
 	bcs.s	.CheckAnim1
 	move.w	#0,stampAnim2Frame
 
 .CheckAnim1:
-	addq.w	#1,stampAnim1Delay
-	move.w	stampAnim1Delay,d0
+	addq.w	#1,stampAnim1Delay		; Increment first animation delay counter
+	move.w	stampAnim1Delay,d0		; Is it time to update the animation?
 	andi.w	#1,d0
-	bne.w	.Anim2
-	addq.w	#2,stampAnim1Frame
+	bne.w	.Anim2				; If not, branch
+
+	addq.w	#2,stampAnim1Frame		; Update first animation
 	andi.w	#7,stampAnim1Frame
-	movea.l	stampAnim1Data,a0
-	lea	(WORDRAM2M+STAMPMAP).l,a1
-	move.w	stampAnim1Frame,d1
-	move.w	stampAnim1Count,d7
+	
+	movea.l	stampAnim1Data,a0		; Get animation data
+	lea	WORDRAM2M+STAMPMAP,a1		; Get stamp map
+	move.w	stampAnim1Frame,d1		; Get frame ID
+	move.w	stampAnim1Count,d7		; Get number of stamps to animate
 
 .Anim1Loop:
-	move.w	(a0),d0
+	move.w	(a0),d0				; Set stamp ID
 	move.w	2(a0,d1.w),d2
 	move.w	d2,(a1,d0.w)
-	adda.w	#$A,a0
-	dbf	d7,.Anim1Loop
+	adda.w	#$A,a0				; Next stamp to animate
+	dbf	d7,.Anim1Loop			; Loop until stamps are animated
 
-.Anim2:	
-	movea.l	stampAnim2Data,a0
-	lea	(WORDRAM2M+STAMPMAP).l,a1
-	move.w	stampAnim2Frame,d1
-	move.w	stampAnim2Count,d7
+.Anim2:
+	movea.l	stampAnim2Data,a0		; Get animation data
+	lea	WORDRAM2M+STAMPMAP,a1		; Get stamp map
+	move.w	stampAnim2Frame,d1		; Get frame ID
+	move.w	stampAnim2Count,d7		; Get number of stamps to animate
 
 .Anim2Loop:
-	move.w	(a0),d0
+	move.w	(a0),d0				; Set stamp ID
 	move.w	2(a0,d1.w),d2
 	move.w	d2,(a1,d0.w)
-	adda.w	#8,a0
-	dbf	d7,.Anim2Loop
+	adda.w	#8,a0				; Next stamp to animate
+	dbf	d7,.Anim2Loop			; Loop until stamps are animated
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+
 StampAnim1_SS1:
-	dc.w	$277E, $16C, $170, $174, $178
-	dc.w	$287E, $16C, $170, $174, $178
-	dc.w	$297E, $16C, $170, $174, $178
-	dc.w	$2A7E, $16C, $170, $174, $178
-	dc.w	$3282, $16C, $170, $174, $178
-	dc.w	$3382, $16C, $170, $174, $178
-	dc.w	$3482, $16C, $170, $174, $178
-	dc.w	$3582, $16C, $170, $174, $178
-	dc.w	$3298, $16C, $170, $174, $178
-	dc.w	$3398, $16C, $170, $174, $178
-	dc.w	$3498, $16C, $170, $174, $178
-	dc.w	$3598, $16C, $170, $174, $178
+	dc.w	$277E, $016C, $0170, $0174, $0178
+	dc.w	$287E, $016C, $0170, $0174, $0178
+	dc.w	$297E, $016C, $0170, $0174, $0178
+	dc.w	$2A7E, $016C, $0170, $0174, $0178
+	dc.w	$3282, $016C, $0170, $0174, $0178
+	dc.w	$3382, $016C, $0170, $0174, $0178
+	dc.w	$3482, $016C, $0170, $0174, $0178
+	dc.w	$3582, $016C, $0170, $0174, $0178
+	dc.w	$3298, $016C, $0170, $0174, $0178
+	dc.w	$3398, $016C, $0170, $0174, $0178
+	dc.w	$3498, $016C, $0170, $0174, $0178
+	dc.w	$3598, $016C, $0170, $0174, $0178
+
 StampAnim2_SS1:
 	dc.w	$4484, $6160, $6164, $6168
 	dc.w	$4486, $4160, $4164, $4168
-	dc.w	$4584, $160, $164, $168
+	dc.w	$4584, $0160, $0164, $0168
 	dc.w	$4586, $2160, $2164, $2168
 	dc.w	$4488, $6160, $6164, $6168
 	dc.w	$448A, $4160, $4164, $4168
-	dc.w	$4588, $160, $164, $168
+	dc.w	$4588, $0160, $0164, $0168
 	dc.w	$458A, $2160, $2164, $2168
+
 StampAnim1_SS2:
-	dc.w	$4C68, $1AC, $1B0, $1B4, $1B8
-	dc.w	$4D66, $1AC, $1B0, $1B4, $1B8
-	dc.w	$4E64, $1AC, $1B0, $1B4, $1B8
-	dc.w	$4A6C, $1AC, $1B0, $1B4, $1B8
-	dc.w	$4B6E, $1AC, $1B0, $1B4, $1B8
-	dc.w	$4C70, $1AC, $1B0, $1B4, $1B8
-	dc.w	$3F7E, $1AC, $1B0, $1B4, $1B8
-	dc.w	$3F80, $1AC, $1B0, $1B4, $1B8
-	dc.w	$407E, $1AC, $1B0, $1B4, $1B8
-	dc.w	$4080, $1AC, $1B0, $1B4, $1B8
+	dc.w	$4C68, $01AC, $01B0, $01B4, $01B8
+	dc.w	$4D66, $01AC, $01B0, $01B4, $01B8
+	dc.w	$4E64, $01AC, $01B0, $01B4, $01B8
+	dc.w	$4A6C, $01AC, $01B0, $01B4, $01B8
+	dc.w	$4B6E, $01AC, $01B0, $01B4, $01B8
+	dc.w	$4C70, $01AC, $01B0, $01B4, $01B8
+	dc.w	$3F7E, $01AC, $01B0, $01B4, $01B8
+	dc.w	$3F80, $01AC, $01B0, $01B4, $01B8
+	dc.w	$407E, $01AC, $01B0, $01B4, $01B8
+	dc.w	$4080, $01AC, $01B0, $01B4, $01B8
+
 StampAnim2_SS2:
 	dc.w	$47B0, $61A0, $61A4, $61A8
 	dc.w	$47B2, $41A0, $41A4, $41A8
-	dc.w	$48B0, $1A0, $1A4, $1A8
+	dc.w	$48B0, $01A0, $01A4, $01A8
 	dc.w	$48B2, $21A0, $21A4, $21A8
 	dc.w	$3098, $61A0, $61A4, $61A8
 	dc.w	$309A, $41A0, $41A4, $41A8
-	dc.w	$3198, $1A0, $1A4, $1A8
+	dc.w	$3198, $01A0, $01A4, $01A8
 	dc.w	$319A, $21A0, $21A4, $21A8
+
 StampAnim1_SS3:
-	dc.w	$2F70, $1EC, $1F0, $1F4, $1F8
-	dc.w	$2F72, $1EC, $1F0, $1F4, $1F8
-	dc.w	$2F74, $1EC, $1F0, $1F4, $1F8
-	dc.w	$2F76, $1EC, $1F0, $1F4, $1F8
-	dc.w	$4F5E, $1EC, $1F0, $1F4, $1F8
-	dc.w	$4F60, $1EC, $1F0, $1F4, $1F8
-	dc.w	$4F62, $1EC, $1F0, $1F4, $1F8
-	dc.w	$4F64, $1EC, $1F0, $1F4, $1F8
+	dc.w	$2F70, $01EC, $01F0, $01F4, $01F8
+	dc.w	$2F72, $01EC, $01F0, $01F4, $01F8
+	dc.w	$2F74, $01EC, $01F0, $01F4, $01F8
+	dc.w	$2F76, $01EC, $01F0, $01F4, $01F8
+	dc.w	$4F5E, $01EC, $01F0, $01F4, $01F8
+	dc.w	$4F60, $01EC, $01F0, $01F4, $01F8
+	dc.w	$4F62, $01EC, $01F0, $01F4, $01F8
+	dc.w	$4F64, $01EC, $01F0, $01F4, $01F8
+
 StampAnim2_SS3:
 	dc.w	$4088, $61E0, $61E4, $61E8
 	dc.w	$408A, $41E0, $41E4, $41E8
-	dc.w	$4188, $1E0, $1E4, $1E8
+	dc.w	$4188, $01E0, $01E4, $01E8
 	dc.w	$418A, $21E0, $21E4, $21E8
 	dc.w	$408C, $61E0, $61E4, $61E8
 	dc.w	$408E, $41E0, $41E4, $41E8
-	dc.w	$418C, $1E0, $1E4, $1E8
+	dc.w	$418C, $01E0, $01E4, $01E8
 	dc.w	$418E, $21E0, $21E4, $21E8
 	dc.w	$50B0, $61E0, $61E4, $61E8
 	dc.w	$50B2, $41E0, $41E4, $41E8
-	dc.w	$51B0, $1E0, $1E4, $1E8
+	dc.w	$51B0, $01E0, $01E4, $01E8
 	dc.w	$51B2, $21E0, $21E4, $21E8
+
 StampAnim1_SS4:
-	dc.w	$3576, $1CC, $1D0, $1D4, $1D8
-	dc.w	$3676, $1CC, $1D0, $1D4, $1D8
-	dc.w	$3776, $1CC, $1D0, $1D4, $1D8
-	dc.w	$3876, $1CC, $1D0, $1D4, $1D8
-	dc.w	$4788, $1CC, $1D0, $1D4, $1D8
-	dc.w	$4888, $1CC, $1D0, $1D4, $1D8
-	dc.w	$4988, $1CC, $1D0, $1D4, $1D8
-	dc.w	$4A88, $1CC, $1D0, $1D4, $1D8
-	dc.w	$269C, $1CC, $1D0, $1D4, $1D8
-	dc.w	$279A, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2898, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2996, $1CC, $1D0, $1D4, $1D8
-	dc.w	$26AC, $1CC, $1D0, $1D4, $1D8
-	dc.w	$27AA, $1CC, $1D0, $1D4, $1D8
-	dc.w	$28A8, $1CC, $1D0, $1D4, $1D8
-	dc.w	$29A6, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2AA4, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2BA2, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2CA0, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2D9E, $1CC, $1D0, $1D4, $1D8
-	dc.w	$27AE, $1CC, $1D0, $1D4, $1D8
-	dc.w	$28AC, $1CC, $1D0, $1D4, $1D8
-	dc.w	$29AA, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2AA8, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2BA6, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2CA4, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2DA2, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2EA0, $1CC, $1D0, $1D4, $1D8
-	dc.w	$29B8, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2AB6, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2BB4, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2CB2, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2ABA, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2BB8, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2CB6, $1CC, $1D0, $1D4, $1D8
-	dc.w	$2DB4, $1CC, $1D0, $1D4, $1D8
+	dc.w	$3576, $01CC, $01D0, $01D4, $01D8
+	dc.w	$3676, $01CC, $01D0, $01D4, $01D8
+	dc.w	$3776, $01CC, $01D0, $01D4, $01D8
+	dc.w	$3876, $01CC, $01D0, $01D4, $01D8
+	dc.w	$4788, $01CC, $01D0, $01D4, $01D8
+	dc.w	$4888, $01CC, $01D0, $01D4, $01D8
+	dc.w	$4988, $01CC, $01D0, $01D4, $01D8
+	dc.w	$4A88, $01CC, $01D0, $01D4, $01D8
+	dc.w	$269C, $01CC, $01D0, $01D4, $01D8
+	dc.w	$279A, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2898, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2996, $01CC, $01D0, $01D4, $01D8
+	dc.w	$26AC, $01CC, $01D0, $01D4, $01D8
+	dc.w	$27AA, $01CC, $01D0, $01D4, $01D8
+	dc.w	$28A8, $01CC, $01D0, $01D4, $01D8
+	dc.w	$29A6, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2AA4, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2BA2, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2CA0, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2D9E, $01CC, $01D0, $01D4, $01D8
+	dc.w	$27AE, $01CC, $01D0, $01D4, $01D8
+	dc.w	$28AC, $01CC, $01D0, $01D4, $01D8
+	dc.w	$29AA, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2AA8, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2BA6, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2CA4, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2DA2, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2EA0, $01CC, $01D0, $01D4, $01D8
+	dc.w	$29B8, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2AB6, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2BB4, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2CB2, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2ABA, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2BB8, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2CB6, $01CC, $01D0, $01D4, $01D8
+	dc.w	$2DB4, $01CC, $01D0, $01D4, $01D8
+
 StampAnim2_SS4:
 	dc.w	$565C, $61C0, $61C4, $61C8
 	dc.w	$565E, $41C0, $41C4, $41C8
-	dc.w	$575C, $1C0, $1C4, $1C8
+	dc.w	$575C, $01C0, $01C4, $01C8
 	dc.w	$575E, $21C0, $21C4, $21C8
 	dc.w	$5660, $61C0, $61C4, $61C8
 	dc.w	$5662, $41C0, $41C4, $41C8
-	dc.w	$5760, $1C0, $1C4, $1C8
+	dc.w	$5760, $01C0, $01C4, $01C8
 	dc.w	$5762, $21C0, $21C4, $21C8
 	dc.w	$524C, $61C0, $61C4, $61C8
 	dc.w	$524E, $41C0, $41C4, $41C8
-	dc.w	$534C, $1C0, $1C4, $1C8
+	dc.w	$534C, $01C0, $01C4, $01C8
 	dc.w	$534E, $21C0, $21C4, $21C8
 	dc.w	$5250, $61C0, $61C4, $61C8
 	dc.w	$5252, $41C0, $41C4, $41C8
-	dc.w	$5350, $1C0, $1C4, $1C8
+	dc.w	$5350, $01C0, $01C4, $01C8
 	dc.w	$5352, $21C0, $21C4, $21C8
+
 StampAnim1_SS5:
-	dc.w	$2274, $1B0, $1B4, $1B8, $1BC
-	dc.w	$2374, $1B0, $1B4, $1B8, $1BC
-	dc.w	$2474, $1B0, $1B4, $1B8, $1BC
-	dc.w	$4178, $1B0, $1B4, $1B8, $1BC
-	dc.w	$427A, $1B0, $1B4, $1B8, $1BC
-	dc.w	$437C, $1B0, $1B4, $1B8, $1BC
-	dc.w	$447E, $1B0, $1B4, $1B8, $1BC
-	dc.w	$517C, $1B0, $1B4, $1B8, $1BC
-	dc.w	$527A, $1B0, $1B4, $1B8, $1BC
-	dc.w	$5378, $1B0, $1B4, $1B8, $1BC
-	dc.w	$5476, $1B0, $1B4, $1B8, $1BC
+	dc.w	$2274, $01B0, $01B4, $01B8, $01BC
+	dc.w	$2374, $01B0, $01B4, $01B8, $01BC
+	dc.w	$2474, $01B0, $01B4, $01B8, $01BC
+	dc.w	$4178, $01B0, $01B4, $01B8, $01BC
+	dc.w	$427A, $01B0, $01B4, $01B8, $01BC
+	dc.w	$437C, $01B0, $01B4, $01B8, $01BC
+	dc.w	$447E, $01B0, $01B4, $01B8, $01BC
+	dc.w	$517C, $01B0, $01B4, $01B8, $01BC
+	dc.w	$527A, $01B0, $01B4, $01B8, $01BC
+	dc.w	$5378, $01B0, $01B4, $01B8, $01BC
+	dc.w	$5476, $01B0, $01B4, $01B8, $01BC
+
 StampAnim2_SS5:
 	dc.w	$2970, $61A4, $61A8, $61AC
 	dc.w	$2972, $41A4, $41A8, $41AC
-	dc.w	$2A70, $1A4, $1A8, $1AC
+	dc.w	$2A70, $01A4, $01A8, $01AC
 	dc.w	$2A72, $21A4, $21A8, $21AC
 	dc.w	$405C, $61A4, $61A8, $61AC
 	dc.w	$405E, $41A4, $41A8, $41AC
-	dc.w	$415C, $1A4, $1A8, $1AC
+	dc.w	$415C, $01A4, $01A8, $01AC
 	dc.w	$415E, $21A4, $21A8, $21AC
 	dc.w	$4A90, $61A4, $61A8, $61AC
 	dc.w	$4A92, $41A4, $41A8, $41AC
-	dc.w	$4B90, $1A4, $1A8, $1AC
+	dc.w	$4B90, $01A4, $01A8, $01AC
 	dc.w	$4B92, $21A4, $21A8, $21AC
+
 StampAnim1_SS6:
-	dc.w	$393A, $16C, $170, $174, $178
-	dc.w	$3A3A, $16C, $170, $174, $178
-	dc.w	$493A, $16C, $170, $174, $178
-	dc.w	$4A3A, $16C, $170, $174, $178
-	dc.w	$5BC0, $16C, $170, $174, $178
-	dc.w	$5CBE, $16C, $170, $174, $178
-	dc.w	$5CC0, $16C, $170, $174, $178
-	dc.w	$2994, $16C, $170, $174, $178
-	dc.w	$2996, $16C, $170, $174, $178
-	dc.w	$2A92, $16C, $170, $174, $178
-	dc.w	$2A94, $16C, $170, $174, $178
+	dc.w	$393A, $016C, $0170, $0174, $0178
+	dc.w	$3A3A, $016C, $0170, $0174, $0178
+	dc.w	$493A, $016C, $0170, $0174, $0178
+	dc.w	$4A3A, $016C, $0170, $0174, $0178
+	dc.w	$5BC0, $016C, $0170, $0174, $0178
+	dc.w	$5CBE, $016C, $0170, $0174, $0178
+	dc.w	$5CC0, $016C, $0170, $0174, $0178
+	dc.w	$2994, $016C, $0170, $0174, $0178
+	dc.w	$2996, $016C, $0170, $0174, $0178
+	dc.w	$2A92, $016C, $0170, $0174, $0178
+	dc.w	$2A94, $016C, $0170, $0174, $0178
+
 StampAnim2_SS6:
 	dc.w	$2298, $6160, $6164, $6168
 	dc.w	$229A, $4160, $4164, $4168
-	dc.w	$2398, $160, $164, $168
+	dc.w	$2398, $0160, $0164, $0168
 	dc.w	$239A, $2160, $2164, $2168
 	dc.w	$325C, $6160, $6164, $6168
 	dc.w	$325E, $4160, $4164, $4168
-	dc.w	$335C, $160, $164, $168
+	dc.w	$335C, $0160, $0164, $0168
 	dc.w	$335E, $2160, $2164, $2168
 	dc.w	$4A94, $6160, $6164, $6168
 	dc.w	$4A96, $4160, $4164, $4168
-	dc.w	$4B94, $160, $164, $168
+	dc.w	$4B94, $0160, $0164, $0168
 	dc.w	$4B96, $2160, $2164, $2168
 	dc.w	$4C5C, $6160, $6164, $6168
 	dc.w	$4C5E, $4160, $4164, $4168
-	dc.w	$4D5C, $160, $164, $168
+	dc.w	$4D5C, $0160, $0164, $0168
 	dc.w	$4D5E, $2160, $2164, $2168
+
 StampAnim1_SS7:
-	dc.w	$2144, $1A4, $1A8, $1AC, $1B0
-	dc.w	$2242, $1A4, $1A8, $1AC, $1B0
-	dc.w	$2148, $1A4, $1A8, $1AC, $1B0
-	dc.w	$2246, $1A4, $1A8, $1AC, $1B0
+	dc.w	$2144, $01A4, $01A8, $01AC, $01B0
+	dc.w	$2242, $01A4, $01A8, $01AC, $01B0
+	dc.w	$2148, $01A4, $01A8, $01AC, $01B0
+	dc.w	$2246, $01A4, $01A8, $01AC, $01B0
+
 StampAnim2_SS7:
 	dc.w	$3464, $6198, $619C, $61A0
 	dc.w	$3466, $4198, $419C, $41A0
-	dc.w	$3564, $198, $19C, $1A0
+	dc.w	$3564, $0198, $019C, $01A0
 	dc.w	$3566, $2198, $219C, $21A0
+
 StampAnim1_SS8:
-	dc.w	$353C, $16C, $170, $174, $178
-	dc.w	$3542, $16C, $170, $174, $178
-	dc.w	$599C, $16C, $170, $174, $178
-	dc.w	$5A9E, $16C, $170, $174, $178
-	dc.w	$5B9C, $16C, $170, $174, $178
-	dc.w	$5C9E, $16C, $170, $174, $178
-	dc.w	$5D9C, $16C, $170, $174, $178
-	dc.w	$2486, $16C, $170, $174, $178
-	dc.w	$2586, $16C, $170, $174, $178
-	dc.w	$2686, $16C, $170, $174, $178
+	dc.w	$353C, $016C, $0170, $0174, $0178
+	dc.w	$3542, $016C, $0170, $0174, $0178
+	dc.w	$599C, $016C, $0170, $0174, $0178
+	dc.w	$5A9E, $016C, $0170, $0174, $0178
+	dc.w	$5B9C, $016C, $0170, $0174, $0178
+	dc.w	$5C9E, $016C, $0170, $0174, $0178
+	dc.w	$5D9C, $016C, $0170, $0174, $0178
+	dc.w	$2486, $016C, $0170, $0174, $0178
+	dc.w	$2586, $016C, $0170, $0174, $0178
+	dc.w	$2686, $016C, $0170, $0174, $0178
+
 StampAnim2_SS8:
 	dc.w	$3D3E, $6160, $6164, $6168
 	dc.w	$3D40, $4160, $4164, $4168
-	dc.w	$3E3E, $160, $164, $168
+	dc.w	$3E3E, $0160, $0164, $0168
 	dc.w	$3E40, $2160, $2164, $2168
 	dc.w	$3D82, $6160, $6164, $6168
 	dc.w	$3D84, $4160, $4164, $4168
-	dc.w	$3E82, $160, $164, $168
+	dc.w	$3E82, $0160, $0164, $0168
 	dc.w	$3E84, $2160, $2164, $2168
 	dc.w	$5A82, $6160, $6164, $6168
 	dc.w	$5A84, $4160, $4164, $4168
-	dc.w	$5B82, $160, $164, $168
+	dc.w	$5B82, $0160, $0164, $0168
 	dc.w	$5B84, $2160, $2164, $2168
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Check player collision with a UFO
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a0.l - Pointer to UFO object slot
+; -------------------------------------------------------------------------
 
 ObjUFO_CheckPlayerCol:
-	lea	sonicObject,a1
-	tst.b	oID(a1)
-	beq.w	.End
-	tst.b	oPlayerUFOCol(a1)
-	bne.w	.End
-	move.w	oX(a0),d0
-	subi.w	#$10,d0
-	move.w	d0,d1
-	addi.w	#$20,d1
-	move.w	oX(a1),d2
-	subi.w	#$10,d2
+	lea	sonicObject,a1			; Get Sonic object
+	tst.b	oID(a1)				; Is Sonic spawned in?
+	beq.w	.End				; If not, branch
+	tst.b	oPlayerUFOCol(a1)		; Is collision already taking place?
+	bne.w	.End				; If so, branch
+
+	move.w	oX(a0),d0			; Get UFO's left boundary
+	subi.w	#16,d0
+	move.w	d0,d1				; Get UFO's right boundary
+	addi.w	#16*2,d1
+	move.w	oX(a1),d2			; Get Sonic's left boundary
+	subi.w	#16,d2
 	move.w	d2,d3
-	cmp.w	d1,d2
-	bgt.s	.End
-	addi.w	#$20,d3
-	cmp.w	d0,d3
-	blt.s	.End
-	move.w	oY(a0),d0
-	subi.w	#$C,d0
-	move.w	d0,d1
-	addi.w	#$18,d1
-	move.w	oY(a1),d2
-	subi.w	#$10,d2
+	cmp.w	d1,d2				; Is Sonic right of the UFO's right boundary?
+	bgt.s	.End				; If so, branch
+	addi.w	#16*2,d3			; Get Sonic's right boundary
+	cmp.w	d0,d3				; Is Sonic left of the UFO's left boundary?
+	blt.s	.End				; If so, branch
+
+	move.w	oY(a0),d0			; Get UFO's top boundary
+	subi.w	#12,d0
+	move.w	d0,d1				; Get UFO's bottom boundary
+	addi.w	#12*2,d1
+	move.w	oY(a1),d2			; Get Sonic's top boundary
+	subi.w	#16,d2
 	move.w	d2,d3
-	cmp.w	d1,d2
-	bgt.s	.End
-	addi.w	#$20,d3
-	cmp.w	d0,d3
-	blt.s	.End
-	cmpi.w	#$210,oZ(a1)
-	bcs.s	.End
-	cmpi.w	#$270,oZ(a1)
-	bcc.s	.End
-	move.b	oID(a0),oPlayerUFOCol(a1)
+	cmp.w	d1,d2				; Is Sonic below the UFO's bottom boundary?
+	bgt.s	.End				; If so, branch
+	addi.w	#16*2,d3			; Get Sonic's bottom boundary
+	cmp.w	d0,d3				; Is Sonic above the UFO's top boundary?
+	blt.s	.End				; If so, branch
+
+	cmpi.w	#$210,oZ(a1)			; Is Sonic above the UFO?
+	bcs.s	.End				; If so, branch
+	cmpi.w	#$270,oZ(a1)			; Is Sonic below the UFO?
+	bcc.s	.End				; If so, branch
+
+	move.b	oID(a0),oPlayerUFOCol(a1)	; Mark collision
 	move.b	oID(a1),oUFOPlayerCol(a0)
 
 .End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Get stamps that Sonic is currently colliding with
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a0.l - Pointer to Sonic's object slot
+; -------------------------------------------------------------------------
 
 ObjSonic_GetStamps:
-	lea	gfxVars,a4
-	movea.l	(stampTypes).l,a5
-	move.w	oX(a0),d0
+	lea	gfxVars,a4			; Graphics operations variables
+	movea.l	stampTypes,a5			; Stamp types
+
+	move.w	oX(a0),d0			; Get stamp at center
 	move.w	oY(a0),d1
 	bsr.w	GetStampAtPos
 	move.b	(a5,d2.w),oPlayerStampC(a0)
-	rol.w	#4,d1
+	rol.w	#4,d1				; Get stamp's orientation
 	andi.b	#$F,d1
 	move.b	d1,oPlayerStampOri(a0)
-	move.w	oX(a0),d0
+
+	move.w	oX(a0),d0			; Get stamp at top left
 	subq.w	#8,d0
 	move.w	oY(a0),d1
 	subq.w	#8,d1
 	bsr.w	GetStampAtPos
 	move.b	(a5,d2.w),oPlayerStampTL(a0)
-	move.w	oX(a0),d0
+
+	move.w	oX(a0),d0			; Get stamp at top right
 	addq.w	#8,d0
 	move.w	oY(a0),d1
 	subq.w	#8,d1
 	bsr.w	GetStampAtPos
 	move.b	(a5,d2.w),oPlayerStampTR(a0)
-	move.w	oX(a0),d0
+
+	move.w	oX(a0),d0			; Get stamp at bottom right
 	addq.w	#8,d0
 	move.w	oY(a0),d1
 	addq.w	#8,d1
 	bsr.w	GetStampAtPos
 	move.b	(a5,d2.w),oPlayerStampBR(a0)
-	move.w	oX(a0),d0
+
+	move.w	oX(a0),d0			; Get stamp at bottom left
 	subq.w	#8,d0
 	move.w	oY(a0),d1
 	addq.w	#8,d1
@@ -1484,1700 +1618,282 @@ ObjSonic_GetStamps:
 	move.b	(a5,d2.w),oPlayerStampBL(a0)
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Get type of stamp currently being stood on by Sonic
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a0.l - Pointer to Sonic's object slot
+; RETURNS:
+;	d0.b - Stamp type
+; -------------------------------------------------------------------------
 
-	movea.l	(stampTypes).l,a5
-	move.w	oX(a0),d0
+ObjSonic_GetStampType:
+	movea.l	stampTypes,a5			; Stamp types
+
+	move.w	oX(a0),d0			; Get stamp
 	move.w	oY(a0),d1
 	bsr.w	GetStampAtPos
-	move.b	(a5,d2.w),d0
-	beq.s	locret_110FA
+	move.b	(a5,d2.w),d0			; Get stamp type
+	beq.s	.End				; If it's a path stamp, branch
 	rts
 
-locret_110FA:
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Get stamp at position in stamp map
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.w - X position
+;	d1.w - Y position
+; RETURNS:
+;	d1.w - Stamp ID (raw, with flags)
+;	d2.w - Stamp ID (divided by 4, without flags)
+; -------------------------------------------------------------------------
 
 GetStampAtPos:
-	move.w	d0,d2
+	move.w	d0,d2				; ((X >> 4) & $FFE) + ((Y << 3) & $FF00)
 	move.w	d1,d3
 	lsr.w	#5,d2
 	add.w	d2,d2
 	lsr.w	#5,d3
 	lsl.w	#8,d3
 	add.w	d3,d2
-	lea	WORDRAM2M+STAMPMAP,a6
+
+	lea	WORDRAM2M+STAMPMAP,a6		; Get raw stamp ID
 	move.w	(a6,d2.w),d2
-	move.w	d2,d1
-	andi.w	#$7FF,d2
-	lsr.w	#2,d2
+	move.w	d2,d1				; Copy raw stamp ID
+	andi.w	#$7FF,d2			; Mask out flags
+	lsr.w	#2,d2				; Divide by 4
 	rts
 
-; ---------------------------------------------------------------------------
-StampTypes_SS1:
-	dc.b	3, 1, 1, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 4, 4, 4, 4
-	dc.b	0, 0, 0, 4, 0, 4, 4, 4
-	dc.b	0, 0, 0, 0, 0, 4, 0, 4
-	dc.b	4, 4, 4, 4, 0, 0, 4, 0
-	dc.b	3, 3, 3, 3, 4, 0, 4, 0
-	dc.b	3, 3, 3, 3, 3, 3, 0, 0
-	dc.b	3, 3, 3, 3, 3, 3, 0, 3
-	dc.b	0, 3, 3, 4, 4, 0, 0, 0
-	dc.b	4, 0, 4, 0, 0, 0, 4, 4
-	dc.b	4, 5, 7, 7, 8, 9, 9, 9
-	dc.b	2, 2, 2, 6, 6, 6, 6, 3
-StampTypes_SS2:
-	dc.b	3, 1, 1, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 4, 0
-	dc.b	4, 4, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 3, 3, 3, 4, 0
-	dc.b	0, 3, 0, 3, 0, 3, 4, 0
-	dc.b	0, 3, 0, 0, 4, 4, 0, 4
-	dc.b	4, 0, 4, 0, 0, 0, 4, 0
-	dc.b	0, 4, 0, 4, 4, 0, 0, 4
-	dc.b	0, 4, 4, 0, 0, 3, 3, 3
-	dc.b	3, 0, 0, 3, 3, 0, 0, 3
-	dc.b	3, 0, 0, 3, 0, 3, 3, 3
-	dc.b	3, 5, 9, 9, 9, 9, 9, 8
-	dc.b	7, 7, 4, 0, 0, 3, 3, 3
-	dc.b	2, 2, 2, 6, 6, 6, 6, 0
-StampTypes_SS3:
-	dc.b	3, 1, 1, 0, 0, 0, 0, 0
-	dc.b	0, 4, 4, 4, 4, 4, 4, 4
-	dc.b	4, 4, 4, 4, 4, 0, 0, 0
-	dc.b	3, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 4, 4, 0
-	dc.b	0, 0, 4, 4, 0, 0, 0, 4
-	dc.b	0, 4, 0, 4, 0, 0, 0, 0
-	dc.b	0, 4, 0, 3, 4, 0, 0, 3
-	dc.b	0, 0, 0, 4, 4, 0, 0, 0
-	dc.b	4, 0, 0, 4, 4, 0, 0, 0
-	dc.b	3, 0, 0, 3, 0, 0, 4, 0
-	dc.b	0, 0, 3, 0, 4, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 3, 0, 5, 7, 7, 8
-	dc.b	3, 3, 3, 3, 3, 3, 3, 3
-	dc.b	2, 2, 2, 6, 6, 6, 6, 3
-	dc.b	3, 0, 3, 3, 3, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-StampTypes_SS4:
-	dc.b	3, 1, 1, 0, 0, 0, 0, 0
-	dc.b	0, 4, 4, 4, 4, 4, 4, 4
-	dc.b	4, 4, 4, 4, 4, 0, 0, 0
-	dc.b	3, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 4, 3, 0, 0
-	dc.b	0, 0, 4, 0, 0, 0, 4, 0
-	dc.b	0, 0, 4, 0, 0, 0, 4, 4
-	dc.b	0, 0, 4, 0, 4, 4, 0, 4
-	dc.b	0, 4, 4, 0, 4, 0, 4, 0
-	dc.b	0, 4, 4, 0, 0, 4, 0, 3
-	dc.b	3, 3, 3, 3, 3, 3, 3, 3
-	dc.b	3, 3, 3, 3, 3, 3, 3, 3
-	dc.b	3, 3, 3, 3, 3, 3, 5, 7
-	dc.b	7, 7, 8, 8, 7, 7, 9, 9
-	dc.b	2, 2, 2, 6, 6, 6, 6, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-StampTypes_SS5:
-	dc.b	3, 1, 1, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	3, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 4, 4, 0, 0
-	dc.b	0, 0, 0, 0, 4, 4, 4, 4
-	dc.b	0, 0, 0, 0, 4, 4, 4, 4
-	dc.b	4, 4, 4, 4, 4, 4, 0, 0
-	dc.b	4, 4, 4, 4, 4, 0, 4, 0
-	dc.b	0, 0, 4, 0, 4, 4, 0, 4
-	dc.b	3, 0, 0, 0, 4, 4, 3, 3
-	dc.b	3, 3, 3, 3, 3, 5, 7, 7
-	dc.b	7, 7, 7, 8, 0, 0, 9, 9
-	dc.b	9, 2, 2, 2, 6, 6, 6, 6
-StampTypes_SS6:
-	dc.b	3, 1, 1, 0, 0, 0, 0, 0
-	dc.b	0, 0, 4, 4, 4, 4, 4, 4
-	dc.b	4, 4, 0, 0, 0, 0, 0, 0
-	dc.b	3, 0, 0, 0, 0, 0, 0, 0
-	dc.b	4, 4, 0, 4, 0, 0, 0, 0
-	dc.b	0, 4, 0, 0, 0, 4, 0, 0
-	dc.b	4, 4, 0, 0, 0, 4, 0, 4
-	dc.b	0, 0, 4, 4, 0, 3, 0, 3
-	dc.b	0, 3, 0, 3, 3, 3, 3, 3
-	dc.b	3, 3, 3, 3, 5, 7, 7, 8
-	dc.b	7, 7, 3, 0, 9, 9, 9, 9
-	dc.b	2, 2, 2, 6, 6, 6, 6, 0
-StampTypes_SS7:
-	dc.b	3, 1, 1, 0, 0, 0, 0, 0
-	dc.b	0, 0, 4, 4, 4, 4, 4, 0
-	dc.b	3, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 3, 0, 0, 0, 0, 0, 0
-	dc.b	0, 3, 0, 3, 0, 3, 0, 4
-	dc.b	4, 0, 0, 0, 0, 0, 0, 4
-	dc.b	4, 0, 0, 4, 0, 0, 0, 0
-	dc.b	4, 4, 3, 3, 3, 3, 3, 0
-	dc.b	3, 0, 5, 7, 7, 8, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 2, 2
-	dc.b	2, 6, 6, 6, 6, 0, 0, 0
-StampTypes_SS8:
-	dc.b	3, 1, 1, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 4, 4, 4, 4
-	dc.b	0, 0, 0, 4, 0, 4, 4, 4
-	dc.b	0, 0, 0, 0, 0, 4, 0, 4
-	dc.b	4, 4, 4, 4, 0, 0, 4, 0
-	dc.b	3, 3, 3, 3, 4, 0, 4, 0
-	dc.b	3, 3, 3, 3, 3, 3, 0, 0
-	dc.b	3, 3, 3, 3, 3, 3, 0, 3
-	dc.b	0, 3, 3, 4, 4, 0, 0, 0
-	dc.b	4, 0, 4, 0, 0, 0, 4, 4
-	dc.b	4, 5, 7, 7, 8, 9, 9, 9
-	dc.b	2, 2, 2, 6, 6, 6, 6, 3
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
-	dc.b	0, 0, 0, 0, 0, 0, 0, 0
+; -------------------------------------------------------------------------
+; Stamp types
+; -------------------------------------------------------------------------
 
-; ---------------------------------------------------------------------------
+StampTypes_SS1:
+	incbin	"Special Stage/Data/Stage 1/Stamp Types.bin"
+	even
+
+StampTypes_SS2:
+	incbin	"Special Stage/Data/Stage 2/Stamp Types.bin"
+	even
+
+StampTypes_SS3:
+	incbin	"Special Stage/Data/Stage 3/Stamp Types.bin"
+	even
+
+StampTypes_SS4:
+	incbin	"Special Stage/Data/Stage 4/Stamp Types.bin"
+	even
+
+StampTypes_SS5:
+	incbin	"Special Stage/Data/Stage 5/Stamp Types.bin"
+	even
+
+StampTypes_SS6:
+	incbin	"Special Stage/Data/Stage 6/Stamp Types.bin"
+	even
+
+StampTypes_SS7:
+	incbin	"Special Stage/Data/Stage 7/Stamp Types.bin"
+	even
+
+StampTypes_SS8:
+	incbin	"Special Stage/Data/Stage 8/Stamp Types.bin"
+	even
+
+; -------------------------------------------------------------------------
+; Get stamp types
+; -------------------------------------------------------------------------
 
 GetStampTypes:
-	moveq	#0,d0
+	moveq	#0,d0				; Get stamp types
 	move.b	specStageID.w,d0
 	lsl.w	#2,d0
-	move.l	StampTypes_Index(pc,d0.w),(stampTypes).l
+	move.l	.Index(pc,d0.w),stampTypes
 	rts
 
-; ---------------------------------------------------------------------------
-
-StampTypes_Index:
-	dc.l	StampTypes_SS1
-	dc.l	StampTypes_SS2
-	dc.l	StampTypes_SS3
-	dc.l	StampTypes_SS4
-	dc.l	StampTypes_SS5
-	dc.l	StampTypes_SS6
-	dc.l	StampTypes_SS7
-	dc.l	StampTypes_SS8
-
-; ---------------------------------------------------------------------------
-
-ObjLostRing:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjLostRing_Index(pc,d0.w),d0
-	jsr	ObjLostRing_Index(pc,d0.w)
-	bra.w	DrawObject
-
-; ---------------------------------------------------------------------------
-
-ObjLostRing_Index:
-	dc.w	ObjLostRing_Init-ObjLostRing_Index
-	dc.w	ObjLostRing_Main-ObjLostRing_Index
-
-; ---------------------------------------------------------------------------
-
-ObjLostRing_Init:
-	move.w	#$E78F,oTile(a0)
-	move.l	#Ani_Item,oAnimData(a0)
-	moveq	#4,d0
-	move.b	d0,oItemType2(a0)
-	bsr.w	ResetObjAnim
-	move.w	(sonicObject+oSprX).l,oSprX(a0)
-	move.w	(sonicObject+oSprY).l,oSprY(a0)
-	addq.b	#1,oRoutine(a0)
-	move.b	#$2D,oTimer(a0)
-	bsr.w	Random
-	move.w	d0,d1
-	andi.l	#$3F000,d1
-	bchg	#0,(lostRingXDir).l
-	beq.s	.SetXVel
-	neg.l	d1
-
-.SetXVel:
-	move.l	d1,oItemXVel(a0)
-	andi.w	#$F,d0
-	move.w	#-$A,oItemYVel(a0)
-	sub.w	d0,oItemYVel(a0)
-	move.b	#$94,d0
-	bsr.w	PlayFMSound
-
-; ---------------------------------------------------------------------------
-
-ObjLostRing_Main:
-	subq.b	#1,oTimer(a0)
-	bne.s	.Move
-	bset	#0,oFlags(a0)
-
-.Move:	
-	move.l	oItemXVel(a0),d0
-	add.l	d0,oSprX(a0)
-	move.l	oItemYVel(a0),d0
-	add.l	d0,oSprY(a0)
-	cmpi.w	#$158,oSprY(a0)
-	bls.s	.Gravity
-	move.w	#$158,oSprY(a0)
-	neg.l	oItemYVel(a0)
-	rts
-	
-; ---------------------------------------------------------------------------
-
-.Gravity:
-	addi.l	#$20000,oItemYVel(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjItem:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjItem_Index(pc,d0.w),d0
-	jsr	ObjItem_Index(pc,d0.w)
-	bra.w	DrawObject
-
-; ---------------------------------------------------------------------------
-ObjItem_Index:
-	dc.w	ObjItem_Init-ObjItem_Index
-	dc.w	ObjItem_Main-ObjItem_Index
-
-; ---------------------------------------------------------------------------
-
-ObjItem_Init:
-	move.w	#$878F,oTile(a0)
-	move.l	#Ani_Item,oAnimData(a0)
-	moveq	#0,d0
-	move.b	oItemType(a0),d0
-	move.b	d0,oItemType2(a0)
-	bsr.w	ResetObjAnim
-	addq.b	#1,oRoutine(a0)
-	move.b	#$10,oTimer(a0)
-	move.w	#-$10,oItemYVel(a0)
-	move.b	#$95,d0
-	bsr.w	PlayFMSound
-
-; ---------------------------------------------------------------------------
-
-ObjItem_Main:
-	subq.b	#1,oTimer(a0)
-	bne.s	.Move
-	bset	#0,oFlags(a0)
-
-.Move:	
-	move.l	oItemYVel(a0),d0
-	add.l	d0,oSprY(a0)
-	addi.l	#$20000,oItemYVel(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-Ani_Item:
-	dc.l	byte_11634
-	dc.l	byte_1163A
-	dc.l	byte_11640
-	dc.l	byte_11646
-	dc.l	byte_1164C
-byte_11634:
-	dc.b	1, $FF
-	dc.l	byte_1165E
-byte_1163A:
-	dc.b	1, $FF
-	dc.l	byte_11668
-byte_11640:
-	dc.b	1, $FF
-	dc.l	byte_11672
-byte_11646:
-	dc.b	1, $FF
-	dc.l	byte_1167C
-byte_1164C:
-	dc.b	4, 4
-	dc.l	byte_11686
-	dc.l	byte_11690
-	dc.l	byte_1169A
-	dc.l	byte_116A4
-byte_1165E:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$F0, 5, 0, 0, $F8
-byte_11668:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$F0, 5, 0, 4, $F8
-byte_11672:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$F0, 5, 0, 8, $F8
-byte_1167C:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$F0, 5, 8, $C, $F8
-byte_11686:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$E8, 6, 0, $10, $F8
-byte_11690:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$E8, 6, 0, $16, $F8
-byte_1169A:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$E8, 2, 0, $1C, $FC
-byte_116A4:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$E8, 6, 8, $16, $F8
-
-; ---------------------------------------------------------------------------
-
-ObjTimeUFO:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjTimeUFO_Index(pc,d0.w),d0
-	jsr	ObjTimeUFO_Index(pc,d0.w)
-	move.w	(sonicObject+oZ).l,oZ(a0)
-	subi.w	#$140,oZ(a0)
-	tst.b	oVar64(a0)
-	beq.s	.End
-	subq.b	#1,oVar64(a0)
-	bset	#2,oFlags(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-ObjTimeUFO_Index:
-	dc.w	ObjTimeUFO_Init-ObjTimeUFO_Index
-	dc.w	ObjTimeUFO_Main-ObjTimeUFO_Index
-	dc.w	ObjTimeUFO_Explode-ObjTimeUFO_Index
-
-; ---------------------------------------------------------------------------
-
-ObjTimeUFO_Init:
-	move.w	#$8440,oTile(a0)
-	bsr.w	ObjUFO_FollowPath
-	move.l	#Ani_UFO1,oAnimData(a0)
-	move.w	(sonicObject+oZ).l,oZ(a0)
-	subi.w	#$140,oZ(a0)
-	addq.b	#1,oRoutine(a0)
-	move.b	#2,oVar64(a0)
-	move.b	#$BC,d0
-	bsr.w	PlayFMSound
-
-; ---------------------------------------------------------------------------
-
-ObjTimeUFO_Main:
-	move.l	oXVel(a0),d0
-	add.l	d0,oX(a0)
-	move.l	oYVel(a0),d0
-	add.l	d0,oY(a0)
-	subq.w	#1,oVar60(a0)
-	bne.s	.Draw
-	bsr.w	ObjUFO_FollowPath
-
-.Draw:	
-	bsr.w	ObjUFO_Draw
-	bsr.w	Set3DSpritePos
-	bsr.w	ObjUFO_CheckPlayerCol
-	tst.b	oUFOPlayerCol(a0)
-	beq.s	.End
-	tst.b	(timeStopped).l
-	bne.s	.End
-	move.b	#2,oRoutine(a0)
-	movea.l	oUFOShadow(a0),a1
-	bset	#0,2(a1)
-	move.w	#60,oTimer(a0)
-	bsr.w	Random
-	andi.b	#1,d0
-	move.b	d0,oUFOExplodeDir(a0)
-	move.b	#0,d0
-	bsr.w	ResetObjAnim
-	addi.l	#$1E,specStageTimer.w
-	lea	(itemObject).l,a1
-	move.b	#4,(a1)
-	move.b	#3,oItemType(a1)
-	move.w	oSprX(a0),oSprX(a1)
-	move.w	oSprY(a0),oSprY(a1)
-
-.End:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjTimeUFO_Explode:
-	subq.w	#4,oSprX(a0)
-	tst.b	oUFOExplodeDir(a0)
-	bne.s	.Fall
-	addq.w	#8,oSprX(a0)
-
-.Fall:	
-	addq.w	#1,oSprY(a0)
-	bclr	#2,oFlags(a0)
-	subq.w	#1,oTimer(a0)
-	bne.s	.Explode
-	bset	#0,oFlags(a0)
-
-.Explode:
-	btst	#0,oVar51(a0)
-	bne.s	.End
-	bsr.w	FindExplosionObjSlot
-	bne.s	.End
-	move.b	#$C,oID(a1)
-	move.w	oSprX(a0),oSprX(a1)
-	subi.w	#$10,$28(a1)
-	move.w	oSprY(a0),oSprY(a1)
-	bsr.w	Random
-	move.w	d0,d1
-	andi.w	#$1F,d0
-	add.w	d0,oSprX(a1)
-	andi.w	#$1F,d1
-	sub.w	d0,oSprY(a1)
-
-.End:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjUFO:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjUFO_Index(pc,d0.w),d0
-	jsr	ObjUFO_Index(pc,d0.w)
-	move.w	(sonicObject+oZ).l,oZ(a0)
-	subi.w	#$140,oZ(a0)
-	tst.b	oVar64(a0)
-	beq.s	.End
-	subq.b	#1,oVar64(a0)
-	bset	#2,oFlags(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_Index:
-	dc.w	ObjUFO_Init-ObjUFO_Index
-	dc.w	ObjUFO_Main-ObjUFO_Index
-	dc.w	ObjUFO_Explode-ObjUFO_Index
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_Init:
-	move.w	#$E440,oTile(a0)
-	bsr.w	ObjUFO_FollowPath
-	move.l	#Ani_UFO1,oAnimData(a0)
-	cmpi.b	#0,oUFOItem(a0)
-	beq.s	.GotAnim
-	move.l	#Ani_UFO2,oAnimData(a0)
-
-.GotAnim:
-	move.w	(sonicObject+oZ).l,oZ(a0)
-	subi.w	#$140,oZ(a0)
-	moveq	#0,d0
-	move.b	d0,oUFOAnim(a0)
-	bsr.w	ResetObjAnim
-	move.b	#2,oVar64(a0)
-	addq.b	#1,oRoutine(a0)
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_Main:
-	move.l	oXVel(a0),d0
-	add.l	d0,oX(a0)
-	move.l	oYVel(a0),d0
-	add.l	d0,oY(a0)
-	subq.w	#1,oVar60(a0)
-	bne.s	.Draw
-	bsr.w	ObjUFO_FollowPath
-
-.Draw:	
-	bsr.w	ObjUFO_Draw
-	bsr.w	Set3DSpritePos
-	bsr.w	ObjUFO_CheckPlayerCol
-	tst.b	oVar4F(a0)
-	beq.w	ObjUFO_End
-	cmpi.b	#2,ufoCount.w
-	bcc.s	.Explode
-	move.b	#1,(timeStopped).l
-
-.Explode:
-	bsr.w	DecUFOCount
-	move.b	#2,oRoutine(a0)
-	movea.l	oUFOShadow(a0),a1
-	bset	#0,oFlags(a1)
-	move.w	#$3C,oTimer(a0)
-	bsr.w	Random
-	andi.b	#1,d0
-	move.b	d0,oUFOExplodeDir(a0)
-	move.b	#0,d0
-	bsr.w	ResetObjAnim
-	lea	(itemObject).l,a1
-	move.b	#4,(a1)
-	move.w	oSprX(a0),oSprX(a1)
-	move.w	oSprY(a0),oSprY(a1)
-	move.b	oUFOItem(a0),oItemType(a1)
-	moveq	#0,d0
-	move.b	oUFOItem(a0),d0
-	add.w	d0,d0
-	move.w	ObjUFO_Items(pc,d0.w),d0
-	jmp	ObjUFO_Items(pc,d0.w)
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_Items:
-	dc.w	ObjUFO_Rings-ObjUFO_Items
-	dc.w	ObjUFO_SpeedShoes-ObjUFO_Items
-	dc.w	ObjUFO_Rings-ObjUFO_Items
-	dc.w	ObjUFO_Rings-ObjUFO_Items
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_Rings:
-
-	move.w	ufoRingBonus,d1
-	move.w	d1,d0
-	add.w	d1,d1
-	move.w	d1,ufoRingBonus
-	bra.w	AddRings
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_SpeedShoes:
-	move.w	#$C8,(sonicObject+oPlayerShoeTime).l
-	move.w	#$14,ufoRingBonus
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_End:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_Explode:
-	subq.w	#4,oSprX(a0)
-	tst.b	oUFOExplodeDir(a0)
-	bne.s	.Fall
-	addq.w	#8,oSprX(a0)
-
-.Fall:	
-	addq.w	#1,oSprY(a0)
-	bclr	#2,oFlags(a0)
-	subq.w	#1,oTimer(a0)
-	bne.s	.Explode
-	bset	#0,oFlags(a0)
-
-.Explode:
-	btst	#0,oVar51(a0)
-	bne.s	.End
-	bsr.w	FindExplosionObjSlot
-	bne.s	.End
-	move.b	#$C,oID(a1)
-	move.w	oSprX(a0),oSprX(a1)
-	subi.w	#$10,oSprX(a1)
-	move.w	oSprY(a0),oSprY(a1)
-	bsr.w	Random
-	move.w	d0,d1
-	andi.w	#$1F,d0
-	add.w	d0,oSprX(a1)
-	andi.w	#$1F,d1
-	sub.w	d0,oSprY(a1)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_FollowPath:
-	movea.l	oUFOPath(a0),a1
-	move.w	(a1)+,oVar60(a0)
-	bpl.s	.SetDest
-	move.l	oUFOPathStart(a0),oUFOPath(a0)
-	bra.s	ObjUFO_FollowPath
-; ---------------------------------------------------------------------------
-
-.SetDest:
-	move.w	(a1)+,d0
-	move.w	(a1)+,d1
-	move.w	d0,oX(a0)
-	move.w	d1,oY(a0)
-	move.w	(a1)+,d2
-	move.w	(a1)+,d3
-	sub.w	d0,d2
-	sub.w	d1,d3
-	ext.l	d2
-	ext.l	d3
-	asl.l	#4,d2
-	asl.l	#4,d3
-	divs.w	oVar60(a0),d2
-	divs.w	oVar60(a0),d3
-	ext.l	d2
-	ext.l	d3
-	asl.l	#4,d2
-	asl.l	#4,d3
-	asl.l	#8,d2
-	asl.l	#8,d3
-	move.l	d2,oXVel(a0)
-	move.l	d3,oYVel(a0)
-	move.l	a1,oUFOPath(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_ChkOnScreen:
-	bclr	#2,oFlags(a0)
-	move.w	oSprX(a0),d0
-	cmpi.w	#$200,d0
-	bcc.s	.OffScreen
-	move.w	oSprY(a0),d0
-	cmpi.w	#$100,d0
-	blt.s	.OffScreen
-	cmpi.w	#$1C0,d0
-	blt.s	.End
-
-.OffScreen:
-	bset	#2,oFlags(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_Draw:
-	lea	sonicObject,a6
-	move.w	oX(a6),d4
-	move.w	oY(a6),d5
-	move.w	oX(a0),d0
-	move.w	oY(a0),d1
-	bsr.w	GetAngle
-	move.w	oX(a6),d5
-	move.w	oY(a6),d6
-	move.w	oX(a0),d3
-	move.w	oY(a0),d4
-	bsr.w	GetDistance
-	bsr.w	Set3DObjectDraw
-	cmpi.l	#$500,d0
-	bcs.s	.SetFrame
-	move.l	#$500,d0
-
-.SetFrame:
-	lsr.w	#4,d0
-	move.b	ObjUFO_Frames(pc,d0.w),d0
-	cmp.b	oUFOAnim(a0),d0
-	beq.s	.End
-	move.b	d0,oUFOAnim(a0)
-	bsr.w	SetObjAnim
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjUFO_Frames:
-	dc.b	0, 1, 2, 2, 3, 3, 3, 3
-	dc.b	4, 4, 4, 4, 4, 4, 4, 4
-	dc.b	5, 5, 5, 5, 5, 5, 5, 5
-	dc.b	5, 5, 5, 5, 5, 5, 5, 5
-	dc.b	6, 6, 6, 6, 6, 6, 6, 6
-	dc.b	6, 6, 6, 6, 6, 6, 6, 6
-	dc.b	7, 7, 7, 7, 7, 7, 7, 7
-	dc.b	7, 7, 7, 7, 7, 7, 7, 7
-	dc.b	8, 8, 8, 8, 8, 8, 8, 8
-	dc.b	8, 8, 8, 8, 8, 8, 8, 8
-	dc.b	9, 0
-
-; ---------------------------------------------------------------------------
-
-SpawnUFOs:
-	moveq	#0,d0
-	move.b	specStageID.w,d0
-	lsl.w	#2,d0
-	movea.l	UFOPathIndex(pc,d0.w),a1
-	lea	(ufoObject1).l,a2
-	move.w	(a1)+,d7
-	move.b	d7,ufoCount.w
-	subq.w	#1,d7
-
-.Spawn:	
-	bsr.s	SpawnUFO
-	lea	oSize(a2),a2
-	dbf	d7,.Spawn
-	rts
-
-; ---------------------------------------------------------------------------
-
-UFOPathIndex:
-	dc.l	UFOPaths_SS1
-	dc.l	UFOPaths_SS2
-	dc.l	UFOPaths_SS3
-	dc.l	UFOPaths_SS4
-	dc.l	UFOPaths_SS5
-	dc.l	UFOPaths_SS6
-	dc.l	UFOPaths_SS7
-	dc.l	UFOPaths_SS8
-
-; ---------------------------------------------------------------------------
-
-SpawnUFO:
-	movea.l	(a1)+,a3
-	lea	ufoShadowObj1-ufoObject1(a2),a4
-	move.b	#2,(a2)
-	move.b	(a3)+,oUFOItem(a2)
-	move.b	(a3)+,oVar63(a2)
-	move.l	a3,oUFOPathStart(a2)
-	move.l	a3,oUFOPath(a2)
-	move.l	a4,oUFOShadow(a2)
-	move.b	#5,(a4)
-	move.l	a2,oUFOShadParent(a4)
-	rts
-
-; ---------------------------------------------------------------------------
-
-SpawnTimeUFO:
-	cmpi.l	#20,specStageTimer.w
-	bcc.s	locret_11B6A
-	lea	(timeUFOObject).l,a2
-	lea	TimeUFOPath(pc),a3
-	tst.b	(a2)
-	bne.s	locret_11B6A
-	lea	ufoShadowObj1-ufoObject1(a2),a4
-	move.b	#3,(a2)
-	move.b	(a3)+,oUFOItem(a2)
-	move.b	(a3)+,oVar63(a2)
-	move.l	a3,oUFOPathStart(a2)
-	move.l	a3,oUFOPath(a2)
-	move.l	a4,oUFOShadow(a2)
-	move.b	#5,(a4)
-	move.l	a2,oUFOShadParent(a4)
-
-locret_11B6A:
-	rts
-
-; ---------------------------------------------------------------------------
-TimeUFOPath:
-	dc.b	2, 0
-	dc.w	$5A, $800, $800, $780, $800
-	dc.w	$5A, $780, $800, $800, $800
-	dc.w	$5A, $800, $800, $800, $780
-	dc.w	$5A, $800, $780, $800, $800
-	dc.w	$5A, $800, $800, $880, $800
-	dc.w	$5A, $880, $800, $800, $800
-	dc.w	$5A, $800, $800, $800, $880
-	dc.w	$5A, $800, $880, $800, $800
-	dc.w	$FFFF
-UFOPaths_SS1:
-	dc.w	6
-	dc.l	UFOPath_SS1_1
-	dc.l	UFOPath_SS1_2
-	dc.l	UFOPath_SS1_3
-	dc.l	UFOPath_SS1_4
-	dc.l	UFOPath_SS1_5
-	dc.l	UFOPath_SS1_6
-UFOPaths_SS2:
-	dc.w	6
-	dc.l	UFOPath_SS2_1
-	dc.l	UFOPath_SS2_2
-	dc.l	UFOPath_SS2_3
-	dc.l	UFOPath_SS2_4
-	dc.l	UFOPath_SS2_5
-	dc.l	UFOPath_SS2_6
-UFOPaths_SS3:
-	dc.w	6
-	dc.l	UFOPath_SS3_1
-	dc.l	UFOPath_SS3_2
-	dc.l	UFOPath_SS3_3
-	dc.l	UFOPath_SS3_4
-	dc.l	UFOPath_SS3_5
-	dc.l	UFOPath_SS3_6
-UFOPaths_SS4:
-	dc.w	6
-	dc.l	UFOPath_SS4_1
-	dc.l	UFOPath_SS4_2
-	dc.l	UFOPath_SS4_3
-	dc.l	UFOPath_SS4_4
-	dc.l	UFOPath_SS4_5
-	dc.l	UFOPath_SS4_6
-UFOPaths_SS5:
-	dc.w	6
-	dc.l	UFOPath_SS5_1
-	dc.l	UFOPath_SS5_2
-	dc.l	UFOPath_SS5_3
-	dc.l	UFOPath_SS5_4
-	dc.l	UFOPath_SS5_5
-	dc.l	UFOPath_SS5_6
-UFOPaths_SS6:
-	dc.w	6
-	dc.l	UFOPath_SS6_1
-	dc.l	UFOPath_SS6_2
-	dc.l	UFOPath_SS6_3
-	dc.l	UFOPath_SS6_4
-	dc.l	UFOPath_SS6_5
-	dc.l	UFOPath_SS6_6
-UFOPaths_SS7:
-	dc.w	6
-	dc.l	UFOPath_SS7_1
-	dc.l	UFOPath_SS7_2
-	dc.l	UFOPath_SS7_3
-	dc.l	UFOPath_SS7_4
-	dc.l	UFOPath_SS7_5
-	dc.l	UFOPath_SS7_6
-UFOPaths_SS8:
-	dc.w	6
-	dc.l	UFOPath_SS8_1
-	dc.l	UFOPath_SS8_2
-	dc.l	UFOPath_SS8_3
-	dc.l	UFOPath_SS8_4
-	dc.l	UFOPath_SS8_5
-	dc.l	UFOPath_SS8_6
-UFOPath_SS1_1:
-	dc.b	0, 0
-	dc.w	$B4, $780, $B40, $900, $A00
-	dc.w	$78, $900, $A00, $780, $B40
-	dc.w	$FFFF
-UFOPath_SS1_2:
-	dc.b	0, 0
-	dc.w	$B4, $600, $880, $780, $680
-	dc.w	$78, $780, $680, $580, $780
-	dc.w	$78, $580, $780, $600, $880
-	dc.w	$FFFF
-UFOPath_SS1_3:
-	dc.b	1, 0
-	dc.w	$B4, $A80, $580, $900, $500
-	dc.w	$78, $900, $500, $980, $680
-	dc.w	$F0, $980, $680, $A80, $580
-	dc.w	$FFFF
-UFOPath_SS1_4:
-	dc.b	0, 0
-	dc.w	$F0, $780, $480, $580, $500
-	dc.w	$78, $580, $500, $780, $480
-	dc.w	$FFFF
-UFOPath_SS1_5:
-	dc.b	0, 0
-	dc.w	$3C, $B00, $A00, $B00, $980
-	dc.w	$B4, $B00, $980, $A00, $A00
-	dc.w	$78, $A00, $A00, $A80, $B00
-	dc.w	$78, $A80, $B00, $B00, $A00
-	dc.w	$FFFF
-UFOPath_SS1_6:
-	dc.b	1, 0
-	dc.w	$B4, $980, $880, $900, $980
-	dc.w	$78, $900, $980, $B00, $880
-	dc.w	$F0, $B00, $880, $980, $880
-	dc.w	$FFFF
-UFOPath_SS2_1:
-	dc.b	0, 0
-	dc.w	$F0, $B00, $580, $8C0, $4C0
-	dc.w	$F0, $8C0, $4C0, $800, $600
-	dc.w	$F0, $800, $600, $A00, $6C0
-	dc.w	$F0, $A00, $6C0, $B00, $580
-	dc.w	$FFFF
-UFOPath_SS2_2:
-	dc.b	0, 0
-	dc.w	$B4, $580, $500, $500, $580
-	dc.w	$F0, $500, $580, $680, $680
-	dc.w	$F0, $680, $680, $580, $500
-	dc.w	$FFFF
-UFOPath_SS2_3:
-	dc.b	1, 0
-	dc.w	$F0, $680, $700, $580, $700
-	dc.w	$12C, $580, $700, $4C0, $800
-	dc.w	$12C, $4C0, $800, $680, $800
-	dc.w	$168, $680, $800, $680, $700
-	dc.w	$FFFF
-UFOPath_SS2_4:
-	dc.b	0, 0
-	dc.w	$78, $600, $980, $700, $A00
-	dc.w	$3C, $700, $A00, $600, $980
-	dc.w	$FFFF
-UFOPath_SS2_5:
-	dc.b	0, 0
-	dc.w	$12C, $A00, $900, $840, $AC0
-	dc.w	$12C, $840, $AC0, $A00, $B00
-	dc.w	$F0, $A00, $B00, $A00, $900
-	dc.w	$FFFF
-UFOPath_SS2_6:
-	dc.b	1, 0
-	dc.w	$F0, $B40, $800, $A00, $780
-	dc.w	$78, $A00, $780, $980, $8C0
-	dc.w	$F0, $980, $8C0, $B40, $800
-	dc.w	$FFFF
-UFOPath_SS3_1:
-	dc.b	0, 0
-	dc.w	$50, $B00, $500, $A00, $500
-	dc.w	$C8, $A00, $500, $900, $700
-	dc.w	$78, $900, $700, $A00, $680
-	dc.w	$A0, $A00, $680, $B00, $500
-	dc.w	$FFFF
-UFOPath_SS3_2:
-	dc.b	0, 0
-	dc.w	$C8, $6C0, $4C0, $500, $600
-	dc.w	$A0, $500, $600, $640, $580
-	dc.w	$A0, $640, $580, $6C0, $4C0
-	dc.w	$FFFF
-UFOPath_SS3_3:
-	dc.b	1, 0
-	dc.w	$78, $600, $780, $500, $780
-	dc.w	$C8, $500, $780, $500, $880
-	dc.w	$A0, $500, $880, $600, $880
-	dc.w	$A0, $600, $880, $600, $780
-	dc.w	$FFFF
-UFOPath_SS3_4:
-	dc.b	0, 0
-	dc.w	$78, $600, $980, $500, $980
-	dc.w	$C8, $500, $980, $500, $B00
-	dc.w	$78, $500, $B00, $600, $980
-	dc.w	$FFFF
-UFOPath_SS3_5:
-	dc.b	0, 0
-	dc.w	$C8, $8C0, $A00, $700, $9C0
-	dc.w	$C8, $700, $9C0, $700, $B00
-	dc.w	$A0, $700, $B00, $8C0, $B00
-	dc.w	$A0, $8C0, $B00, $8C0, $A00
-	dc.w	$FFFF
-UFOPath_SS3_6:
-	dc.b	1, 0
-	dc.w	$C8, $B00, $980, $A00, $880
-	dc.w	$C8, $A00, $880, $980, $A00
-	dc.w	$78, $980, $A00, $980, $B00
-	dc.w	$F0, $980, $B00, $B00, $980
-	dc.w	$FFFF
-UFOPath_SS4_1:
-	dc.b	0, 0
-	dc.w	$A0, $AC0, $4C0, $880, $500
-	dc.w	$C8, $880, $500, $B00, $600
-	dc.w	$A0, $B00, $600, $AC0, $4C0
-	dc.w	$FFFF
-UFOPath_SS4_2:
-	dc.b	0, 0
-	dc.w	$C8, $8A0, $5C0, $740, $5C0
-	dc.w	$C8, $740, $5C0, $740, $700
-	dc.w	$C8, $740, $700, $8A0, $700
-	dc.w	$C8, $8A0, $700, $8A0, $5C0
-	dc.w	$FFFF
-UFOPath_SS4_3:
-	dc.b	1, 0
-	dc.w	$C8, $600, $700, $500, $800
-	dc.w	$C8, $500, $800, $600, $900
-	dc.w	$78, $600, $900, $680, $800
-	dc.w	$78, $680, $800, $600, $700
-	dc.w	$FFFF
-UFOPath_SS4_4:
-	dc.b	0, 0
-	dc.w	$C8, $600, $A80, $440, $A80
-	dc.w	$A0, $440, $A80, $600, $A80
-	dc.w	$FFFF
-UFOPath_SS4_5:
-	dc.b	0, 0
-	dc.w	$78, $980, $900, $880, $900
-	dc.w	$A0, $880, $900, $740, $A80
-	dc.w	$C8, $740, $A80, $980, $900
-	dc.w	$FFFF
-UFOPath_SS4_6:
-	dc.b	1, 0
-	dc.w	$A0, $A80, $6C0, $980, $700
-	dc.w	$A0, $980, $700, $B00, $780
-	dc.w	$78, $B00, $780, $A80, $6C0
-	dc.w	$FFFF
-UFOPath_SS5_1:
-	dc.b	0, 0
-	dc.w	$14, $B80, $440, $B00, $440
-	dc.w	$50, $B00, $440, $A00, $580
-	dc.w	$50, $A00, $580, $BC0, $580
-	dc.w	$3C, $BC0, $580, $B80, $440
-	dc.w	$FFFF
-UFOPath_SS5_2:
-	dc.b	0, 0
-	dc.w	$3C, $700, $440, $5C0, $440
-	dc.w	$64, $5C0, $440, $780, $640
-	dc.w	$3C, $780, $640, $840, $580
-	dc.w	$64, $840, $580, $700, $440
-	dc.w	$FFFF
-UFOPath_SS5_3:
-	dc.b	1, 0
-	dc.w	$64, $AC0, $700, $840, $700
-	dc.w	$64, $840, $700, $AC0, $700
-	dc.w	$FFFF
-UFOPath_SS5_4:
-	dc.b	0, 0
-	dc.w	$3C, $5C0, $780, $540, $880
-	dc.w	$3C, $540, $880, $500, $940
-	dc.w	$3C, $500, $940, $5C0, $980
-	dc.w	$50, $5C0, $980, $600, $840
-	dc.w	$3C, $600, $840, $5C0, $780
-	dc.w	$FFFF
-UFOPath_SS5_5:
-	dc.b	0, 0
-	dc.w	$28, $740, $880, $6A0, $900
-	dc.w	$64, $6A0, $900, $6A0, $BC0
-	dc.w	$3C, $6A0, $BC0, $740, $BC0
-	dc.w	$64, $740, $BC0, $740, $880
-	dc.w	$FFFF
-UFOPath_SS5_6:
-	dc.b	1, 0
-	dc.w	$50, $980, $840, $840, $980
-	dc.w	$64, $840, $980, $AC0, $980
-	dc.w	$50, $AC0, $980, $980, $840
-	dc.w	$FFFF
-UFOPath_SS6_1:
-	dc.b	0, 0
-	dc.w	$50, $B00, $500, $B00, $680
-	dc.w	$50, $B00, $680, $A80, $7C0
-	dc.w	$3C, $A80, $7C0, $C00, $7C0
-	dc.w	$78, $C00, $7C0, $B00, $500
-	dc.w	$FFFF
-UFOPath_SS6_2:
-	dc.b	0, 0
-	dc.w	$64, $980, $480, $7C0, $580
-	dc.w	$64, $7C0, $580, $A00, $580
-	dc.w	$3C, $A00, $580, $980, $480
-	dc.w	$FFFF
-UFOPath_SS6_3:
-	dc.b	1, 0
-	dc.w	$3C, $4C0, $480, $3C0, $480
-	dc.w	$64, $3C0, $480, $3C0, $600
-	dc.w	$3C, $3C0, $600, $4C0, $600
-	dc.w	$64, $4C0, $600, $4C0, $480
-	dc.w	$FFFF
-UFOPath_SS6_4:
-	dc.b	0, 0
-	dc.w	$64, $580, $9C0, $400, $B80
-	dc.w	$64, $400, $B80, $680, $A80
-	dc.w	$3C, $680, $A80, $580, $9C0
-	dc.w	$FFFF
-UFOPath_SS6_5:
-	dc.b	0, 0
-	dc.w	$78, $A00, $940, $600, $940
-	dc.w	$50, $600, $940, $A00, $940
-	dc.w	$FFFF
-UFOPath_SS6_6:
-	dc.b	1, 0
-	dc.w	$64, $C00, $880, $A80, $880
-	dc.w	$78, $A80, $880, $C00, $B80
-	dc.w	$50, $C00, $B80, $C00, $880
-	dc.w	$FFFF
-UFOPath_SS7_1:
-	dc.b	0, 0
-	dc.w	$28, $A00, $700, $B00, $600
-	dc.w	$28, $B00, $600, $A00, $700
-	dc.w	$3C, $A00, $700, $A80, $600
-	dc.w	$3C, $A80, $600, $A00, $700
-	dc.w	$50, $A00, $700, $A00, $600
-	dc.w	$3C, $A00, $600, $A00, $700
-	dc.w	$FFFF
-UFOPath_SS7_2:
-	dc.b	0, 0
-	dc.w	$28, $500, $700, $400, $700
-	dc.w	$50, $400, $700, $500, $940
-	dc.w	$28, $500, $940, $400, $940
-	dc.w	$50, $400, $940, $500, $700
-	dc.w	$FFFF
-UFOPath_SS7_3:
-	dc.b	1, 0
-	dc.w	$3C, $4C0, $B80, $580, $B00
-	dc.w	$3C, $580, $B00, $4C0, $B80
-	dc.w	$3C, $4C0, $B80, $400, $B00
-	dc.w	$3C, $400, $B00, $4C0, $B80
-	dc.w	$FFFF
-UFOPath_SS7_4:
-	dc.b	0, 0
-	dc.w	$50, $680, $A00, $680, $B00
-	dc.w	$50, $680, $B00, $680, $A00
-	dc.w	$78, $680, $A00, $880, $B80
-	dc.w	$78, $880, $B80, $680, $A00
-	dc.w	$FFFF
-UFOPath_SS7_5:
-	dc.b	0, 0
-	dc.w	$50, $A80, $980, $900, $B00
-	dc.w	$64, $900, $B00, $BC0, $BC0
-	dc.w	$64, $BC0, $BC0, $A80, $980
-	dc.w	$FFFF
-UFOPath_SS7_6:
-	dc.b	1, 0
-	dc.w	$50, $C00, $680, $B00, $800
-	dc.w	$28, $B00, $800, $C00, $800
-	dc.w	$3C, $C00, $800, $C00, $680
-	dc.w	$FFFF
-UFOPath_SS8_1:
-	dc.b	0, 0
-	dc.w	$78, $B00, $B80, $C00, $980
-	dc.w	$3C, $C00, $980, $C00, $A80
-	dc.w	$50, $C00, $A80, $B00, $B80
-	dc.w	$FFFF
-UFOPath_SS8_2:
-	dc.b	1, 0
-	dc.w	$78, $C00, $700, $A00, $500
-	dc.w	$50, $A00, $500, $B80, $440
-	dc.w	$78, $B80, $440, $C00, $700
-	dc.w	$FFFF
-UFOPath_SS8_3:
-	dc.b	0, 0
-	dc.w	$78, $980, $940, $A80, $880
-	dc.w	$78, $A80, $880, $980, $800
-	dc.w	$78, $980, $800, $A80, $780
-	dc.w	$3C, $A80, $780, $A00, $700
-	dc.w	$50, $A00, $700, $A00, $600
-	dc.w	$50, $A00, $600, $A00, $700
-	dc.w	$3C, $A00, $700, $A80, $780
-	dc.w	$78, $A80, $780, $980, $800
-	dc.w	$78, $980, $800, $A80, $880
-	dc.w	$78, $A80, $880, $980, $940
-	dc.w	$FFFF
-UFOPath_SS8_4:
-	dc.b	0, 0
-	dc.w	$50, $800, $700, $680, $780
-	dc.w	$78, $680, $780, $700, $500
-	dc.w	$50, $700, $500, $580, $580
-	dc.w	$78, $580, $580, $800, $700
-	dc.w	$FFFF
-UFOPath_SS8_5:
-	dc.b	1, 0
-	dc.w	$50, $680, $B80, $400, $A80
-	dc.w	$3C, $400, $A80, $400, $880
-	dc.w	$3C, $400, $880, $600, $900
-	dc.w	$50, $600, $900, $680, $B80
-	dc.w	$FFFF
-UFOPath_SS8_6:
-	dc.b	0, 0
-	dc.w	$50, $600, $480, $400, $600
-	dc.w	$50, $400, $600, $600, $480
-	dc.w	$FFFF
-
-; ---------------------------------------------------------------------------
-
-ObjSonicShadow:
-	moveq	#0,d0
-	move.b	3(a0),d0
-	add.w	d0,d0
-	move.w	ObjSonicShadow_Index(pc,d0.w),d0
-	jsr	ObjSonicShadow_Index(pc,d0.w)
-	bsr.w	DrawObject
-	rts
-
-; ---------------------------------------------------------------------------
-ObjSonicShadow_Index:
-	dc.w	ObjSonicShadow_Init-ObjSonicShadow_Index
-	dc.w	ObjSonicShadow_Main-ObjSonicShadow_Index
-
-; ---------------------------------------------------------------------------
-
-ObjSonicShadow_Init:
-	move.w	#$E6DC,oTile(a0)
-	move.l	#Ani_Shadow,oAnimData(a0)
-	moveq	#5,d0
-	move.b	d0,oVar52(a0)
-	bsr.w	ResetObjAnim
-	addq.b	#1,oRoutine(a0)
-
-; ---------------------------------------------------------------------------
-
-ObjSonicShadow_Main:
-	lea	sonicObject,a1
-	move.w	oX(a1),oX(a0)
-	move.w	oY(a1),oY(a0)
-	move.w	(sonicObject+oZ).l,oZ(a0)
-	bra.w	Set3DSpritePos
-
-; ---------------------------------------------------------------------------
-
-ObjUFOShadow:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjUFOShadow_Index(pc,d0.w),d0
-	jsr	ObjUFOShadow_Index(pc,d0.w)
-	bsr.w	ObjUFO_ChkOnScreen
-	bsr.w	DrawObject
-	rts
-
-; ---------------------------------------------------------------------------
-ObjUFOShadow_Index:
-	dc.w	ObjUFOShadow_Init-ObjUFOShadow_Index
-	dc.w	ObjUFOShadow_Main-ObjUFOShadow_Index
-
-; ---------------------------------------------------------------------------
-
-ObjUFOShadow_Init:
-	move.w	#$E6DC,oTile(a0)
-	move.l	#Ani_Shadow,oAnimData(a0)
-	moveq	#0,d0
-	move.b	d0,oVar52(a0)
-	bsr.w	ResetObjAnim
-	addq.b	#1,oRoutine(a0)
-
-; ---------------------------------------------------------------------------
-
-ObjUFOShadow_Main:
-	movea.l	oUFOShadParent(a0),a1
-	move.w	oX(a1),oX(a0)
-	move.w	oY(a1),oY(a0)
-	bset	#2,oFlags(a1)
-	btst	#2,oFlags(a0)
-	bne.s	.Draw
-	bclr	#2,oFlags(a1)
-
-.Draw:	
-	move.w	(sonicObject+oZ).l,oZ(a0)
-	bsr.w	ObjUFO_Draw
-	bsr.w	Set3DSpritePos
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjPressStart:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjPressStart_Index(pc,d0.w),d0
-	jsr	ObjPressStart_Index(pc,d0.w)
-	bsr.w	DrawObject
-	rts
-
-; ---------------------------------------------------------------------------
-ObjPressStart_Index:
-	dc.w	ObjPressStart_Init-ObjPressStart_Index
-	dc.w	ObjPressStart_Main-ObjPressStart_Index
-
-; ---------------------------------------------------------------------------
-
-ObjPressStart_Init:
-	move.w	#$856A,oTile(a0)
-	move.l	#Ani_PressStart,oAnimData(a0)
-	move.w	#$D4,oSprX(a0)
-	move.w	#$D0,oSprY(a0)
-	moveq	#0,d0
-	bsr.w	ResetObjAnim
-	addq.b	#1,oRoutine(a0)
-
-; ---------------------------------------------------------------------------
-
-ObjPressStart_Main:
-	addq.b	#1,oTimer(a0)
-	bset	#2,oFlags(a0)
-	btst	#4,oTimer(a0)
-	bne.s	.End
-	bclr	#2,oFlags(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-Ani_PressStart:
-	dc.l	byte_12500
-byte_12500:
-	dc.b	1, $FF
-	dc.l	byte_12506
-byte_12506:
-	dc.b	2, 0, 0, 0, 0
-	dc.b	0, $D, 0, 0, 0
-	dc.b	0, 9, 0, 8, $20
-	dc.b	0, $D, 0, $E, $38
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardText:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjTitleCardText_Index(pc,d0.w),d0
-	jsr	ObjTitleCardText_Index(pc,d0.w)
-	bsr.w	DrawObject
-	rts
-
-; ---------------------------------------------------------------------------
-ObjTitleCardText_Index:
-	dc.w	ObjTitleCardText_Init-ObjTitleCardText_Index
-	dc.w	ObjTitleCardText_MoveLeft-ObjTitleCardText_Index
-	dc.w	ObjTitleCardText_Wait-ObjTitleCardText_Index
-	dc.w	ObjTitleCardText_MoveRight-ObjTitleCardText_Index
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardText_Init:
-	move.w	#$8516,oTile(a0)
-	move.l	#Ani_TitleCardText,oAnimData(a0)
-	move.w	#$1C8,oSprX(a0)
-	move.w	#$F0,oSprY(a0)
-	moveq	#0,d0
-	bsr.w	ResetObjAnim
-	addq.b	#1,oRoutine(a0)
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardText_MoveLeft:
-	subi.w	#$20,oSprX(a0)
-	cmpi.w	#$138,oSprX(a0)
-	bhi.s	.End
-	move.w	#$138,oSprX(a0)
-	move.w	#$50,oTimer(a0)
-	addq.b	#1,oRoutine(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardText_Wait:
-	subq.w	#1,oTimer(a0)
-	bne.s	.End
-	addq.b	#1,oRoutine(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardText_MoveRight:
-	addi.w	#$20,oSprX(a0)
-	cmpi.w	#$1D0,oSprX(a0)
-	bls.s	.End
-	bset	#0,oFlags(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-Ani_TitleCardText:
-	dc.l	byte_125A2
-byte_125A2:
-	dc.b	1, $FF
-	dc.l	byte_125A8
-byte_125A8:
-	dc.b	$E, 0, 0, 0, 0
-	dc.b	$C8, 4, 0, 0, $B8
-	dc.b	$D0, 0, 0, 2, $B8
-	dc.b	$D8, 5, 0, 3, $B8
-	dc.b	$E8, $F, 0, 7, $B8
-	dc.b	$E8, $B, 0, $17, $D8
-	dc.b	$E8, $A, 0, $23, $F0
-	dc.b	0, 6, 0, $26, $F8
-	dc.b	$28, 5, 0, $2C, $B8
-	dc.b	8, 0, 0, 2, $B8
-	dc.b	8, $F, 0, $30, $D0
-	dc.b	8, 0, 0, $40, $C8
-	dc.b	$10, $A, 0, $41, $B8
-	dc.b	$18, $D, 0, $4A, $F0
-	dc.b	$18, $D, 0, $52, $10
-	dc.b	$18, 9, 0, $5A, $30
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardBar:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjTitleCardBar_Index(pc,d0.w),d0
-	jsr	ObjTitleCardBar_Index(pc,d0.w)
-	bsr.w	DrawObject
-	rts
-
-; ---------------------------------------------------------------------------
-ObjTitleCardBar_Index:
-	dc.w	ObjTitleCardBar_Init-ObjTitleCardBar_Index
-	dc.w	ObjTitleCardBar_MoveDown-ObjTitleCardBar_Index
-	dc.w	ObjTitleCardBar_Wait-ObjTitleCardBar_Index
-	dc.w	ObjTitleCardBar_MoveUp-ObjTitleCardBar_Index
-	dc.w	ObjTitleCardBar_Done-ObjTitleCardBar_Index
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardBar_Init:
-	move.w	#$8516,oTile(a0)
-	move.l	#Ani_TitleCardBar,oAnimData(a0)
-	move.w	#$F4,oSprX(a0)
-	move.w	#$20,oSprY(a0)
-	moveq	#0,d0
-	bsr.w	ResetObjAnim
-	addq.b	#1,oRoutine(a0)
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardBar_MoveDown:
-	addi.w	#$20,oSprY(a0)
-	cmpi.w	#$F0,oSprY(a0)
-	bcs.s	.End
-	move.w	#$F0,oSprY(a0)
-	move.w	#$50,oTimer(a0)
-	addq.b	#1,oRoutine(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardBar_Wait:
-	subq.w	#1,oTimer(a0)
-	bne.s	.CheckSonic
-	addq.b	#1,oRoutine(a0)
-
-.CheckSonic:
-	cmpi.w	#50,oTimer(a0)
-	bne.s	.End
-	move.b	#$15,(sonicObject+oRoutine).l
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardBar_MoveUp:
-	subi.w	#$20,oSprY(a0)
-	bpl.s	.End
-	move.w	#3,oTimer(a0)
-	bset	#2,oFlags(a0)
-	addq.b	#1,oRoutine(a0)
-	move.b	#1,(sonicObject+oRoutine).l
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjTitleCardBar_Done:
-	subq.w	#1,oTimer(a0)
-	bne.s	locret_126AE
-	bset	#0,oFlags(a0)
-	move.b	#0,stageWon
-
-locret_126AE:
-	rts
-
-; ---------------------------------------------------------------------------
-Ani_TitleCardBar:
-	dc.l	byte_126B4
-byte_126B4:
-	dc.b	1, $FF
-	dc.l	byte_126BA
-byte_126BA:
-	dc.b	5, 0, 0, 0, 0
-	dc.b	$90, $B, 0, $60, $F4
-	dc.b	$B0, $B, 0, $60, $F4
-	dc.b	$D0, $B, 0, $60, $F4
-	dc.b	$F0, $B, 0, $60, $F4
-	dc.b	$10, $B, 0, $60, $F4
-	dc.b	$20, $B, 0, $60, $F4
-	dc.b	0
-
-; ---------------------------------------------------------------------------
-
-FindExplosionObjSlot:
-	lea	(explosionObj1).l,a1
-	moveq	#7,d7
-
-loc_126E6:
-	tst.w	(a1)
-	beq.s	locret_126F2
-	adda.w	#$80,a1
-	dbf	d7,loc_126E6
-
-locret_126F2:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjExplosion:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjExplosion_Index(pc,d0.w),d0
-	jsr	ObjExplosion_Index(pc,d0.w)
-	bsr.w	DrawObject
-	rts
-
-; ---------------------------------------------------------------------------
-ObjExplosion_Index:
-	dc.w	ObjExplosion_Init-ObjExplosion_Index
-	dc.w	ObjExplosion_Main-ObjExplosion_Index
-
-; ---------------------------------------------------------------------------
-
-ObjExplosion_Init:
-	move.w	#$87AE,oTile(a0)
-	move.l	#Ani_Explosion,oAnimData(a0)
-	moveq	#0,d0
-	bsr.w	ResetObjAnim
-	move.w	#$C,oTimer(a0)
-	addq.b	#1,oRoutine(a0)
-	move.b	#$A3,d0
-	bsr.w	PlayFMSound
-
-; ---------------------------------------------------------------------------
-
-ObjExplosion_Main:
-	subq.w	#1,oTimer(a0)
-	bne.s	.End
-	bset	#0,oFlags(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-Ani_Explosion:
-	dc.l	byte_12746
-byte_12746:
-	dc.b	5, 2
-	dc.l	byte_1275C
-	dc.l	byte_1276C
-	dc.l	byte_12780
-	dc.l	byte_1279A
-	dc.l	byte_127BE
-byte_1275C:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$F8, 1, 0, 0, $F8
-	dc.b	$F8, 1, 8, 0, 0
-	dc.b	0
-byte_1276C:
-	dc.b	2, 0, 0, 0, 0
-	dc.b	$F0, $D, 0, 2, $F0
-	dc.b	0, 5, 0, $A, $F0
-	dc.b	0, 5, 8, $A, 0
-byte_12780:
-	dc.b	3, 0, 0, 0, 0
-	dc.b	$F0, 5, 0, $E, $F0
-	dc.b	$F0, 5, 0, $12, 0
-	dc.b	0, 5, 0, $16, $F0
-	dc.b	0, 5, $18, $E, 0
-	dc.b	0
-byte_1279A:
-	dc.b	5, 0, 0, 0, 0
-	dc.b	$E8, 6, 0, $1A, $EC
-	dc.b	$E8, 2, 0, $20, $FC
-	dc.b	$E8, 6, 8, $1A, 4
-	dc.b	0, 6, $10, $1A, $EC
-	dc.b	0, 2, $18, $20, $FC
-	dc.b	0, 6, $18, $1A, 4
-	dc.b	0
-byte_127BE:
-	dc.b	5, 0, 0, 0, 0
-	dc.b	$E8, 6, 0, $23, $EC
-	dc.b	$E8, 2, 0, $29, $FC
-	dc.b	$E8, 6, 8, $23, 4
-	dc.b	0, 6, $10, $23, $EC
-	dc.b	0, 2, $18, $29, $FC
-	dc.b	0, 6, $18, $23, 4
-	dc.b	0
-
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+
+.Index:
+	dc.l	StampTypes_SS1			; Stage 1
+	dc.l	StampTypes_SS2			; Stage 2
+	dc.l	StampTypes_SS3			; Stage 3
+	dc.l	StampTypes_SS4			; Stage 4
+	dc.l	StampTypes_SS5			; Stage 5
+	dc.l	StampTypes_SS6			; Stage 6
+	dc.l	StampTypes_SS7			; Stage 7
+	dc.l	StampTypes_SS8			; Stage 8
+
+; -------------------------------------------------------------------------
+
+	include	"Special Stage/Objects/Item/Main.asm"
+	include	"Special Stage/Objects/UFO/Main.asm"
+	include	"Special Stage/Objects/Shadow/Main.asm"
+	include	"Special Stage/Objects/Press Start/Main.asm"
+	include	"Special Stage/Objects/Title Card/Main.asm"
+	include	"Special Stage/Objects/Explosion/Main.asm"
+
+; -------------------------------------------------------------------------
+; Decrement UFO count
+; -------------------------------------------------------------------------
 
 DecUFOCount:
-	subq.b	#1,ufoCount.w
-	bne.s	.End
-	nop
+	subq.b	#1,ufoCount.w			; Decrement UFO count
+	bne.s	.End				; If there's still some UFOs left, branch
+	nop					; Nothing
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Add rings
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.w - Number of rings to add
+; -------------------------------------------------------------------------
 
 AddRings:
-	add.w	d0,specStageRings.w
-	cmpi.w	#999,specStageRings.w
-	bls.s	.End
-	move.w	#999,specStageRings.w
+	add.w	d0,specStageRings.w		; Add to ring count
+	cmpi.w	#999,specStageRings.w		; Are there too many rings?
+	bls.s	.End				; If not, branch
+	move.w	#999,specStageRings.w		; If so, cap the count
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Update timer
+; -------------------------------------------------------------------------
 
 UpdateTimer:
-	btst	#1,specStageFlags.w
-	bne.w	TickTimeAttackTime
-	subq.b	#1,timerFrames
-	bne.s	.CheckSpeedUp
-	move.b	#20,timerFrames
-	bsr.w	TickCountdown
+	btst	#1,specStageFlags.w		; Are we in time attack mode?
+	bne.w	.TimeAttack			; If so, branch
+
+	subq.b	#1,timerFrames			; Decrement frame counter
+	bne.s	.CheckSpeedUp			; If it hasn't run out, branch
+	move.b	#60/3,timerFrames		; Reset frame counter
+	bsr.w	.Tick				; Tick countdown
 
 .CheckSpeedUp:
-	tst.b	(timerSpeedUp).l
-	beq.s	.End
-	subq.b	#1,(timerSpeedUp).l
-	bsr.w	TickCountdown
+	tst.b	timerSpeedUp			; Is the timer speed-up counter active?
+	beq.s	.End				; If not, branch
+	subq.b	#1,timerSpeedUp			; Decrement timer speed-up counter
+	bsr.w	.Tick				; Tick countdown
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-TickCountdown:
-	tst.b	(timeStopped).l
-	bne.s	.End
-	tst.b	stageWon
-	bne.s	.End
-	subq.l	#1,specStageTimer.w
-	bpl.s	.LowOnTime
-	move.l	#0,specStageTimer.w
-	move.b	#0,(timerSpeedUp).l
-	move.b	#1,stageOver
+.Tick:
+	tst.b	timeStopped			; Is time stopped?
+	bne.s	.TickEnd			; If so, branch
+	tst.b	stageInactive			; Is the stage active?
+	bne.s	.TickEnd			; If not, branch
+
+	subq.l	#1,specStageTimer.w		; Decrement timer
+	bpl.s	.LowOnTime			; If it hasn't run out, branch
+	move.l	#0,specStageTimer.w		; Cap at 0
+	move.b	#0,timerSpeedUp			; Stop speeding up timer
+	move.b	#1,stageOver			; Mark stage as over
 
 .LowOnTime:
-	bsr.w	SpawnTimeUFO
-	cmpi.l	#$F,specStageTimer.w
-	bcc.s	.End
-	move.b	#$DF,subSndQueue1
+	bsr.w	SpawnTimeUFO			; Check if time UFO needs to be spawned
+	cmpi.l	#$F,specStageTimer.w		; Are we really short on time?
+	bcc.s	.TickEnd			; If not, branch
+	move.b	#FM_DF,subSndQueue1		; Play warning sound
 
-.End:
+.TickEnd:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-TickTimeAttackTime:
-	tst.b	(timeStopped).l
-	bne.s	.End
-	tst.b	stageWon
-	bne.s	.End
-	lea	specStageTimer.w,a1
-	addq.b	#3,3(a1)
-	cmpi.b	#60,3(a1)
-	bcs.s	.End
-	subi.b	#60,3(a1)
-	addq.b	#1,2(a1)
-	cmpi.b	#60,2(a1)
-	bcs.s	.End
-	subi.b	#60,2(a1)
-	addq.b	#1,1(a1)
-	cmpi.b	#$A,1(a1)
-	bcs.s	.End
-	move.l	#$93B3B,(a1)
-	move.b	#1,stageOver
+.TimeAttack:
+	tst.b	timeStopped			; Is time stopped?
+	bne.s	.TimeAttackEnd			; If so, branch
+	tst.b	stageInactive			; Is the stage active?
+	bne.s	.TimeAttackEnd			; If not, branch
 
-.End:
+	lea	specStageTimer.w,a1		; Get timer
+
+	addq.b	#3,3(a1)			; Increment frame counter
+	cmpi.b	#60,3(a1)			; Is it time to tick a second?
+	bcs.s	.TimeAttackEnd			; If not, branch
+
+	subi.b	#60,3(a1)			; Reset frame counter
+	addq.b	#1,2(a1)			; Increment second counter
+	cmpi.b	#60,2(a1)			; Is it time to tick a minute?
+	bcs.s	.TimeAttackEnd			; If not, branch
+
+	subi.b	#60,2(a1)			; Reset second counter
+	addq.b	#1,1(a1)			; Increment minut counter
+	cmpi.b	#10,1(a1)			; Are we at the max time?
+	bcs.s	.TimeAttackEnd			; If not, branch
+
+	move.l	#(9<<16)|(59<<8)|59,(a1)	; Cap time at 9'59"59
+	move.b	#1,stageOver			; Mark stage as over
+
+.TimeAttackEnd:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Get angle between 2 points
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.w - Point 1 X
+;	d1.w - Point 1 Y
+;	d4.w - Point 2 X
+;	d5.w - Point 2 Y
+; RETURNS:
+;	d1.w - Angle
+;	d2.w - Angle quadrant flags
+;	       0 = Left quadrant
+;	       1 = Top quadrant
+;	       2 = Inner corner quadrant
+; -------------------------------------------------------------------------
 
 GetAngle:
-	moveq	#0,d2
-	move.w	d0,d3
+	moveq	#0,d2				; Reset flags
+
+	move.w	d0,d3				; Get sign difference between X points
 	eor.w	d4,d3
-	sub.w	d4,d0
-	bcc.s	.X2Less
+	sub.w	d4,d0				; Get X distance
+	bcc.s	.X2Less				; If x2 < x1, unsigned wise, branch
 
 .X2Greater:
-	andi.w	#$8000,d3
-	bne.s	.CheckY
+	andi.w	#$8000,d3			; Are the signs different?
+	bne.s	.CheckY				; If so, branch
 
-.FlipX:	
-	bset	#0,d2
-	neg.w	d0
+.FlipX:
+	bset	#0,d2				; Use left quadrant
+	neg.w	d0				; Get absolute value of X distance
 	bra.s	.CheckY
 
 .X2Less:
-	andi.w	#$8000,d3
-	bne.s	.FlipX
+	andi.w	#$8000,d3			; Are the signs different?
+	bne.s	.FlipX				; If so, branch
 
 .CheckY:
-	sub.w	d5,d1
-	bpl.s	.Y2Above
-	tst.w	d5
-	bmi.s	.Y2Above
-	bset	#1,d2
-	neg.w	d1
+	sub.w	d5,d1				; Get Y distance
+	bpl.s	.Y2Above			; If it's positive, branch
+	tst.w	d5				; Was y2 negative?
+	bmi.s	.Y2Above			; If so, branch
+	; BUG: If both y1 and y2 and negative, and y1 < y2, then it'll fail
+	; to properly get the absolute value, and thus return a massive
+	; distance after being interpreted as unsigned
+	bset	#1,d2				; Use top quadrant
+	neg.w	d1				; Get absolute value of Y distance
 
 .Y2Above:
-	cmp.w	d0,d1
-	bcs.s	.PrepareDivide
-	bset	#2,d2
-	exg	d0,d1
+	cmp.w	d0,d1				; Is the X distance larger than the Y distance?
+	bcs.s	.PrepareDivide			; If not, branch
+	bset	#2,d2				; If so, use inner corner quadrant
+	exg	d0,d1				; Do x/y instead of y/x
 
 .PrepareDivide:
-	ext.l	d1
+	ext.l	d1				; Perform the division
 	lsl.l	#6,d1
 	tst.w	d0
 	bne.s	.Divide
@@ -3187,29 +1903,40 @@ GetAngle:
 .Divide:
 	divu.w	d0,d1
 
-.Cap:	
-	andi.w	#$FF,d1
+.Cap:
+	andi.w	#$FF,d1				; Cap within quadrant
 	cmpi.b	#$40,d1
 	bcs.s	.End
 	move.b	#$3F,d1
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Get the trajectory between 2 points
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d1.w - Angle
+;	d2.w - Angle quadrant flags
+;	d3.w - Trajectory multiplier
+; RETURNS:
+;	d0.w - X trajectory
+;	d1.w - Y trajectory
+; -------------------------------------------------------------------------
 
 GetTrajectory:
-	lea	TrajectoryTable(pc),a1
-	andi.w	#$FF,d1
+	lea	TrajectoryTable(pc),a1		; Trajectory table
+
+	andi.w	#$FF,d1				; Get table offset
 	add.w	d1,d1
 	add.w	d1,d1
-	bne.s	.Angled
-	move.w	#0,d0
+	bne.s	.Angled				; If we are on an angle, branch
+	move.w	#0,d0				; If not, skip unnecessary math
 	move.w	d3,d1
 	bra.s	.CheckCornerQuad
 
 .Angled:
-	adda.w	d1,a1
+	adda.w	d1,a1				; Get X anad Y trajectories based on angle
 	move.w	(a1)+,d0
 	move.w	(a1),d1
 	mulu.w	d3,d0
@@ -3218,54 +1945,68 @@ GetTrajectory:
 	swap	d1
 
 .CheckCornerQuad:
-	btst	#2,d2
-	beq.s	.CheckYQuad
-	exg	d0,d1
+	btst	#2,d2				; Are we in an inner corner quadrant?
+	beq.s	.CheckYQuad			; If not, branch
+	exg	d0,d1				; If so, swap X and Y trajectories
 
 .CheckYQuad:
-	btst	#1,d2
-	beq.s	.SetYTrajectory
-	neg.w	d0
+	btst	#1,d2				; Are we in a top quadrant?
+	beq.s	.SetYTrajectory			; If not, branch
+	neg.w	d0				; If so, make the Y trajectory face the other way
 
 .SetYTrajectory:
-	swap	d0
+	swap	d0				; Shift Y trajectory down
 	move.w	#0,d0
 	asr.l	#8,d0
-	btst	#0,d2
-	beq.s	.SetXTrajectory
-	neg.w	d1
+
+	btst	#0,d2				; Are we in a left quadrant?
+	beq.s	.SetXTrajectory			; If not, branch
+	neg.w	d1				; If so, make the X trajectory face the other way
 
 .SetXTrajectory:
-	swap	d1
+	swap	d1				; Shift X trajectory down
 	move.w	#0,d1
 	asr.l	#8,d1
-	exg	d0,d1
+
+	exg	d0,d1				; Have d0 store the X trajectory, and d1 store the Y trajectory
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Get the distance between 2 points
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d2.w - Angle quadrant flags
+;	d3.w - Point 1 X
+;	d4.w - Point 1 Y
+;	d5.w - Point 2 X
+;	d6.w - Point 2 Y
+; RETURNS:
+;	d0.l - Distance
+; -------------------------------------------------------------------------
 
 GetDistance:
-	lea	DistanceTable(pc),a1
+	lea	DistanceTable(pc),a1		; Get distance table entry
 	andi.w	#$FF,d1
 	add.w	d1,d1
 	adda.w	d1,a1
 	move.w	#0,d0
 	move.w	#0,d1
 	move.w	(a1),d0
-	btst	#2,d2
-	beq.s	.XGreater
 
-.YGreater:
-	move.w	d6,d1
+	btst	#2,d2				; Are we in an inner corner qudrant?
+	beq.s	.OuterCorner			; If not, branch
+
+.InnerCorner:
+	move.w	d6,d1				; Use Y points	 
 	move.w	d4,d2
 	bra.s	.GetDistance
 
-.XGreater:
-	move.w	d5,d1
+.OuterCorner:
+	move.w	d5,d1				; Use X points
 	move.w	d3,d2
 
 .GetDistance:
-	sub.w	d2,d1
+	sub.w	d2,d1				; Get distance
 	bpl.s	.NotNeg
 	neg.w	d1
 
@@ -3274,7 +2015,7 @@ GetDistance:
 	lsr.l	#8,d0
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 TrajectoryTable:
 	dc.w	$00FF, $FFFF
@@ -3358,13 +2099,13 @@ DistanceTable:
 	dc.w	$0151, $0154, $0156, $0159, $015C
 	dc.w	$015E, $0161, $0164, $0167, $016A
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Mass copy 128 bytes
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a1.l - Pointer to source data
 ;	a2.l - Pointer to destination buffer
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Copy128:
 	rept	32
@@ -3372,13 +2113,13 @@ Copy128:
 	endr
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Mass fill 128 bytes
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d1.l - Value to fill with
 ;	a1.l - Pointer to destination buffer
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Fill128:
 	rept	32
@@ -3386,9 +2127,9 @@ Fill128:
 	endr
 	rts
 	
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Wait for a graphics operation to be over
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 WaitGfxOperation:
 	move.b	#1,gfxOpFlag			; Set flag
@@ -3399,16 +2140,18 @@ WaitGfxOperation:
 	bne.s	.Wait				; If not, wait
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Wait for the Main CPU to start an update
+; -------------------------------------------------------------------------
 
-sub_12BC2:
-	tst.w	GACOMCMD2.w
-	bne.s	sub_12BC2
+WaitUpdateStart:
+	tst.w	GACOMCMD2.w			; Should we start the update?
+	bne.s	WaitUpdateStart			; If not, wait
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Give Main CPU Word RAM access
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 GiveWordRAMAccess:
 	btst	#0,GAMEMMODE.w			; Do we have Word RAM access?
@@ -3420,61 +2163,71 @@ GiveWordRAMAccess:
 .End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Wait for Word RAM access
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 WaitWordRAMAccess:
 	btst	#1,GAMEMMODE.w			; Do we have Word RAM access?
 	beq.s	WaitWordRAMAccess		; If not, wait
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Load stamp map
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - Destination address
+;	d1.w - Width (minus 1)
+;	d2.w - Height (minus 1)
+; -------------------------------------------------------------------------
 
 LoadStampMap:
-	move.l	#$100,d4
+	move.l	#$100,d4			; Row delta
 
-.Row:	
-	movea.l	d0,a2
-	move.w	d1,d3
+.Row:
+	movea.l	d0,a2				; Set row address
+	move.w	d1,d3				; Get width
 
-.Stamp:	
-	move.w	(a1)+,d5
+.Stamp:
+	move.w	(a1)+,d5			; Write stamp ID
 	lsl.w	#2,d5
 	move.w	d5,(a2)+
-	dbf	d3,.Stamp
-	add.l	d4,d0
-	dbf	d2,.Row
+	dbf	d3,.Stamp			; Loop until row is written
+
+	add.l	d4,d0				; Next row
+	dbf	d2,.Row				; Loop until stamp map is written
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
+; Play FM sound
+; -------------------------------------------------------------------------
 
 PlayFMSound:
-	tst.b	subSndQueue1
-	bne.s	.CheckQueue2
-	move.b	d0,subSndQueue1
+	tst.b	subSndQueue1			; Is queue 1 full?
+	bne.s	.CheckQueue2			; If so, branch
+	move.b	d0,subSndQueue1			; Set ID in queue 1
 	bra.s	.End
 
 .CheckQueue2:
-	tst.b	subSndQueue2
-	bne.s	.CheckQueue3
-	move.b	d0,subSndQueue2
+	tst.b	subSndQueue2			; Is queue 2 full?
+	bne.s	.CheckQueue3			; If so, branch
+	move.b	d0,subSndQueue2			; Set ID in queue 2
 	bra.s	.End
 
 .CheckQueue3:
-	tst.b	subSndQueue3
-	bne.s	.End
-	move.b	d0,subSndQueue3
+	tst.b	subSndQueue3			; Is queue 3 full?
+	bne.s	.End				; If so, branch
+	move.b	d0,subSndQueue3			; Set ID in queue 3
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Get a random number
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; RETURNS:
 ;	d0.l - Random number
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Random:
 	move.l	d1,-(sp)
@@ -3497,9 +2250,9 @@ Random:
 	move.l	(sp)+,d1
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Initialize 3D sprite positioning
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Init3DSpritePos:
 	lea	gfxVars,a6			; Graphics operations variables
@@ -3515,12 +2268,12 @@ Init3DSpritePos:
 	move.w	d0,gfxYsFOV(a6)
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Map 3D position to sprite position
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a0.l - Pointer to object slot
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 Set3DSpritePos:
 	lea	sonicObject,a5			; Sonic object
@@ -3569,9 +2322,9 @@ Set3DSpritePos:
 	move.w	d3,oSprY(a0)
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Generate trace table
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 GenGfxTraceTbl:
 	lea	WORDRAM2M+TRACETBL,a5		; Trace table buffer
@@ -3659,7 +2412,7 @@ GenGfxTraceTbl:
 	
 	move.w	#IMGHEIGHT-3-1,d7		; Number of lines
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 .GenLoop:
 	; X point = -(line * cos(pitch) * sin(yaw)) + (FOV * sin(pitch) * sin(yaw))
@@ -3733,9 +2486,9 @@ GenGfxTraceTbl:
 	dbf	d7,.GenLoop			; Loop until entire table is generated
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Initialize graphics operation
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 InitGfxOperation:
 	lea	gfxVars,a1			; Graphics operations variables
@@ -3750,9 +2503,9 @@ InitGfxOperation:
 	move.w	#-$40,gfxCenter(a1)		; Set center point
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Get graphics operation sines
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 GetGfxSines:
 	lea	gfxVars,a6			; Graphics operations variables
@@ -3785,9 +2538,9 @@ GetGfxSines:
 
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Run graphics operation
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 RunGfxOperation:
 	bsr.w	GenGfxTraceTbl			; Generate trace table
@@ -3797,14 +2550,14 @@ RunGfxOperation:
 	move.w	#TRACETBL/4,GAIMGTRACE.w	; Set trace table and start operation
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; Get sine or cosine of a value
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d3.w - Value
 ; RETURNS:
 ;	d3.w - Sine/cosine of value
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 GetCosine:
 	addi.w	#$80,d3				; Offset value for cosine
@@ -3829,7 +2582,7 @@ GetSine:
 	move.w	d4,d3				; Set final value
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 SineTable:
 	dc.w	$0000, $0003, $0006, $0009, $000C, $000F, $0012, $0016
@@ -3849,1261 +2602,11 @@ SineTable:
 	dc.w	$00FB, $00FB, $00FC, $00FC, $00FD, $00FD, $00FE, $00FE
 	dc.w	$00FE, $00FF, $00FF, $00FF, $00FF, $00FF, $00FF, $0100
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
-ObjSonic_Index:
-	dc.w	ObjSonic_Init-ObjSonic_Index
-	dc.w	ObjSonic_Normal-ObjSonic_Index
-	dc.w	ObjSonic_Jump-ObjSonic_Index
-	dc.w	ObjSonic_Float-ObjSonic_Index
-	dc.w	ObjSonic_Bumped-ObjSonic_Index
-	dc.w	ObjSonic_Unk-ObjSonic_Index
-	dc.w	ObjSonic_Unk2-ObjSonic_Index
-	dc.w	ObjSonic_Hurt-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone1-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone2-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone3-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone4-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone5-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone6-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone7-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone8-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone9-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone10-ObjSonic_Index
-	dc.w	ObjSonic_GotTimeStone11-ObjSonic_Index
-	dc.w	ObjSonic_Boosted-ObjSonic_Index
-	dc.w	ObjSonic_Start1-ObjSonic_Index
-	dc.w	ObjSonic_Start2-ObjSonic_Index
-	dc.w	ObjSonic_Start3-ObjSonic_Index
-	dc.w	ObjSonic_Start4-ObjSonic_Index
+	include	"Special Stage/Objects/Sonic/Main.asm"
 
-; ---------------------------------------------------------------------------
-
-ObjSonic:
-	move.w	ctrlData.w,d0
-	cmp.w	ctrlData.w,d0
-	bne.s	ObjSonic
-	move.w	d0,playerCtrlData
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	add.w	d0,d0
-	move.w	ObjSonic_Index(pc,d0.w),d0
-	bsr.w	ObjSonic_HandleSpeed
-	bclr	#5,oFlags(a0)
-	bclr	#2,oFlags(a0)
-	move.w	#$A00,oPlayerTopSpeed(a0)
-	jsr	ObjSonic_Index(pc,d0.w)
-	btst	#3,oFlags(a0)
-	bne.s	.CheckRightBound
-	btst	#7,oFlags(a0)
-	bne.s	.NoStampCol
-	btst	#6,oFlags(a0)
-	bne.s	.NoStampCol
-	tst.b	stageWon
-	bne.s	.NoStampCol
-	bsr.w	ObjSonic_GetStamps
-	bsr.w	ObjSonic_StampCollide
-
-.NoStampCol:
-	btst	#5,oFlags(a0)
-	bne.s	.CheckLeftBound
-	bsr.w	ObjSonic_MoveDown
-
-.CheckLeftBound:
-	cmpi.w	#$340,oX(a0)
-	bcc.s	.CheckRightBound
-	move.w	#$340,oX(a0)
-
-.CheckRightBound:
-	cmpi.w	#$CC0,oX(a0)
-	bcs.s	.CheckTopBound
-	move.w	#$CC0,oX(a0)
-
-.CheckTopBound:
-	cmpi.w	#$340,oY(a0)
-	bcc.s	.CheckBottomBound
-	move.w	#$340,oY(a0)
-
-.CheckBottomBound:
-	cmpi.w	#$CC0,oY(a0)
-	bcs.s	.SetPosition
-	move.w	#$CC0,oY(a0)
-
-.SetPosition:
-	lea	gfxVars,a1
-	move.w	oX(a0),gfxCamX(a1)
-	move.w	oY(a0),gfxCamY(a1)
-	move.w	oZ(a0),gfxCamZ(a1)
-	move.w	oPlayerPitch(a0),gfxPitch(a1)
-	move.w	oPlayerYaw(a0),gfxYaw(a1)
-	cmpi.b	#7,oRoutine(a0)
-	beq.s	.Draw
-	cmpi.b	#$13,oRoutine(a0)
-	beq.s	.Draw
-	bsr.w	ObjSonic_Tilt
-	bsr.w	ObjSonic_Animate
-
-.Draw:	
-	bsr.w	DrawObject
-	bsr.w	ObjSonic_LoadArt
-	move.b	#0,oPlayerUFOCol(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Init:
-	move.w	#$85E0,oTile(a0)
-	move.l	#Ani_Sonic,oAnimData(a0)
-	move.w	#$100,oSprX(a0)
-	move.w	#$158,oSprY(a0)
-	moveq	#9,d0
-	bsr.w	ResetObjAnim
-	move.b	#$14,oRoutine(a0)
-	move.w	#0,oPlayerSpeed(a0)
-	bsr.w	ObjSonic_GetStartPos
-	move.w	#$160,oZ(a0)
-	move.w	#$80,oTimer(a0)
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Start1:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Start2:
-	moveq	#$2C,d0
-	bsr.w	ResetObjAnim
-	move.b	#$16,oRoutine(a0)
-	move.b	#5,oPlayerTimer(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Start3:
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	.End
-	moveq	#$A,d0
-	bsr.w	ResetObjAnim
-	move.b	#$17,oRoutine(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Start4:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Normal:
-	bsr.w	ObjSonic_Rotate
-	bsr.w	ObjSonic_CheckJump
-	bsr.w	ObjSonic_CheckWin
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Jump:
-	move.l	oSprY(a0),d0
-	add.l	oPlayerSprYVel(a0),d0
-	move.l	d0,oSprY(a0)
-	if REGION<>EUROPE
-		addi.l	#$A000,oPlayerSprYVel(a0)
-	else
-		addi.l	#$C000,oPlayerSprYVel(a0)
-	endif
-	tst.w	(jumpTimer).l
-	beq.s	.CheckLand
-	if REGION<>EUROPE
-		addi.l	#$A000,oPlayerSprYVel(a0)
-	else
-		addi.l	#$C000,oPlayerSprYVel(a0)
-	endif
-	subq.w	#1,(jumpTimer).l
-	move.b	(playerCtrlData).l,d0
-	andi.b	#$70,d0
-	beq.s	.CheckLand
-	if REGION<>EUROPE
-		subi.l	#$A000,oPlayerSprYVel(a0)
-	else
-		subi.l	#$C000,oPlayerSprYVel(a0)
-	endif
-
-.CheckLand:
-	cmpi.w	#$158,oSprY(a0)
-	bcs.s	.NotLanded
-	move.b	#1,oRoutine(a0)
-	move.l	#$1580000,oSprY(a0)
-	move.l	#0,oPlayerSprYVel(a0)
-	bclr	#7,oFlags(a0)
-	move.w	#$160,oZ(a0)
-
-.NotLanded:
-	bsr.w	ObjSonic_Rotate
-	move.w	#$158,d0
-	sub.w	oSprY(a0),d0
-	lsl.w	#2,d0
-	addi.w	#$160,d0
-	move.w	d0,oZ(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Float:
-	move.l	oSprY(a0),d0
-	add.l	oPlayerSprYVel(a0),d0
-	move.l	d0,oSprY(a0)
-	if REGION<>EUROPE
-		addi.l	#$2000,oPlayerSprYVel(a0)
-	else
-		addi.l	#$2666,oPlayerSprYVel(a0)
-	endif
-	cmpi.w	#$158,oSprY(a0)
-	bcs.s	.NotLanded
-	move.b	#1,oRoutine(a0)
-	move.l	#$1580000,oSprY(a0)
-	move.l	#0,oPlayerSprYVel(a0)
-	bclr	#6,oFlags(a0)
-	move.w	#$160,oZ(a0)
-
-.NotLanded:
-	bsr.w	ObjSonic_Rotate
-	move.w	#$158,d0
-	sub.w	oSprY(a0),d0
-	lsl.w	#2,d0
-	addi.w	#$160,d0
-	move.w	d0,oZ(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Bumped:
-	subq.w	#1,oVar16(a0)
-	bne.s	loc_132DC
-	move.b	#1,oRoutine(a0)
-	move.l	#0,oXVel(a0)
-	move.l	#0,oYVel(a0)
-	bra.s	loc_132EC
-; ---------------------------------------------------------------------------
-
-loc_132DC:
-	move.l	oXVel(a0),d0
-	add.l	d0,oX(a0)
-	move.l	oYVel(a0),d0
-	add.l	d0,oY(a0)
-
-loc_132EC:
-	bsr.w	ObjSonic_Rotate
-	bsr.w	ObjSonic_CheckJump
-	bsr.w	ObjSonic_CheckWin
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Unk:
-	addq.w	#4,oSprY(a0)
-	cmpi.w	#$1C0,oSprY(a0)
-	bcs.s	.End
-	move.b	#6,oRoutine(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Unk2:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Hurt:
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	.End
-	move.b	#1,oRoutine(a0)
-	moveq	#0,d0
-	bsr.w	ResetObjAnim
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone1:
-	cmpi.w	#$158,oSprY(a0)
-	bcs.s	loc_1334E
-	move.b	#60,oPlayerTimer(a0)
-	moveq	#$A,d0
-	bsr.w	ResetObjAnim
-	move.b	#9,oRoutine(a0)
-	move.b	#1,stageWon
-	move.w	#0,oPlayerSpeed(a0)
-	rts
-	
-; ---------------------------------------------------------------------------
-
-loc_1334E:
-	bsr.w	ObjSonic_Rotate
-	bsr.w	ObjSonic_CheckJump
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone2:
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	.End
-	move.b	#$E,(timeStoneObject+oID).l
-	move.b	#$F,(sparkleObject1+oID).l
-	move.b	#$10,(sparkleObject2+oID).l
-	move.b	#$A,oRoutine(a0)
-	move.b	#6,oPlayerTimer(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone3:
-	bset	#2,(subScrollFlags).l
-	subq.w	#8,oPlayerYaw(a0)
-	andi.w	#$1FF,oPlayerYaw(a0)
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	.End
-	move.b	#$B,oRoutine(a0)
-	move.b	#4,oPlayerTimer(a0)
-	moveq	#$24,d0
-	bsr.w	ResetObjAnim
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone4:
-	bset	#2,(subScrollFlags).l
-	subq.w	#8,oPlayerYaw(a0)
-	andi.w	#$1FF,oPlayerYaw(a0)
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	.End
-	move.b	#$C,oRoutine(a0)
-	move.b	#5,oPlayerTimer(a0)
-	moveq	#$25,d0
-	bsr.w	ResetObjAnim
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone5:
-	bset	#2,(subScrollFlags).l
-	subq.w	#8,oPlayerYaw(a0)
-	andi.w	#$1FF,oPlayerYaw(a0)
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	.End
-	move.b	#$D,oRoutine(a0)
-	move.b	#4,oPlayerTimer(a0)
-	moveq	#$26,d0
-	bsr.w	ResetObjAnim
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone6:
-	bset	#2,(subScrollFlags).l
-	subq.w	#8,oPlayerYaw(a0)
-	andi.w	#$1FF,oPlayerYaw(a0)
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	.End
-	move.b	#$E,oRoutine(a0)
-	move.b	#5,oPlayerTimer(a0)
-	moveq	#$27,d0
-	bsr.w	ResetObjAnim
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone7:
-	bset	#2,(subScrollFlags).l
-	subq.w	#8,oPlayerYaw(a0)
-	andi.w	#$1FF,oPlayerYaw(a0)
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	.End
-	move.b	#$F,oRoutine(a0)
-	move.b	#4,oPlayerTimer(a0)
-	moveq	#$28,d0
-	bsr.w	ResetObjAnim
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone8:
-	bset	#2,(subScrollFlags).l
-	subq.w	#8,oPlayerYaw(a0)
-	andi.w	#$1FF,oPlayerYaw(a0)
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	.End
-	move.b	#$10,oRoutine(a0)
-	move.b	#5,oPlayerTimer(a0)
-	moveq	#$29,d0
-	bsr.w	ResetObjAnim
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone9:
-	bset	#2,(subScrollFlags).l
-	subq.w	#8,oPlayerYaw(a0)
-	andi.w	#$1FF,oPlayerYaw(a0)
-	subq.b	#1,oPlayerTimer(a0)
-	bne.s	ObjSonic_GotTimeStone10
-	move.b	#$11,oRoutine(a0)
-	moveq	#$2A,d0
-	bsr.w	ResetObjAnim
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone10:
-
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GotTimeStone11:
-	moveq	#$2B,d0
-	bsr.w	ResetObjAnim
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Boosted:
-	subq.w	#1,oVar16(a0)
-	bne.s	.Move
-	move.b	#1,oRoutine(a0)
-	move.l	#0,oXVel(a0)
-	move.l	#0,oYVel(a0)
-	moveq	#0,d0
-	bsr.w	ResetObjAnim
-	bra.s	.Done
-; ---------------------------------------------------------------------------
-
-.Move:	
-	move.l	oXVel(a0),d0
-	add.l	d0,oX(a0)
-	move.l	oYVel(a0),d0
-	add.l	d0,oY(a0)
-
-.Done:	
-	bsr.w	ObjSonic_Rotate
-	bsr.w	ObjSonic_CheckJump
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_GetStartPos:
-	moveq	#0,d0
-	move.b	specStageID.w,d0
-	mulu.w	#6,d0
-	move.w	ObjSonic_StartPos(pc,d0.w),oX(a0)
-	move.w	ObjSonic_StartPos+2(pc,d0.w),oY(a0)
-	move.w	ObjSonic_StartPos+4(pc,d0.w),oPlayerYaw(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-ObjSonic_StartPos:
-	dc.w	$540, $520, $80
-	dc.w	$500, $500, $80
-	dc.w	$500, $500, $80
-	dc.w	$500, $500, $80
-	dc.w	$500, $500, $80
-	dc.w	$4C0, $4C0, $80
-	dc.w	$500, $500, $80
-	dc.w	$400, $480, $80
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_CheckWin:
-	tst.b	ufoCount.w
-	bne.s	.End
-	move.b	#8,(sonicObject+oRoutine).l
-	lea	(timeUFOObject).l,a6
-	bsr.s	.DeleteUFO
-	lea	(timeUFOShadObj).l,a6
-
-; ---------------------------------------------------------------------------
-
-.DeleteUFO:
-	tst.b	(a6)
-	beq.s	.End
-	bset	#0,oFlags(a6)
-
-.End:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_StampCollide:
-	bsr.w	ObjSonic_CheckBumper
-	tst.b	ufoCount.w
-	beq.s	ObjSonic_TouchPath
-	move.b	oPlayerStampC(a0),d0
-	cmpi.b	#$A,d0
-	bcs.s	.Handle
-	moveq	#0,d0
-
-.Handle:
-	ext.w	d0
-	add.w	d0,d0
-	move.w	off_13590(pc,d0.w),d0
-	jmp	off_13590(pc,d0.w)
-; ---------------------------------------------------------------------------
-off_13590:
-	dc.w	ObjSonic_TouchPath-off_13590
-	dc.w	ObjSonic_TouchPath-off_13590
-	dc.w	ObjSonic_TouchFan-off_13590
-	dc.w	ObjSonic_TouchWater-off_13590
-	dc.w	ObjSonic_TouchRough-off_13590
-	dc.w	ObjSonic_TouchSpring-off_13590
-	dc.w	ObjSonic_TouchHazard-off_13590
-	dc.w	ObjSonic_TouchBigBooster-off_13590
-	dc.w	ObjSonic_TouchSmallBooster-off_13590
-	dc.w	ObjSonic_TouchPath-off_13590
-; ---------------------------------------------------------------------------
-
-ObjSonic_TouchPath:
-
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_TouchFan:
-	move.b	#3,oRoutine(a0)
-	if REGION<>EUROPE
-		move.l	#-$40000,oPlayerSprYVel(a0)
-	else
-		move.l	#-$48000,oPlayerSprYVel(a0)
-	endif
-	bset	#6,oFlags(a0)
-	move.b	#$B8,d0
-	bsr.w	PlayFMSound
-	bsr.w	DeleteSplash
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_TouchWater:
-	tst.b	(timeStopped).l
-	bne.s	.End
-	move.b	#8,(splashObject+oID).l
-	btst	#1,specStageFlags.w
-	beq.s	.End
-	move.w	#$500,oPlayerTopSpeed(a0)
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_TouchRough:
-	if REGION<>EUROPE
-		move.w	#$500,oPlayerTopSpeed(a0)
-	else
-		move.w	#$600,oPlayerTopSpeed(a0)
-	endif
-	cmpi.w	#$100,oPlayerSpeed(a0)
-	bcs.s	.End
-	bsr.w	FindDustObjSlot
-	bne.s	.PlaySound
-	move.b	#7,(a1)
-
-.PlaySound:
-	move.b	#$D6,d0
-	bsr.w	PlayFMSound
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_TouchSpring:
-	move.b	#2,oRoutine(a0)
-	if REGION<>EUROPE
-		move.l	#-$100000,oPlayerSprYVel(a0)
-	else
-		move.l	#-$120000,oPlayerSprYVel(a0)
-	endif
-	bset	#7,oFlags(a0)
-	move.b	#$98,d0
-	bsr.w	PlayFMSound
-	bsr.w	DeleteSplash
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_TouchHazard:
-	cmpi.b	#4,oRoutine(a0)
-	beq.w	.End
-	cmpi.b	#7,oRoutine(a0)
-	beq.w	.End
-	move.b	#$2E,oPlayerTimer(a0)
-	move.b	#7,oRoutine(a0)
-	moveq	#$D,d0
-	bsr.w	ResetObjAnim
-	move.w	specStageRings.w,d0
-	move.w	d0,d1
-	lsr.w	#1,d0
-	move.w	d0,specStageRings.w
-	sub.w	d0,d1
-	tst.w	d1
-	beq.s	.End
-	cmpi.w	#1,d1
-	beq.s	.Lose1Ring
-	cmpi.w	#2,d1
-	beq.s	.Lose2Rings
-	cmpi.w	#3,d1
-	beq.s	.Lose3Rings
-	cmpi.w	#4,d1
-	beq.s	.Lose4Rings
-	cmpi.w	#5,d1
-	beq.s	.Lose5Rings
-	cmpi.w	#6,d1
-	beq.s	.Lose6Rings
-	
-.Lose7Rings:
-	move.b	#$D,(ringObject1+oID).l
-
-.Lose6Rings:
-	move.b	#$D,(ringObject2+oID).l
-
-.Lose5Rings:
-	move.b	#$D,(ringObject3+oID).l
-
-.Lose4Rings:
-	move.b	#$D,(ringObject4+oID).l
-
-.Lose3Rings:
-	move.b	#$D,(ringObject5+oID).l
-
-.Lose2Rings:
-	move.b	#$D,(ringObject6+oID).l
-
-.Lose1Ring:
-	move.b	#$D,(ringObject7+oID).l
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_TouchBigBooster:
-	move.b	#$CE,d0
-	bsr.w	PlayFMSound
-	moveq	#$E,d0
-	bsr.w	ResetObjAnim
-	moveq	#0,d0
-	move.b	oPlayerStampOri(a0),d0
-	andi.w	#$E,d0
-	move.w	off_136E2(pc,d0.w),d0
-	jmp	off_136E2(pc,d0.w)
-
-; ---------------------------------------------------------------------------
-off_136E2:
-	dc.w	ObjSonic_BigBoostUp-off_136E2
-	dc.w	ObjSonic_BigBoostLeft-off_136E2
-	dc.w	ObjSonic_BigBoostDown-off_136E2
-	dc.w	ObjSonic_BigBoostRight-off_136E2
-	dc.w	ObjSonic_BigBoostUp-off_136E2
-	dc.w	ObjSonic_BigBoostRight-off_136E2
-	dc.w	ObjSonic_BigBoostDown-off_136E2
-	dc.w	ObjSonic_BigBoostLeft-off_136E2
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BigBoostUp:
-	moveq	#0,d0
-	move.w	#-$18,d1
-	bra.s	ObjSonic_BigBoost
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BigBoostLeft:
-	move.w	#-$18,d0
-	moveq	#0,d1
-	bra.s	ObjSonic_BigBoost
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BigBoostDown:
-	moveq	#0,d0
-	moveq	#$18,d1
-	bra.s	ObjSonic_BigBoost
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BigBoostRight:
-	moveq	#$18,d0
-	moveq	#0,d1
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BigBoost:
-	move.w	d0,oXVel(a0)
-	move.w	d1,oYVel(a0)
-	move.w	#$14,oVar16(a0)
-	move.b	#$13,oRoutine(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_TouchSmallBooster:
-	move.b	#$C3,d0
-	bsr.w	PlayFMSound
-	moveq	#0,d0
-	move.b	oPlayerStampOri(a0),d0
-	andi.w	#$E,d0
-	move.w	off_1373C(pc,d0.w),d0
-	jmp	off_1373C(pc,d0.w)
-
-; ---------------------------------------------------------------------------
-off_1373C:
-	dc.w	ObjSonic_SmallBoostUp-off_1373C
-	dc.w	ObjSonic_SmallBoostLeft-off_1373C
-	dc.w	ObjSonic_SmallBoostDown-off_1373C
-	dc.w	ObjSonic_SmallBoostRight-off_1373C
-	dc.w	ObjSonic_SmallBoostUp-off_1373C
-	dc.w	ObjSonic_SmallBoostRight-off_1373C
-	dc.w	ObjSonic_SmallBoostDown-off_1373C
-	dc.w	ObjSonic_SmallBoostLeft-off_1373C
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_SmallBoostUp:
-	moveq	#0,d0
-	move.w	#-$10,d1
-	bra.s	ObjSonic_SmallBoost
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_SmallBoostLeft:
-	move.w	#-$10,d0
-	moveq	#0,d1
-	bra.s	ObjSonic_SmallBoost
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_SmallBoostDown:
-	moveq	#0,d0
-	moveq	#$10,d1
-	bra.s	ObjSonic_SmallBoost
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_SmallBoostRight:
-	moveq	#$10,d0
-	moveq	#0,d1
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_SmallBoost:
-	move.w	d0,oXVel(a0)
-	move.w	d1,oYVel(a0)
-	move.w	#8,oVar16(a0)
-	move.b	#4,oRoutine(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_CheckBumper:
-	moveq	#0,d1
-	move.w	oPlayerSpeed(a0),d1
-	lsl.l	#8,d1
-	addi.l	#$20000,d1
-	move.l	d1,d2
-	neg.l	d2
-	moveq	#0,d3
-	moveq	#0,d0
-	cmpi.b	#1,oPlayerStampTL(a0)
-	bne.s	.CheckTopRight
-	bset	#0,d0
-
-.CheckTopRight:
-	cmpi.b	#1,oPlayerStampTR(a0)
-	bne.s	.CheckBottomRight
-	bset	#1,d0
-
-.CheckBottomRight:
-	cmpi.b	#1,oPlayerStampBR(a0)
-	bne.s	.CheckBottomLeft
-	bset	#2,d0
-
-.CheckBottomLeft:
-	cmpi.b	#1,oPlayerStampBL(a0)
-	bne.s	.Handle
-	bset	#3,d0
-
-.Handle:
-	add.w	d0,d0
-	move.w	off_137CC(pc,d0.w),d0
-	jmp	off_137CC(pc,d0.w)
-
-; ---------------------------------------------------------------------------
-off_137CC:
-	dc.w	ObjSonic_BumpEnd-off_137CC
-	dc.w	ObjSonic_BumpDownRight-off_137CC
-	dc.w	ObjSonic_BumpDownLeft-off_137CC
-	dc.w	ObjSonic_BumpDown-off_137CC
-	dc.w	ObjSonic_BumpUpLeft-off_137CC
-	dc.w	ObjSonic_BumpUpRight-off_137CC
-	dc.w	ObjSonic_BumpLeft-off_137CC
-	dc.w	ObjSonic_BumpDownLeft-off_137CC
-	dc.w	ObjSonic_BumpUpRight-off_137CC
-	dc.w	ObjSonic_BumpRight-off_137CC
-	dc.w	ObjSonic_BumpUpLeft-off_137CC
-	dc.w	ObjSonic_BumpDownRight-off_137CC
-	dc.w	ObjSonic_BumpUp-off_137CC
-	dc.w	ObjSonic_BumpUpRight-off_137CC
-	dc.w	ObjSonic_BumpUpLeft-off_137CC
-	dc.w	ObjSonic_BumpUpLeft-off_137CC
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BumpDownRight:
-	move.l	d1,oXVel(a0)
-	move.l	d1,oYVel(a0)
-	bra.s	ObjSonic_Bump
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BumpDownLeft:
-	move.l	d2,oXVel(a0)
-	move.l	d1,oYVel(a0)
-	bra.s	ObjSonic_Bump
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BumpDown:
-	move.l	d3,oXVel(a0)
-	move.l	d1,oYVel(a0)
-	bra.s	ObjSonic_Bump
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BumpUpLeft:
-	move.l	d2,oXVel(a0)
-	move.l	d2,oYVel(a0)
-	bra.s	ObjSonic_Bump
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BumpUpRight:
-	move.l	d1,oXVel(a0)
-	move.l	d2,oYVel(a0)
-	bra.s	ObjSonic_Bump
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BumpLeft:
-	move.l	d2,oXVel(a0)
-	move.l	d3,oYVel(a0)
-	bra.s	ObjSonic_Bump
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BumpRight:
-	move.l	d1,oXVel(a0)
-	move.l	d3,oYVel(a0)
-	bra.s	ObjSonic_Bump
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_BumpUp:
-	move.l	d3,oXVel(a0)
-	move.l	d2,oYVel(a0)
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Bump:
-	move.w	#$10,oVar16(a0)
-	move.b	#4,oRoutine(a0)
-	bset	#5,oFlags(a0)
-	move.b	#$B5,d0
-	bsr.w	PlayFMSound
-	moveq	#0,d0
-	bsr.w	ResetObjAnim
-
-ObjSonic_BumpEnd:
-	rts
-
-; ---------------------------------------------------------------------------
-
-FindDustObjSlot:
-	lea	dustObject1,a1
-	moveq	#7,d7
-
-.Find:	
-	tst.w	(a1)
-	beq.s	.End
-	adda.w	#$80,a1
-	dbf	d7,.Find
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_CheckJump:
-	tst.b	stageWon
-	bne.s	.End
-	move.b	(playerCtrlData+1).l,d0
-	andi.b	#$70,d0
-	beq.s	.End
-	move.b	#2,oRoutine(a0)
-	if REGION<>EUROPE
-		move.l	#-$80000,oPlayerSprYVel(a0)
-	else
-		move.l	#-$90000,oPlayerSprYVel(a0)
-	endif
-	move.w	#$14,(jumpTimer).l
-	bset	#7,oFlags(a0)
-	move.w	#0,oVar16(a0)
-	move.b	#$92,d0
-	bsr.w	PlayFMSound
-	bsr.w	DeleteSplash
-
-.End:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Rotate:
-	tst.b	stageWon
-	bne.s	.End
-	if REGION<>EUROPE
-		move.l	#$60000,d0
-	else
-		move.l	#$73333,d0
-	endif
-	btst	#3,(playerCtrlData).l
-	beq.s	.CheckLeft
-	sub.l	d0,oPlayerYaw(a0)
-	andi.l	#$1FFFFFF,oPlayerYaw(a0)
-	bset	#3,(subScrollFlags).l
-
-.CheckLeft:
-	btst	#2,(playerCtrlData).l
-	beq.s	.End
-	add.l	d0,oPlayerYaw(a0)
-	andi.l	#$1FFFFFF,oPlayerYaw(a0)
-	bset	#2,(subScrollFlags).l
-
-.End:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_RotateSlow:
-	if REGION<>EUROPE
-		move.l	#$40000,d0
-	else
-		move.l	#$4CCCC,d0
-	endif
-	btst	#3,(playerCtrlData).l
-	beq.s	.CheckLeft
-	sub.l	d0,oPlayerYaw(a0)
-	andi.l	#$1FFFFFF,oPlayerYaw(a0)
-	bset	#3,(subScrollFlags).l
-
-.CheckLeft:
-	btst	#2,(playerCtrlData).l
-	beq.s	.End
-	add.l	d0,oPlayerYaw(a0)
-	andi.l	#$1FFFFFF,oPlayerYaw(a0)
-	bset	#2,(subScrollFlags).l
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_HandleSpeed:
-	tst.b	stageWon
-	bne.s	.End
-	move.b	(playerCtrlData).l,d1
-	andi.b	#$F,d1
-	cmpi.b	#2,d1
-	beq.s	.Decelerate
-	tst.w	oPlayerShoeTime(a0)
-	beq.s	.NoSpeedShoes
-	subq.w	#1,oPlayerShoeTime(a0)
-	if REGION<>EUROPE
-		move.w	#$E00,d7
-	else
-		move.w	#$10CC,d7
-	endif
-	bra.s	.Accelerate
-; ---------------------------------------------------------------------------
-
-.NoSpeedShoes:
-	cmpi.b	#7,oRoutine(a0)
-	bne.s	.NotHurt
-	if REGION<>EUROPE
-		move.w	#$200,d7
-	else
-		move.w	#$266,d7
-	endif
-	bra.s	.Accelerate
-; ---------------------------------------------------------------------------
-
-.NotHurt:
-	move.w	oPlayerTopSpeed(a0),d7
-
-.Accelerate:
-	if REGION<>EUROPE
-		addi.w	#$20,oPlayerSpeed(a0)
-	else
-		addi.w	#$26,oPlayerSpeed(a0)
-	endif
-	cmp.w	oPlayerSpeed(a0),d7
-	bcc.s	.End
-	move.w	d7,oPlayerSpeed(a0)
-	rts
-	
-; ---------------------------------------------------------------------------
-
-.Decelerate:
-	if REGION<>EUROPE
-		subi.w	#$40,oPlayerSpeed(a0)
-	else
-		subi.w	#$4C,oPlayerSpeed(a0)
-	endif
-	cmpi.w	#$200,oPlayerSpeed(a0)
-	bge.s	.End
-	move.w	#$200,oPlayerSpeed(a0)
-
-.End:
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_MoveDown:
-	move.w	oPlayerYaw(a0),d0
-	addi.w	#$180,d0
-	andi.w	#$1FF,d0
-	move.w	d0,d3
-	bsr.w	GetCosine
-	if REGION<>EUROPE
-		muls.w	oPlayerSpeed(a0),d3
-	else
-		move.w	oPlayerSpeed(a0),d5
-		muls.w	#60,d5
-		divs.w	#50,d5
-		muls.w	d5,d3
-	endif
-	add.l	d3,oX(a0)
-	andi.l	#$FFFFFFF,oX(a0)
-	move.w	d0,d3
-	bsr.w	GetSine
-	if REGION<>EUROPE
-		muls.w	oPlayerSpeed(a0),d3
-	else
-		muls.w	d5,d3
-	endif
-	add.l	d3,oY(a0)
-	andi.l	#$FFFFFFF,oY(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_MoveUp:
-	move.w	oPlayerYaw(a0),d0
-	addi.w	#$80,d0
-	andi.w	#$1FF,d0
-	bra.s	ObjSonic_Move
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_MoveRight:
-	move.w	oPlayerYaw(a0),d0
-	addi.w	#0,d0
-	andi.w	#$1FF,d0
-	bra.s	ObjSonic_Move
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_MoveLeft:
-	move.w	oPlayerYaw(a0),d0
-	addi.w	#$100,d0
-	andi.w	#$1FF,d0
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Move:
-	move.w	d0,d3
-	bsr.w	GetCosine
-	if REGION<>EUROPE
-		muls.w	oVar16(a0),d3
-	else
-		move.w	oVar16(a0),d5
-		muls.w	#60,d5
-		divs.w	#50,d5
-		muls.w	d5,d3
-	endif
-	add.l	d3,oX(a0)
-	andi.l	#$FFFFFFF,oX(a0)
-	move.w	d0,d3
-	bsr.w	GetSine
-	if REGION<>EUROPE
-		muls.w	oVar16(a0),d3
-	else
-		muls.w	d5,d3
-	endif
-	add.l	d3,oY(a0)
-	andi.l	#$FFFFFFF,oY(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Tilt:
-	btst	#2,(playerCtrlData).l
-	beq.s	.CheckRight
-	subq.b	#1,oPlayerTilt(a0)
-	bpl.s	.EndLeft
-	move.b	#0,oPlayerTilt(a0)
-
-.EndLeft:
-	rts
-	
-; ---------------------------------------------------------------------------
-
-.CheckRight:
-	btst	#3,(playerCtrlData).l
-	beq.s	.Untilt
-	addq.b	#1,oPlayerTilt(a0)
-	cmpi.b	#$A,oPlayerTilt(a0)
-	bcs.s	.EndRight
-	move.b	#9,oPlayerTilt(a0)
-
-.EndRight:
-	rts
-	
-; ---------------------------------------------------------------------------
-
-.Untilt:
-	cmpi.b	#5,oPlayerTilt(a0)
-	bcs.s	.UntiltLeft
-
-.UntiltRight:
-	subq.b	#1,oPlayerTilt(a0)
-	cmpi.b	#5,oPlayerTilt(a0)
-	bcc.s	.UntiltLeft
-	move.b	#5,oPlayerTilt(a0)
-	rts
-	
-; ---------------------------------------------------------------------------
-
-.UntiltLeft:
-	addq.b	#1,oPlayerTilt(a0)
-	cmpi.b	#5,oPlayerTilt(a0)
-	bls.s	.UntiltLeft
-	move.b	#5,oPlayerTilt(a0)
-	rts
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_Animate:
-	tst.b	stageWon
-	bne.w	.End
-	moveq	#6,d0
-	btst	#7,oFlags(a0)
-	bne.s	.OtherAnim
-	moveq	#$B,d0
-	btst	#6,oFlags(a0)
-	bne.s	.OtherAnim
-	moveq	#$A,d0
-	move.w	oPlayerSpeed(a0),d1
-	beq.s	.OtherAnim
-	move.b	oPlayerTilt(a0),d2
-	add.w	d2,d2
-	andi.w	#$1C,d2
-	move.b	ObjSonic_Animations+3(pc,d2.w),d0
-	cmpi.w	#$300,d1
-	bcs.s	.GroundMoveAnim
-	move.b	ObjSonic_Animations+2(pc,d2.w),d0
-	cmpi.w	#$540,d1
-	bcs.s	.GroundMoveAnim
-	move.b	ObjSonic_Animations+1(pc,d2.w),d0
-	cmpi.w	#$780,d1
-	bcs.s	.GroundMoveAnim
-	move.b	ObjSonic_Animations(pc,d2.w),d0
-	cmpi.w	#$B00,d1
-	bcs.s	.GroundMoveAnim
-	move.b	#1,d0
-	bra.s	.CheckAnimReset
-; ---------------------------------------------------------------------------
-
-.OtherAnim:
-	bclr	#4,oFlags(a0)
-
-.CheckAnimReset:
-	cmp.b	oAnim(a0),d0
-	beq.s	.End
-	bsr.w	ResetObjAnim
-	rts
-	
-; ---------------------------------------------------------------------------
-
-.GroundMoveAnim:
-	bset	#4,oFlags(a0)
-	beq.s	.CheckAnimReset
-	cmp.b	oAnim(a0),d0
-	beq.s	.End
-	bsr.w	SetObjAnim
-
-.End:	
-	rts
-
-; ---------------------------------------------------------------------------
-ObjSonic_Animations:
-	dc.b	4, $19, $1A, $1B
-	dc.b	3, $16, $17, $18
-	dc.b	0, $10, $11, $12
-	dc.b	2, $13, $14, $15
-	dc.b	5, $1C, $1D, $1E
-
-; ---------------------------------------------------------------------------
-
-ObjSonic_LoadArt:
-	moveq	#0,d0
-	move.b	oArtFrame(a0),d0
-	lea	(SonicArt).l,a1
-	add.w	d0,d0
-	add.w	d0,d0
-	movea.l	(a1,d0.w),a1
-	lea	subSonicArtBuf,a2
-	move.w	#$17,d7
-
-.Copy:	
-	move.l	(a1)+,(a2)+
-	move.l	(a1)+,(a2)+
-	move.l	(a1)+,(a2)+
-	move.l	(a1)+,(a2)+
-	move.l	(a1)+,(a2)+
-	move.l	(a1)+,(a2)+
-	move.l	(a1)+,(a2)+
-	move.l	(a1)+,(a2)+
-	dbf	d7,.Copy
-	rts
-
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSplash:
 	moveq	#0,d0
@@ -5112,37 +2615,37 @@ ObjSplash:
 	move.w	ObjSplash_Index(pc,d0.w),d0
 	jsr	ObjSplash_Index(pc,d0.w)
 	bsr.w	DrawObject
-	tst.b	(timeStopped).l
+	tst.b	timeStopped
 	beq.s	.End
 	bset	#0,oFlags(a0)
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 ObjSplash_Index:
 	dc.w	ObjSplash_Init-ObjSplash_Index
 	dc.w	ObjSplash_Large-ObjSplash_Index
 	dc.w	ObjSplash_Small-ObjSplash_Index
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSplash_Init:
 	move.w	#$8582,oTile(a0)
-	move.l	#Ani_Splash,oAnimData(a0)
+	move.l	#Spr_Splash,oSprites(a0)
 	move.w	#$100,oSprX(a0)
 	move.w	#$158,oSprY(a0)
 	moveq	#0,d0
-	bsr.w	ResetObjAnim
+	bsr.w	SetObjSprite
 	move.w	#14,oTimer(a0)
 	addq.b	#1,oRoutine(a0)
 	move.b	#$A2,d0
 	bsr.w	PlayFMSound
 	btst	#1,specStageFlags.w
 	bne.s	ObjSplash_Large
-	move.b	#10,(timerSpeedUp).l
+	move.b	#10,timerSpeedUp
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSplash_Large:
 
@@ -5151,41 +2654,41 @@ ObjSplash_Large:
 	cmpi.b	#3,(sonicObject+oPlayerStampC).l
 	bne.s	ObjSplash_Delete
 	moveq	#1,d0
-	bsr.w	ResetObjAnim
+	bsr.w	SetObjSprite
 	move.b	#2,oRoutine(a0)
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSplash_Small:
 	cmpi.b	#3,(sonicObject+oPlayerStampC).l
 	bne.s	ObjSplash_Delete
-	tst.b	oAnimFrame(a0)
+	tst.b	oSpriteFrame(a0)
 	bne.s	.End
-	move.b	#2,(timerSpeedUp).l
+	move.b	#2,timerSpeedUp
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSplash_Delete:
 	bset	#0,oFlags(a0)
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 DeleteSplash:
 	tst.b	(splashObject+oID).l
 	beq.s	.End
 	bset	#0,(splashObject+oFlags).l
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjDust:
 	moveq	#0,d0
@@ -5196,20 +2699,20 @@ ObjDust:
 	bsr.w	DrawObject
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 off_13C3E:
 	dc.w	ObjDust_Init-off_13C3E
 	dc.w	ObjDust_Main-off_13C3E
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjDust_Init:
 	move.w	#$87AE,oTile(a0)
-	move.l	#Ani_Dust,oAnimData(a0)
+	move.l	#Spr_Dust,oSprites(a0)
 	move.w	#$F0,oSprX(a0)
 	move.w	#$154,oSprY(a0)
 	moveq	#0,d0
-	bsr.w	ResetObjAnim
+	bsr.w	SetObjSprite
 	move.w	#6,oTimer(a0)
 	addq.b	#1,oRoutine(a0)
 	bsr.w	Random
@@ -5226,7 +2729,7 @@ ObjDust_Init:
 	bne.s	ObjDust_Main
 	move.w	#0,oDustXVel(a0)
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjDust_Main:
 
@@ -5234,14 +2737,14 @@ ObjDust_Main:
 	bne.s	.Move
 	bset	#0,oFlags(a0)
 
-.Move:	
+.Move:
 	move.l	oDustXVel(a0),d0
 	add.l	d0,oSprX(a0)
 	subq.w	#1,oSprY(a0)
 	rts
 
-; ---------------------------------------------------------------------------
-Ani_Dust:
+; -------------------------------------------------------------------------
+Spr_Dust:
 	dc.l	unk_13CC6
 unk_13CC6:
 	dc.b	  3
@@ -5259,7 +2762,7 @@ byte_13CE8:
 	dc.b	0, 0, 0, 0, 0
 	dc.b	$FC, 0, 0, $2E, $FC
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjTimeStone:
 	moveq	#0,d0
@@ -5270,36 +2773,36 @@ ObjTimeStone:
 	bsr.w	DrawObject
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 off_13D08:
-	dc.w	ObjTimeStone_Init-off_13D08 ; CODE	XREF: ObjTimeStone+Cp
+	dc.w	ObjTimeStone_Init-off_13D08
 	dc.w	ObjTimeStone_Wait-off_13D08
 	dc.w	ObjTimeStone_Fall-off_13D08
 	dc.w	ObjTimeStone_Wait2-off_13D08
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjTimeStone_Init:
 	move.w	#$E424,oTile(a0)
-	move.l	#Ani_Sparkle,oAnimData(a0)
+	move.l	#Spr_Sparkle,oSprites(a0)
 	move.w	#$101,oSprX(a0)
 	move.w	#$70,oSprY(a0)
 	moveq	#0,d0
-	bsr.w	ResetObjAnim
+	bsr.w	SetObjSprite
 	move.w	#$1E,oTimer(a0)
 	addq.b	#1,oRoutine(a0)
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjTimeStone_Wait:
 	subq.w	#1,oTimer(a0)
 	bne.s	.End
 	addq.b	#1,oRoutine(a0)
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjTimeStone_Fall:
 	addq.w	#4,oSprY(a0)
@@ -5313,20 +2816,20 @@ ObjTimeStone_Fall:
 	move.b	#$D9,d0
 	bsr.w	PlayFMSound
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjTimeStone_Wait2:
 	subq.w	#1,oTimer(a0)
 	bne.s	.End
 	move.b	#1,gotTimeStone
 
-.End:	
+.End:
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSparkle1:
 	moveq	#0,d0
@@ -5337,21 +2840,21 @@ ObjSparkle1:
 	bsr.w	DrawObject
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 off_13DA4:
 	dc.w	ObjSparkle1_Init-off_13DA4
 	dc.w	ObjSparkle1_Main-off_13DA4
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSparkle1_Init:
 	move.w	#$E424,oTile(a0)
-	move.l	#Ani_Sparkle,oAnimData(a0)
+	move.l	#Spr_Sparkle,oSprites(a0)
 	moveq	#1,d0
-	bsr.w	ResetObjAnim
+	bsr.w	SetObjSprite
 	addq.b	#1,oRoutine(a0)
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSparkle1_Main:
 	move.w	(timeStoneObject+oSprX).l,oSprX(a0)
@@ -5359,7 +2862,7 @@ ObjSparkle1_Main:
 	subi.w	#$10,oSprY(a0)
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSparkle2:
 	moveq	#0,d0
@@ -5370,21 +2873,21 @@ ObjSparkle2:
 	bsr.w	DrawObject
 	rts
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 off_13DEE:
 	dc.w	ObjSparkle2_Init-off_13DEE
 	dc.w	ObjSparkle2_Main-off_13DEE
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSparkle2_Init:
 	move.w	#$E424,oTile(a0)
-	move.l	#Ani_Sparkle,oAnimData(a0)
+	move.l	#Spr_Sparkle,oSprites(a0)
 	moveq	#2,d0
-	bsr.w	ResetObjAnim
+	bsr.w	SetObjSprite
 	addq.b	#1,oRoutine(a0)
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 ObjSparkle2_Main:
 	move.w	(timeStoneObject+oSprX).l,oSprX(a0)
@@ -5392,8 +2895,8 @@ ObjSparkle2_Main:
 	subi.w	#$20,oSprY(a0)
 	rts
 
-; ---------------------------------------------------------------------------
-Ani_Sparkle:
+; -------------------------------------------------------------------------
+Spr_Sparkle:
 	dc.l	byte_13E2E
 	dc.l	byte_13E40
 	dc.l	byte_13E52
@@ -5472,6 +2975,11 @@ byte_13EFC:
 	incbin	"Special Stage/Stage Data.bin"
 	align	PRGRAM+$30000, $FF
 
+; -------------------------------------------------------------------------
+; Data section
+; -------------------------------------------------------------------------
+
+DataSection:
 SonicArt:
 	dc.l	byte_30118
 	dc.l	byte_30358
@@ -5537,12 +3045,12 @@ SonicArt:
 	dc.l	byte_39298
 	dc.l	byte_394D8
 	dc.l	byte_39718
-	dc.l	Ani_Sonic
-	dc.l	Ani_Sonic
-	dc.l	Ani_Sonic
-	dc.l	Ani_Sonic
-	dc.l	Ani_Sonic
-	dc.l	Ani_Sonic
+	dc.l	Spr_Sonic
+	dc.l	Spr_Sonic
+	dc.l	Spr_Sonic
+	dc.l	Spr_Sonic
+	dc.l	Spr_Sonic
+	dc.l	Spr_Sonic
 byte_30118:
 	dc.b	0, 0, 0, 0, 0, 0, 0, 3, 0, 0, 0, $34, $45, 0, $33, $45, $34, $55, $34, $43, $34, $43, $33, $32, $23, $34, $42, $22, $22, $44, $41, $22
 	dc.b	$34, $55, $44, $12, $45, $55, $44, $32, $45, $55, $43, $32, $55, $55, $33, $23, $55, $53, $22, $33, $55, $32, $23, $33, $22, $21, $23, $34, 2, $22, $23, $35
@@ -6825,7 +4333,7 @@ byte_39718:
 	dc.b	$66, $80, 0, $86, $EE, $10, 0, $1E, $DD, $DE, $E, $DD, $6D, $DE, $E, $DD, $67, $DE, $E, $D7, $77, $DE, $E, $D7, $79, $EE, $E, $E9, $EE, 0, 0, $E
 	dc.b	0, 9, $88, $90, 0, 0, $99, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, $67, $80, 0, 0, $99, $90, 0, 0
 	dc.b	$67, $89, 0, 0, $ED, $DD, $D0, 0, $D6, $66, $78, 0, $66, $DC, $CC, $80, $6D, $CC, $FC, $CD, $7D, $CC, $CC, $CD, $7D, $CC, $CC, $CD, $E1, $11, $11, $11
-Ani_Sonic:
+Spr_Sonic:
 	dc.l	byte_39A0C
 	dc.l	byte_39A26
 	dc.l	byte_39A38
@@ -7650,7 +5158,7 @@ byte_3A4DC:
 	dc.b	$D0, $B, 0, 0, $F4
 	dc.b	$F0, 9, 0, $C, $F4
 	dc.b	0
-Ani_Splash:
+Spr_Splash:
 	dc.l	byte_3A4F4
 	dc.l	byte_3A512
 byte_3A4F4:
@@ -7700,7 +5208,7 @@ byte_3A582:
 	dc.b	$F8, 4, 0, $58, $F0
 	dc.b	$F8, 4, 8, $58, 0
 	dc.b	0
-Ani_Shadow:
+Spr_Shadow:
 	dc.l	byte_3A5BA
 	dc.l	byte_3A5C0
 	dc.l	byte_3A5C6
@@ -7783,7 +5291,7 @@ byte_3A672:
 byte_3A67C:
 	dc.b	0, 0, 0, 0, 0
 	dc.b	$FC, 0, 0, $23, $FC
-Ani_UFO1:
+Spr_UFO1:
 	dc.l	byte_3A6AE
 	dc.l	byte_3A6B4
 	dc.l	byte_3A6BA
@@ -7888,7 +5396,7 @@ byte_3A7CC:
 byte_3A7D6:
 	dc.b	0, 0, 0, 0, 0
 	dc.b	$F8, 0, 0, $6B, $FC
-Ani_UFO2:
+Spr_UFO2:
 	dc.l	byte_3A808
 	dc.l	byte_3A80E
 	dc.l	byte_3A814
@@ -8065,8 +5573,8 @@ StampMap_SS8:
 	incbin	"Special Stage/Data/Stage 8/Stamp Map.kos"
 	align	$10
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------
 
 	align	$10000, $FF
 
-; ---------------------------------------------------------------------------
+; -------------------------------------------------------------------------

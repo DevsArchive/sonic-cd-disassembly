@@ -58,9 +58,9 @@ Start:
 	move.l	d0,GACOMCMD8
 	move.l	d0,GACOMCMDC
 
-	bsr.w	SyncWithSubCPU1			; Wait for Sub CPU to need Word RAM access
-	bsr.w	GiveWordRAMAccess		; Give Sub CPU Word RAM Access
-	bsr.w	SyncWithSubCPU2			; Wait for Sub CPU to finish initializing
+	bsr.w	WaitSubCPUStart			; Wait for the Sub CPU program to start
+	bsr.w	GiveWordRAMAccess		; Give Word RAM access
+	bsr.w	WaitSubCPUInit			; Wait for the Sub CPU program to finish initializing
 	
 	lea	VARSSTART.w,a0			; Clear variables
 	move.w	#VARSLEN/4-1,d7
@@ -274,21 +274,21 @@ WaitWordRAMAccess:
 	rts
 
 ; -------------------------------------------------------------------------
-; Sync with Sub CPU (wait flag set)
+; Wait for the Sub CPU program to start
 ; -------------------------------------------------------------------------
 
-SyncWithSubCPU1:
-	btst	#7,GASUBFLAG			; Are we synced with the Sub CPU?
-	beq.s	SyncWithSubCPU1			; If not, wait
-	rts
+WaitSubCPUStart:
+	btst	#7,GASUBFLAG			; Has the Sub CPU program started?
+	beq.s	WaitSubCPUStart			; If not, wait
+	rts 
 
 ; -------------------------------------------------------------------------
-; Sync with Sub CPU (wait flag clear)
+; Wait for the Sub CPU program to finish initializing
 ; -------------------------------------------------------------------------
 
-SyncWithSubCPU2:
-	btst	#7,GASUBFLAG			; Are we synced with the Sub CPU?
-	bne.s	SyncWithSubCPU2			; If not, wait
+WaitSubCPUInit:
+	btst	#7,GASUBFLAG			; Has the Sub CPU program initialized?
+	bne.s	WaitSubCPUInit			; If not, wait
 	rts
 
 ; -------------------------------------------------------------------------

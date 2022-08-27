@@ -69,8 +69,8 @@ p2CtrlTap	EQU	p2CtrlData+1		; Player 2 controller tapped buttons data
 
 	org	$10000
 
-	move.l	#IRQ1,_LEVEL1+2.w		; Set IRQ1 handler
-	move.l	#IRQ2,_USERCALL2+2.w		; Set IRQ2 handler
+	move.l	#IRQ1,_LEVEL1+2.w		; Set graphics interrupt handler
+	move.l	#IRQ2,_USERCALL2+2.w		; Set MD interrupt handler
 	move.b	#0,GAMEMMODE.w			; Set to 2M mode
 
 	moveq	#0,d0				; Clear communication statuses
@@ -80,8 +80,8 @@ p2CtrlTap	EQU	p2CtrlData+1		; Player 2 controller tapped buttons data
 	move.l	d0,GACOMSTAT8.w
 	move.l	d0,GACOMSTATC.w
 
-	bset	#7,GASUBFLAG.w			; Tell Main CPU we're ready to accept Word RAM access
-	bclr	#1,GAIRQMASK.w			; Disable level 1 interrupt
+	bset	#7,GASUBFLAG.w			; Mark as started
+	bclr	#1,GAIRQMASK.w			; Disable graphics interrupt
 	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
 
@@ -113,15 +113,15 @@ p2CtrlTap	EQU	p2CtrlData+1		; Player 2 controller tapped buttons data
 	bsr.w	LoadCloudsData			; Load clouds data
 	bsr.w	InitGfxParams			; Initialize graphics operation parameters
 
-	bset	#1,GAIRQMASK.w			; Enable level 1 interrupt
-	bclr	#7,GASUBFLAG.w			; Tell Main CPU we're done initializing
+	bset	#1,GAIRQMASK.w			; Enable graphics interrupt
+	bclr	#7,GASUBFLAG.w			; Mark as initialized
 
 ; -------------------------------------------------------------------------
 
 MainLoop:
 	btst	#0,GAMAINFLAG.w			; Is the Main CPU finished?
 	beq.s	.NotDone			; If not, branch
-	bset	#0,GASUBFLAG.w			; Tell Main CPU that we have gotten the tip
+	bset	#0,GASUBFLAG.w			; Respond to the Main CPU
 
 .WaitMainCPUDone:
 	btst	#0,GAMAINFLAG.w			; Has the Main CPU responded?

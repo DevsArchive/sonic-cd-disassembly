@@ -38,7 +38,7 @@ decompWindow	EQU	WORDRAM2M+$38000	; Decompression sliding window
 	move.l	d0,GACOMSTAT8.w
 	move.l	d0,GACOMSTATC.w
 	
-	bset	#7,GASUBFLAG.w			; Tell Main CPU we're ready to accept Word RAM access
+	bset	#7,GASUBFLAG.w			; Mark as started
 	bclr	#1,GAIRQMASK.w			; Disable level 1 interrupt
 	bclr	#3,GAIRQMASK.w			; Disable timer interrupt
 	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
@@ -61,7 +61,7 @@ decompWindow	EQU	WORDRAM2M+$38000	; Decompression sliding window
 	dbf	d7,.ClearWordRAM
 
 	bset	#1,GAIRQMASK.w			; Enable level 1 interrupt
-	bclr	#7,GASUBFLAG.w			; Tell Main CPU we're done initializing
+	bclr	#7,GASUBFLAG.w			; Mark as initialized
 
 ; -------------------------------------------------------------------------
 
