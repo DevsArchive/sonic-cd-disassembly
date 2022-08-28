@@ -544,14 +544,14 @@ ObjSonic_GetStartPos:
 ; -------------------------------------------------------------------------
 
 .StartPos:
-	dc.w	$540, $520, $80			; Stage 1
-	dc.w	$500, $500, $80			; Stage 2
-	dc.w	$500, $500, $80			; Stage 3
-	dc.w	$500, $500, $80			; Stage 4
-	dc.w	$500, $500, $80			; Stage 5
-	dc.w	$4C0, $4C0, $80			; Stage 6
-	dc.w	$500, $500, $80			; Stage 7
-	dc.w	$400, $480, $80			; Stage 8
+	incbin	"Special Stage/Data/Stage 1/Start Position.bin"
+	incbin	"Special Stage/Data/Stage 2/Start Position.bin"
+	incbin	"Special Stage/Data/Stage 3/Start Position.bin"
+	incbin	"Special Stage/Data/Stage 4/Start Position.bin"
+	incbin	"Special Stage/Data/Stage 5/Start Position.bin"
+	incbin	"Special Stage/Data/Stage 6/Start Position.bin"
+	incbin	"Special Stage/Data/Stage 7/Start Position.bin"
+	incbin	"Special Stage/Data/Stage 8/Start Position.bin"
 
 ; -------------------------------------------------------------------------
 ; Check if the stage is beaten
