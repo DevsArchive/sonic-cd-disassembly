@@ -180,13 +180,13 @@ playerCtrlHold	rs.b	1			; Player controller held buttons data
 playerCtrlTap	rs.b	1			; Player controller tapped buttons data
 lostRingXDir	rs.b	1			; Lost ring X direction
 		rs.b	1
-stampAnim1Data	rs.l	1			; Stamp animation 1 data pointer
-stampAnim1Count	rs.w	1			; Stamp animation 1 data count
-stampAnim2Data	rs.l	1			; Stamp animation 2 data pointer
-stampAnim2Count	rs.w	1			; Stamp animation 2 data count
-stampAnim1Delay	rs.w	1			; Stamp animation 1 delay counter
-stampAnim1Frame	rs.w	1			; Stamp animation 1 frame	
-stampAnim2Frame	rs.w	1			; Stamp animation 2 frame
+hazardAnimData	rs.l	1			; Hazard animation data pointer
+hazardAnimCount	rs.w	1			; Hazard animation data count
+fanAnimData	rs.l	1			; Fan animation data pointer
+fanAnimCount	rs.w	1			; Fan animation data count
+hazardAnimDelay	rs.w	1			; Hazard animation delay counter
+hazardAnimFrame	rs.w	1			; Hazard animation frame	
+fanAnimFrame	rs.w	1			; Fan animation frame
 		rs.b	$CC
 gfxVars		rs.b	gfxSize			; Graphics operations variables
 		rs.b	$1B9E
@@ -1185,53 +1185,53 @@ InitStampAnim:
 	moveq	#0,d0				; Get stamp animation data
 	move.b	specStageID.w,d0
 	mulu.w	#$C,d0
-	move.l	.Animations(pc,d0.w),stampAnim1Data
-	move.w	.Animations+4(pc,d0.w),stampAnim1Count
-	move.l	.Animations+6(pc,d0.w),stampAnim2Data
-	move.w	.Animations+$A(pc,d0.w),stampAnim2Count
+	move.l	.Animations(pc,d0.w),hazardAnimData
+	move.w	.Animations+4(pc,d0.w),hazardAnimCount
+	move.l	.Animations+6(pc,d0.w),fanAnimData
+	move.w	.Animations+$A(pc,d0.w),fanAnimCount
 	rts
 
 ; -------------------------------------------------------------------------
 
 .Animations:
-	dc.l	StampAnim1_SS1			; Stage 1
+	dc.l	HazardAnim_SS1			; Stage 1
 	dc.w	$C-1
-	dc.l	StampAnim2_SS1
+	dc.l	FanAnim_SS1
 	dc.w	8-1
 
-	dc.l	StampAnim1_SS2			; Stage 2
+	dc.l	HazardAnim_SS2			; Stage 2
 	dc.w	$A-1
-	dc.l	StampAnim2_SS2
+	dc.l	FanAnim_SS2
 	dc.w	8-1
 
-	dc.l	StampAnim1_SS3			; Stage 3
+	dc.l	HazardAnim_SS3			; Stage 3
 	dc.w	8-1
-	dc.l	StampAnim2_SS3
+	dc.l	FanAnim_SS3
 	dc.w	$C-1
 
-	dc.l	StampAnim1_SS4			; Stage 4
+	dc.l	HazardAnim_SS4			; Stage 4
 	dc.w	$24-1
-	dc.l	StampAnim2_SS4
+	dc.l	FanAnim_SS4
 	dc.w	$10-1
 
-	dc.l	StampAnim1_SS5			; Stage 5
+	dc.l	HazardAnim_SS5			; Stage 5
 	dc.w	$B-1
-	dc.l	StampAnim2_SS5
+	dc.l	FanAnim_SS5
 	dc.w	$C-1
 
-	dc.l	StampAnim1_SS6			; Stage 6
+	dc.l	HazardAnim_SS6			; Stage 6
 	dc.w	$B-1
-	dc.l	StampAnim2_SS6
+	dc.l	FanAnim_SS6
 	dc.w	$10-1
 
-	dc.l	StampAnim1_SS7			; Stage 7
+	dc.l	HazardAnim_SS7			; Stage 7
 	dc.w	4-1
-	dc.l	StampAnim2_SS7
+	dc.l	FanAnim_SS7
 	dc.w	4-1
 	
-	dc.l	StampAnim1_SS8			; Stage 8
+	dc.l	HazardAnim_SS8			; Stage 8
 	dc.w	$A-1
-	dc.l	StampAnim2_SS8
+	dc.l	FanAnim_SS8
 	dc.w	$C-1
 
 ; -------------------------------------------------------------------------
@@ -1239,40 +1239,40 @@ InitStampAnim:
 ; -------------------------------------------------------------------------
 
 AnimateStamps:
-	addq.w	#2,stampAnim2Frame		; Update second animation
-	cmpi.w	#6,stampAnim2Frame
+	addq.w	#2,fanAnimFrame			; Update fan animation
+	cmpi.w	#6,fanAnimFrame
 	bcs.s	.CheckAnim1
-	move.w	#0,stampAnim2Frame
+	move.w	#0,fanAnimFrame
 
 .CheckAnim1:
-	addq.w	#1,stampAnim1Delay		; Increment first animation delay counter
-	move.w	stampAnim1Delay,d0		; Is it time to update the animation?
+	addq.w	#1,hazardAnimDelay		; Increment hazard animation delay counter
+	move.w	hazardAnimDelay,d0		; Is it time to update the hazard animation?
 	andi.w	#1,d0
 	bne.w	.Anim2				; If not, branch
 
-	addq.w	#2,stampAnim1Frame		; Update first animation
-	andi.w	#7,stampAnim1Frame
+	addq.w	#2,hazardAnimFrame		; Update hazard animation
+	andi.w	#7,hazardAnimFrame
 	
-	movea.l	stampAnim1Data,a0		; Get animation data
+	movea.l	hazardAnimData,a0		; Get hazard animation data
 	lea	WORDRAM2M+STAMPMAP,a1		; Get stamp map
-	move.w	stampAnim1Frame,d1		; Get frame ID
-	move.w	stampAnim1Count,d7		; Get number of stamps to animate
+	move.w	hazardAnimFrame,d1		; Get frame ID
+	move.w	hazardAnimCount,d7		; Get number of stamps to animate
 
 .Anim1Loop:
-	move.w	(a0),d0				; Set stamp ID
+	move.w	(a0),d0				; Set stamp ID based on animation frame
 	move.w	2(a0,d1.w),d2
 	move.w	d2,(a1,d0.w)
 	adda.w	#$A,a0				; Next stamp to animate
 	dbf	d7,.Anim1Loop			; Loop until stamps are animated
 
 .Anim2:
-	movea.l	stampAnim2Data,a0		; Get animation data
+	movea.l	fanAnimData,a0			; Get fan animation data
 	lea	WORDRAM2M+STAMPMAP,a1		; Get stamp map
-	move.w	stampAnim2Frame,d1		; Get frame ID
-	move.w	stampAnim2Count,d7		; Get number of stamps to animate
+	move.w	fanAnimFrame,d1			; Get frame ID
+	move.w	fanAnimCount,d7			; Get number of stamps to animate
 
 .Anim2Loop:
-	move.w	(a0),d0				; Set stamp ID
+	move.w	(a0),d0				; Set stamp ID based on animation frame
 	move.w	2(a0,d1.w),d2
 	move.w	d2,(a1,d0.w)
 	adda.w	#8,a0				; Next stamp to animate
@@ -1282,243 +1282,70 @@ AnimateStamps:
 ; -------------------------------------------------------------------------
 ; Stamp animation data
 ; -------------------------------------------------------------------------
-; PARAMETERS:
-;	x  - Map X
-;	y  - Map Y
-;	id - Stamp IDs
-; -------------------------------------------------------------------------
 
-STMPANI macro x, y, id
-	dc.w	((\y)*256)+((\x)*2)
-	rept	narg-2
-		dc.w	\id
-		shift
-	endr
-	endm
+HazardAnim_SS1:
+	incbin	"Special Stage/Data/Stage 1/Animations (Hazard).bin"
+	even
 
-; -------------------------------------------------------------------------
+FanAnim_SS1:
+	incbin	"Special Stage/Data/Stage 1/Animations (Fan).bin"
+	even
 
-StampAnim1_SS1:
-	STMPANI	$3F, $27, $016C, $0170, $0174, $0178
-	STMPANI	$3F, $28, $016C, $0170, $0174, $0178
-	STMPANI	$3F, $29, $016C, $0170, $0174, $0178
-	STMPANI	$3F, $2A, $016C, $0170, $0174, $0178
-	STMPANI	$41, $32, $016C, $0170, $0174, $0178
-	STMPANI	$41, $33, $016C, $0170, $0174, $0178
-	STMPANI	$41, $34, $016C, $0170, $0174, $0178
-	STMPANI	$41, $35, $016C, $0170, $0174, $0178
-	STMPANI	$4C, $32, $016C, $0170, $0174, $0178
-	STMPANI	$4C, $33, $016C, $0170, $0174, $0178
-	STMPANI	$4C, $34, $016C, $0170, $0174, $0178
-	STMPANI	$4C, $35, $016C, $0170, $0174, $0178
+HazardAnim_SS2:
+	incbin	"Special Stage/Data/Stage 2/Animations (Hazard).bin"
+	even
 
-StampAnim2_SS1:
-	STMPANI	$42, $44, $6160, $6164, $6168
-	STMPANI	$43, $44, $4160, $4164, $4168
-	STMPANI	$42, $45, $0160, $0164, $0168
-	STMPANI	$43, $45, $2160, $2164, $2168
-	STMPANI	$44, $44, $6160, $6164, $6168
-	STMPANI	$45, $44, $4160, $4164, $4168
-	STMPANI	$44, $45, $0160, $0164, $0168
-	STMPANI	$45, $45, $2160, $2164, $2168
+FanAnim_SS2:
+	incbin	"Special Stage/Data/Stage 2/Animations (Fan).bin"
+	even
 
-StampAnim1_SS2:
-	STMPANI	$34, $4C, $01AC, $01B0, $01B4, $01B8
-	STMPANI	$33, $4D, $01AC, $01B0, $01B4, $01B8
-	STMPANI	$32, $4E, $01AC, $01B0, $01B4, $01B8
-	STMPANI	$36, $4A, $01AC, $01B0, $01B4, $01B8
-	STMPANI	$37, $4B, $01AC, $01B0, $01B4, $01B8
-	STMPANI	$38, $4C, $01AC, $01B0, $01B4, $01B8
-	STMPANI	$3F, $3F, $01AC, $01B0, $01B4, $01B8
-	STMPANI	$40, $3F, $01AC, $01B0, $01B4, $01B8
-	STMPANI	$3F, $40, $01AC, $01B0, $01B4, $01B8
-	STMPANI	$40, $40, $01AC, $01B0, $01B4, $01B8
+HazardAnim_SS3:
+	incbin	"Special Stage/Data/Stage 3/Animations (Hazard).bin"
+	even
 
-StampAnim2_SS2:
-	STMPANI	$58, $47, $61A0, $61A4, $61A8
-	STMPANI	$59, $47, $41A0, $41A4, $41A8
-	STMPANI	$58, $48, $01A0, $01A4, $01A8
-	STMPANI	$59, $48, $21A0, $21A4, $21A8
-	STMPANI	$4C, $30, $61A0, $61A4, $61A8
-	STMPANI	$4D, $30, $41A0, $41A4, $41A8
-	STMPANI	$4C, $31, $01A0, $01A4, $01A8
-	STMPANI	$4D, $31, $21A0, $21A4, $21A8
+FanAnim_SS3:
+	incbin	"Special Stage/Data/Stage 3/Animations (Fan).bin"
+	even
 
-StampAnim1_SS3:
-	STMPANI	$38, $2F, $01EC, $01F0, $01F4, $01F8
-	STMPANI	$39, $2F, $01EC, $01F0, $01F4, $01F8
-	STMPANI	$3A, $2F, $01EC, $01F0, $01F4, $01F8
-	STMPANI	$3B, $2F, $01EC, $01F0, $01F4, $01F8
-	STMPANI	$2F, $4F, $01EC, $01F0, $01F4, $01F8
-	STMPANI	$30, $4F, $01EC, $01F0, $01F4, $01F8
-	STMPANI	$31, $4F, $01EC, $01F0, $01F4, $01F8
-	STMPANI	$32, $4F, $01EC, $01F0, $01F4, $01F8
+HazardAnim_SS4:
+	incbin	"Special Stage/Data/Stage 4/Animations (Hazard).bin"
+	even
 
-StampAnim2_SS3:
-	STMPANI	$44, $40, $61E0, $61E4, $61E8
-	STMPANI	$45, $40, $41E0, $41E4, $41E8
-	STMPANI	$44, $41, $01E0, $01E4, $01E8
-	STMPANI	$45, $41, $21E0, $21E4, $21E8
-	STMPANI	$46, $40, $61E0, $61E4, $61E8
-	STMPANI	$47, $40, $41E0, $41E4, $41E8
-	STMPANI	$46, $41, $01E0, $01E4, $01E8
-	STMPANI	$47, $41, $21E0, $21E4, $21E8
-	STMPANI	$58, $50, $61E0, $61E4, $61E8
-	STMPANI	$59, $50, $41E0, $41E4, $41E8
-	STMPANI	$58, $51, $01E0, $01E4, $01E8
-	STMPANI	$59, $51, $21E0, $21E4, $21E8
+FanAnim_SS4:
+	incbin	"Special Stage/Data/Stage 4/Animations (Fan).bin"
+	even
 
-StampAnim1_SS4:
-	STMPANI	$3B, $35, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$3B, $36, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$3B, $37, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$3B, $38, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$44, $47, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$44, $48, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$44, $49, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$44, $4A, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$4E, $26, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$4D, $27, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$4C, $28, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$4B, $29, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$56, $26, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$55, $27, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$54, $28, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$53, $29, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$52, $2A, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$51, $2B, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$50, $2C, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$4F, $2D, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$57, $27, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$56, $28, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$55, $29, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$54, $2A, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$53, $2B, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$52, $2C, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$51, $2D, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$50, $2E, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$5C, $29, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$5B, $2A, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$5A, $2B, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$59, $2C, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$5D, $2A, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$5C, $2B, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$5B, $2C, $01CC, $01D0, $01D4, $01D8
-	STMPANI	$5A, $2D, $01CC, $01D0, $01D4, $01D8
+HazardAnim_SS5:
+	incbin	"Special Stage/Data/Stage 5/Animations (Hazard).bin"
+	even
 
-StampAnim2_SS4:
-	STMPANI	$2E, $56, $61C0, $61C4, $61C8
-	STMPANI	$2F, $56, $41C0, $41C4, $41C8
-	STMPANI	$2E, $57, $01C0, $01C4, $01C8
-	STMPANI	$2F, $57, $21C0, $21C4, $21C8
-	STMPANI	$30, $56, $61C0, $61C4, $61C8
-	STMPANI	$31, $56, $41C0, $41C4, $41C8
-	STMPANI	$30, $57, $01C0, $01C4, $01C8
-	STMPANI	$31, $57, $21C0, $21C4, $21C8
-	STMPANI	$26, $52, $61C0, $61C4, $61C8
-	STMPANI	$27, $52, $41C0, $41C4, $41C8
-	STMPANI	$26, $53, $01C0, $01C4, $01C8
-	STMPANI	$27, $53, $21C0, $21C4, $21C8
-	STMPANI	$28, $52, $61C0, $61C4, $61C8
-	STMPANI	$29, $52, $41C0, $41C4, $41C8
-	STMPANI	$28, $53, $01C0, $01C4, $01C8
-	STMPANI	$29, $53, $21C0, $21C4, $21C8
+FanAnim_SS5:
+	incbin	"Special Stage/Data/Stage 5/Animations (Fan).bin"
+	even
 
-StampAnim1_SS5:
-	STMPANI	$3A, $22, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3A, $23, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3A, $24, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3C, $41, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3D, $42, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3E, $43, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3F, $44, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3E, $51, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3D, $52, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3C, $53, $01B0, $01B4, $01B8, $01BC
-	STMPANI	$3B, $54, $01B0, $01B4, $01B8, $01BC
+HazardAnim_SS6:
+	incbin	"Special Stage/Data/Stage 6/Animations (Hazard).bin"
+	even
 
-StampAnim2_SS5:
-	STMPANI	$38, $29, $61A4, $61A8, $61AC
-	STMPANI	$39, $29, $41A4, $41A8, $41AC
-	STMPANI	$38, $2A, $01A4, $01A8, $01AC
-	STMPANI	$39, $2A, $21A4, $21A8, $21AC
-	STMPANI	$2E, $40, $61A4, $61A8, $61AC
-	STMPANI	$2F, $40, $41A4, $41A8, $41AC
-	STMPANI	$2E, $41, $01A4, $01A8, $01AC
-	STMPANI	$2F, $41, $21A4, $21A8, $21AC
-	STMPANI	$48, $4A, $61A4, $61A8, $61AC
-	STMPANI	$49, $4A, $41A4, $41A8, $41AC
-	STMPANI	$48, $4B, $01A4, $01A8, $01AC
-	STMPANI	$49, $4B, $21A4, $21A8, $21AC
+FanAnim_SS6:
+	incbin	"Special Stage/Data/Stage 6/Animations (Fan).bin"
+	even
 
-StampAnim1_SS6:
-	STMPANI	$1D, $39, $016C, $0170, $0174, $0178
-	STMPANI	$1D, $3A, $016C, $0170, $0174, $0178
-	STMPANI	$1D, $49, $016C, $0170, $0174, $0178
-	STMPANI	$1D, $4A, $016C, $0170, $0174, $0178
-	STMPANI	$60, $5B, $016C, $0170, $0174, $0178
-	STMPANI	$5F, $5C, $016C, $0170, $0174, $0178
-	STMPANI	$60, $5C, $016C, $0170, $0174, $0178
-	STMPANI	$4A, $29, $016C, $0170, $0174, $0178
-	STMPANI	$4B, $29, $016C, $0170, $0174, $0178
-	STMPANI	$49, $2A, $016C, $0170, $0174, $0178
-	STMPANI	$4A, $2A, $016C, $0170, $0174, $0178
+HazardAnim_SS7:
+	incbin	"Special Stage/Data/Stage 7/Animations (Hazard).bin"
+	even
 
-StampAnim2_SS6:
-	STMPANI	$4C, $22, $6160, $6164, $6168
-	STMPANI	$4D, $22, $4160, $4164, $4168
-	STMPANI	$4C, $23, $0160, $0164, $0168
-	STMPANI	$4D, $23, $2160, $2164, $2168
-	STMPANI	$2E, $32, $6160, $6164, $6168
-	STMPANI	$2F, $32, $4160, $4164, $4168
-	STMPANI	$2E, $33, $0160, $0164, $0168
-	STMPANI	$2F, $33, $2160, $2164, $2168
-	STMPANI	$4A, $4A, $6160, $6164, $6168
-	STMPANI	$4B, $4A, $4160, $4164, $4168
-	STMPANI	$4A, $4B, $0160, $0164, $0168
-	STMPANI	$4B, $4B, $2160, $2164, $2168
-	STMPANI	$2E, $4C, $6160, $6164, $6168
-	STMPANI	$2F, $4C, $4160, $4164, $4168
-	STMPANI	$2E, $4D, $0160, $0164, $0168
-	STMPANI	$2F, $4D, $2160, $2164, $2168
+FanAnim_SS7:
+	incbin	"Special Stage/Data/Stage 7/Animations (Fan).bin"
+	even
 
-StampAnim1_SS7:
-	STMPANI	$22, $21, $01A4, $01A8, $01AC, $01B0
-	STMPANI	$21, $22, $01A4, $01A8, $01AC, $01B0
-	STMPANI	$24, $21, $01A4, $01A8, $01AC, $01B0
-	STMPANI	$23, $22, $01A4, $01A8, $01AC, $01B0
+HazardAnim_SS8:
+	incbin	"Special Stage/Data/Stage 8/Animations (Hazard).bin"
+	even
 
-StampAnim2_SS7:
-	STMPANI	$32, $34, $6198, $619C, $61A0
-	STMPANI	$33, $34, $4198, $419C, $41A0
-	STMPANI	$32, $35, $0198, $019C, $01A0
-	STMPANI	$33, $35, $2198, $219C, $21A0
-
-StampAnim1_SS8:
-	STMPANI	$1E, $35, $016C, $0170, $0174, $0178
-	STMPANI	$21, $35, $016C, $0170, $0174, $0178
-	STMPANI	$4E, $59, $016C, $0170, $0174, $0178
-	STMPANI	$4F, $5A, $016C, $0170, $0174, $0178
-	STMPANI	$4E, $5B, $016C, $0170, $0174, $0178
-	STMPANI	$4F, $5C, $016C, $0170, $0174, $0178
-	STMPANI	$4E, $5D, $016C, $0170, $0174, $0178
-	STMPANI	$43, $24, $016C, $0170, $0174, $0178
-	STMPANI	$43, $25, $016C, $0170, $0174, $0178
-	STMPANI	$43, $26, $016C, $0170, $0174, $0178
-
-StampAnim2_SS8:
-	STMPANI	$1F, $3D, $6160, $6164, $6168
-	STMPANI	$20, $3D, $4160, $4164, $4168
-	STMPANI	$1F, $3E, $0160, $0164, $0168
-	STMPANI	$20, $3E, $2160, $2164, $2168
-	STMPANI	$41, $3D, $6160, $6164, $6168
-	STMPANI	$42, $3D, $4160, $4164, $4168
-	STMPANI	$41, $3E, $0160, $0164, $0168
-	STMPANI	$42, $3E, $2160, $2164, $2168
-	STMPANI	$41, $5A, $6160, $6164, $6168
-	STMPANI	$42, $5A, $4160, $4164, $4168
-	STMPANI	$41, $5B, $0160, $0164, $0168
-	STMPANI	$42, $5B, $2160, $2164, $2168
+FanAnim_SS8:
+	incbin	"Special Stage/Data/Stage 8/Animations (Fan).bin"
+	even
 
 ; -------------------------------------------------------------------------
 ; Check player collision with a UFO
