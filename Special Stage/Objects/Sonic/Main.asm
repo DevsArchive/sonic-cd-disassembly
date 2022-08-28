@@ -94,9 +94,9 @@ ObjSonic:
 	move.w	#$340,oX(a0)			; Prevent going past the boundary
 
 .CheckRightBound:
-	cmpi.w	#$CC0,oX(a0)			; Are we past the right boundary?
+	cmpi.w	#$1000-$340,oX(a0)		; Are we past the right boundary?
 	bcs.s	.CheckTopBound			; If not, branch
-	move.w	#$CC0,oX(a0)			; Prevent going past the boundary
+	move.w	#$1000-$340,oX(a0)		; Prevent going past the boundary
 
 .CheckTopBound:
 	cmpi.w	#$340,oY(a0)			; Are we past the top boundary?
@@ -104,9 +104,9 @@ ObjSonic:
 	move.w	#$340,oY(a0)			; Prevent going past the boundary
 
 .CheckBottomBound:
-	cmpi.w	#$CC0,oY(a0)			; Are we past the bottom boundary?
+	cmpi.w	#$1000-$340,oY(a0)		; Are we past the bottom boundary?
 	bcs.s	.SetPosition			; If not, branch
-	move.w	#$CC0,oY(a0)			; Prevent going past the boundary
+	move.w	#$1000-$340,oY(a0)		; Prevent going past the boundary
 
 .SetPosition:
 	lea	gfxVars,a1			; Set positioning for graphics operation
