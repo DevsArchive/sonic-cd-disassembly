@@ -4640,15 +4640,15 @@ Art_Results:
 	even
 
 Art_TimeStone:
-	incbin	"Special Stage/Data/Time Stone Art.nem"
+	incbin	"Special Stage/Objects/Time Stone/Data/Art.nem"
 	even
 
 Art_Items:
-	incbin	"Special Stage/Data/Items Art.nem"
+	incbin	"Special Stage/Objects/Item/Data/Art.nem"
 	even
 
 Art_Explosion:
-	incbin	"Special Stage/Data/Explosion Art.nem"
+	incbin	"Special Stage/Objects/Explosion/Data/Art.nem"
 	even
 
 Art_HUD:
@@ -4656,19 +4656,19 @@ Art_HUD:
 	even
 
 Art_TitleCard:
-	incbin	"Special Stage/Data/Title Card Art.nem"
+	incbin	"Special Stage/Objects/Title Card/Data/Art.nem"
 	even
 
 Art_Splash:
-	incbin	"Special Stage/Data/Splash Art.nem"
+	incbin	"Special Stage/Objects/Splash/Data/Art.nem"
 	even
 
 Art_Shadow:
-	incbin	"Special Stage/Data/Shadow Art.nem"
+	incbin	"Special Stage/Objects/Shadow/Data/Art.nem"
 	even
 
 Art_UFO:
-	incbin	"Special Stage/Data/UFO Art.nem"
+	incbin	"Special Stage/Objects/UFO/Data/Art.nem"
 	even
 
 Stage1Demo:

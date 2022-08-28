@@ -50,8 +50,8 @@ ObjTimeUFO:
 ObjTimeUFO_Init:
 	move.w	#$8440,oTile(a0)		; Base tile ID
 	bsr.w	ObjUFO_FollowPath		; Start following path
-	move.l	#MapSpr_UFO1,oMap(a0)		; Mappings
-	
+	move.l	#MapSpr_UFORings,oMap(a0)	; Mappings
+
 	move.w	sonicObject+oZ,oZ(a0)		; Shift Z position according to Sonic's Z position
 	subi.w	#$140,oZ(a0)
 
@@ -176,10 +176,10 @@ ObjUFO:
 ObjUFO_Init:
 	move.w	#$E440,oTile(a0)		; Base tile ID
 	bsr.w	ObjUFO_FollowPath		; Start following path
-	move.l	#MapSpr_UFO1,oMap(a0)		; Mappings (ring)
+	move.l	#MapSpr_UFORings,oMap(a0)	; Mappings (ring)
 	cmpi.b	#0,oUFOItem(a0)			; Does this UFO have rings?
 	beq.s	.GotAnim			; If so, branch
-	move.l	#MapSpr_UFO2,oMap(a0)		; Mappings (speed shoes)
+	move.l	#MapSpr_UFOShoes,oMap(a0)	; Mappings (speed shoes)
 
 .GotAnim:
 	move.w	sonicObject+oZ,oZ(a0)		; Shift Z position according to Sonic's Z position

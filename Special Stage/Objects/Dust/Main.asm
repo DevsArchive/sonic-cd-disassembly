@@ -5,75 +5,72 @@
 ; Dust object (special stage)
 ; -------------------------------------------------------------------------
 
+oDustXVel	EQU	oVar3C			; X velocity
+
+; -------------------------------------------------------------------------
+; Dust object
+; -------------------------------------------------------------------------
+
 ObjDust:
-	moveq	#0,d0
+	moveq	#0,d0				; Run routine
 	move.b	oRoutine(a0),d0
 	add.w	d0,d0
-	move.w	off_13C3E(pc,d0.w),d0
-	jsr	off_13C3E(pc,d0.w)
-	bsr.w	DrawObject
+	move.w	.Index(pc,d0.w),d0
+	jsr	.Index(pc,d0.w)
+	
+	bsr.w	DrawObject			; Draw sprite
 	rts
 
 ; -------------------------------------------------------------------------
-off_13C3E:
-	dc.w	ObjDust_Init-off_13C3E
-	dc.w	ObjDust_Main-off_13C3E
+
+.Index:
+	dc.w	ObjDust_Init-.Index
+	dc.w	ObjDust_Main-.Index
 
 ; -------------------------------------------------------------------------
 
 ObjDust_Init:
-	move.w	#$87AE,oTile(a0)
-	move.l	#MapSpr_Dust,oMap(a0)
-	move.w	#$F0,oSprX(a0)
-	move.w	#$154,oSprY(a0)
-	moveq	#0,d0
+	move.w	#$87AE,oTile(a0)		; Base tile ID
+	move.l	#MapSpr_Dust,oMap(a0)		; Mappings
+	move.w	#112+128,oSprX(a0)		; Set sprite position
+	move.w	#212+128,oSprY(a0)
+	moveq	#0,d0				; Set animation
 	bsr.w	SetObjAnim
-	move.w	#6,oTimer(a0)
-	addq.b	#1,oRoutine(a0)
-	bsr.w	Random
+	move.w	#6,oTimer(a0)			; Set timer
+	addq.b	#1,oRoutine(a0)			; Set to main routine
+	
+	bsr.w	Random				; Add random offset to sprite position
 	move.w	d0,d1
 	andi.w	#$1F,d0
 	add.w	d0,oSprX(a0)
 	andi.w	#7,d0
 	add.w	d0,oSprY(a0)
-	move.w	#3,oDustXVel(a0)
-	btst	#2,(playerCtrlData).l
-	bne.s	ObjDust_Main
-	move.w	#-3,oDustXVel(a0)
-	btst	#3,(playerCtrlData).l
-	bne.s	ObjDust_Main
-	move.w	#0,oDustXVel(a0)
+	
+	move.w	#3,oDustXVel(a0)		; Move right
+	btst	#2,playerCtrlData		; Is the player moving left?
+	bne.s	ObjDust_Main			; If so, branch
+	move.w	#-3,oDustXVel(a0)		; If not, move left
+	btst	#3,playerCtrlData		; Is the player moving right?
+	bne.s	ObjDust_Main			; If so, branch
+	move.w	#0,oDustXVel(a0)		; If not, don't move horizontally
 
 ; -------------------------------------------------------------------------
 
 ObjDust_Main:
-	subq.w	#1,oTimer(a0)
-	bne.s	.Move
-	bset	#0,oFlags(a0)
+	subq.w	#1,oTimer(a0)			; Decrement timer
+	bne.s	.Move				; If it hasn't run out, branch
+	bset	#0,oFlags(a0)			; If it has, delete object
 
 .Move:
-	move.l	oDustXVel(a0),d0
+	move.l	oDustXVel(a0),d0		; Move
 	add.l	d0,oSprX(a0)
 	subq.w	#1,oSprY(a0)
 	rts
 
 ; -------------------------------------------------------------------------
+
 MapSpr_Dust:
-	dc.l	unk_13CC6
-unk_13CC6:
-	dc.b	  3
-	dc.b	  1
-	dc.l	byte_13CE8
-	dc.l	byte_13CDE
-	dc.l	byte_13CD4
-byte_13CD4:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$FC, 0, 0, $2C, $FC
-byte_13CDE:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$FC, 0, 0, $2D, $FC
-byte_13CE8:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$FC, 0, 0, $2E, $FC
+	include	"Special Stage/Objects/Dust/Data/Mappings.asm"
+	even
 	
 ; -------------------------------------------------------------------------

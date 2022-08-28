@@ -6,39 +6,41 @@
 ; -------------------------------------------------------------------------
 
 ObjTimeStone:
-	moveq	#0,d0
+	moveq	#0,d0				; Run routine
 	move.b	oRoutine(a0),d0
 	add.w	d0,d0
-	move.w	off_13D08(pc,d0.w),d0
-	jsr	off_13D08(pc,d0.w)
-	bsr.w	DrawObject
+	move.w	.Index(pc,d0.w),d0
+	jsr	.Index(pc,d0.w)
+	
+	bsr.w	DrawObject			; Draw sprite
 	rts
 
 ; -------------------------------------------------------------------------
-off_13D08:
-	dc.w	ObjTimeStone_Init-off_13D08
-	dc.w	ObjTimeStone_Wait-off_13D08
-	dc.w	ObjTimeStone_Fall-off_13D08
-	dc.w	ObjTimeStone_Wait2-off_13D08
+
+.Index:
+	dc.w	ObjTimeStone_Init-.Index
+	dc.w	ObjTimeStone_Wait-.Index
+	dc.w	ObjTimeStone_Fall-.Index
+	dc.w	ObjTimeStone_Wait2-.Index
 
 ; -------------------------------------------------------------------------
 
 ObjTimeStone_Init:
-	move.w	#$E424,oTile(a0)
-	move.l	#MapSpr_Sparkle,oMap(a0)
-	move.w	#$101,oSprX(a0)
-	move.w	#$70,oSprY(a0)
-	moveq	#0,d0
+	move.w	#$E424,oTile(a0)		; Base tile ID
+	move.l	#MapSpr_TimeStone,oMap(a0)
+	move.w	#129+128,oSprX(a0)		; Set sprite position
+	move.w	#-16+128,oSprY(a0)
+	moveq	#0,d0				; Set animation
 	bsr.w	SetObjAnim
-	move.w	#$1E,oTimer(a0)
-	addq.b	#1,oRoutine(a0)
+	move.w	#30,oTimer(a0)			; Set wait timer
+	addq.b	#1,oRoutine(a0)			; Start waiting
 
 ; -------------------------------------------------------------------------
 
 ObjTimeStone_Wait:
-	subq.w	#1,oTimer(a0)
-	bne.s	.End
-	addq.b	#1,oRoutine(a0)
+	subq.w	#1,oTimer(a0)			; Decrement wait timer
+	bne.s	.End				; If it hasn't run out, branch
+	addq.b	#1,oRoutine(a0)			; Start falling
 
 .End:
 	rts
@@ -46,15 +48,18 @@ ObjTimeStone_Wait:
 ; -------------------------------------------------------------------------
 
 ObjTimeStone_Fall:
-	addq.w	#4,oSprY(a0)
-	cmpi.w	#$150,oSprY(a0)
-	bcs.s	.End
-	addq.b	#1,oRoutine(a0)
-	bset	#0,(sparkleObject1+oFlags).l
-	bset	#0,(sparkleObject2+oFlags).l
-	move.w	#$3C,oTimer(a0)
-	move.b	#$12,(sonicObject+oRoutine).l
-	move.b	#$D9,d0
+	addq.w	#4,oSprY(a0)			; Move downwards
+	cmpi.w	#208+128,oSprY(a0)		; Have we landed in Sonic's hands?
+	bcs.s	.End				; If not, branch
+	
+	addq.b	#1,oRoutine(a0)			; Stop falling
+	bset	#0,sparkleObject1+oFlags	; Delete sparkles
+	bset	#0,sparkleObject2+oFlags
+	move.w	#60,oTimer(a0)			; Set timer
+	
+	move.b	#$12,sonicObject+oRoutine	; Mark Sonic hold the time stone
+	
+	move.b	#FM_D9,d0			; Play time stone sound
 	bsr.w	PlayFMSound
 
 .End:
@@ -63,9 +68,9 @@ ObjTimeStone_Fall:
 ; -------------------------------------------------------------------------
 
 ObjTimeStone_Wait2:
-	subq.w	#1,oTimer(a0)
-	bne.s	.End
-	move.b	#1,gotTimeStone
+	subq.w	#1,oTimer(a0)			; Decrement timer
+	bne.s	.End				; If it hasn't run out, branch
+	move.b	#1,gotTimeStone			; Mark time stone as retrieved
 
 .End:
 	rts
@@ -75,34 +80,37 @@ ObjTimeStone_Wait2:
 ; -------------------------------------------------------------------------
 
 ObjSparkle1:
-	moveq	#0,d0
+	moveq	#0,d0				; Run routine
 	move.b	oRoutine(a0),d0
 	add.w	d0,d0
-	move.w	off_13DA4(pc,d0.w),d0
-	jsr	off_13DA4(pc,d0.w)
-	bsr.w	DrawObject
+	move.w	.Index(pc,d0.w),d0
+	jsr	.Index(pc,d0.w)
+	
+	bsr.w	DrawObject			; Draw sprite
 	rts
 
+
 ; -------------------------------------------------------------------------
-off_13DA4:
-	dc.w	ObjSparkle1_Init-off_13DA4
-	dc.w	ObjSparkle1_Main-off_13DA4
+
+.Index:
+	dc.w	ObjSparkle1_Init-.Index
+	dc.w	ObjSparkle1_Main-.Index
 
 ; -------------------------------------------------------------------------
 
 ObjSparkle1_Init:
-	move.w	#$E424,oTile(a0)
-	move.l	#MapSpr_Sparkle,oMap(a0)
-	moveq	#1,d0
+	move.w	#$E424,oTile(a0)		; Base tile ID
+	move.l	#MapSpr_TimeStone,oMap(a0)	; Mappings
+	moveq	#1,d0				; Set animation
 	bsr.w	SetObjAnim
-	addq.b	#1,oRoutine(a0)
+	addq.b	#1,oRoutine(a0)			; Set routine to main
 
 ; -------------------------------------------------------------------------
 
 ObjSparkle1_Main:
-	move.w	(timeStoneObject+oSprX).l,oSprX(a0)
-	move.w	(timeStoneObject+oSprY).l,oSprY(a0)
-	subi.w	#$10,oSprY(a0)
+	move.w	timeStoneObject+oSprX,oSprX(a0)	; Move with time stone
+	move.w	timeStoneObject+oSprY,oSprY(a0)
+	subi.w	#16,oSprY(a0)
 	rts
 
 ; -------------------------------------------------------------------------
@@ -110,111 +118,43 @@ ObjSparkle1_Main:
 ; -------------------------------------------------------------------------
 
 ObjSparkle2:
-	moveq	#0,d0
+	moveq	#0,d0				; Run routine
 	move.b	oRoutine(a0),d0
 	add.w	d0,d0
-	move.w	off_13DEE(pc,d0.w),d0
-	jsr	off_13DEE(pc,d0.w)
-	bsr.w	DrawObject
+	move.w	.Index(pc,d0.w),d0
+	jsr	.Index(pc,d0.w)
+	
+	bsr.w	DrawObject			; Draw sprite
 	rts
 
+
 ; -------------------------------------------------------------------------
-off_13DEE:
-	dc.w	ObjSparkle2_Init-off_13DEE
-	dc.w	ObjSparkle2_Main-off_13DEE
+
+.Index:
+	dc.w	ObjSparkle2_Init-.Index
+	dc.w	ObjSparkle2_Main-.Index
 
 ; -------------------------------------------------------------------------
 
 ObjSparkle2_Init:
-	move.w	#$E424,oTile(a0)
-	move.l	#MapSpr_Sparkle,oMap(a0)
-	moveq	#2,d0
+	move.w	#$E424,oTile(a0)		; Base tile ID
+	move.l	#MapSpr_TimeStone,oMap(a0)	; Mappings
+	moveq	#2,d0				; Set animation
 	bsr.w	SetObjAnim
-	addq.b	#1,oRoutine(a0)
+	addq.b	#1,oRoutine(a0)			; Set routine to main
 
 ; -------------------------------------------------------------------------
 
 ObjSparkle2_Main:
-	move.w	(timeStoneObject+oSprX).l,oSprX(a0)
-	move.w	(timeStoneObject+oSprY).l,oSprY(a0)
-	subi.w	#$20,oSprY(a0)
+	move.w	timeStoneObject+oSprX,oSprX(a0)	; Move with time stone
+	move.w	timeStoneObject+oSprY,oSprY(a0)
+	subi.w	#32,oSprY(a0)
 	rts
 
 ; -------------------------------------------------------------------------
 
-MapSpr_Sparkle:
-	dc.l	byte_13E2E
-	dc.l	byte_13E40
-	dc.l	byte_13E52
-byte_13E2E:
-	dc.b	4, 3
-	dc.l	byte_13E64
-	dc.l	byte_13E6E
-	dc.l	byte_13E82
-	dc.l	byte_13E78
-byte_13E40:
-	dc.b	4, 1
-	dc.l	byte_13E8C
-	dc.l	byte_13E9C
-	dc.l	byte_13EAC
-	dc.l	byte_13EBC
-byte_13E52:
-	dc.b	4, 1
-	dc.l	byte_13EFC
-	dc.l	byte_13EEC
-	dc.l	byte_13EDC
-	dc.l	byte_13ECC
-byte_13E64:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$E8, 6, 0, 0, $F8
-byte_13E6E:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$E8, 6, 0, 6, $F8
-byte_13E78:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$E8, 6, 8, 6, $F8
-byte_13E82:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$E8, 6, 0, $C, $F8
-byte_13E8C:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$E8, 9, 0, $12, $F4
-	dc.b	$F8, 0, 0, $18, $FC
-	dc.b	0
-byte_13E9C:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$E8, 0, $10, $18, $FC
-	dc.b	$F0, 9, $10, $12, $F4
-	dc.b	0
-byte_13EAC:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$E8, 0, $18, $18, $FC
-	dc.b	$F0, 9, $18, $12, $F4
-	dc.b	0
-byte_13EBC:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$E8, 9, 8, $12, $F4
-	dc.b	$F8, 0, 8, $18, $FC
-	dc.b	0
-byte_13ECC:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$F0, 0, 0, $19, 0
-	dc.b	$F8, 4, 0, $1A, $F8
-	dc.b	0
-byte_13EDC:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$F8, 0, $10, $19, 0
-	dc.b	$F0, 4, $10, $1A, $F8
-	dc.b	0
-byte_13EEC:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$F0, 4, $18, $1A, $F8
-	dc.b	$F8, 0, $18, $19, $F8
-	dc.b	0
-byte_13EFC:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$F0, 0, 8, $19, $F8
-	dc.b	$F8, 4, 8, $1A, $F8
-	dc.b	0
+MapSpr_TimeStone:
+	include	"Special Stage/Objects/Time Stone/Data/Mappings.asm"
+	even
 	
 ; -------------------------------------------------------------------------

@@ -44,8 +44,6 @@ oYVel		rs.l	1			; Y velocity
 		rs.b	$18
 oTimer		rs.b	1			; Timer
 
-oDustXVel	EQU	oVar3C
-
 ; -------------------------------------------------------------------------
 ; Graphics operation variable structure
 ; -------------------------------------------------------------------------
@@ -749,7 +747,7 @@ Set3DObjectDraw:
 
 Draw3DObjects:
 	move.l	#zBuffer,d4			; Get Z buffer
-	move.l	#DataSection,d5			; Use data section
+	move.l	#SprMap3DSection,d5		; Use data from 3D sprite mappings section
 	moveq	#ZBUFSLOTS*2,d6			; Number of slots per level
 	moveq	#ZBUFLEVELS-1,d7		; Number of levels
 
@@ -1282,228 +1280,245 @@ AnimateStamps:
 	rts
 
 ; -------------------------------------------------------------------------
+; Stamp animation data
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	x  - Map X
+;	y  - Map Y
+;	id - Stamp IDs
+; -------------------------------------------------------------------------
+
+STMPANI macro x, y, id
+	dc.w	((\y)*256)+((\x)*2)
+	rept	narg-2
+		dc.w	\id
+		shift
+	endr
+	endm
+
+; -------------------------------------------------------------------------
 
 StampAnim1_SS1:
-	dc.w	$277E, $016C, $0170, $0174, $0178
-	dc.w	$287E, $016C, $0170, $0174, $0178
-	dc.w	$297E, $016C, $0170, $0174, $0178
-	dc.w	$2A7E, $016C, $0170, $0174, $0178
-	dc.w	$3282, $016C, $0170, $0174, $0178
-	dc.w	$3382, $016C, $0170, $0174, $0178
-	dc.w	$3482, $016C, $0170, $0174, $0178
-	dc.w	$3582, $016C, $0170, $0174, $0178
-	dc.w	$3298, $016C, $0170, $0174, $0178
-	dc.w	$3398, $016C, $0170, $0174, $0178
-	dc.w	$3498, $016C, $0170, $0174, $0178
-	dc.w	$3598, $016C, $0170, $0174, $0178
+	STMPANI	$3F, $27, $016C, $0170, $0174, $0178
+	STMPANI	$3F, $28, $016C, $0170, $0174, $0178
+	STMPANI	$3F, $29, $016C, $0170, $0174, $0178
+	STMPANI	$3F, $2A, $016C, $0170, $0174, $0178
+	STMPANI	$41, $32, $016C, $0170, $0174, $0178
+	STMPANI	$41, $33, $016C, $0170, $0174, $0178
+	STMPANI	$41, $34, $016C, $0170, $0174, $0178
+	STMPANI	$41, $35, $016C, $0170, $0174, $0178
+	STMPANI	$4C, $32, $016C, $0170, $0174, $0178
+	STMPANI	$4C, $33, $016C, $0170, $0174, $0178
+	STMPANI	$4C, $34, $016C, $0170, $0174, $0178
+	STMPANI	$4C, $35, $016C, $0170, $0174, $0178
 
 StampAnim2_SS1:
-	dc.w	$4484, $6160, $6164, $6168
-	dc.w	$4486, $4160, $4164, $4168
-	dc.w	$4584, $0160, $0164, $0168
-	dc.w	$4586, $2160, $2164, $2168
-	dc.w	$4488, $6160, $6164, $6168
-	dc.w	$448A, $4160, $4164, $4168
-	dc.w	$4588, $0160, $0164, $0168
-	dc.w	$458A, $2160, $2164, $2168
+	STMPANI	$42, $44, $6160, $6164, $6168
+	STMPANI	$43, $44, $4160, $4164, $4168
+	STMPANI	$42, $45, $0160, $0164, $0168
+	STMPANI	$43, $45, $2160, $2164, $2168
+	STMPANI	$44, $44, $6160, $6164, $6168
+	STMPANI	$45, $44, $4160, $4164, $4168
+	STMPANI	$44, $45, $0160, $0164, $0168
+	STMPANI	$45, $45, $2160, $2164, $2168
 
 StampAnim1_SS2:
-	dc.w	$4C68, $01AC, $01B0, $01B4, $01B8
-	dc.w	$4D66, $01AC, $01B0, $01B4, $01B8
-	dc.w	$4E64, $01AC, $01B0, $01B4, $01B8
-	dc.w	$4A6C, $01AC, $01B0, $01B4, $01B8
-	dc.w	$4B6E, $01AC, $01B0, $01B4, $01B8
-	dc.w	$4C70, $01AC, $01B0, $01B4, $01B8
-	dc.w	$3F7E, $01AC, $01B0, $01B4, $01B8
-	dc.w	$3F80, $01AC, $01B0, $01B4, $01B8
-	dc.w	$407E, $01AC, $01B0, $01B4, $01B8
-	dc.w	$4080, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$34, $4C, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$33, $4D, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$32, $4E, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$36, $4A, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$37, $4B, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$38, $4C, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$3F, $3F, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$40, $3F, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$3F, $40, $01AC, $01B0, $01B4, $01B8
+	STMPANI	$40, $40, $01AC, $01B0, $01B4, $01B8
 
 StampAnim2_SS2:
-	dc.w	$47B0, $61A0, $61A4, $61A8
-	dc.w	$47B2, $41A0, $41A4, $41A8
-	dc.w	$48B0, $01A0, $01A4, $01A8
-	dc.w	$48B2, $21A0, $21A4, $21A8
-	dc.w	$3098, $61A0, $61A4, $61A8
-	dc.w	$309A, $41A0, $41A4, $41A8
-	dc.w	$3198, $01A0, $01A4, $01A8
-	dc.w	$319A, $21A0, $21A4, $21A8
+	STMPANI	$58, $47, $61A0, $61A4, $61A8
+	STMPANI	$59, $47, $41A0, $41A4, $41A8
+	STMPANI	$58, $48, $01A0, $01A4, $01A8
+	STMPANI	$59, $48, $21A0, $21A4, $21A8
+	STMPANI	$4C, $30, $61A0, $61A4, $61A8
+	STMPANI	$4D, $30, $41A0, $41A4, $41A8
+	STMPANI	$4C, $31, $01A0, $01A4, $01A8
+	STMPANI	$4D, $31, $21A0, $21A4, $21A8
 
 StampAnim1_SS3:
-	dc.w	$2F70, $01EC, $01F0, $01F4, $01F8
-	dc.w	$2F72, $01EC, $01F0, $01F4, $01F8
-	dc.w	$2F74, $01EC, $01F0, $01F4, $01F8
-	dc.w	$2F76, $01EC, $01F0, $01F4, $01F8
-	dc.w	$4F5E, $01EC, $01F0, $01F4, $01F8
-	dc.w	$4F60, $01EC, $01F0, $01F4, $01F8
-	dc.w	$4F62, $01EC, $01F0, $01F4, $01F8
-	dc.w	$4F64, $01EC, $01F0, $01F4, $01F8
+	STMPANI	$38, $2F, $01EC, $01F0, $01F4, $01F8
+	STMPANI	$39, $2F, $01EC, $01F0, $01F4, $01F8
+	STMPANI	$3A, $2F, $01EC, $01F0, $01F4, $01F8
+	STMPANI	$3B, $2F, $01EC, $01F0, $01F4, $01F8
+	STMPANI	$2F, $4F, $01EC, $01F0, $01F4, $01F8
+	STMPANI	$30, $4F, $01EC, $01F0, $01F4, $01F8
+	STMPANI	$31, $4F, $01EC, $01F0, $01F4, $01F8
+	STMPANI	$32, $4F, $01EC, $01F0, $01F4, $01F8
 
 StampAnim2_SS3:
-	dc.w	$4088, $61E0, $61E4, $61E8
-	dc.w	$408A, $41E0, $41E4, $41E8
-	dc.w	$4188, $01E0, $01E4, $01E8
-	dc.w	$418A, $21E0, $21E4, $21E8
-	dc.w	$408C, $61E0, $61E4, $61E8
-	dc.w	$408E, $41E0, $41E4, $41E8
-	dc.w	$418C, $01E0, $01E4, $01E8
-	dc.w	$418E, $21E0, $21E4, $21E8
-	dc.w	$50B0, $61E0, $61E4, $61E8
-	dc.w	$50B2, $41E0, $41E4, $41E8
-	dc.w	$51B0, $01E0, $01E4, $01E8
-	dc.w	$51B2, $21E0, $21E4, $21E8
+	STMPANI	$44, $40, $61E0, $61E4, $61E8
+	STMPANI	$45, $40, $41E0, $41E4, $41E8
+	STMPANI	$44, $41, $01E0, $01E4, $01E8
+	STMPANI	$45, $41, $21E0, $21E4, $21E8
+	STMPANI	$46, $40, $61E0, $61E4, $61E8
+	STMPANI	$47, $40, $41E0, $41E4, $41E8
+	STMPANI	$46, $41, $01E0, $01E4, $01E8
+	STMPANI	$47, $41, $21E0, $21E4, $21E8
+	STMPANI	$58, $50, $61E0, $61E4, $61E8
+	STMPANI	$59, $50, $41E0, $41E4, $41E8
+	STMPANI	$58, $51, $01E0, $01E4, $01E8
+	STMPANI	$59, $51, $21E0, $21E4, $21E8
 
 StampAnim1_SS4:
-	dc.w	$3576, $01CC, $01D0, $01D4, $01D8
-	dc.w	$3676, $01CC, $01D0, $01D4, $01D8
-	dc.w	$3776, $01CC, $01D0, $01D4, $01D8
-	dc.w	$3876, $01CC, $01D0, $01D4, $01D8
-	dc.w	$4788, $01CC, $01D0, $01D4, $01D8
-	dc.w	$4888, $01CC, $01D0, $01D4, $01D8
-	dc.w	$4988, $01CC, $01D0, $01D4, $01D8
-	dc.w	$4A88, $01CC, $01D0, $01D4, $01D8
-	dc.w	$269C, $01CC, $01D0, $01D4, $01D8
-	dc.w	$279A, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2898, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2996, $01CC, $01D0, $01D4, $01D8
-	dc.w	$26AC, $01CC, $01D0, $01D4, $01D8
-	dc.w	$27AA, $01CC, $01D0, $01D4, $01D8
-	dc.w	$28A8, $01CC, $01D0, $01D4, $01D8
-	dc.w	$29A6, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2AA4, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2BA2, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2CA0, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2D9E, $01CC, $01D0, $01D4, $01D8
-	dc.w	$27AE, $01CC, $01D0, $01D4, $01D8
-	dc.w	$28AC, $01CC, $01D0, $01D4, $01D8
-	dc.w	$29AA, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2AA8, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2BA6, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2CA4, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2DA2, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2EA0, $01CC, $01D0, $01D4, $01D8
-	dc.w	$29B8, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2AB6, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2BB4, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2CB2, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2ABA, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2BB8, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2CB6, $01CC, $01D0, $01D4, $01D8
-	dc.w	$2DB4, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$3B, $35, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$3B, $36, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$3B, $37, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$3B, $38, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$44, $47, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$44, $48, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$44, $49, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$44, $4A, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$4E, $26, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$4D, $27, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$4C, $28, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$4B, $29, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$56, $26, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$55, $27, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$54, $28, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$53, $29, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$52, $2A, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$51, $2B, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$50, $2C, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$4F, $2D, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$57, $27, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$56, $28, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$55, $29, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$54, $2A, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$53, $2B, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$52, $2C, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$51, $2D, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$50, $2E, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$5C, $29, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$5B, $2A, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$5A, $2B, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$59, $2C, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$5D, $2A, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$5C, $2B, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$5B, $2C, $01CC, $01D0, $01D4, $01D8
+	STMPANI	$5A, $2D, $01CC, $01D0, $01D4, $01D8
 
 StampAnim2_SS4:
-	dc.w	$565C, $61C0, $61C4, $61C8
-	dc.w	$565E, $41C0, $41C4, $41C8
-	dc.w	$575C, $01C0, $01C4, $01C8
-	dc.w	$575E, $21C0, $21C4, $21C8
-	dc.w	$5660, $61C0, $61C4, $61C8
-	dc.w	$5662, $41C0, $41C4, $41C8
-	dc.w	$5760, $01C0, $01C4, $01C8
-	dc.w	$5762, $21C0, $21C4, $21C8
-	dc.w	$524C, $61C0, $61C4, $61C8
-	dc.w	$524E, $41C0, $41C4, $41C8
-	dc.w	$534C, $01C0, $01C4, $01C8
-	dc.w	$534E, $21C0, $21C4, $21C8
-	dc.w	$5250, $61C0, $61C4, $61C8
-	dc.w	$5252, $41C0, $41C4, $41C8
-	dc.w	$5350, $01C0, $01C4, $01C8
-	dc.w	$5352, $21C0, $21C4, $21C8
+	STMPANI	$2E, $56, $61C0, $61C4, $61C8
+	STMPANI	$2F, $56, $41C0, $41C4, $41C8
+	STMPANI	$2E, $57, $01C0, $01C4, $01C8
+	STMPANI	$2F, $57, $21C0, $21C4, $21C8
+	STMPANI	$30, $56, $61C0, $61C4, $61C8
+	STMPANI	$31, $56, $41C0, $41C4, $41C8
+	STMPANI	$30, $57, $01C0, $01C4, $01C8
+	STMPANI	$31, $57, $21C0, $21C4, $21C8
+	STMPANI	$26, $52, $61C0, $61C4, $61C8
+	STMPANI	$27, $52, $41C0, $41C4, $41C8
+	STMPANI	$26, $53, $01C0, $01C4, $01C8
+	STMPANI	$27, $53, $21C0, $21C4, $21C8
+	STMPANI	$28, $52, $61C0, $61C4, $61C8
+	STMPANI	$29, $52, $41C0, $41C4, $41C8
+	STMPANI	$28, $53, $01C0, $01C4, $01C8
+	STMPANI	$29, $53, $21C0, $21C4, $21C8
 
 StampAnim1_SS5:
-	dc.w	$2274, $01B0, $01B4, $01B8, $01BC
-	dc.w	$2374, $01B0, $01B4, $01B8, $01BC
-	dc.w	$2474, $01B0, $01B4, $01B8, $01BC
-	dc.w	$4178, $01B0, $01B4, $01B8, $01BC
-	dc.w	$427A, $01B0, $01B4, $01B8, $01BC
-	dc.w	$437C, $01B0, $01B4, $01B8, $01BC
-	dc.w	$447E, $01B0, $01B4, $01B8, $01BC
-	dc.w	$517C, $01B0, $01B4, $01B8, $01BC
-	dc.w	$527A, $01B0, $01B4, $01B8, $01BC
-	dc.w	$5378, $01B0, $01B4, $01B8, $01BC
-	dc.w	$5476, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3A, $22, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3A, $23, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3A, $24, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3C, $41, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3D, $42, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3E, $43, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3F, $44, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3E, $51, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3D, $52, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3C, $53, $01B0, $01B4, $01B8, $01BC
+	STMPANI	$3B, $54, $01B0, $01B4, $01B8, $01BC
 
 StampAnim2_SS5:
-	dc.w	$2970, $61A4, $61A8, $61AC
-	dc.w	$2972, $41A4, $41A8, $41AC
-	dc.w	$2A70, $01A4, $01A8, $01AC
-	dc.w	$2A72, $21A4, $21A8, $21AC
-	dc.w	$405C, $61A4, $61A8, $61AC
-	dc.w	$405E, $41A4, $41A8, $41AC
-	dc.w	$415C, $01A4, $01A8, $01AC
-	dc.w	$415E, $21A4, $21A8, $21AC
-	dc.w	$4A90, $61A4, $61A8, $61AC
-	dc.w	$4A92, $41A4, $41A8, $41AC
-	dc.w	$4B90, $01A4, $01A8, $01AC
-	dc.w	$4B92, $21A4, $21A8, $21AC
+	STMPANI	$38, $29, $61A4, $61A8, $61AC
+	STMPANI	$39, $29, $41A4, $41A8, $41AC
+	STMPANI	$38, $2A, $01A4, $01A8, $01AC
+	STMPANI	$39, $2A, $21A4, $21A8, $21AC
+	STMPANI	$2E, $40, $61A4, $61A8, $61AC
+	STMPANI	$2F, $40, $41A4, $41A8, $41AC
+	STMPANI	$2E, $41, $01A4, $01A8, $01AC
+	STMPANI	$2F, $41, $21A4, $21A8, $21AC
+	STMPANI	$48, $4A, $61A4, $61A8, $61AC
+	STMPANI	$49, $4A, $41A4, $41A8, $41AC
+	STMPANI	$48, $4B, $01A4, $01A8, $01AC
+	STMPANI	$49, $4B, $21A4, $21A8, $21AC
 
 StampAnim1_SS6:
-	dc.w	$393A, $016C, $0170, $0174, $0178
-	dc.w	$3A3A, $016C, $0170, $0174, $0178
-	dc.w	$493A, $016C, $0170, $0174, $0178
-	dc.w	$4A3A, $016C, $0170, $0174, $0178
-	dc.w	$5BC0, $016C, $0170, $0174, $0178
-	dc.w	$5CBE, $016C, $0170, $0174, $0178
-	dc.w	$5CC0, $016C, $0170, $0174, $0178
-	dc.w	$2994, $016C, $0170, $0174, $0178
-	dc.w	$2996, $016C, $0170, $0174, $0178
-	dc.w	$2A92, $016C, $0170, $0174, $0178
-	dc.w	$2A94, $016C, $0170, $0174, $0178
+	STMPANI	$1D, $39, $016C, $0170, $0174, $0178
+	STMPANI	$1D, $3A, $016C, $0170, $0174, $0178
+	STMPANI	$1D, $49, $016C, $0170, $0174, $0178
+	STMPANI	$1D, $4A, $016C, $0170, $0174, $0178
+	STMPANI	$60, $5B, $016C, $0170, $0174, $0178
+	STMPANI	$5F, $5C, $016C, $0170, $0174, $0178
+	STMPANI	$60, $5C, $016C, $0170, $0174, $0178
+	STMPANI	$4A, $29, $016C, $0170, $0174, $0178
+	STMPANI	$4B, $29, $016C, $0170, $0174, $0178
+	STMPANI	$49, $2A, $016C, $0170, $0174, $0178
+	STMPANI	$4A, $2A, $016C, $0170, $0174, $0178
 
 StampAnim2_SS6:
-	dc.w	$2298, $6160, $6164, $6168
-	dc.w	$229A, $4160, $4164, $4168
-	dc.w	$2398, $0160, $0164, $0168
-	dc.w	$239A, $2160, $2164, $2168
-	dc.w	$325C, $6160, $6164, $6168
-	dc.w	$325E, $4160, $4164, $4168
-	dc.w	$335C, $0160, $0164, $0168
-	dc.w	$335E, $2160, $2164, $2168
-	dc.w	$4A94, $6160, $6164, $6168
-	dc.w	$4A96, $4160, $4164, $4168
-	dc.w	$4B94, $0160, $0164, $0168
-	dc.w	$4B96, $2160, $2164, $2168
-	dc.w	$4C5C, $6160, $6164, $6168
-	dc.w	$4C5E, $4160, $4164, $4168
-	dc.w	$4D5C, $0160, $0164, $0168
-	dc.w	$4D5E, $2160, $2164, $2168
+	STMPANI	$4C, $22, $6160, $6164, $6168
+	STMPANI	$4D, $22, $4160, $4164, $4168
+	STMPANI	$4C, $23, $0160, $0164, $0168
+	STMPANI	$4D, $23, $2160, $2164, $2168
+	STMPANI	$2E, $32, $6160, $6164, $6168
+	STMPANI	$2F, $32, $4160, $4164, $4168
+	STMPANI	$2E, $33, $0160, $0164, $0168
+	STMPANI	$2F, $33, $2160, $2164, $2168
+	STMPANI	$4A, $4A, $6160, $6164, $6168
+	STMPANI	$4B, $4A, $4160, $4164, $4168
+	STMPANI	$4A, $4B, $0160, $0164, $0168
+	STMPANI	$4B, $4B, $2160, $2164, $2168
+	STMPANI	$2E, $4C, $6160, $6164, $6168
+	STMPANI	$2F, $4C, $4160, $4164, $4168
+	STMPANI	$2E, $4D, $0160, $0164, $0168
+	STMPANI	$2F, $4D, $2160, $2164, $2168
 
 StampAnim1_SS7:
-	dc.w	$2144, $01A4, $01A8, $01AC, $01B0
-	dc.w	$2242, $01A4, $01A8, $01AC, $01B0
-	dc.w	$2148, $01A4, $01A8, $01AC, $01B0
-	dc.w	$2246, $01A4, $01A8, $01AC, $01B0
+	STMPANI	$22, $21, $01A4, $01A8, $01AC, $01B0
+	STMPANI	$21, $22, $01A4, $01A8, $01AC, $01B0
+	STMPANI	$24, $21, $01A4, $01A8, $01AC, $01B0
+	STMPANI	$23, $22, $01A4, $01A8, $01AC, $01B0
 
 StampAnim2_SS7:
-	dc.w	$3464, $6198, $619C, $61A0
-	dc.w	$3466, $4198, $419C, $41A0
-	dc.w	$3564, $0198, $019C, $01A0
-	dc.w	$3566, $2198, $219C, $21A0
+	STMPANI	$32, $34, $6198, $619C, $61A0
+	STMPANI	$33, $34, $4198, $419C, $41A0
+	STMPANI	$32, $35, $0198, $019C, $01A0
+	STMPANI	$33, $35, $2198, $219C, $21A0
 
 StampAnim1_SS8:
-	dc.w	$353C, $016C, $0170, $0174, $0178
-	dc.w	$3542, $016C, $0170, $0174, $0178
-	dc.w	$599C, $016C, $0170, $0174, $0178
-	dc.w	$5A9E, $016C, $0170, $0174, $0178
-	dc.w	$5B9C, $016C, $0170, $0174, $0178
-	dc.w	$5C9E, $016C, $0170, $0174, $0178
-	dc.w	$5D9C, $016C, $0170, $0174, $0178
-	dc.w	$2486, $016C, $0170, $0174, $0178
-	dc.w	$2586, $016C, $0170, $0174, $0178
-	dc.w	$2686, $016C, $0170, $0174, $0178
+	STMPANI	$1E, $35, $016C, $0170, $0174, $0178
+	STMPANI	$21, $35, $016C, $0170, $0174, $0178
+	STMPANI	$4E, $59, $016C, $0170, $0174, $0178
+	STMPANI	$4F, $5A, $016C, $0170, $0174, $0178
+	STMPANI	$4E, $5B, $016C, $0170, $0174, $0178
+	STMPANI	$4F, $5C, $016C, $0170, $0174, $0178
+	STMPANI	$4E, $5D, $016C, $0170, $0174, $0178
+	STMPANI	$43, $24, $016C, $0170, $0174, $0178
+	STMPANI	$43, $25, $016C, $0170, $0174, $0178
+	STMPANI	$43, $26, $016C, $0170, $0174, $0178
 
 StampAnim2_SS8:
-	dc.w	$3D3E, $6160, $6164, $6168
-	dc.w	$3D40, $4160, $4164, $4168
-	dc.w	$3E3E, $0160, $0164, $0168
-	dc.w	$3E40, $2160, $2164, $2168
-	dc.w	$3D82, $6160, $6164, $6168
-	dc.w	$3D84, $4160, $4164, $4168
-	dc.w	$3E82, $0160, $0164, $0168
-	dc.w	$3E84, $2160, $2164, $2168
-	dc.w	$5A82, $6160, $6164, $6168
-	dc.w	$5A84, $4160, $4164, $4168
-	dc.w	$5B82, $0160, $0164, $0168
-	dc.w	$5B84, $2160, $2164, $2168
+	STMPANI	$1F, $3D, $6160, $6164, $6168
+	STMPANI	$20, $3D, $4160, $4164, $4168
+	STMPANI	$1F, $3E, $0160, $0164, $0168
+	STMPANI	$20, $3E, $2160, $2164, $2168
+	STMPANI	$41, $3D, $6160, $6164, $6168
+	STMPANI	$42, $3D, $4160, $4164, $4168
+	STMPANI	$41, $3E, $0160, $0164, $0168
+	STMPANI	$42, $3E, $2160, $2164, $2168
+	STMPANI	$41, $5A, $6160, $6164, $6168
+	STMPANI	$42, $5A, $4160, $4164, $4168
+	STMPANI	$41, $5B, $0160, $0164, $0168
+	STMPANI	$42, $5B, $2160, $2164, $2168
 
 ; -------------------------------------------------------------------------
 ; Check player collision with a UFO
@@ -2599,13 +2614,13 @@ SineTable:
 	
 	align	SpecStageData, $FF
 	incbin	"Special Stage/Stage Data.bin"
+
+; -------------------------------------------------------------------------
+; 3D sprite mappings section
+; -------------------------------------------------------------------------
+
 	align	PRGRAM+$30000, $FF
-
-; -------------------------------------------------------------------------
-; Data section
-; -------------------------------------------------------------------------
-
-DataSection:
+SprMap3DSection:
 
 SonicArt:
 	include	"Special Stage/Objects/Sonic/Data/Art.asm"
@@ -2613,353 +2628,34 @@ SonicArt:
 
 MapSpr_Sonic:
 	include	"Special Stage/Objects/Sonic/Data/Mappings.asm"
+	even
 
 MapSpr_Splash:
-	dc.l	byte_3A4F4
-	dc.l	byte_3A512
-byte_3A4F4:
-	dc.b	7, 1
-	dc.l	byte_3A520
-	dc.l	byte_3A530
-	dc.l	byte_3A540
-	dc.l	byte_3A54A
-	dc.l	byte_3A55E
-	dc.l	byte_3A578
-	dc.l	byte_3A582
-byte_3A512:
-	dc.b	3, 0
-	dc.l	byte_3A520
-	dc.l	byte_3A530
-	dc.l	byte_3A540
-byte_3A520:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$F0, 4, 0, 0, $F8
-	dc.b	$F8, $C, 0, 2, $F0
-	dc.b	0
-byte_3A530:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$E0, 0, 0, 6, $F8
-	dc.b	$E8, $E, 0, 7, $F0
-	dc.b	0
-byte_3A540:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$E0, $F, 0, $13, $F0
-byte_3A54A:
-	dc.b	2, 0, 0, 0, 0
-	dc.b	$D0, 4, 0, $23, $F8
-	dc.b	$D8, 8, 0, $25, $F0
-	dc.b	$E0, $F, 0, $28, $F0
-byte_3A55E:
-	dc.b	3, 0, 0, 0, 0
-	dc.b	$C0, 8, 0, $38, $F8
-	dc.b	$C8, 8, 0, $3B, $F0
-	dc.b	$D0, $F, 0, $3E, $F0
-	dc.b	$F0, $D, 0, $4E, $F0
-	dc.b	0
-byte_3A578:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$F8, 4, 0, $56, $F8
-byte_3A582:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$F8, 4, 0, $58, $F0
-	dc.b	$F8, 4, 8, $58, 0
-	dc.b	0
+	include	"Special Stage/Objects/Splash/Data/Mappings.asm"
+	even
+
 MapSpr_Shadow:
-	dc.l	byte_3A5BA
-	dc.l	byte_3A5C0
-	dc.l	byte_3A5C6
-	dc.l	byte_3A5CC
-	dc.l	byte_3A5D2
-	dc.l	byte_3A5D8
-	dc.l	byte_3A5DE
-	dc.l	byte_3A5E4
-	dc.l	byte_3A5EA
-	dc.l	byte_3A5F0
-byte_3A5BA:
-	dc.b	1, $FF
-	dc.l	byte_3A5F6
-byte_3A5C0:
-	dc.b	1, $FF
-	dc.l	byte_3A606
-byte_3A5C6:
-	dc.b	1, $FF
-	dc.l	byte_3A61A
-byte_3A5CC:
-	dc.b	1, $FF
-	dc.l	byte_3A62A
-byte_3A5D2:
-	dc.b	1, $FF
-	dc.l	byte_3A63A
-byte_3A5D8:
-	dc.b	1, $FF
-	dc.l	byte_3A64E
-byte_3A5DE:
-	dc.b	1, $FF
-	dc.l	byte_3A65E
-byte_3A5E4:
-	dc.b	1, $FF
-	dc.l	byte_3A668
-byte_3A5EA:
-	dc.b	1, $FF
-	dc.l	byte_3A672
-byte_3A5F0:
-	dc.b	1, $FF
-	dc.l	byte_3A67C
-byte_3A5F6:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$F8, $D, 0, 0, $E0
-	dc.b	$F8, $D, 8, 0, 0
-	dc.b	0
-byte_3A606:
-	dc.b	2, 0, 0, 0, 0
-	dc.b	$F8, 9, 0, 8, $E4
-	dc.b	$F8, 1, 0, $E, $FC
-	dc.b	$F8, 9, 8, 8, 4
-byte_3A61A:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$FC, 8, 0, $10, $E8
-	dc.b	$FC, 8, 8, $10, 0
-	dc.b	0
-byte_3A62A:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$FC, 8, 0, $13, $E8
-	dc.b	$FC, 8, 8, $13, 0
-	dc.b	0
-byte_3A63A:
-	dc.b	2, 0, 0, 0, 0
-	dc.b	$FC, 4, 0, $16, $EC
-	dc.b	$FC, 4, 8, $16, 4
-	dc.b	$FC, 0, 0, $18, $FC
-byte_3A64E:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$FC, 4, 0, $19, $F0
-	dc.b	$FC, 4, 8, $19, 0
-	dc.b	0
-byte_3A65E:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$FC, 8, 0, $1B, $F4
-byte_3A668:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$FC, 8, 0, $1E, $F4
-byte_3A672:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$FC, 4, 0, $21, $F8
-byte_3A67C:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$FC, 0, 0, $23, $FC
-MapSpr_UFO1:
-	dc.l	byte_3A6AE
-	dc.l	byte_3A6B4
-	dc.l	byte_3A6BA
-	dc.l	byte_3A6C0
-	dc.l	byte_3A6C6
-	dc.l	byte_3A6CC
-	dc.l	byte_3A6D2
-	dc.l	byte_3A6D8
-	dc.l	byte_3A6DE
-	dc.l	byte_3A6E4
-byte_3A6AE:
-	dc.b	1, $FF
-	dc.l	byte_3A6EA
-byte_3A6B4:
-	dc.b	1, $FF
-	dc.l	byte_3A718
-byte_3A6BA:
-	dc.b	1, $FF
-	dc.l	byte_3A73C
-byte_3A6C0:
-	dc.b	1, $FF
-	dc.l	byte_3A756
-byte_3A6C6:
-	dc.b	1, $FF
-	dc.l	byte_3A77A
-byte_3A6CC:
-	dc.b	1, $FF
-	dc.l	byte_3A794
-byte_3A6D2:
-	dc.b	1, $FF
-	dc.l	byte_3A7A4
-byte_3A6D8:
-	dc.b	1, $FF
-	dc.l	byte_3A7B8
-byte_3A6DE:
-	dc.b	1, $FF
-	dc.l	byte_3A7CC
-byte_3A6E4:
-	dc.b	1, $FF
-	dc.l	byte_3A7D6
-byte_3A6EA:
-	dc.b	7, 0, 0, 0, 0
-	dc.b	$C8, 8, 0, 0, $E8
-	dc.b	$C8, 8, 8, 0, 0
-	dc.b	$D0, $F, 0, 3, $E0
-	dc.b	$D0, $F, 8, 3, 0
-	dc.b	$F0, $C, 0, $13, $E0
-	dc.b	$F0, $C, 8, $13, 0
-	dc.b	$F8, 8, 0, $17, $E8
-	dc.b	$F8, 8, 8, $17, 0
-	dc.b	0
-byte_3A718:
-	dc.b	5, 0, 0, 0, 0
-	dc.b	$D0, 8, 0, $1A, $E8
-	dc.b	$D0, 8, 8, $1A, 0
-	dc.b	$D8, $E, 0, $1D, $E0
-	dc.b	$D8, $E, 8, $1D, 0
-	dc.b	$F0, 9, 0, $29, $E8
-	dc.b	$F0, 9, 8, $29, 0
-	dc.b	0
-byte_3A73C:
-	dc.b	3, 0, 0, 0, 0
-	dc.b	$D8, $B, 0, $2F, $E8
-	dc.b	$D8, $B, 8, $2F, 0
-	dc.b	$F8, 4, 0, $3B, $F0
-	dc.b	$F8, 4, 8, $3B, 0
-	dc.b	0
-byte_3A756:
-	dc.b	5, 0, 0, 0, 0
-	dc.b	$D8, 4, 0, $3D, $F0
-	dc.b	$D8, 4, 8, $3D, 0
-	dc.b	$E0, $A, 0, $3F, $E8
-	dc.b	$E0, $A, 8, $3F, 0
-	dc.b	$F8, 4, 0, $48, $F0
-	dc.b	$F8, 4, 8, $48, 0
-	dc.b	0
-byte_3A77A:
-	dc.b	3, 0, 0, 0, 0
-	dc.b	$E0, $A, 0, $4A, $E8
-	dc.b	$E0, $A, 8, $4A, 0
-	dc.b	$F8, 4, 0, $53, $F0
-	dc.b	$F8, 4, 8, $53, 0
-	dc.b	0
-byte_3A794:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$E0, 7, 0, $55, $F0
-	dc.b	$E0, 7, 8, $55, 0
-	dc.b	0
-byte_3A7A4:
-	dc.b	2, 0, 0, 0, 0
-	dc.b	$E8, 2, 0, $5D, $F4
-	dc.b	$E8, 2, 0, $60, $FC
-	dc.b	$E8, 2, 8, $5D, 4
-byte_3A7B8:
-	dc.b	2, 0, 0, 0, 0
-	dc.b	$F0, 1, 0, $63, $F4
-	dc.b	$F0, 1, 0, $65, $FC
-	dc.b	$F0, 1, 8, $63, 4
-byte_3A7CC:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$F0, 5, 0, $67, $F8
-byte_3A7D6:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$F8, 0, 0, $6B, $FC
-MapSpr_UFO2:
-	dc.l	byte_3A808
-	dc.l	byte_3A80E
-	dc.l	byte_3A814
-	dc.l	byte_3A81A
-	dc.l	byte_3A820
-	dc.l	byte_3A826
-	dc.l	byte_3A82C
-	dc.l	byte_3A832
-	dc.l	byte_3A838
-	dc.l	byte_3A83E
-byte_3A808:
-	dc.b	1, $FF
-	dc.l	byte_3A844
-byte_3A80E:
-	dc.b	1, $FF
-	dc.l	byte_3A872
-byte_3A814:
-	dc.b	1, $FF
-	dc.l	byte_3A896
-byte_3A81A:
-	dc.b	1, $FF
-	dc.l	byte_3A8B0
-byte_3A820:
-	dc.b	1, $FF
-	dc.l	byte_3A8D4
-byte_3A826:
-	dc.b	1, $FF
-	dc.l	byte_3A8EE
-byte_3A82C:
-	dc.b	1, $FF
-	dc.l	byte_3A8FE
-byte_3A832:
-	dc.b	1, $FF
-	dc.l	byte_3A912
-byte_3A838:
-	dc.b	1, $FF
-	dc.l	byte_3A926
-byte_3A83E:
-	dc.b	1, $FF
-	dc.l	byte_3A930
-byte_3A844:
-	dc.b	7, 0, 0, 0, 0
-	dc.b	$C8, 8, 0, $6C, $E8
-	dc.b	$C8, 8, 8, $6C, 0
-	dc.b	$D0, $F, 0, $6F, $E0
-	dc.b	$D0, $F, 8, $6F, 0
-	dc.b	$F0, $C, 0, $7F, $E0
-	dc.b	$F0, $C, 8, $7F, 0
-	dc.b	$F8, 8, 0, $83, $E8
-	dc.b	$F8, 8, 8, $83, 0
-	dc.b	0
-byte_3A872:
-	dc.b	5, 0, 0, 0, 0
-	dc.b	$D0, 8, 0, $86, $E8
-	dc.b	$D0, 8, 8, $86, 0
-	dc.b	$D8, $E, 0, $89, $E0
-	dc.b	$D8, $E, 8, $89, 0
-	dc.b	$F0, 9, 0, $95, $E8
-	dc.b	$F0, 9, 8, $95, 0
-	dc.b	0
-byte_3A896:
-	dc.b	3, 0, 0, 0, 0
-	dc.b	$D8, $B, 0, $9B, $E8
-	dc.b	$D8, $B, 8, $9B, 0
-	dc.b	$F8, 4, 0, $A7, $F0
-	dc.b	$F8, 4, 8, $A7, 0
-	dc.b	0
-byte_3A8B0:
-	dc.b	5, 0, 0, 0, 0
-	dc.b	$D8, 4, 0, $3D, $F0
-	dc.b	$D8, 4, 8, $3D, 0
-	dc.b	$E0, $A, 0, $A9, $E8
-	dc.b	$E0, $A, 8, $A9, 0
-	dc.b	$F8, 4, 0, $B2, $F0
-	dc.b	$F8, 4, 8, $B2, 0
-	dc.b	0
-byte_3A8D4:
-	dc.b	3, 0, 0, 0, 0
-	dc.b	$E0, $A, 0, $B4, $E8
-	dc.b	$E0, $A, 8, $B4, 0
-	dc.b	$F8, 4, 0, $BD, $F0
-	dc.b	$F8, 4, 8, $BD, 0
-	dc.b	0
-byte_3A8EE:
-	dc.b	1, 0, 0, 0, 0
-	dc.b	$E0, 7, 0, $BF, $F0
-	dc.b	$E0, 7, 8, $BF, 0
-	dc.b	0
-byte_3A8FE:
-	dc.b	2, 0, 0, 0, 0
-	dc.b	$E8, 2, 0, $C7, $F4
-	dc.b	$E8, 2, 0, $CA, $FC
-	dc.b	$E8, 2, 8, $C7, 4
-byte_3A912:
-	dc.b	2, 0, 0, 0, 0
-	dc.b	$F0, 1, 0, $CD, $F4
-	dc.b	$F0, 1, 0, $CF, $FC
-	dc.b	$F0, 1, 8, $CD, 4
-byte_3A926:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$F0, 5, 0, $D1, $F8
-byte_3A930:
-	dc.b	0, 0, 0, 0, 0
-	dc.b	$F8, 0, 0, $D5, $FC
+	include	"Special Stage/Objects/Shadow/Data/Mappings.asm"
+	even
+	
+MapSpr_UFORings:
+	include	"Special Stage/Objects/UFO/Data/Mappings (Rings).asm"
+	even
+	
+MapSpr_UFOShoes:
+	include	"Special Stage/Objects/UFO/Data/Mappings (Speed Shoes).asm"
+	even
+
+; -------------------------------------------------------------------------
+; Variables
+; -------------------------------------------------------------------------
 
 	align	VARSSTART, $FF
 	dcb.b	VARSSZ, $FF
+
+; -------------------------------------------------------------------------
+; Maps
+; -------------------------------------------------------------------------
 	
 Stamps_SS1:
 	incbin	"Special Stage/Data/Stage 1/Stamps.kos"
