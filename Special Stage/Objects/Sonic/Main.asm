@@ -31,8 +31,8 @@ ObjSonic_Index:
 	dc.w	ObjSonic_Jump-ObjSonic_Index
 	dc.w	ObjSonic_Float-ObjSonic_Index
 	dc.w	ObjSonic_Bumped-ObjSonic_Index
-	dc.w	ObjSonic_Unk-ObjSonic_Index
-	dc.w	ObjSonic_Unk2-ObjSonic_Index
+	dc.w	ObjSonic_Sink-ObjSonic_Index
+	dc.w	ObjSonic_Sink2-ObjSonic_Index
 	dc.w	ObjSonic_Hurt-ObjSonic_Index
 	dc.w	ObjSonic_TimeStone1-ObjSonic_Index
 	dc.w	ObjSonic_TimeStone2-ObjSonic_Index
@@ -299,10 +299,10 @@ ObjSonic_Bumped:
 	rts
 
 ; -------------------------------------------------------------------------
-; Unknown mode
+; Unused mode that makes Sonic sink down out of the stage
 ; -------------------------------------------------------------------------
 
-ObjSonic_Unk:
+ObjSonic_Sink:
 	addq.w	#4,oSprY(a0)			; Move sprite down
 	cmpi.w	#320+128,oSprY(a0)		; Has it moved offscreen?
 	bcs.s	.End				; If not, branch
@@ -313,7 +313,7 @@ ObjSonic_Unk:
 
 ; -------------------------------------------------------------------------
 
-ObjSonic_Unk2:
+ObjSonic_Sink2:
 	rts
 
 ; -------------------------------------------------------------------------
