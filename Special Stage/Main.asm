@@ -4699,7 +4699,7 @@ Map_SS6BGB2:
 ; Pad up to stage data in Word RAM
 ; -------------------------------------------------------------------------
 
-	align	(WORKRAMFILE-$100)+(SpecStgDataCopy-WORDRAM2M), $FF
+	align	(WORKRAMFILE-$100)+SpecStgDataCopy, $FF
 
 ; -------------------------------------------------------------------------
 

@@ -1487,7 +1487,7 @@ SPCmd_LoadSpecStage:
 	lea	SpecStageData,a0
 	move.w	4(a0,d0.w),d7
 	movea.l	(a0,d0.w),a0
-	lea	SpecStgDataCopy,a1
+	lea	WORDRAM2M+SpecStgDataCopy,a1
 
 .CopyData:
 	move.b	(a0)+,(a1)+

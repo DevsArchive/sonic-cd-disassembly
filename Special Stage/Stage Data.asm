@@ -5,7 +5,9 @@
 ; Special stage data
 ; -------------------------------------------------------------------------
 
-	include	"_Include/Sub CPU.i"
+	include	"_Include/Common.i"
+	include	"_Include/Main CPU.i"
+	include	"_Include/Main CPU Variables.i"
 	include	"Special Stage/_Global Variables.i"
 
 ; -------------------------------------------------------------------------
@@ -34,7 +36,7 @@
 ; -------------------------------------------------------------------------
 
 SS1Data:
-	obj	$FF8C00
+	obj	(WORKRAMFILE-$100)+SpecStgDataCopy
 
 Pal_SS1:
 	incbin	"Special Stage/Data/Stage 1/Palette.bin"
@@ -75,7 +77,7 @@ SS1DataEnd:
 ; -------------------------------------------------------------------------
 	
 SS2Data:
-	obj	$FF8C00
+	obj	(WORKRAMFILE-$100)+SpecStgDataCopy
 
 Pal_SS2:
 	incbin	"Special Stage/Data/Stage 2/Palette.bin"
@@ -120,7 +122,7 @@ SS2DataEnd:
 ; -------------------------------------------------------------------------
 
 SS3Data:
-	obj	$FF8C00
+	obj	(WORKRAMFILE-$100)+SpecStgDataCopy
 
 Pal_SS3:
 	incbin	"Special Stage/Data/Stage 3/Palette.bin"
@@ -173,7 +175,7 @@ SS3DataEnd:
 ; -------------------------------------------------------------------------
 
 SS4Data:
-	obj	$FF8C00
+	obj	(WORKRAMFILE-$100)+SpecStgDataCopy
 
 Pal_SS4:
 	incbin	"Special Stage/Data/Stage 4/Palette.bin"
@@ -230,7 +232,7 @@ SS4DataEnd:
 ; -------------------------------------------------------------------------
 
 SS5Data:
-	obj	$FF8C00
+	obj	(WORKRAMFILE-$100)+SpecStgDataCopy
 
 Pal_SS5:
 	incbin	"Special Stage/Data/Stage 5/Palette.bin"
@@ -275,7 +277,7 @@ SS5DataEnd:
 ; -------------------------------------------------------------------------
 
 SS6Data:
-	obj	$FF8C00
+	obj	(WORKRAMFILE-$100)+SpecStgDataCopy
 
 Pal_SS6:
 	incbin	"Special Stage/Data/Stage 6/Palette.bin"
@@ -312,7 +314,7 @@ SS6DataEnd:
 ; -------------------------------------------------------------------------
 
 SS7Data:
-	obj	$FF8C00
+	obj	(WORKRAMFILE-$100)+SpecStgDataCopy
 
 Pal_SS7:
 	incbin	"Special Stage/Data/Stage 7/Palette.bin"
@@ -381,7 +383,7 @@ SS7DataEnd:
 ; -------------------------------------------------------------------------
 
 SS8Data:
-	obj	$FF8C00
+	obj	(WORKRAMFILE-$100)+SpecStgDataCopy
 
 Pal_SS8:
 	incbin	"Special Stage/Data/Stage 8/Palette.bin"
