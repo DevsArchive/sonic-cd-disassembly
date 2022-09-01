@@ -156,10 +156,10 @@ ObjUFO:
 	move.w	sonicObject+oZ,oZ(a0)		; Shift Z position according to Sonic's Z position
 	subi.w	#$140,oZ(a0)
 
-	tst.b	oUFODrawDelay(a0)		; Is the draw 
-	beq.s	.End
-	subq.b	#1,oUFODrawDelay(a0)
-	bset	#2,oFlags(a0)
+	tst.b	oUFODrawDelay(a0)		; Is the draw delay counter active?
+	beq.s	.End				; If not, branch
+	subq.b	#1,oUFODrawDelay(a0)		; Decrement counter
+	bset	#2,oFlags(a0)			; Don't draw sprite
 
 .End:
 	rts

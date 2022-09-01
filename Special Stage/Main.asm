@@ -923,7 +923,7 @@ VInt_CopyStage1_1:
 ; -------------------------------------------------------------------------
 
 VInt_CopyStage1_2:
-	bsr.w	CopyHScrollLine		; Update horizontal scroll data
+	bsr.w	CopyHScrollSects		; Update horizontal scroll data
 						; Copy rendered stage art
 	DMA68K	stageArt+$2000,$2020,IMGLENGTH-$2000,VRAM
 	bsr.w	CopySprites			; Copy sprite data
@@ -943,7 +943,7 @@ VInt_CopyStage2_1:
 ; -------------------------------------------------------------------------
 
 VInt_CopyStage2_2:
-	bsr.w	CopyHScrollLine		; Update horizontal scroll data
+	bsr.w	CopyHScrollSects		; Update horizontal scroll data
 						; Copy rendered stage art
 	DMA68K	stageArt+$2000,$5020,IMGLENGTH-$2000,VRAM
 	bsr.w	CopySprites			; Copy sprite data
@@ -953,7 +953,7 @@ VInt_CopyStage2_2:
 ; -------------------------------------------------------------------------
 
 VInt_CopyStageDone:
-	bsr.w	CopyHScrollLine		; Update horizontal scroll data
+	bsr.w	CopyHScrollSects		; Update horizontal scroll data
 	bra.w	VInt_Finish			; Finish
 
 ; -------------------------------------------------------------------------
@@ -1520,16 +1520,16 @@ GetScrollSpeed:
 
 ; -------------------------------------------------------------------------
 ; Copy horizontal scroll data for line scrolled backgrounds
-; (Non-line scrolled backgrounds should already have been updated)
+; (Line scrolled backgrounds should already have been updated)
 ; -------------------------------------------------------------------------
 
-CopyHScrollLine:
+CopyHScrollSects:
 	btst	#0,GASUBFLAG			; Is the stage over?
 	bne.s	.End				; If so, branch
 	tst.b	scrollDisable			; Is scrolling disabled?
 	bne.s	.End				; If so, branch
 	bsr.w	CheckLineScroll			; Is line scrolling enabled?
-	bne.s	CopyHScroll			; If so, do updates
+	bne.s	CopyHScroll			; If not, do updates
 
 .End:
 	rts
