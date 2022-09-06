@@ -57,7 +57,7 @@ gfxOpFlag	rs.b	1			; Graphics operation flag
 		rs.b	$AFF
 gfxVars		rs.b	gfxSize			; Graphics operation variables
 		rs.b	$119E
-VARSSZ		EQU	__rs-VARSSTART		; Size of variables area
+VARSLEN		EQU	__rs-VARSSTART		; Size of variables area
 
 p2CtrlData	EQU	GACOMCMDE		; Player 2 controller data
 p2CtrlHold	EQU	p2CtrlData		; Player 2 controller held buttons data
@@ -86,11 +86,11 @@ p2CtrlTap	EQU	p2CtrlData+1		; Player 2 controller tapped buttons data
 	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
 
 	lea	VARSSTART,a0			; Clear variables
-	move.w	#VARSSZ/4-1,d7
+	move.w	#VARSLEN/4-1,d7
 
-.ClearVariables:
+.ClearVars:
 	move.l	#0,(a0)+
-	dbf	d7,.ClearVariables
+	dbf	d7,.ClearVars
 
 	bsr.w	InitGfxOperation		; Initialize graphics operation
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access

@@ -96,7 +96,7 @@ Start:
 	
 	lea	Pal_Stage(pc),a0		; Load palette
 	lea	palette.w,a1
-	moveq	#$80/4-1,d7
+	moveq	#(Pal_Stage_End-Pal_Stage)/4-1,d7
 
 .SetPalette:
 	move.l	(a0)+,(a1)+
@@ -326,7 +326,7 @@ Results:
 
 	lea	Pal_Results(pc),a0		; Load palette
 	lea	palette.w,a1
-	moveq	#$80/4-1,d7
+	moveq	#(Pal_Results_End-Pal_Results)/4-1,d7
 
 .SetPalette:
 	move.l	(a0)+,(a1)+
@@ -555,10 +555,12 @@ DrawResultsBase:
 
 Pal_Stage:
 	incbin	"Special Stage/Data/Palette.bin"
+Pal_Stage_End:
 	even
 	
 Pal_Results:
 	incbin	"Special Stage/Data/Palette (Results).bin"
+Pal_Results_End:
 	even
 
 ; -------------------------------------------------------------------------

@@ -996,6 +996,10 @@ ObjSonic_CheckBumper:
 ; -------------------------------------------------------------------------
 ; Find dust object slot
 ; -------------------------------------------------------------------------
+; RETURNS:
+;	eq/ne - Not found/found
+;	a1.l  - Found slot
+; -------------------------------------------------------------------------
 
 FindDustObjSlot:
 	lea	dustObjects,a1			; Dust object slots

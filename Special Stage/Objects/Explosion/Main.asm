@@ -8,6 +8,10 @@
 ; -------------------------------------------------------------------------
 ; Find explosion object slot
 ; -------------------------------------------------------------------------
+; RETURNS:
+;	eq/ne - Not found/found
+;	a1.l  - Found slot
+; -------------------------------------------------------------------------
 
 FindExplosionObjSlot:
 	lea	explosionObjs,a1		; Explosion object slots

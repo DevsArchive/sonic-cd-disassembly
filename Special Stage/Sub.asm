@@ -190,7 +190,7 @@ fanAnimFrame	rs.w	1			; Fan animation frame
 		rs.b	$CC
 gfxVars		rs.b	gfxSize			; Graphics operations variables
 		rs.b	$1B9E
-VARSSZ		EQU	__rs-VARSSTART		; Size of variables area
+VARSLEN		EQU	__rs-VARSSTART		; Size of variables area
 
 ; -------------------------------------------------------------------------
 ; Program start
@@ -213,11 +213,11 @@ VARSSZ		EQU	__rs-VARSSTART		; Size of variables area
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
 
 	lea	VARSSTART,a0			; Clear variables
-	move.w	#VARSSZ/4-1,d7
+	move.w	#VARSLEN/4-1,d7
 
-.ClearVariables:
+.ClearVars:
 	move.l	#0,(a0)+
-	dbf	d7,.ClearVariables
+	dbf	d7,.ClearVars
 	
 	bsr.w	InitGfxOperation		; Initialize graphics operation
 	
@@ -2478,7 +2478,7 @@ MapSpr_UFOShoes:
 ; -------------------------------------------------------------------------
 
 	align	VARSSTART, $FF
-	dcb.b	VARSSZ, $FF
+	dcb.b	VARSLEN, $FF
 
 ; -------------------------------------------------------------------------
 ; Maps

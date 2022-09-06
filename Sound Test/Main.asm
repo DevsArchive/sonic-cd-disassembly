@@ -1001,7 +1001,7 @@ Art_SoundTest:
 	even
 
 Map_SoundTestBg:
-	incbin	"Sound Test/Data/Background Tilemap.bin"
+	incbin	"Sound Test/Data/Background Mappings.bin"
 	even
 
 ; -------------------------------------------------------------------------

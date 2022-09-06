@@ -1202,13 +1202,12 @@ LoadMessageArt:
 .MessageArt:
 	VDPCMD	dc.l,$20,VRAM,WRITE		; Eggman art
 	dc.l	Art_Eggman
-	VDPCMD	dc.l,$340,VRAM,WRITE		; Message art #1
-	dc.l	Art_Message1
+	VDPCMD	dc.l,$340,VRAM,WRITE		; Message art
+	dc.l	Art_Message
 	if REGION=USA
-		VDPCMD	dc.l,$1C40,VRAM,WRITE	; Message art #2
-		dc.l	Art_Message2
+		VDPCMD	dc.l,$1C40,VRAM,WRITE	; Message art (extension)
+		dc.l	Art_MessageUSA
 	endif
-
 
 ; -------------------------------------------------------------------------
 ; Decompress Nemesis art into VRAM (Note: VDP write command must be
@@ -1486,16 +1485,18 @@ DrawMessageTilemap:
 	dc.w	$A-1, 6-1
 	VDPCMD	dc.l,$C31E,VRAM,WRITE
 
-	dc.l	Map_IntUnformatted
 	if REGION=JAPAN
+		dc.l	Map_IntUnformatted
 		dc.w	$201A
 		dc.w	$24-1, 6-1
 		VDPCMD	dc.l,$E584,VRAM,WRITE
 	elseif REGION=USA
+		dc.l	Map_IntUnformattedUSA
 		dc.w	$20E2
 		dc.w	$1D-1, 8-1
 		VDPCMD	dc.l,$E58A,VRAM,WRITE
 	else
+		dc.l	Map_IntUnformatted
 		dc.w	$201A
 		dc.w	$1D-1, 6-1
 		VDPCMD	dc.l,$E58A,VRAM,WRITE
@@ -1789,83 +1790,87 @@ Art_Eggman:
 	even
 
 Map_Eggman:
-	incbin	"Backup RAM/Initialization/Data/Eggman Tilemap.eni"
+	incbin	"Backup RAM/Initialization/Data/Eggman Mappings.eni"
 	even
 
 ; -------------------------------------------------------------------------
 
 	if REGION=JAPAN
 	
-Art_Message1:
-		incbin	"Backup RAM/Initialization/Data/Message Art (JPN).nem"
+Art_Message:
+		incbin	"Backup RAM/Initialization/Data/Message Art (Japanese).nem"
 		even
 
 Map_DataCorrupt:
-		incbin	"Backup RAM/Initialization/Data/Message - Data Corrupt (JPN).eni"
+		incbin	"Backup RAM/Initialization/Data/Message (Data Corrupt, Japanese).eni"
 		even
 	
 Map_IntUnformatted:
-		incbin	"Backup RAM/Initialization/Data/Message - Internal Unformatted (JPN).eni"
+		incbin	"Backup RAM/Initialization/Data/Message (Internal Unformatted, Japanese).eni"
 		even
 
 Map_CartUnformatted:
-		incbin	"Backup RAM/Initialization/Data/Message - Cart Unformatted (JPN).eni"
+		incbin	"Backup RAM/Initialization/Data/Message (Cart Unformatted, Japanese).eni"
 		even
 
 Map_BuRAMFull:
-		incbin	"Backup RAM/Initialization/Data/Message - RAM Full (JPN).eni"
+		incbin	"Backup RAM/Initialization/Data/Message (RAM Full, Japanese).eni"
 		even
 		
 ; -------------------------------------------------------------------------
 
 	elseif REGION=USA
 	
-Art_Message1:
-		incbin	"Backup RAM/Initialization/Data/Message Art 1 (USA).nem"
+Art_Message:
+		incbin	"Backup RAM/Initialization/Data/Message Art (English).nem"
 		even
 
 Map_DataCorrupt:
-		incbin	"Backup RAM/Initialization/Data/Message - Data Corrupt (USA).eni"
-		even
-
-Map_CartUnformatted:
-		incbin	"Backup RAM/Initialization/Data/Message - Cart Unformatted (USA).eni"
-		even
-
-Map_BuRAMFull:
-		incbin	"Backup RAM/Initialization/Data/Message - RAM Full (USA).eni"
-		even
-	
-Art_Message2:
-		incbin	"Backup RAM/Initialization/Data/Message Art 2 (USA).nem"
+		incbin	"Backup RAM/Initialization/Data/Message (Data Corrupt, English).eni"
 		even
 
 Map_IntUnformatted:
-		incbin	"Backup RAM/Initialization/Data/Message - Internal Unformatted (USA).eni"
+		incbin	"Backup RAM/Initialization/Data/Message (Internal Unformatted, English).eni"
+		even
+
+Map_CartUnformatted:
+		incbin	"Backup RAM/Initialization/Data/Message (Cart Unformatted, English).eni"
+		even
+
+Map_BuRAMFull:
+		incbin	"Backup RAM/Initialization/Data/Message (RAM Full, English).eni"
+		even
+	
+Art_MessageUSA:
+		incbin	"Backup RAM/Initialization/Data/Message Art (USA).nem"
+		even
+
+Map_IntUnformattedUSA:
+		incbin	"Backup RAM/Initialization/Data/Message (Internal Unformatted, USA).eni"
 		even
 
 ; -------------------------------------------------------------------------
 
 	else
 	
-Art_Message1:
-		incbin	"Backup RAM/Initialization/Data/Message Art (EUR).nem"
+Art_Message:
+		incbin	"Backup RAM/Initialization/Data/Message Art (English).nem"
 		even
 
 Map_DataCorrupt:
-		incbin	"Backup RAM/Initialization/Data/Message - Data Corrupt (EUR).eni"
+		incbin	"Backup RAM/Initialization/Data/Message (Data Corrupt, English).eni"
 		even
 	
 Map_IntUnformatted:
-		incbin	"Backup RAM/Initialization/Data/Message - Internal Unformatted (EUR).eni"
+		incbin	"Backup RAM/Initialization/Data/Message (Internal Unformatted, English).eni"
 		even
 
 Map_CartUnformatted:
-		incbin	"Backup RAM/Initialization/Data/Message - Cart Unformatted (EUR).eni"
+		incbin	"Backup RAM/Initialization/Data/Message (Cart Unformatted, English).eni"
 		even
 
 Map_BuRAMFull:
-		incbin	"Backup RAM/Initialization/Data/Message - RAM Full (EUR).eni"
+		incbin	"Backup RAM/Initialization/Data/Message (RAM Full, English).eni"
 		even
 	
 	endif

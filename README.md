@@ -20,6 +20,7 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
     - Palmtree Panic Act 1 (R11A, R11B, R11C, R11D, DEMO11A)
     - Wacky Workbench Act 1 (R61A)
 * Special Stage (SPMM and SPSS)
+* Time warp cutscene (WARP)
 * FMVs
     - Good ending Sub CPU program (BADEND.BIN, not a typo)
     - Bad ending Sub CPU program (GOODEND.BIN, not a typo)

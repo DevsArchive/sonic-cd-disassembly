@@ -19,7 +19,7 @@ VARSSTART	rs.b	0			; Start of variables
 		rs.b	$800			; Unused
 irq1Flag	rs.b	1			; IRQ1 flag
 		rs.b	$17FF			; Unused
-VARSSZ		EQU	__rs-VARSSTART		; Size of variables area
+VARSLEN		EQU	__rs-VARSSTART		; Size of variables area
 
 decompWindow	EQU	WORDRAM2M+$38000	; Decompression sliding window
 
@@ -44,7 +44,7 @@ decompWindow	EQU	WORDRAM2M+$38000	; Decompression sliding window
 	move.b	#3,GACDCDEVICE.w		; Set CDC device to "Sub CPU"
 
 	lea	VARSSTART,a0			; Clear variables
-	move.w	#VARSSZ/4-1,d7
+	move.w	#VARSLEN/4-1,d7
 
 .ClearVars:
 	move.l	#0,(a0)+

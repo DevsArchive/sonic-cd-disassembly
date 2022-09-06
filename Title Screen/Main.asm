@@ -1840,15 +1840,15 @@ DrawFgTilemap:
 ; -------------------------------------------------------------------------
 
 Map_Water:
-	incbin	"Title Screen/Data/Water Map.bin"
+	incbin	"Title Screen/Data/Water Mappings.bin"
 	even
 
 Map_Mountains:
-	incbin	"Title Screen/Data/Moutains Map.bin"
+	incbin	"Title Screen/Data/Moutains Mappings.bin"
 	even
 
 Map_Emblem:
-	incbin	"Title Screen/Data/Emblem Map.bin"
+	incbin	"Title Screen/Data/Emblem Mappings.bin"
 	even
 
 Art_Water:

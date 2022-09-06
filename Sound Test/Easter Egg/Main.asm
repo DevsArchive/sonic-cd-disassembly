@@ -174,15 +174,15 @@ Art_EasterEgg:
 
 Map_EasterEgg:
 	if EASTEREGG=0
-		incbin	"Sound Test/Easter Egg/Data/Fun Is Infinite Tilemap.bin"
+		incbin	"Sound Test/Easter Egg/Data/Fun Is Infinite Mappings.bin"
 	elseif EASTEREGG=1
-		incbin	"Sound Test/Easter Egg/Data/M.C. Sonic Tilemap.bin"
+		incbin	"Sound Test/Easter Egg/Data/M.C. Sonic Mappings.bin"
 	elseif EASTEREGG=2
-		incbin	"Sound Test/Easter Egg/Data/Tails Tilemap.bin"
+		incbin	"Sound Test/Easter Egg/Data/Tails Mappings.bin"
 	elseif EASTEREGG=3
-		incbin	"Sound Test/Easter Egg/Data/Batman Tilemap.bin"
+		incbin	"Sound Test/Easter Egg/Data/Batman Mappings.bin"
 	elseif EASTEREGG=4
-		incbin	"Sound Test/Easter Egg/Data/Cute Sonic Tilemap.bin"
+		incbin	"Sound Test/Easter Egg/Data/Cute Sonic Mappings.bin"
 	endif
 	even
 
