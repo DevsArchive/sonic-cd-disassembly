@@ -11,8 +11,8 @@
 	include	"_Include/System.i"
 	include	"_Include/Sound.i"
 	include	"_Include/MMD.i"
-	include	"Selection Menu/_Variables.i"
-	include	"Selection Menu/_Macros.i"
+	include	"Title Screen/Secrets/_Variables.i"
+	include	"Title Screen/Secrets/_Macros.i"
 
 ; -------------------------------------------------------------------------
 ; MMD header
@@ -913,21 +913,21 @@ VDPRegsEnd:
 	even
 
 Pal_SelScreen:
-	incbin	"Selection Menu/Data/Palette.bin"
+	incbin	"Title Screen/Secrets/Data/Palette.bin"
 Pal_SelScreen_End:
 	even
 
 Art_SelScreen:
-	incbin	"Selection Menu/Data/Art.nem"
+	incbin	"Title Screen/Secrets/Data/Art.nem"
 	even
 
 Map_SelScreenBg:
-	incbin	"Selection Menu/Data/Background Mappings.bin"
+	incbin	"Title Screen/Secrets/Data/Background Mappings.bin"
 	even
 
 ; -------------------------------------------------------------------------
 
-	include	"Selection Menu/Functions.asm"
+	include	"Title Screen/Secrets/Functions.asm"
 
 ; -------------------------------------------------------------------------
 

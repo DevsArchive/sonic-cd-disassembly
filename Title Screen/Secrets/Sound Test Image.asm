@@ -9,7 +9,7 @@
 	include	"_Include/Main CPU.i"
 	include	"_Include/Main CPU Variables.i"
 	include	"_Include/MMD.i"
-	include	"Selection Menu/_Variables.i"
+	include	"Title Screen/Secrets/_Variables.i"
 
 ; -------------------------------------------------------------------------
 ; MMD header
@@ -145,50 +145,50 @@ VDPRegsEnd:
 
 Pal_EasterEgg:
 	if EASTEREGG=0
-		incbin	"Selection Menu/Easter Egg/Data/Fun Is Infinite Palette.bin"
+		incbin	"Title Screen/Secrets/Data/Fun Is Infinite Palette.bin"
 	elseif EASTEREGG=1
-		incbin	"Selection Menu/Easter Egg/Data/M.C. Sonic Palette.bin"
+		incbin	"Title Screen/Secrets/Data/M.C. Sonic Palette.bin"
 	elseif EASTEREGG=2
-		incbin	"Selection Menu/Easter Egg/Data/Tails Palette.bin"
+		incbin	"Title Screen/Secrets/Data/Tails Palette.bin"
 	elseif EASTEREGG=3
-		incbin	"Selection Menu/Easter Egg/Data/Batman Palette.bin"
+		incbin	"Title Screen/Secrets/Data/Batman Palette.bin"
 	elseif EASTEREGG=4
-		incbin	"Selection Menu/Easter Egg/Data/Cute Sonic Palette.bin"
+		incbin	"Title Screen/Secrets/Data/Cute Sonic Palette.bin"
 	endif
 Pal_EasterEgg_End:
 	even
 
 Art_EasterEgg:
 	if EASTEREGG=0
-		incbin	"Selection Menu/Easter Egg/Data/Fun Is Infinite Art.nem"
+		incbin	"Title Screen/Secrets/Data/Fun Is Infinite Art.nem"
 	elseif EASTEREGG=1
-		incbin	"Selection Menu/Easter Egg/Data/M.C. Sonic Art.nem"
+		incbin	"Title Screen/Secrets/Data/M.C. Sonic Art.nem"
 	elseif EASTEREGG=2
-		incbin	"Selection Menu/Easter Egg/Data/Tails Art.nem"
+		incbin	"Title Screen/Secrets/Data/Tails Art.nem"
 	elseif EASTEREGG=3
-		incbin	"Selection Menu/Easter Egg/Data/Batman Art.nem"
+		incbin	"Title Screen/Secrets/Data/Batman Art.nem"
 	elseif EASTEREGG=4
-		incbin	"Selection Menu/Easter Egg/Data/Cute Sonic Art.nem"
+		incbin	"Title Screen/Secrets/Data/Cute Sonic Art.nem"
 	endif
 	even
 
 Map_EasterEgg:
 	if EASTEREGG=0
-		incbin	"Selection Menu/Easter Egg/Data/Fun Is Infinite Mappings.bin"
+		incbin	"Title Screen/Secrets/Data/Fun Is Infinite Mappings.bin"
 	elseif EASTEREGG=1
-		incbin	"Selection Menu/Easter Egg/Data/M.C. Sonic Mappings.bin"
+		incbin	"Title Screen/Secrets/Data/M.C. Sonic Mappings.bin"
 	elseif EASTEREGG=2
-		incbin	"Selection Menu/Easter Egg/Data/Tails Mappings.bin"
+		incbin	"Title Screen/Secrets/Data/Tails Mappings.bin"
 	elseif EASTEREGG=3
-		incbin	"Selection Menu/Easter Egg/Data/Batman Mappings.bin"
+		incbin	"Title Screen/Secrets/Data/Batman Mappings.bin"
 	elseif EASTEREGG=4
-		incbin	"Selection Menu/Easter Egg/Data/Cute Sonic Mappings.bin"
+		incbin	"Title Screen/Secrets/Data/Cute Sonic Mappings.bin"
 	endif
 	even
 
 ; -------------------------------------------------------------------------
 
-	include	"Selection Menu/Functions.asm"
+	include	"Title Screen/Secrets/Functions.asm"
 
 ; -------------------------------------------------------------------------
 

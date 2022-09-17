@@ -7,16 +7,28 @@ _Original/Japan/*.BIN
 _Original/Japan/*.MMD
 _Original/Japan/*.STM
 _Original/Japan/*.idb
+_Original/Japan/*.id0
+_Original/Japan/*.id1
+_Original/Japan/*.nam
+_Original/Japan/*.til
 _Original/USA/*.TXT
 _Original/USA/*.BIN
 _Original/USA/*.MMD
 _Original/USA/*.STM
 _Original/USA/*.idb
+_Original/USA/*.id0
+_Original/USA/*.id1
+_Original/USA/*.nam
+_Original/USA/*.til
 _Original/Europe/*.TXT
 _Original/Europe/*.BIN
 _Original/Europe/*.MMD
 _Original/Europe/*.STM
 _Original/Europe/*.idb
+_Original/Europe/*.id0
+_Original/Europe/*.id1
+_Original/Europe/*.nam
+_Original/Europe/*.til
 _SonLVL/dllcache
 Special Stage/Stage Data Labels.i
 Special Stage/Stage Data.bin

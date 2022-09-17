@@ -42,11 +42,11 @@ if exist "Sound Drivers\FM\_Driver.p" (
 %ASM68K% "Title Screen\Sub.asm", "_Built\Files\TITLES.BIN", , "Title Screen\Sub.lst"
 %ASM68K% /e DATAFILE=0 "FMV\Sub.asm", "_Built\Files\GOODEND.BIN", , "FMV\Sub (Good Ending).lst"
 %ASM68K% /e DATAFILE=1 "FMV\Sub.asm", "_Built\Files\BADEND.BIN", , "FMV\Sub (Bad Ending).lst"
-%ASM68K% /e PROTOTYPE=0 "Selection Menu\Sound Test.asm", "_Built\Files\SOSEL_.MMD", , "Selection Menu\Sound Test.lst"
-%ASM68K% /e PROTOTYPE=0 "Selection Menu\Stage Select.asm", "_Built\Files\STSEL_.MMD", , "Selection Menu\Stage Select.lst"
+%ASM68K% /e PROTOTYPE=0 "Title Screen\Secrets\Sound Test.asm", "_Built\Files\SOSEL_.MMD", , "Title Screen\Secrets\Sound Test.lst"
+%ASM68K% /e PROTOTYPE=0 "Title Screen\Secrets\Stage Select.asm", "_Built\Files\STSEL_.MMD", , "Title Screen\Secrets\Stage Select.lst"
 
 if exist "_Built\Files\DUMMY5.MMD" (del "_Built\Files\DUMMY5.MMD" > nul)
-%ASM68K% /e PROTOTYPE=1 "Selection Menu\Sound Test (Prototype).asm", "_Built\Files\DUMMY5.MMD", , "Selection Menu\Sound Test (Prototype).lst"
+%ASM68K% /e PROTOTYPE=1 "Title Screen\Secrets\Sound Test (Prototype).asm", "_Built\Files\DUMMY5.MMD", , "Title Screen\Secrets\Sound Test (Prototype).lst"
 if exist "_Built\Files\DUMMY5.MMD" (
     copy "_Built\Files\DUMMY5.MMD" "_Built\Files\DUMMY6.MMD" > nul
     copy "_Built\Files\DUMMY5.MMD" "_Built\Files\DUMMY7.MMD" > nul
@@ -54,11 +54,11 @@ if exist "_Built\Files\DUMMY5.MMD" (
     copy "_Built\Files\DUMMY5.MMD" "_Built\Files\DUMMY9.MMD" > nul
 )
 
-%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=0 "Selection Menu\Easter Egg\Main.asm", "_Built\Files\NISI.MMD", , "Selection Menu\Easter Egg\Main (Fun Is Infinite).lst"
-%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=1 "Selection Menu\Easter Egg\Main.asm", "_Built\Files\DUMMY0.MMD", , "Selection Menu\Easter Egg\Main (M.C. Sonic).lst"
-%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=2 "Selection Menu\Easter Egg\Main.asm", "_Built\Files\DUMMY1.MMD", , "Selection Menu\Easter Egg\Main (Tails).lst"
-%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=3 "Selection Menu\Easter Egg\Main.asm", "_Built\Files\DUMMY2.MMD", , "Selection Menu\Easter Egg\Main (Batman).lst"
-%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=4 "Selection Menu\Easter Egg\Main.asm", "_Built\Files\DUMMY3.MMD", , "Selection Menu\Easter Egg\Main (Cute Sonic).lst"
+%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=0 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\NISI.MMD", , "Title Screen\Secrets\Sound Test Image (Fun Is Infinite).lst"
+%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=1 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY0.MMD", , "Title Screen\Secrets\Sound Test Image (M.C. Sonic).lst"
+%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=2 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY1.MMD", , "Title Screen\Secrets\Sound Test Image (Tails).lst"
+%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=3 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY2.MMD", , "Title Screen\Secrets\Sound Test Image (Batman).lst"
+%ASM68K% /e PROTOTYPE=0 /e EASTEREGG=4 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY3.MMD", , "Title Screen\Secrets\Sound Test Image (Cute Sonic).lst"
 
 %ASM68K% /e DEMO=0 "Level\Palmtree Panic\Act 1 Present.asm", "_Built\Files\R11A__.MMD", , "Level\Palmtree Panic\Act 1 Present.lst"
 %ASM68K% /e DEMO=1 "Level\Palmtree Panic\Act 1 Present.asm", "_Built\Files\DEMO11A.MMD", , "Level\Palmtree Panic\Act 1 Present (Demo).lst"

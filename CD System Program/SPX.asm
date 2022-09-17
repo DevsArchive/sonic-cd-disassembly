@@ -255,15 +255,15 @@ File_CuteSonic:
 File_StaffTimes:
 	dc.b	"DUMMY4.MMD;1", 0		; Best staff times screen
 File_Dummy5:
-	dc.b	"DUMMY5.MMD;1", 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY5.MMD;1", 0		; Copy of prototype sound test (Unused)
 File_Dummy6:
-	dc.b	"DUMMY6.MMD;1", 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY6.MMD;1", 0		; Copy of prototype sound test (Unused)
 File_Dummy7:
-	dc.b	"DUMMY7.MMD;1", 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY7.MMD;1", 0		; Copy of prototype sound test (Unused)
 File_Dummy8:
-	dc.b	"DUMMY8.MMD;1", 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY8.MMD;1", 0		; Copy of prototype sound test (Unused)
 File_Dummy9:
-	dc.b	"DUMMY9.MMD;1", 0		; Copy of sound test (Unused)
+	dc.b	"DUMMY9.MMD;1", 0		; Copy of prototype sound test (Unused)
 File_PencilTestMain:
 	dc.b	"PTEST.MMD;1", 0		; Pencil test FMV (Main CPU)
 File_PencilTestSub:
