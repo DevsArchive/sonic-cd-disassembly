@@ -23,6 +23,7 @@ fc /b _Original\%REGPATH%\TITLEM.MMD _Built\Files\TITLEM.MMD
 fc /b _Original\%REGPATH%\TITLES.BIN _Built\Files\TITLES.BIN
 fc /b _Original\%REGPATH%\GOODEND.BIN _Built\Files\GOODEND.BIN
 fc /b _Original\%REGPATH%\BADEND.BIN _Built\Files\BADEND.BIN
+fc /b _Original\%REGPATH%\STSEL_.MMD _Built\Files\STSEL_.MMD
 fc /b _Original\%REGPATH%\SOSEL_.MMD _Built\Files\SOSEL_.MMD
 fc /b _Original\%REGPATH%\NISI.MMD _Built\Files\NISI.MMD
 fc /b _Original\%REGPATH%\DUMMY0.MMD _Built\Files\DUMMY0.MMD

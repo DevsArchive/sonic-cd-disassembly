@@ -28,14 +28,15 @@ TEXTEND macro
 ; Start text string list
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
-;	ptr  - Pointer to string
-;	vloc - VRAM location
+;	ptr - Pointer to string
+;	x   - X location
+;	y   - Y location
 ; -------------------------------------------------------------------------
 
-TEXTPTR macro ptr, vloc
+TEXTPTR macro ptr, x, y
 	dc.l	\ptr
-	VDPCMD	dc.l,\vloc,VRAM,WRITE
-	VDPCMD	dc.l,(\vloc)+$80,VRAM,WRITE
+	VDPCMD	dc.l,$C000+((\x)*2)+((\y)*$80),VRAM,WRITE
+	VDPCMD	dc.l,$C000+((\x)*2)+(((\y)+1)*$80),VRAM,WRITE
 	__textListCnt: = __textListCnt+1
 	endm
 

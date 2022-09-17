@@ -24,6 +24,7 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
 * FMVs
     - Good ending Sub CPU program (BADEND.BIN, not a typo)
     - Bad ending Sub CPU program (GOODEND.BIN, not a typo)
+* Stage select (STSEL)
 * Sound test (SOSEL)
     - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
 

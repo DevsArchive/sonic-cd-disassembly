@@ -11,8 +11,8 @@
 	include	"_Include/System.i"
 	include	"_Include/Sound.i"
 	include	"_Include/MMD.i"
-	include	"Sound Test/_Variables.i"
-	include	"Sound Test/_Macros.i"
+	include	"Selection Menu/_Variables.i"
+	include	"Selection Menu/_Macros.i"
 
 ; -------------------------------------------------------------------------
 ; MMD header
@@ -44,10 +44,10 @@ Start:
 	move.l	#0,VDPDATA
 
 	VDPCMD	move.l,$0000,VRAM,WRITE,VDPCTRL	; Load art
-	lea	Art_SoundTest(pc),a0
+	lea	Art_SelScreen(pc),a0
 	bsr.w	NemDec
 
-	lea	Map_SoundTestBg(pc),a1		; Draw background tilemap
+	lea	Map_SelScreenBg(pc),a1		; Draw background tilemap
 	VDPCMD	move.l,$E000,VRAM,WRITE,d0
 	moveq	#$28-1,d1
 	moveq	#$1C-1,d2
@@ -57,9 +57,9 @@ Start:
 	move.w	#$8000,d0
 	bsr.w	DrawText
 
-	lea	Pal_SoundTest(pc),a0		; Load palette
+	lea	Pal_SelScreen(pc),a0		; Load palette
 	lea	palette.w,a1
-	moveq	#(Pal_SoundTest_End-Pal_SoundTest)/4-1,d7
+	moveq	#(Pal_SelScreen_End-Pal_SelScreen)/4-1,d7
 
 .LoadPal:
 	move.l	(a0)+,(a1)+
@@ -122,10 +122,10 @@ MainLoop:
 	beq.w	MainLoop			; If not, branch
 
 	move.w	#SCMD_STOPCDDA,d0		; Stop CDDA
-	bsr.w	SubSndCmd
+	bsr.w	SelSubCPUCmd
 	bsr.w	VSync
 	move.w	#SCMD_STOPPCM,d0		; Stop PCM
-	bsr.w	SubSndCmd
+	bsr.w	SelSubCPUCmd
 	bsr.w	VSync
 
 	bsr.w	CheckEasterEgg			; Run exit routine
@@ -291,7 +291,7 @@ SelectFM:
 	lea	fmSelDelay(pc),a2
 	moveq	#0,d6
 	moveq	#.IDsEnd-.IDs-1,d7
-	bsr.w	SelectSound
+	bsr.w	UpdateSelection
 
 	move.b	ctrlTap,d0			; Has A, B, or C been tapped?
 	andi.b	#%1110000,d0
@@ -400,23 +400,23 @@ SelectPCM:
 	lea	pcmSelDelay(pc),a2
 	moveq	#0,d6
 	moveq	#.IDsEnd-.IDs-1,d7
-	bsr.w	SelectSound
+	bsr.w	UpdateSelection
 
 	move.b	ctrlTap,d0			; Has A, B, or C been tapped?
 	andi.b	#%1110000,d0
 	beq.s	.End				; If not, branch
 
 	move.w	#SCMD_STOPCDDA,d0		; Stop CDDA
-	bsr.w	SubSndCmd
+	bsr.w	SelSubCPUCmd
 	bsr.w	VSync
 	move.w	#SCMD_STOPPCM,d0		; Stop PCM
-	bsr.w	SubSndCmd
+	bsr.w	SelSubCPUCmd
 	bsr.w	VSync
 
 	move.w	pcmSelID,d1			; Play sound
 	moveq	#0,d0
 	move.b	.IDs(pc,d1.w),d0
-	bsr.w	SubSndCmd
+	bsr.w	SelSubCPUCmd
 
 .End:
 	rts
@@ -453,20 +453,20 @@ SelectCDDA:
 	lea	cddaSelDelay(pc),a2
 	moveq	#0,d6
 	moveq	#.IDsEnd-.IDs-1,d7
-	bsr.w	SelectSound
+	bsr.w	UpdateSelection
 
 	move.b	ctrlTap,d0			; Has A, B, or C been tapped?
 	andi.b	#%1110000,d0
 	beq.s	.End				; If not, branch
 
 	move.w	#SCMD_STOPPCM,d0		; Stop PCM
-	bsr.w	SubSndCmd
+	bsr.w	SelSubCPUCmd
 	bsr.w	VSync
 
 	move.w	cddaSelID,d1			; Play sound
 	moveq	#0,d0
 	move.b	.IDs(pc,d1.w),d0
-	bsr.w	SubSndCmd
+	bsr.w	SelSubCPUCmd
 
 .End:
 	rts
@@ -533,13 +533,13 @@ cddaSelID:					; CDDA sound selection ID
 	dc.w	0
 
 ; -------------------------------------------------------------------------
-; Tell the Sub CPU to run a sound command
+; Send a command to the Sub CPU
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d0.w - Command ID
 ; -------------------------------------------------------------------------
 
-SubSndCmd:
+SelSubCPUCmd:
 	move.w	d0,GACOMCMD0			; Set command ID
 
 .WaitSubCPU:
@@ -554,7 +554,7 @@ SubSndCmd:
 	rts
 
 ; -------------------------------------------------------------------------
-; Select a sound
+; Update a selection
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d6.w - Minimum ID
@@ -563,7 +563,7 @@ SubSndCmd:
 ;	a2.l - Pointer to delay counter
 ; -------------------------------------------------------------------------
 
-SelectSound:
+UpdateSelection:
 	move.w	(a2),d0				; Should we update the selection?
 	andi.w	#7,d0
 	bne.s	.End				; If not, branch
@@ -867,34 +867,34 @@ DrawText:
 
 Text_SoundTest:
 	TEXTSTART
-	TEXTPTR	TextDat_SoundTest, $C39E
+	TEXTPTR	TextDat_SoundTest, 15, 7
 	TEXTEND
 
 Text_SndTypes:
 	TEXTSTART
-	TEXTPTR	TextDat_FMNo, $C58A
-	TEXTPTR	TextDat_PCMNo, $C59E
-	TEXTPTR	TextDat_CDDANo, $C5B4
+	TEXTPTR	TextDat_FMNo, 5, 11
+	TEXTPTR	TextDat_PCMNo, 15, 11
+	TEXTPTR	TextDat_CDDANo, 26, 11
 	TEXTEND
 
 Text_SpecStg8:
 	TEXTSTART
-	TEXTPTR	TextDat_SpecStg8, $C908
+	TEXTPTR	TextDat_SpecStg8, 4, 18
 	TEXTEND
 
 Text_FMNo:
 	TEXTSTART
-	TEXTPTR	TextDat_FMNo, $C58A
+	TEXTPTR	TextDat_FMNo, 5, 11
 	TEXTEND
 
 Text_PCMNo:
 	TEXTSTART
-	TEXTPTR	TextDat_PCMNo, $C59E
+	TEXTPTR	TextDat_PCMNo, 15, 11
 	TEXTEND
 
 Text_CDDANo:
 	TEXTSTART
-	TEXTPTR	TextDat_CDDANo, $C5B4
+	TEXTPTR	TextDat_CDDANo, 26, 11
 	TEXTEND
 
 ; -------------------------------------------------------------------------
@@ -991,22 +991,22 @@ VDPRegs:
 VDPRegsEnd:
 	even
 
-Pal_SoundTest:
-	incbin	"Sound Test/Data/Palette.bin"
-Pal_SoundTest_End:
+Pal_SelScreen:
+	incbin	"Selection Menu/Data/Palette.bin"
+Pal_SelScreen_End:
 	even
 
-Art_SoundTest:
-	incbin	"Sound Test/Data/Art.nem"
+Art_SelScreen:
+	incbin	"Selection Menu/Data/Art.nem"
 	even
 
-Map_SoundTestBg:
-	incbin	"Sound Test/Data/Background Mappings.bin"
+Map_SelScreenBg:
+	incbin	"Selection Menu/Data/Background Mappings.bin"
 	even
 
 ; -------------------------------------------------------------------------
 
-	include	"Sound Test/Functions.asm"
+	include	"Selection Menu/Functions.asm"
 
 ; -------------------------------------------------------------------------
 
