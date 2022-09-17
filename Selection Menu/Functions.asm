@@ -1014,7 +1014,11 @@ VSync:
 	btst	#0,ipxVSync			; Has the V-INT handler run?
 	bne.s	.Wait				; If not, wait
 	rts
+	
+; -------------------------------------------------------------------------
 
+	if PROTOTYPE=0
+	
 ; -------------------------------------------------------------------------
 ; Send the Sub CPU a command
 ; -------------------------------------------------------------------------
@@ -1039,5 +1043,55 @@ SubCPUCmd:
 	move.w	GACOMSTAT0,d0
 	bne.s	.WaitSubCPUDone			; If not, wait
 	rts
+
+; -------------------------------------------------------------------------
+
+	else
+	
+; -------------------------------------------------------------------------
+; Send a command to the Sub CPU
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.w - Command ID
+; -------------------------------------------------------------------------
+
+SubCPUCmd:
+	move.w	d0,GACOMCMD0			; Set command ID
+
+.WaitSubCPU:
+	tst.w	GACOMSTAT0			; Has the Sub CPU received the command?
+	beq.s	.WaitSubCPU			; If not, wait
+
+	move.w	#0,GACOMCMD0			; Mark as ready to send commands again
+
+.WaitSubCPUDone:
+	tst.w	GACOMSTAT0			; Is the Sub CPU done processing the command?
+	bne.s	.WaitSubCPUDone			; If not, wait
+	rts
+	
+; -------------------------------------------------------------------------
+; Unused function to send some kind of command ID to the Sub CPU
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.w - Command ID
+; -------------------------------------------------------------------------
+
+UnkSubCPUCmd:
+	move.w	d0,GACOMCMD2			; Send command
+
+.WaitSubCPU:
+	tst.w	GACOMSTAT2			; Has the Sub CPU acknowledged it?
+	beq.s	.WaitSubCPU
+	
+	move.w	#0,GACOMCMD2			; Tell Sub CPU we are ready to send more commands
+
+.WaitSubCPU2:
+	tst.w	GACOMSTAT2			; Is the Sub CPU ready for more commands?
+	bne.s	.WaitSubCPU2			; If not, wait
+	rts
+	
+; -------------------------------------------------------------------------
+
+	endif
 
 ; -------------------------------------------------------------------------

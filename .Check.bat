@@ -30,6 +30,11 @@ fc /b _Original\%REGPATH%\DUMMY0.MMD _Built\Files\DUMMY0.MMD
 fc /b _Original\%REGPATH%\DUMMY1.MMD _Built\Files\DUMMY1.MMD
 fc /b _Original\%REGPATH%\DUMMY2.MMD _Built\Files\DUMMY2.MMD
 fc /b _Original\%REGPATH%\DUMMY3.MMD _Built\Files\DUMMY3.MMD
+fc /b _Original\%REGPATH%\DUMMY5.MMD _Built\Files\DUMMY5.MMD
+fc /b _Original\%REGPATH%\DUMMY5.MMD _Built\Files\DUMMY6.MMD
+fc /b _Original\%REGPATH%\DUMMY5.MMD _Built\Files\DUMMY7.MMD
+fc /b _Original\%REGPATH%\DUMMY5.MMD _Built\Files\DUMMY8.MMD
+fc /b _Original\%REGPATH%\DUMMY5.MMD _Built\Files\DUMMY9.MMD
 fc /b _Original\%REGPATH%\R11A__.MMD _Built\Files\R11A__.MMD
 fc /b _Original\%REGPATH%\DEMO11A.MMD _Built\Files\DEMO11A.MMD
 fc /b _Original\%REGPATH%\R11B__.MMD _Built\Files\R11B__.MMD

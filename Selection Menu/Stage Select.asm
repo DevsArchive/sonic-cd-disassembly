@@ -106,7 +106,7 @@ MainLoop:
 	bsr.w	VSync				; VSync
 
 	move.b	ctrlHold,d0			; Has the start, A, B, or C button been pressed?
-	andi.b	#$F0,d0
+	andi.b	#%11110000,d0
 	beq.w	MainLoop			; If not, branch
 
 	bsr.w	FadeToBlack			; Fade to black
