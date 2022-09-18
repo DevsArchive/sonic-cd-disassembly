@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Selection menu macros
+; Title screen secret macros
 ; -------------------------------------------------------------------------
 
 ; -------------------------------------------------------------------------
@@ -34,9 +34,15 @@ TEXTEND macro
 ; -------------------------------------------------------------------------
 
 TEXTPTR macro ptr, x, y
+	local d
+	if H32=1
+		d: = $40
+	else
+		d: = $80
+	endif
 	dc.l	\ptr
-	VDPCMD	dc.l,$C000+((\x)*2)+((\y)*$80),VRAM,WRITE
-	VDPCMD	dc.l,$C000+((\x)*2)+(((\y)+1)*$80),VRAM,WRITE
+	VDPCMD	dc.l,$C000+((\x)*2)+((\y)*d),VRAM,WRITE
+	VDPCMD	dc.l,$C000+((\x)*2)+(((\y)+1)*d),VRAM,WRITE
 	__textListCnt: = __textListCnt+1
 	endm
 
@@ -50,7 +56,7 @@ TEXTPTR macro ptr, x, y
 TEXTSTR macro str
 	local	c, i
 	i: = 0
-	rept	strlen(\str)
+	while i<strlen(\str)
 		c: SUBSTR 1+i, 1+i, \str
 		if '\c'='-'
 			dc.b	$25
@@ -59,7 +65,18 @@ TEXTSTR macro str
 		elseif '\c'='.'
 			dc.b	$27
 		elseif '\c'="'"
-			dc.b	$28
+			if i<(strlen(\str)-1)
+				i: = i+1
+				c: SUBSTR 1+i, 1+i, \str
+				if '\c'="'"
+					dc.b	$29
+				else
+					dc.b	$28
+					i: = i-1
+				endif
+			else
+				dc.b	$28
+			endif
 		elseif '\c'='"'
 			dc.b	$29
 		elseif '\c'='!'
@@ -78,7 +95,7 @@ TEXTSTR macro str
 			dc.b	0
 		endif
 		i: = i+1
-	endr
+	endw
 	dc.b	$FF
 	endm
 

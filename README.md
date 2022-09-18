@@ -28,6 +28,7 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
 * Sound test (SOSEL)
     - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
     - Prototype version (DUMMY5, DUMMY6, DUMMY7, DUMMY8, DUMMY9)
+* Best of staff times (DUMMY4)
 
 # Special Thanks
 Special thanks to flamewing and TheStoneBanana for helping out and contributing, especially for R11A in the disassembly's infancy stages back in 2015.

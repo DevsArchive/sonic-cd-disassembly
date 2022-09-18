@@ -1001,8 +1001,62 @@ Art_SelScreen:
 	even
 
 Map_SelScreenBg:
-	incbin	"Title Screen/Secrets/Data/Background Mappings.bin"
+	incbin	"Title Screen/Secrets/Data/Background Mappings (H40).bin"
 	even
+	
+; -------------------------------------------------------------------------
+; Draw a tilemap (for 64 tile wide planes)
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - VDP command
+;	d1.w - Width
+;	d2.w - Height
+;	a1.l - Pointer to tilemap
+; -------------------------------------------------------------------------
+
+DrawTilemapH64:
+	lea	VDPCTRL,a2			; VDP control port
+	lea	VDPDATA,a3			; VDP data port
+	move.l	#$800000,d4			; Row delta
+
+.DrawRow:
+	move.l	d0,(a2)				; Set VDP command
+	move.w	d1,d3				; Get width
+
+.DrawTile:
+	move.w	(a1)+,(a3)			; Draw tile
+	dbf	d3,.DrawTile			; Loop until row is written
+	
+	add.l	d4,d0				; Next row
+	dbf	d2,.DrawRow			; Loop until map is drawn
+	rts
+
+; -------------------------------------------------------------------------
+; Draw a tilemap (for 128 tile wide planes)
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - VDP command
+;	d1.w - Width
+;	d2.w - Height
+;	a1.l - Pointer to tilemap
+; -------------------------------------------------------------------------
+
+DrawTilemapH128:
+	lea	VDPCTRL,a2			; VDP control port
+	lea	VDPDATA,a3			; VDP data port
+	move.l	#$1000000,d4			; Row delta
+
+.DrawRow:
+	move.l	d0,(a2)				; Set VDP command
+	move.w	d1,d3				; Get width
+
+.DrawTile:
+	move.w	(a1)+,(a3)			; Draw tile
+	dbf	d3,.DrawTile			; Loop until row is written
+	
+	add.l	d4,d0				; Next row
+	dbf	d2,.DrawRow			; Loop until map is drawn
+	rts
 
 ; -------------------------------------------------------------------------
 
