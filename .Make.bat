@@ -45,6 +45,7 @@ if exist "Sound Drivers\FM\_Driver.p" (
 %ASM68K% /e PROTOTYPE=0 /e H32=0 "Title Screen\Secrets\Sound Test.asm", "_Built\Files\SOSEL_.MMD", , "Title Screen\Secrets\Sound Test.lst"
 %ASM68K% /e PROTOTYPE=0 /e H32=0 "Title Screen\Secrets\Stage Select.asm", "_Built\Files\STSEL_.MMD", , "Title Screen\Secrets\Stage Select.lst"
 %ASM68K% /e PROTOTYPE=0 /e H32=1 "Title Screen\Secrets\Best Staff Times.asm", "_Built\Files\DUMMY4.MMD", , "Title Screen\Secrets\Best Staff Times.lst"
+%ASM68K% /e PROTOTYPE=0 /e H32=0 "Title Screen\Secrets\Special Stage 8 Credits.asm", "_Built\Files\SPEEND.MMD", , "Title Screen\Secrets\Special Stage 8 Credits.lst"
 
 if exist "_Built\Files\DUMMY5.MMD" (del "_Built\Files\DUMMY5.MMD" > nul)
 %ASM68K% /e PROTOTYPE=1 /e H32=0 "Title Screen\Secrets\Sound Test (Prototype).asm", "_Built\Files\DUMMY5.MMD", , "Title Screen\Secrets\Sound Test (Prototype).lst"

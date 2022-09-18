@@ -53,7 +53,7 @@ MMD macro flags, origin, size, entry, hint, vint
 		dc.w	0
 	else
 		dc.l	\origin
-		dc.w	((\size)+(($800-((\size)%$800))%$800))/4-1
+		dc.w	(\size)/4-1
 	endif
 	dc.l	\entry, \hint, \vint
 

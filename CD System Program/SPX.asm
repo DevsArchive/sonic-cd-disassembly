@@ -242,8 +242,8 @@ File_GoodEndSub:
 	dc.b	"BADEND.BIN;1", 0 		; Good ending FMV (Sub CPU, not a typo)
 File_FunIsInf:
 	dc.b	"NISI.MMD;1", 0			; "Fun is infinite" screen
-File_StaffCredits:
-	dc.b	"SPEEND.MMD;1", 0		; Staff credits
+File_SS8Credits:
+	dc.b	"SPEEND.MMD;1", 0		; Special stage 8 credits
 File_MCSonic:
 	dc.b	"DUMMY0.MMD;1", 0		; M.C. Sonic screen
 File_Tails:
@@ -530,7 +530,7 @@ BuRAMWriteParams:
 	dc.w	SPCmd_TestR7BMus-.SPCmds	; Play Palmtree Panic past music (sound test)
 	dc.w	SPCmd_TestR8BMus-.SPCmds	; Play Palmtree Panic past music (sound test)
 	dc.w	SPCmd_LoadFunIsInf-.SPCmds	; Load "Fun is infinite" screen
-	dc.w	SPCmd_LoadStaffCreds-.SPCmds	; Load staff credits
+	dc.w	SPCmd_LoadSS8Credits-.SPCmds	; Load special stage 8 credits
 	dc.w	SPCmd_LoadMCSonic-.SPCmds	; Load M.C. Sonic screen
 	dc.w	SPCmd_LoadTails-.SPCmds		; Load Tails screen
 	dc.w	SPCmd_LoadBatmanSonic-.SPCmds	; Load Batman Sonic screen
@@ -1138,11 +1138,11 @@ SPCmd_LoadCominSoon:
 	jmp	_CDBIOS.w
 
 ; -------------------------------------------------------------------------
-; Load staff credits
+; Load special stage 8 credits
 ; -------------------------------------------------------------------------
 
-SPCmd_LoadStaffCreds:
-	lea	File_StaffCredits(pc),a0	; Load file
+SPCmd_LoadSS8Credits:
+	lea	File_SS8Credits(pc),a0		; Load file
 	bsr.w	WaitWordRAMAccess
 	lea	WORDRAM2M,a1
 	jsr	LoadFile.w

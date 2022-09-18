@@ -122,12 +122,12 @@ FID_ENDMAIN	rs.b	1			; Ending FMV (Main CPU)
 FID_BADENDSUB	rs.b	1			; Bad ending FMV (Sub CPU, not a typo)
 FID_GOODENDSUB	rs.b	1			; Good ending FMV (Sub CPU, not a typo)
 FID_FUNISINF	rs.b	1			; "Fun is infinite" screen
-FID_STAFF	rs.b	1			; Staff credits
+FID_SS8CREDS	rs.b	1			; Special stage 8 credits
 FID_MCSONIC	rs.b	1			; M.C. Sonic screen
 FID_TAILS	rs.b	1			; Tails screen
 FID_BATMAN	rs.b	1			; Batman Sonic screen
 FID_CUTESONIC	rs.b	1			; Cute Sonic screen
-FID_TIMES	rs.b	1			; Best staff times screen
+FID_STAFFTIMES	rs.b	1			; Best staff times screen
 FID_DUMMY5	rs.b	1			; Copy of sound test (Unused)
 FID_DUMMY6	rs.b	1			; Copy of sound test (Unused)
 FID_DUMMY7	rs.b	1			; Copy of sound test (Unused)
@@ -343,7 +343,7 @@ SCMD_R6BMUST	rs.b	1			; Play Palmtree Panic Past music (sound test)
 SCMD_R7BMUST	rs.b	1			; Play Palmtree Panic Past music (sound test)
 SCMD_R8BMUST	rs.b	1			; Play Palmtree Panic Past music (sound test)
 SCMD_FUNISINF	rs.b	1			; Load "Fun is infinite" screen
-SCMD_STAFFCREDS	rs.b	1			; Load staff credits
+SCMD_SS8CREDS	rs.b	1			; Load special stage 8 credits
 SCMD_MCSONIC	rs.b	1			; Load M.C. Sonic screen
 SCMD_TAILS	rs.b	1			; Load Tails screen
 SCMD_BATMAN	rs.b	1			; Load Batman Sonic screen

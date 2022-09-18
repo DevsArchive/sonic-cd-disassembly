@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Stage selection menu
+; Special stage 8 credits
 ; -------------------------------------------------------------------------
 
 	include	"_Include/Common.i"
@@ -28,7 +28,8 @@
 
 Start:
 	move.l	#VInterrupt,_LEVEL6+2.w		; Set V-INT address
-
+	bsr.w	GiveWordRAMAccess		; Give Sub CPU Word RAM Access
+	
 	lea	VARSSTART.w,a0			; Clear variables
 	move.w	#VARSLEN/4-1,d7
 
@@ -52,8 +53,14 @@ Start:
 	moveq	#$1C-1,d2
 	bsr.w	DrawTilemapH64
 
-	lea	Text_StageSelect(pc),a0		; Draw header text
+	lea	Text_Staff(pc),a0		; Draw header text
 	move.w	#0,d0
+	bsr.w	DrawText
+	lea	Text_CreditsLeft(pc),a0		; Draw credits text (left)
+	move.w	#$2000,d0
+	bsr.w	DrawText
+	lea	Text_CreditsRight(pc),a0	; Draw credits text (right)
+	move.w	#$6000,d0
 	bsr.w	DrawText
 
 	lea	Pal_SelScreen(pc),a0		; Load palette
@@ -65,63 +72,22 @@ Start:
 	dbf	d7,.LoadPal
 	
 	bset	#1,ipxVSync			; Update CRAM
-	bsr.w	PrepFadeFromBlack		; Prepare to fade from black
+	bsr.w	PrepFadeFromWhite		; Prepare to fade from white
 	bsr.w	VSync				; VSync
-	bsr.w	FadeFromBlack			; Fade from black
+	bsr.w	FadeFromWhite			; Fade from white
 
 ; -------------------------------------------------------------------------
 
 MainLoop:
-	addq.w	#1,selectDelay			; Increment delay counter
-
-	lea	selectID(pc),a1			; Selection
-	moveq	#0,d6
-	moveq	#(Text_SelectionsEnd-Text_Selections)/$E-1,d7
-
-	move.w	selectDelay,d0			; Should we update the selection?
-	andi.w	#7,d0
-	bne.s	.DrawText			; If not, branch
-
-	btst	#0,ctrlHold			; Is up being pressed?
-	beq.s	.NoUp				; If not, branch
-	bsr.w	DecValueW			; Decrease selection
-
-.NoUp:
-	btst	#1,ctrlHold			; Is down being pressed?
-	beq.s	.DrawText			; If not, branch
-	bsr.w	IncValueW			; Increase selection
-
-.DrawText:
-	lea	Text_Clear(pc),a0		; Clear selection text
-	move.w	#0,d0
-	bsr.w	DrawText
-	
-	move.w	(a1),d0				; Draw selection text
-	mulu.w	#$E,d0
-	lea	Text_Selections(pc),a0
-	lea	(a0,d0.w),a0
-	move.w	#$6000,d0
-	bsr.w	DrawText
-
 	bsr.w	VSync				; VSync
 
-	move.b	ctrlHold,d0			; Has the start, A, B, or C button been pressed?
-	andi.b	#%11110000,d0
+	btst	#7,ctrlHold			; Has the start button been pressed?
 	beq.w	MainLoop			; If not, branch
 
 	bsr.w	FadeToBlack			; Fade to black
-	move.w	selectID,d0			; Return selection ID
+	moveq	#1,d0
 	rts
 
-; -------------------------------------------------------------------------
-; Selection data
-; -------------------------------------------------------------------------
-
-selectDelay:					; Selection delay
-	dc.w	0
-selectID:					; Selection ID
-	dc.w	0
-	
 ; -------------------------------------------------------------------------
 ; Send a command to the Sub CPU
 ; -------------------------------------------------------------------------
@@ -141,33 +107,6 @@ SelSubCPUCmd:
 .WaitSubCPUDone:
 	tst.w	GACOMSTAT0			; Is the Sub CPU done processing the command?
 	bne.s	.WaitSubCPUDone			; If not, wait
-	rts
-
-; -------------------------------------------------------------------------
-; Update a selection
-; -------------------------------------------------------------------------
-; PARAMETERS:
-;	d6.w - Minimum ID
-;	d7.w - Maximum ID
-;	a1.l - Pointer to selection ID
-;	a2.l - Pointer to delay counter
-; -------------------------------------------------------------------------
-
-UpdateSelection:
-	move.w	(a2),d0				; Should we update the selection?
-	andi.w	#7,d0
-	bne.s	.End				; If not, branch
-
-	btst	#0,ctrlHold			; Is up being pressed?
-	beq.s	.NoUp				; If not, branch
-	bsr.w	DecValueW			; Decrease selection
-
-.NoUp:
-	btst	#1,ctrlHold			; Is down being pressed?
-	beq.s	.End				; If not, branch
-	bsr.w	IncValueW			; Increase selection
-
-.End:
 	rts
 
 ; -------------------------------------------------------------------------
@@ -317,543 +256,93 @@ DrawText:
 ; Text data
 ; -------------------------------------------------------------------------
 
-Text_Clear:
+Text_Staff:
 	TEXTSTART
-	TEXTPTR	TextDat_Clear, 14, 13
+	TEXTPTR	TextDat_Staff, 13, 1
 	TEXTEND
 
-Text_StageSelect:
+Text_CreditsLeft:
 	TEXTSTART
-	TEXTPTR	TextDat_StageSelect, 14, 9
+	TEXTPTR	TextDat_CredLeft1, 3, 4
+	TEXTPTR	TextDat_CredLeft2, 3, 7
+	TEXTPTR	TextDat_CredLeft3, 3, 10
+	TEXTPTR	TextDat_CredLeft4, 3, 13
+	TEXTPTR	TextDat_CredLeft5, 3, 16
+	TEXTPTR	TextDat_CredLeft6, 3, 19
 	TEXTEND
 
-Text_Selections:
-	TEXTSTART
-	TEXTPTR	TextDat_R11A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R11B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R11C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R11D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R12A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R12B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R12C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R12D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_Warp, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_Opening, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_CominSoon, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R31A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R31B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R31C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R31D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R32A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R32B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R32C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R32D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R33C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R33D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R13C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R13D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R41A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R41B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R41C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R41D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R42A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R42B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R42C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R42D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R43C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R43D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R51A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R51B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R51C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R51D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R52A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R52B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R52C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R52D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R53C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R53D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R61A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R61B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R61C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R61D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R62A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R62B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R62C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R62D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R63C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R63D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R71A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R71B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R71C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R71D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R72A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R72B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R72C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R72D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R73C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R73D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R81A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R81B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R81C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R81D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R82A, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R82B, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R82C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R82D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R83C, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_R83D, 14, 13
-	TEXTEND
-	
-	TEXTSTART
-	TEXTPTR	TextDat_SS1Demo, 14, 13
+Text_CreditsRight:
+	TEXTSTART
+	TEXTPTR	TextDat_CredRight1, 18, 4
+	TEXTPTR	TextDat_CredRight2, 18, 7
+	TEXTPTR	TextDat_CredRight3, 18, 10
+	TEXTPTR	TextDat_CredRight4, 18, 13
+	TEXTPTR	TextDat_CredRight5, 18, 16
+	TEXTPTR	TextDat_CredRight6, 18, 19
+	TEXTPTR	TextDat_CredRight7, 18, 22
+	TEXTPTR	TextDat_CredRight8, 18, 25
 	TEXTEND
-Text_SelectionsEnd:
 
 ; -------------------------------------------------------------------------
 
-TextDat_R11A:
-	TEXTSTR	"1-1-A"
-
-TextDat_R11B:
-	TEXTSTR	"1-1-B"
-
-TextDat_R11C:
-	TEXTSTR	"1-1-C"
-
-TextDat_R11D:
-	TEXTSTR	"1-1-D"
-
-TextDat_R12A:
-	TEXTSTR	"1-2-A"
-
-TextDat_R12B:
-	TEXTSTR	"1-2-B"
-
-TextDat_R12C:
-	TEXTSTR	"1-2-C"
-
-TextDat_R12D:
-	TEXTSTR	"1-2-D"
-
-TextDat_Warp:
-	TEXTSTR	"WARP"
-
-TextDat_Opening:
-	TEXTSTR	"OPENING"
-
-TextDat_CominSoon:
-	TEXTSTR	"COMMING"
-
-TextDat_R31A:
-	TEXTSTR	"3-1-A"
-
-TextDat_R31B:
-	TEXTSTR	"3-1-B"
-
-TextDat_R31C:
-	TEXTSTR	"3-1-C"
-
-TextDat_R31D:
-	TEXTSTR	"3-1-D"
-
-TextDat_R32A:
-	TEXTSTR	"3-2-A"
-
-TextDat_R32B:
-	TEXTSTR	"3-2-B"
-
-TextDat_R32C:
-	TEXTSTR	"3-2-C"
-
-TextDat_R32D:
-	TEXTSTR	"3-2-D"
-
-TextDat_R33C:
-	TEXTSTR	"3-3-C"
-
-TextDat_R33D:
-	TEXTSTR	"3-3-D"
-
-TextDat_R13C:
-	TEXTSTR	"1-3-C"
-
-TextDat_R13D:
-	TEXTSTR	"1-3-D"
-
-TextDat_R41A:
-	TEXTSTR	"4-1-A"
-
-TextDat_R41B:
-	TEXTSTR	"4-1-B"
-
-TextDat_R41C:
-	TEXTSTR	"4-1-C"
-
-TextDat_R41D:
-	TEXTSTR	"4-1-D"
-
-TextDat_R42A:
-	TEXTSTR	"4-2-A"
-
-TextDat_R42B:
-	TEXTSTR	"4-2-B"
-
-TextDat_R42C:
-	TEXTSTR	"4-2-C"
-
-TextDat_R42D:
-	TEXTSTR	"4-2-D"
-
-TextDat_R43C:
-	TEXTSTR	"4-3-C"
-
-TextDat_R43D:
-	TEXTSTR	"4-3-D"
-
-TextDat_R51A:
-	TEXTSTR	"5-1-A"
-
-TextDat_R51B:
-	TEXTSTR	"5-1-B"
-
-TextDat_R51C:
-	TEXTSTR	"5-1-C"
-
-TextDat_R51D:
-	TEXTSTR	"5-1-D"
-
-TextDat_R52A:
-	TEXTSTR	"5-2-A"
-
-TextDat_R52B:
-	TEXTSTR	"5-2-B"
-
-TextDat_R52C:
-	TEXTSTR	"5-2-C"
-
-TextDat_R52D:
-	TEXTSTR	"5-2-D"
-
-TextDat_R53C:
-	TEXTSTR	"5-3-C"
-
-TextDat_R53D:
-	TEXTSTR	"5-3-D"
-
-TextDat_R61A:
-	TEXTSTR	"6-1-A"
-
-TextDat_R61B:
-	TEXTSTR	"6-1-B"
-
-TextDat_R61C:
-	TEXTSTR	"6-1-C"
-
-TextDat_R61D:
-	TEXTSTR	"6-1-D"
-
-TextDat_R62A:
-	TEXTSTR	"6-2-A"
-
-TextDat_R62B:
-	TEXTSTR	"6-2-B"
-
-TextDat_R62C:
-	TEXTSTR	"6-2-C"
-
-TextDat_R62D:
-	TEXTSTR	"6-2-D"
-
-TextDat_R63C:
-	TEXTSTR	"6-3-C"
-
-TextDat_R63D:
-	TEXTSTR	"6-3-D"
-
-TextDat_R71A:
-	TEXTSTR	"7-1-A"
-
-TextDat_R71B:
-	TEXTSTR	"7-1-B"
-
-TextDat_R71C:
-	TEXTSTR	"7-1-C"
-
-TextDat_R71D:
-	TEXTSTR	"7-1-D"
-
-TextDat_R72A:
-	TEXTSTR	"7-2-A"
-
-TextDat_R72B:
-	TEXTSTR	"7-2-B"
-
-TextDat_R72C:
-	TEXTSTR	"7-2-C"
-
-TextDat_R72D:
-	TEXTSTR	"7-2-D"
-
-TextDat_R73C:
-	TEXTSTR	"7-3-C"
-
-TextDat_R73D:
-	TEXTSTR	"7-3-D"
-
-TextDat_R81A:
-	TEXTSTR	"8-1-A"
-
-TextDat_R81B:
-	TEXTSTR	"8-1-B"
-
-TextDat_R81C:
-	TEXTSTR	"8-1-C"
-
-TextDat_R81D:
-	TEXTSTR	"8-1-D"
-
-TextDat_R82A:
-	TEXTSTR	"8-2-A"
-
-TextDat_R82B:
-	TEXTSTR	"8-2-B"
-
-TextDat_R82C:
-	TEXTSTR	"8-2-C"
-
-TextDat_R82D:
-	TEXTSTR	"8-2-D"
-
-TextDat_R83C:
-	TEXTSTR	"8-3-C"
-
-TextDat_R83D:
-	TEXTSTR	"8-3-D"
-
-TextDat_SS1Demo:
-	TEXTSTR	"SPEDEMO"
-
-TextDat_Clear:
-	TEXTSTR	"          "
-
-TextDat_StageSelect:
-	TEXTSTR	"STAGE SELECT"
+TextDat_Staff:
+	TEXTSTR	"STAFF"
+	even
+
+TextDat_CredLeft1:
+	TEXTSTR	"PLAN"
+	even
+
+TextDat_CredLeft2:
+	TEXTSTR	"SPRITE DESIGN"
+	even
+
+TextDat_CredLeft3:
+	TEXTSTR	"SCROLL DESIGN"
+	even
+
+TextDat_CredLeft4:
+	TEXTSTR	"SOUND"
+	even
+
+TextDat_CredLeft5:
+	TEXTSTR	"PROGRAM"
+	even
+
+TextDat_CredLeft6:
+	TEXTSTR	"SPECIAL THANKS"
+	even
+
+TextDat_CredRight1:
+	TEXTSTR	"HIROAKI CHINO"
+	even
+
+TextDat_CredRight2:
+	TEXTSTR	"KAZUYUKI HOSHINO"
+	even
+
+TextDat_CredRight3:
+	TEXTSTR	"YASUSHI YAMAGUCHI"
+	even
+
+TextDat_CredRight4:
+	TEXTSTR	"MASAFUMI OGATA"
+	even
+
+TextDat_CredRight5:
+	TEXTSTR	"KEIICHI YAMAMOTO"
+	even
+
+TextDat_CredRight6:
+	TEXTSTR	"3PEI"
+	even
+
+TextDat_CredRight7:
+	TEXTSTR	"MAJIN  ,  100SHIKI"
+	even
+
+TextDat_CredRight8:
+	TEXTSTR	"SYUJI TAKAHASHI"
 	even
 
 ; -------------------------------------------------------------------------
@@ -884,6 +373,22 @@ VInterrupt:
 .End:
 	movem.l	(sp)+,d0-a6			; Restore registers
 	rte
+
+; -------------------------------------------------------------------------
+; Give Sub CPU Word RAM access
+; -------------------------------------------------------------------------
+
+GiveWordRAMAccess:
+	btst	#1,GAMEMMODE			; Does the Sub CPU already have Word RAM Access?
+	bne.s	.End				; If so, branch
+	bset	#1,GAMEMMODE			; Give Sub CPU Word RAM access
+
+.Wait:
+	btst	#1,GAMEMMODE			; Has it been given?
+	beq.s	.Wait				; If not, wait
+
+.End:
+	rts
 
 ; -------------------------------------------------------------------------
 ; Data
@@ -985,6 +490,6 @@ DrawTilemapH128:
 
 ; -------------------------------------------------------------------------
 
-	dcb.b	$FF5000-*, 0
+	dcb.b	$FF6000-*, 0
 
 ; -------------------------------------------------------------------------

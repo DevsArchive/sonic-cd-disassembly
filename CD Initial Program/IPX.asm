@@ -19,7 +19,7 @@
 ; -------------------------------------------------------------------------
 
 	MMD	0, &
-		WORKRAM, End-Start, &
+		WORKRAM, $1000, &
 		Start, 0, 0
 
 ; -------------------------------------------------------------------------
@@ -1073,7 +1073,7 @@ SoundTest_SpecStg8:
 	bsr.w	RunMMD
 	tst.b	specStageLost			; Was the stage beaten?
 	bne.s	.End				; If not, branch
-	move.w	#SCMD_STAFFCREDS,d0		; If so, run staff credits
+	move.w	#SCMD_SS8CREDS,d0		; If so, run credits
 	bsr.w	RunMMD
 
 .End:
@@ -1587,6 +1587,5 @@ savedSR:
 
 	jmp	0.w				; Unreferenced
 	ALIGN	MAINVARS
-End:
 
 ; -------------------------------------------------------------------------

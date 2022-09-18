@@ -16,6 +16,13 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
     - Tidal Tempest (SNCBNK4B)
     - Wacky Workbench (SNCBNK6B)
 * Title screen (TITLEM and TITLES)
+    - Secrets
+        - Stage select (STSEL)
+        - Sound test (SOSEL)
+            - Prototype version (DUMMY5, DUMMY6, DUMMY7, DUMMY8, DUMMY9)
+        - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
+        - Best of staff times (DUMMY4)
+	- Secret special stage credits (SPEEND)
 * Level
     - Palmtree Panic Act 1 (R11A, R11B, R11C, R11D, DEMO11A)
     - Wacky Workbench Act 1 (R61A)
@@ -24,11 +31,6 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
 * FMVs
     - Good ending Sub CPU program (BADEND.BIN, not a typo)
     - Bad ending Sub CPU program (GOODEND.BIN, not a typo)
-* Stage select (STSEL)
-* Sound test (SOSEL)
-    - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
-    - Prototype version (DUMMY5, DUMMY6, DUMMY7, DUMMY8, DUMMY9)
-* Best of staff times (DUMMY4)
 * Visual Mode menu (VM)
 
 # Special Thanks
