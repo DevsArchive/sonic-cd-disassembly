@@ -30,8 +30,8 @@ Start:
 	move.l	#0,(a0)+
 	dbf	d7,.ClearVars
 
-	lea	VDPRegs(pc),a0			; Initialize the Mega Drive
-	bsr.w	Initialize
+	lea	VDPRegs(pc),a0			; Initialize Mega Drive hardware
+	bsr.w	InitMD
 
 	VDPCMD	move.l,$E400,VRAM,WRITE,VDPCTRL	; Reset horizontal scroll data
 	move.l	#0,VDPDATA
@@ -144,13 +144,13 @@ savedSR:
 	dc.w	0
 
 ; -------------------------------------------------------------------------
-; Initialize the Mega Drive
+; Initialize the Mega Drive hardware
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a0.l - Pointer to VDP register data table
 ; -------------------------------------------------------------------------
 
-Initialize:
+InitMD:
 	move.w	#$8000,d0			; Set up VDP registers
 	moveq	#VDPRegsEnd-VDPRegs-1,d7
 

@@ -493,7 +493,7 @@ FlushSoundQueue:
 	jmp	StartZ80			; Start the Z80
 
 ; -------------------------------------------------------------------------
-; Mass fill 128 bytes
+; Mass fill
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d1.l - Value to fill with
@@ -501,13 +501,73 @@ FlushSoundQueue:
 ; -------------------------------------------------------------------------
 
 Fill128:
-	rept	32
-		move.l	d1,(a1)+
-	endr
+	move.l	d1,(a1)+
+Fill124:
+	move.l	d1,(a1)+
+Fill120:
+	move.l	d1,(a1)+
+Fill116:
+	move.l	d1,(a1)+
+Fill112:
+	move.l	d1,(a1)+
+Fill108:
+	move.l	d1,(a1)+
+Fill104:
+	move.l	d1,(a1)+
+Fill100:
+	move.l	d1,(a1)+
+Fill96:
+	move.l	d1,(a1)+
+Fill92:
+	move.l	d1,(a1)+
+Fill88:
+	move.l	d1,(a1)+
+Fill84:
+	move.l	d1,(a1)+
+Fill80:
+	move.l	d1,(a1)+
+Fill76:
+	move.l	d1,(a1)+
+Fill72:
+	move.l	d1,(a1)+
+Fill68:
+	move.l	d1,(a1)+
+Fill64:
+	move.l	d1,(a1)+
+Fill60:
+	move.l	d1,(a1)+
+Fill56:
+	move.l	d1,(a1)+
+Fill52:
+	move.l	d1,(a1)+
+Fill48:
+	move.l	d1,(a1)+
+Fill44:
+	move.l	d1,(a1)+
+Fill40:
+	move.l	d1,(a1)+
+Fill36:
+	move.l	d1,(a1)+
+Fill32:
+	move.l	d1,(a1)+
+Fill28:
+	move.l	d1,(a1)+
+Fill24:
+	move.l	d1,(a1)+
+Fill20:
+	move.l	d1,(a1)+
+Fill16:
+	move.l	d1,(a1)+
+Fill12:
+	move.l	d1,(a1)+
+Fill8:
+	move.l	d1,(a1)+
+Fill4:
+	move.l	d1,(a1)+
 	rts
 
 ; -------------------------------------------------------------------------
-; Mass fill 128 bytes (VDP)
+; Mass fill (VDP)
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d1.l - Value to fill with
@@ -515,13 +575,73 @@ Fill128:
 ; -------------------------------------------------------------------------
 
 Fill128VDP:
-	rept	32
-		move.l	d1,(a1)
-	endr
+	move.l	d1,(a1)
+Fill124VDP:
+	move.l	d1,(a1)
+Fill120VDP:
+	move.l	d1,(a1)
+Fill116VDP:
+	move.l	d1,(a1)
+Fill112VDP:
+	move.l	d1,(a1)
+Fill108VDP:
+	move.l	d1,(a1)
+Fill104VDP:
+	move.l	d1,(a1)
+Fill100VDP:
+	move.l	d1,(a1)
+Fill96VDP:
+	move.l	d1,(a1)
+Fill92VDP:
+	move.l	d1,(a1)
+Fill88VDP:
+	move.l	d1,(a1)
+Fill84VDP:
+	move.l	d1,(a1)
+Fill80VDP:
+	move.l	d1,(a1)
+Fill76VDP:
+	move.l	d1,(a1)
+Fill72VDP:
+	move.l	d1,(a1)
+Fill68VDP:
+	move.l	d1,(a1)
+Fill64VDP:
+	move.l	d1,(a1)
+Fill60VDP:
+	move.l	d1,(a1)
+Fill56VDP:
+	move.l	d1,(a1)
+Fill52VDP:
+	move.l	d1,(a1)
+Fill48VDP:
+	move.l	d1,(a1)
+Fill44VDP:
+	move.l	d1,(a1)
+Fill40VDP:
+	move.l	d1,(a1)
+Fill36VDP:
+	move.l	d1,(a1)
+Fill32VDP:
+	move.l	d1,(a1)
+Fill28VDP:
+	move.l	d1,(a1)
+Fill24VDP:
+	move.l	d1,(a1)
+Fill20VDP:
+	move.l	d1,(a1)
+Fill16VDP:
+	move.l	d1,(a1)
+Fill12VDP:
+	move.l	d1,(a1)
+Fill8VDP:
+	move.l	d1,(a1)
+Fill4VDP:
+	move.l	d1,(a1)
 	rts
 
 ; -------------------------------------------------------------------------
-; Mass copy 128 bytes
+; Mass copy
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a1.l - Pointer to source data
@@ -529,13 +649,73 @@ Fill128VDP:
 ; -------------------------------------------------------------------------
 
 Copy128:
-	rept	32
-		move.l	(a1)+,(a2)+
-	endr
+	move.l	(a1)+,(a2)+
+Copy124:
+	move.l	(a1)+,(a2)+
+Copy120:
+	move.l	(a1)+,(a2)+
+Copy116:
+	move.l	(a1)+,(a2)+
+Copy112:
+	move.l	(a1)+,(a2)+
+Copy108:
+	move.l	(a1)+,(a2)+
+Copy104:
+	move.l	(a1)+,(a2)+
+Copy100:
+	move.l	(a1)+,(a2)+
+Copy96:
+	move.l	(a1)+,(a2)+
+Copy92:
+	move.l	(a1)+,(a2)+
+Copy88:
+	move.l	(a1)+,(a2)+
+Copy84:
+	move.l	(a1)+,(a2)+
+Copy80:
+	move.l	(a1)+,(a2)+
+Copy76:
+	move.l	(a1)+,(a2)+
+Copy72:
+	move.l	(a1)+,(a2)+
+Copy68:
+	move.l	(a1)+,(a2)+
+Copy64:
+	move.l	(a1)+,(a2)+
+Copy60:
+	move.l	(a1)+,(a2)+
+Copy56:
+	move.l	(a1)+,(a2)+
+Copy52:
+	move.l	(a1)+,(a2)+
+Copy48:
+	move.l	(a1)+,(a2)+
+Copy44:
+	move.l	(a1)+,(a2)+
+Copy40:
+	move.l	(a1)+,(a2)+
+Copy36:
+	move.l	(a1)+,(a2)+
+Copy32:
+	move.l	(a1)+,(a2)+
+Copy28:
+	move.l	(a1)+,(a2)+
+Copy24:
+	move.l	(a1)+,(a2)+
+Copy20:
+	move.l	(a1)+,(a2)+
+Copy16:
+	move.l	(a1)+,(a2)+
+Copy12:
+	move.l	(a1)+,(a2)+
+Copy8:
+	move.l	(a1)+,(a2)+
+Copy4:
+	move.l	(a1)+,(a2)+
 	rts
 
 ; -------------------------------------------------------------------------
-; Mass copy 128 bytes (VDP)
+; Mass copy (VDP)
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a1.l - Pointer to source data
@@ -543,9 +723,69 @@ Copy128:
 ; -------------------------------------------------------------------------
 
 Copy128VDP:
-	rept	32
-		move.l	(a1)+,(a2)
-	endr
+	move.l	(a1)+,(a2)
+Copy124VDP:
+	move.l	(a1)+,(a2)
+Copy120VDP:
+	move.l	(a1)+,(a2)
+Copy116VDP:
+	move.l	(a1)+,(a2)
+Copy112VDP:
+	move.l	(a1)+,(a2)
+Copy108VDP:
+	move.l	(a1)+,(a2)
+Copy104VDP:
+	move.l	(a1)+,(a2)
+Copy100VDP:
+	move.l	(a1)+,(a2)
+Copy96VDP:
+	move.l	(a1)+,(a2)
+Copy92VDP:
+	move.l	(a1)+,(a2)
+Copy88VDP:
+	move.l	(a1)+,(a2)
+Copy84VDP:
+	move.l	(a1)+,(a2)
+Copy80VDP:
+	move.l	(a1)+,(a2)
+Copy76VDP:
+	move.l	(a1)+,(a2)
+Copy72VDP:
+	move.l	(a1)+,(a2)
+Copy68VDP:
+	move.l	(a1)+,(a2)
+Copy64VDP:
+	move.l	(a1)+,(a2)
+Copy60VDP:
+	move.l	(a1)+,(a2)
+Copy56VDP:
+	move.l	(a1)+,(a2)
+Copy52VDP:
+	move.l	(a1)+,(a2)
+Copy48VDP:
+	move.l	(a1)+,(a2)
+Copy44VDP:
+	move.l	(a1)+,(a2)
+Copy40VDP:
+	move.l	(a1)+,(a2)
+Copy36VDP:
+	move.l	(a1)+,(a2)
+Copy32VDP:
+	move.l	(a1)+,(a2)
+Copy28VDP:
+	move.l	(a1)+,(a2)
+Copy24VDP:
+	move.l	(a1)+,(a2)
+Copy20VDP:
+	move.l	(a1)+,(a2)
+Copy16VDP:
+	move.l	(a1)+,(a2)
+Copy12VDP:
+	move.l	(a1)+,(a2)
+Copy8VDP:
+	move.l	(a1)+,(a2)
+Copy4VDP:
+	move.l	(a1)+,(a2)
 	rts
 
 ; -------------------------------------------------------------------------

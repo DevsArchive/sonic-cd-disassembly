@@ -1928,7 +1928,7 @@ DistanceTable:
 	dc.w	$015E, $0161, $0164, $0167, $016A
 
 ; -------------------------------------------------------------------------
-; Mass copy 128 bytes
+; Mass copy
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	a1.l - Pointer to source data
@@ -1936,13 +1936,73 @@ DistanceTable:
 ; -------------------------------------------------------------------------
 
 Copy128:
-	rept	32
-		move.l	(a1)+,(a2)+
-	endr
+	move.l	(a1)+,(a2)+
+Copy124:
+	move.l	(a1)+,(a2)+
+Copy120:
+	move.l	(a1)+,(a2)+
+Copy116:
+	move.l	(a1)+,(a2)+
+Copy112:
+	move.l	(a1)+,(a2)+
+Copy108:
+	move.l	(a1)+,(a2)+
+Copy104:
+	move.l	(a1)+,(a2)+
+Copy100:
+	move.l	(a1)+,(a2)+
+Copy96:
+	move.l	(a1)+,(a2)+
+Copy92:
+	move.l	(a1)+,(a2)+
+Copy88:
+	move.l	(a1)+,(a2)+
+Copy84:
+	move.l	(a1)+,(a2)+
+Copy80:
+	move.l	(a1)+,(a2)+
+Copy76:
+	move.l	(a1)+,(a2)+
+Copy72:
+	move.l	(a1)+,(a2)+
+Copy68:
+	move.l	(a1)+,(a2)+
+Copy64:
+	move.l	(a1)+,(a2)+
+Copy60:
+	move.l	(a1)+,(a2)+
+Copy56:
+	move.l	(a1)+,(a2)+
+Copy52:
+	move.l	(a1)+,(a2)+
+Copy48:
+	move.l	(a1)+,(a2)+
+Copy44:
+	move.l	(a1)+,(a2)+
+Copy40:
+	move.l	(a1)+,(a2)+
+Copy36:
+	move.l	(a1)+,(a2)+
+Copy32:
+	move.l	(a1)+,(a2)+
+Copy28:
+	move.l	(a1)+,(a2)+
+Copy24:
+	move.l	(a1)+,(a2)+
+Copy20:
+	move.l	(a1)+,(a2)+
+Copy16:
+	move.l	(a1)+,(a2)+
+Copy12:
+	move.l	(a1)+,(a2)+
+Copy8:
+	move.l	(a1)+,(a2)+
+Copy4:
+	move.l	(a1)+,(a2)+
 	rts
 
 ; -------------------------------------------------------------------------
-; Mass fill 128 bytes
+; Mass fill
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d1.l - Value to fill with
@@ -1950,9 +2010,69 @@ Copy128:
 ; -------------------------------------------------------------------------
 
 Fill128:
-	rept	32
-		move.l	d1,(a1)+
-	endr
+	move.l	d1,(a1)+
+Fill124:
+	move.l	d1,(a1)+
+Fill120:
+	move.l	d1,(a1)+
+Fill116:
+	move.l	d1,(a1)+
+Fill112:
+	move.l	d1,(a1)+
+Fill108:
+	move.l	d1,(a1)+
+Fill104:
+	move.l	d1,(a1)+
+Fill100:
+	move.l	d1,(a1)+
+Fill96:
+	move.l	d1,(a1)+
+Fill92:
+	move.l	d1,(a1)+
+Fill88:
+	move.l	d1,(a1)+
+Fill84:
+	move.l	d1,(a1)+
+Fill80:
+	move.l	d1,(a1)+
+Fill76:
+	move.l	d1,(a1)+
+Fill72:
+	move.l	d1,(a1)+
+Fill68:
+	move.l	d1,(a1)+
+Fill64:
+	move.l	d1,(a1)+
+Fill60:
+	move.l	d1,(a1)+
+Fill56:
+	move.l	d1,(a1)+
+Fill52:
+	move.l	d1,(a1)+
+Fill48:
+	move.l	d1,(a1)+
+Fill44:
+	move.l	d1,(a1)+
+Fill40:
+	move.l	d1,(a1)+
+Fill36:
+	move.l	d1,(a1)+
+Fill32:
+	move.l	d1,(a1)+
+Fill28:
+	move.l	d1,(a1)+
+Fill24:
+	move.l	d1,(a1)+
+Fill20:
+	move.l	d1,(a1)+
+Fill16:
+	move.l	d1,(a1)+
+Fill12:
+	move.l	d1,(a1)+
+Fill8:
+	move.l	d1,(a1)+
+Fill4:
+	move.l	d1,(a1)+
 	rts
 	
 ; -------------------------------------------------------------------------

@@ -56,7 +56,7 @@ object8		rs.b	oSize			; Object 8
 object9		rs.b	oSize			; Object 9
 	endif
 objectsEnd	rs.b	0			; End of object pool
-OBJCOUNT	EQU	(objectsEnd-objects)/oSize
+OBJCOUNT	EQU	(__rs-objects)/oSize
 
 	if REGION=JAPAN
 		rs.b	$1200
