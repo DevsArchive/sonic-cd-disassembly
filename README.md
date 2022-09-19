@@ -31,6 +31,7 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
 * FMVs
     - Good ending Sub CPU program (BADEND.BIN, not a typo)
     - Bad ending Sub CPU program (GOODEND.BIN, not a typo)
+* DA Garden (PLANET_S)
 * Visual Mode menu (VM)
 
 # Special Thanks

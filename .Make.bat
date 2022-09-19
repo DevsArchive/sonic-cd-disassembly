@@ -62,6 +62,7 @@ if exist "_Built\Files\DUMMY5.MMD" (
 %ASM68K% /e PROTOTYPE=0 /e H32=0 /e EASTEREGG=3 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY2.MMD", , "Title Screen\Secrets\Sound Test Image (Batman).lst"
 %ASM68K% /e PROTOTYPE=0 /e H32=0 /e EASTEREGG=4 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY3.MMD", , "Title Screen\Secrets\Sound Test Image (Cute Sonic).lst"
 
+%ASM68K% "DA Garden\Sub.asm", "_Built\Files\PLANET_S.BIN", , "DA Garden\Sub.lst"
 %ASM68K% "Visual Mode\Main.asm", "_Built\Files\VM____.MMD", , "Visual Mode\Main.lst"
 
 %ASM68K% /e DEMO=0 "Level\Palmtree Panic\Act 1 Present.asm", "_Built\Files\R11A__.MMD", , "Level\Palmtree Panic\Act 1 Present.lst"
