@@ -21,8 +21,6 @@ fc /b _Original\%REGPATH%\SNCBNK4B.BIN _Built\Files\SNCBNK4B.BIN
 fc /b _Original\%REGPATH%\SNCBNK6B.BIN _Built\Files\SNCBNK6B.BIN
 fc /b _Original\%REGPATH%\TITLEM.MMD _Built\Files\TITLEM.MMD
 fc /b _Original\%REGPATH%\TITLES.BIN _Built\Files\TITLES.BIN
-fc /b _Original\%REGPATH%\GOODEND.BIN _Built\Files\GOODEND.BIN
-fc /b _Original\%REGPATH%\BADEND.BIN _Built\Files\BADEND.BIN
 fc /b _Original\%REGPATH%\STSEL_.MMD _Built\Files\STSEL_.MMD
 fc /b _Original\%REGPATH%\SOSEL_.MMD _Built\Files\SOSEL_.MMD
 fc /b _Original\%REGPATH%\NISI.MMD _Built\Files\NISI.MMD
@@ -37,6 +35,9 @@ fc /b _Original\%REGPATH%\DUMMY7.MMD _Built\Files\DUMMY7.MMD
 fc /b _Original\%REGPATH%\DUMMY8.MMD _Built\Files\DUMMY8.MMD
 fc /b _Original\%REGPATH%\DUMMY9.MMD _Built\Files\DUMMY9.MMD
 fc /b _Original\%REGPATH%\SPEEND.MMD _Built\Files\SPEEND.MMD
+fc /b _Original\%REGPATH%\OPEN_S.BIN _Built\Files\OPEN_S.BIN
+fc /b _Original\%REGPATH%\GOODEND.BIN _Built\Files\GOODEND.BIN
+fc /b _Original\%REGPATH%\BADEND.BIN _Built\Files\BADEND.BIN
 fc /b _Original\%REGPATH%\PLANET_S.BIN _Built\Files\PLANET_S.BIN
 fc /b _Original\%REGPATH%\VM____.MMD _Built\Files\VM____.MMD
 fc /b _Original\%REGPATH%\R11A__.MMD _Built\Files\R11A__.MMD

@@ -40,8 +40,6 @@ if exist "Sound Drivers\FM\_Driver.p" (
 
 %ASM68K% "Title Screen\Main.asm", "_Built\Files\TITLEM.MMD", , "Title Screen\Main.lst"
 %ASM68K% "Title Screen\Sub.asm", "_Built\Files\TITLES.BIN", , "Title Screen\Sub.lst"
-%ASM68K% /e DATAFILE=0 "FMV\Sub.asm", "_Built\Files\GOODEND.BIN", , "FMV\Sub (Good Ending).lst"
-%ASM68K% /e DATAFILE=1 "FMV\Sub.asm", "_Built\Files\BADEND.BIN", , "FMV\Sub (Bad Ending).lst"
 %ASM68K% /e PROTOTYPE=0 /e H32=0 "Title Screen\Secrets\Sound Test.asm", "_Built\Files\SOSEL_.MMD", , "Title Screen\Secrets\Sound Test.lst"
 %ASM68K% /e PROTOTYPE=0 /e H32=0 "Title Screen\Secrets\Stage Select.asm", "_Built\Files\STSEL_.MMD", , "Title Screen\Secrets\Stage Select.lst"
 %ASM68K% /e PROTOTYPE=0 /e H32=1 "Title Screen\Secrets\Best Staff Times.asm", "_Built\Files\DUMMY4.MMD", , "Title Screen\Secrets\Best Staff Times.lst"
@@ -61,6 +59,10 @@ if exist "_Built\Files\DUMMY5.MMD" (
 %ASM68K% /e PROTOTYPE=0 /e H32=0 /e EASTEREGG=2 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY1.MMD", , "Title Screen\Secrets\Sound Test Image (Tails).lst"
 %ASM68K% /e PROTOTYPE=0 /e H32=0 /e EASTEREGG=3 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY2.MMD", , "Title Screen\Secrets\Sound Test Image (Batman).lst"
 %ASM68K% /e PROTOTYPE=0 /e H32=0 /e EASTEREGG=4 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY3.MMD", , "Title Screen\Secrets\Sound Test Image (Cute Sonic).lst"
+
+%ASM68K% /e DATAFILE=0 "FMV\Sub.asm", "_Built\Files\OPEN_S.BIN", , "FMV\Sub (Opening).lst"
+%ASM68K% /e DATAFILE=1 "FMV\Sub.asm", "_Built\Files\GOODEND.BIN", , "FMV\Sub (Good Ending).lst"
+%ASM68K% /e DATAFILE=2 "FMV\Sub.asm", "_Built\Files\BADEND.BIN", , "FMV\Sub (Bad Ending).lst"
 
 %ASM68K% "DA Garden\Sub.asm", "_Built\Files\PLANET_S.BIN", , "DA Garden\Sub.lst"
 %ASM68K% "Visual Mode\Main.asm", "_Built\Files\VM____.MMD", , "Visual Mode\Main.lst"
