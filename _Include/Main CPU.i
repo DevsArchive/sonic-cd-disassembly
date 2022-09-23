@@ -467,3 +467,31 @@ DMACOPY macro src, dest, len
 	endm
 
 ; -------------------------------------------------------------------------
+; Copy image buffer to VRAM
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	src  - Source address
+;	buf  - Buffer ID
+;	part - Buffer part ID
+; -------------------------------------------------------------------------
+
+COPYIMG macro src, buf, part
+	local off, len, vadr
+	
+	if (\part)=0
+		off: = 0
+		len: = IMGV1LEN
+	else
+		off: = IMGV1LEN
+		len: = IMGLENGTH-IMGV1LEN
+	endif
+	
+	vadr: = IMGVRAM+((\buf)*IMGLENGTH)
+	if (\part)<>0
+		vadr: = vadr+IMGV1LEN
+	endif
+
+	DMA68K	(\src)+off,vadr,\#len,VRAM
+	endm
+
+; -------------------------------------------------------------------------

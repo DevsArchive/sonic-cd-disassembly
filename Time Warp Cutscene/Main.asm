@@ -123,7 +123,6 @@ ctrlTap		EQU	ctrlData+1		; Controller tapped buttons data
 ; Program start
 ; -------------------------------------------------------------------------
 
-
 Start:
 	move.l	#VInterrupt,_LEVEL6+2.w		; Set V-INT address
 	

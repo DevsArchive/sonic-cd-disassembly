@@ -25,6 +25,12 @@ if exist "Sound Drivers\FM\_Driver.p" (
     echo **************************************************************************************
 )
 
+%ASM68K% "DA Garden\Track Titles.asm", "_Built\Files\PLANET_D.BIN", "DA Garden\Track Titles.sym"
+_Bin\GetPsyQSyms.exe "DA Garden\Track Titles.sym" "DA Garden\Track Title Labels.i"
+if exist "DA Garden\Track Titles.sym" ( del "DA Garden\Track Titles.sym" > nul )
+%ASM68K% "DA Garden\Main.asm", "_Built\Files\PLANET_M.MMD", , "DA Garden\Main.lst"
+%ASM68K% "DA Garden\Sub.asm", "_Built\Files\PLANET_S.BIN", , "DA Garden\Sub.lst"
+
 %ASM68K% "CD Initial Program\IP.asm", "_Built\Misc\IP.BIN", , "CD Initial Program\IP.lst"
 %ASM68K% "CD Initial Program\IPX.asm", "_Built\Files\IPX___.MMD",  , "CD Initial Program\IPX.lst"
 %ASM68K% "CD System Program\SP.asm", "_Built\Misc\SP.BIN", , "CD System Program\SP.lst"
@@ -64,7 +70,6 @@ if exist "_Built\Files\DUMMY5.MMD" (
 %ASM68K% /e DATAFILE=1 "FMV\Sub.asm", "_Built\Files\GOODEND.BIN", , "FMV\Sub (Good Ending).lst"
 %ASM68K% /e DATAFILE=2 "FMV\Sub.asm", "_Built\Files\BADEND.BIN", , "FMV\Sub (Bad Ending).lst"
 
-%ASM68K% "DA Garden\Sub.asm", "_Built\Files\PLANET_S.BIN", , "DA Garden\Sub.lst"
 %ASM68K% "Visual Mode\Main.asm", "_Built\Files\VM____.MMD", , "Visual Mode\Main.lst"
 
 %ASM68K% /e DEMO=0 "Level\Palmtree Panic\Act 1 Present.asm", "_Built\Files\R11A__.MMD", , "Level\Palmtree Panic\Act 1 Present.lst"

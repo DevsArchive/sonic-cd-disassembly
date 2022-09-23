@@ -117,9 +117,11 @@ Start:
 	move.l	d0,(a0)+
 	dbf	d7,.ClearVars
 	
-	move.w	#$8000,ctrlData			; Reset controller datra
+	; NOTE: Leftover hotfix from DA Garden. See DA Garden's Main CPU
+	; code for more information on why this exists.
+	move.w	#$8000,ctrlData			; Force program to assume start button was being held
+	
 	bsr.w	InitMD				; Initialize the Mega Drive
-
 	bsr.w	DrawBackground			; Draw background
 	moveq	#1,d0				; Load art
 	jsr	LoadArt
@@ -196,7 +198,7 @@ UpdateSelection:
 	
 	subq.w	#1,menuSelection.w		; Move selection up
 	bge.s	.CheckDown			; If it hasn't wrapped, branch
-	move.w	#4,menuSelection.w		; Wrap to the button
+	move.w	#4,menuSelection.w		; Wrap to the bottom
 	bra.s	.CheckDown
 	
 .UpHeld:
@@ -275,7 +277,7 @@ DrawBackground:
 	move.w	d3,VDPDATA
 	dbf	d2,.DrawTile			; Loop until row is written
 	
-	add.l	#$800000,d0			; Next row
+	addi.l	#$800000,d0			; Next row
 	dbf	d1,.DrawRow			; Loop until map is drawn
 	
 	VDPCMD	move.l,$20,VRAM,WRITE,VDPCTRL	; Load background art
@@ -381,7 +383,7 @@ Pal_VisualMode:
 	incbin	"Visual Mode/Data/Palette.bin"
 Pal_VisualModeEnd:
 	even
-	
+
 VDPRegs:
 	dc.b	%00000100			; No H-INT
 	dc.b	%00110100			; V-INT, DMA, mode 5
@@ -817,7 +819,7 @@ SetAllButtons:
 ; -------------------------------------------------------------------------
 ; RETURNS:
 ;	eq/ne - Found/Not found
-;	a0.l  - Found object slot
+;	a1.l  - Found object slot
 ; -------------------------------------------------------------------------
 
 FindObjSlot:
@@ -834,22 +836,21 @@ FindObjSlot:
 	rts
 
 ; -------------------------------------------------------------------------
-; Find first used object slot
+; Check if any objects are loaded
 ; -------------------------------------------------------------------------
 ; RETURNS:
-;	eq/ne - Not found/Found
-;	a0.l  - Found object slot
+;	eq/ne - No objects/Objects found
 ; -------------------------------------------------------------------------
 
-FindFirstUsedObj:
+CheckObjLoaded:
 	lea	objects.w,a1			; Object slots
 	move.w	#OBJCOUNT-1,d0			; Number of slots to check
 	
-.Find:
+.Check:
 	tst.w	(a1)				; Is this slot occupied?
 	bne.s	.End				; If so, exit
 	lea	oSize(a1),a1			; Next slot
-	dbf	d0,.Find			; Loop until finished
+	dbf	d0,.Check			; Loop until finished
 
 .End:
 	rts
@@ -903,7 +904,7 @@ RunObject:
 	
 	btst	#4,oFlags(a0)			; Is this object marked for deletion?
 	beq.s	.End				; If not, branch
-	bsr.w	DeleteObject			; If so, delete it
+	bsr.w	ClearObject			; If so, clear object slot
 	
 .End:
 	rts
@@ -1053,11 +1054,14 @@ AnimateObject:
 	rts
 
 ; -------------------------------------------------------------------------
-; Delete object
+; Clear object slot
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a0.l - Pointer to object slot
 ; -------------------------------------------------------------------------
 
-DeleteObject:
-	movea.l	a0,a1				; Delete object
+ClearObject:
+	movea.l	a0,a1				; Clear object slot
 	moveq	#0,d1
 	bra.w	Fill64
 
@@ -1230,7 +1234,7 @@ LoadArt:
 ; -------------------------------------------------------------------------
 
 .Art:
-	VDPCMD	dc.l,$8C20,VRAM,WRITE
+	VDPCMD	dc.l,$8C20,VRAM,WRITE		; Menu text
 	dc.l	Art_VisModeText
 
 ; -------------------------------------------------------------------------

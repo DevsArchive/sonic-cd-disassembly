@@ -13,6 +13,13 @@
 	include	"Title Screen/_Common.i"
 
 ; -------------------------------------------------------------------------
+; Image buffer VRAM constants
+; -------------------------------------------------------------------------
+
+IMGVRAM		EQU	$0020			; VRAM address
+IMGV1LEN	EQU	IMGLENGTH/2		; Part 1 length
+
+; -------------------------------------------------------------------------
 ; Object variables structure
 ; -------------------------------------------------------------------------
 
@@ -35,7 +42,7 @@ oSize		rs.b	0			; Size of structure
 
 	rsset	WORKRAM+$FF00A000
 VARSSTART	rs.b	0			; Start of variables
-cloudsArt	rs.b	IMGLENGTH		; Clouds art buffer
+cloudsImage	rs.b	IMGLENGTH		; Clouds image buffer
 hscroll		rs.b	$380			; Horizontal scroll buffer
 		rs.b	$80
 sprites		rs.b	80*8			; Sprite buffer
@@ -275,7 +282,7 @@ MainLoop:
 	bsr.w	VSync
 
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
-	bsr.w	GetCloudsArt			; Get rendered clouds art
+	bsr.w	GetCloudsImage			; Get rendered clouds image
 	bsr.w	GiveWordRAMAccess		; Give back Word RAM access
 
 	tst.b	exitFlag.w			; Are we exiting the title screen?
@@ -296,7 +303,7 @@ MainLoop:
 	bsr.w	VSync
 
 	bsr.w	WaitWordRAMAccess		; Wait for Word RAM access
-	bsr.w	GetCloudsArt			; Get rendered clouds art
+	bsr.w	GetCloudsImage			; Get rendered clouds image
 	bsr.w	GiveWordRAMAccess		; Give back Word RAM access
 
 	tst.b	exitFlag.w			; Are we exiting the title screen?
@@ -375,10 +382,10 @@ VInterrupt:
 ; -------------------------------------------------------------------------
 
 .Routines:
-	dc.w	VInt_CopyClouds1_1-.Routines	; Copy 1st half of rendered clouds art to buffer 1
-	dc.w	VInt_CopyClouds1_2-.Routines	; Copy 2nd half of rendered clouds art to buffer 1
-	dc.w	VInt_CopyClouds2_1-.Routines	; Copy 1st half of rendered clouds art to buffer 2
-	dc.w	VInt_CopyClouds2_2-.Routines	; Copy 2nd half of rendered clouds art to buffer 2
+	dc.w	VInt_CopyClouds1_1-.Routines	; Copy 1st half of rendered clouds image to buffer 1
+	dc.w	VInt_CopyClouds1_2-.Routines	; Copy 2nd half of rendered clouds image to buffer 1
+	dc.w	VInt_CopyClouds2_1-.Routines	; Copy 1st half of rendered clouds image to buffer 2
+	dc.w	VInt_CopyClouds2_2-.Routines	; Copy 2nd half of rendered clouds image to buffer 2
 	dc.w	VInt_Nothing-.Routines		; Does nothing
 	dc.w	VInt_NoClouds-.Routines		; Don't render clouds
 
@@ -386,8 +393,7 @@ VInterrupt:
 
 VInt_CopyClouds1_1:
 	DMA68K	sprites,$D400,$280,VRAM		; Copy sprite data
-						; Copy rendered clouds art
-	DMA68K	cloudsArt,$0020,IMGLENGTH/2,VRAM
+	COPYIMG	cloudsImage, 0, 0		; Copy rendered clouds image
 	jsr	ReadControllers(pc)		; Read controllers
 	bra.w	VInt_Finish			; Finish
 
@@ -395,8 +401,7 @@ VInt_CopyClouds1_1:
 
 VInt_CopyClouds1_2:
 	DMA68K	sprites,$D400,$280,VRAM		; Copy sprite data
-						; Copy rendered clouds art
-	DMA68K	cloudsArt+(IMGLENGTH/2),$0020+(IMGLENGTH/2),IMGLENGTH/2,VRAM
+	COPYIMG	cloudsImage, 0, 1		; Copy rendered clouds image
 	jsr	ReadControllers(pc)		; Read controllers
 	bra.w	VInt_Finish			; Finish
 
@@ -404,8 +409,7 @@ VInt_CopyClouds1_2:
 
 VInt_CopyClouds2_1:
 	DMA68K	sprites,$D400,$280,VRAM		; Copy sprite data
-						; Copy rendered clouds art
-	DMA68K	cloudsArt,$3020,IMGLENGTH/2,VRAM
+	COPYIMG	cloudsImage, 1, 0		; Copy rendered clouds image
 	jsr	ReadControllers(pc)		; Read controllers
 	bra.w	VInt_Finish			; Finish
 
@@ -413,8 +417,7 @@ VInt_CopyClouds2_1:
 
 VInt_CopyClouds2_2:
 	DMA68K	sprites,$D400,$280,VRAM		; Copy sprite data
-						; Copy rendered clouds art
-	DMA68K	cloudsArt+(IMGLENGTH/2),$3020+(IMGLENGTH/2),IMGLENGTH/2,VRAM
+	COPYIMG	cloudsImage, 1, 1		; Copy rendered clouds image
 	jsr	ReadControllers(pc)		; Read controllers
 	bra.w	VInt_Finish			; Finish
 
@@ -885,12 +888,12 @@ StartZ80:
 	rts
 
 ; -------------------------------------------------------------------------
-; Get clouds art
+; Get clouds image
 ; -------------------------------------------------------------------------
 
-GetCloudsArt:
-	lea	WORDRAM2M+IMGBUFFER,a1		; Rendered data in Word RAM
-	lea	cloudsArt.w,a2			; Destination buffer
+GetCloudsImage:
+	lea	WORDRAM2M+IMGBUFFER,a1		; Rendered image in Word RAM
+	lea	cloudsImage.w,a2		; Destination buffer
 	move.w	#(IMGLENGTH/$800)-1,d7		; Number of $800 byte chunks to copy
 
 .CopyChunks:
@@ -898,21 +901,6 @@ GetCloudsArt:
 		bsr.s	Copy128
 	endr
 	dbf	d7,.CopyChunks			; Loop until chunks are copied
-
-	if (IMGLENGTH&$7FF)<>0			; Copy leftover data
-		move.w	#(IMGLENGTH&$7FF)/4-1,d7
-
-.CopyLeftovers:
-		move.l	(a1)+,(a2)+
-		dbf	d7,.CopyLeftovers
-
-		if (IMGLENGTH&2)<>0
-			move.w	(a1)+,(a2)+
-		endif
-		if (IMGLENGTH&1)<>0
-			move.b	(a1)+,(a2)+
-		endif
-	endif
 	rts
 
 ; -------------------------------------------------------------------------

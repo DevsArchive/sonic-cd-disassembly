@@ -12,6 +12,7 @@
 	include	"_Include/Sound.i"
 	include	"Sound Drivers/PCM/_Variables.i"
 	include	"Special Stage/_Global Variables.i"
+	include	"DA Garden/Track Title Labels.i"
 
 ; -------------------------------------------------------------------------
 ; Files
@@ -217,7 +218,7 @@ File_BossPCM:
 File_FinalPCM:
 	dc.b	"SNCBNKB2.BIN;1", 0		; PCM driver (Final boss)
 File_DAGardenData:
-	dc.b	"PLANET_D.BIN;1", 0		; D.A Garden data
+	dc.b	"PLANET_D.BIN;1", 0		; D.A Garden track title data
 File_Demo11A:
 	dc.b	"DEMO11A.MMD;1", 0		; Palmtree Panic Act 1 Present demo
 File_VisualMode:
@@ -1368,7 +1369,7 @@ SPCmd_LoadDAGarden:
 
 	lea	File_DAGardenData(pc),a0	; Load data file
 	bsr.w	WaitWordRAMAccess
-	lea	WORDRAM2M+$12C00,a1
+	lea	WORDRAM2M+DAGrdnTrkTitles,a1
 	jsr	LoadFile.w
 	bsr.w	GiveWordRAMAccess
 

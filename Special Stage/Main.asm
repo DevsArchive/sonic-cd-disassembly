@@ -13,14 +13,21 @@
 	include	"Special Stage/_Common.i"
 	include	"Special Stage/_Global Variables.i"
 	include	"Special Stage/Stage Data Labels.i"
-	
+
+; -------------------------------------------------------------------------
+; Image buffer VRAM constants
+; -------------------------------------------------------------------------
+
+IMGVRAM		EQU	$0020			; VRAM address
+IMGV1LEN	EQU	$2000			; Part 1 length
+
 ; -------------------------------------------------------------------------
 ; Variables
 ; -------------------------------------------------------------------------
 
 	rsset	WORKRAM+$FF00B000
 VARSSTART	rs.b	0			; Start of variables
-stageArt	rs.b	IMGLENGTH		; Stage art buffer
+stageImage	rs.b	IMGLENGTH		; Stage image buffer
 sprites		rs.b	80*8			; Sprite buffer
 		rs.b	4
 splashArtLoad	rs.b	1			; Splash art load flag
@@ -67,8 +74,6 @@ lagCounter	rs.l	1			; Lag counter
 ; MMD header
 ; -------------------------------------------------------------------------
 
-	; NOTE: Size is set to $9000 so that it also copies the stage data
-	; placed after this file's data in Word RAM
 	MMD	0, &
 		WORKRAMFILE, $9000, &
 		Start, 0, 0
@@ -917,8 +922,7 @@ VInterrupt:
 VInt_CopyStage1_1:
 	bsr.w	ShowStageBuf2			; Show stage buffer 2
 	bsr.w	CopyHScroll			; Update horizontal scroll data
-						; Copy rendered stage art
-	DMA68K	stageArt,$0020,$2000,VRAM
+	COPYIMG	stageImage, 0, 0		; Copy rendered stage image
 	jsr	ReadController(pc)		; Read controller
 	bra.w	VInt_Finish			; Finish
 
@@ -926,8 +930,7 @@ VInt_CopyStage1_1:
 
 VInt_CopyStage1_2:
 	bsr.w	CopyHScrollSects		; Update horizontal scroll data
-						; Copy rendered stage art
-	DMA68K	stageArt+$2000,$2020,IMGLENGTH-$2000,VRAM
+	COPYIMG	stageImage, 0, 1		; Copy rendered stage image
 	bsr.w	CopySprites			; Copy sprite data
 	bsr.w	PaletteCycle			; Cycle palette
 	bra.w	VInt_Finish			; Finish
@@ -937,8 +940,7 @@ VInt_CopyStage1_2:
 VInt_CopyStage2_1:
 	bsr.w	ShowStageBuf1			; Show stage buffer 1
 	bsr.w	CopyHScroll			; Update horizontal scroll data
-						; Copy rendered stage art
-	DMA68K	stageArt,$3020,$2000,VRAM
+	COPYIMG	stageImage, 1, 0		; Copy rendered stage image
 	jsr	ReadController(pc)		; Read controller
 	bra.w	VInt_Finish			; Finish
 
@@ -946,8 +948,7 @@ VInt_CopyStage2_1:
 
 VInt_CopyStage2_2:
 	bsr.w	CopyHScrollSects		; Update horizontal scroll data
-						; Copy rendered stage art
-	DMA68K	stageArt+$2000,$5020,IMGLENGTH-$2000,VRAM
+	COPYIMG	stageImage, 1, 1		; Copy rendered stage image
 	bsr.w	CopySprites			; Copy sprite data
 	bsr.w	PaletteCycle			; Cycle palette
 	bra.w	VInt_Finish			; Finish
@@ -3205,8 +3206,8 @@ Fill4:
 ; -------------------------------------------------------------------------
 
 GetSubCPUData:
-	lea	WORDRAM2M+IMGBUFFER,a1		; Rendered data in Word RAM
-	lea	stageArt.w,a2			; Destination buffer
+	lea	WORDRAM2M+IMGBUFFER,a1		; Rendered image in Word RAM
+	lea	stageImage.w,a2			; Destination buffer
 	move.w	#(IMGLENGTH/$800)-1,d7		; Number of $800 byte chunks to copy
 
 .CopyChunks:
@@ -3214,21 +3215,6 @@ GetSubCPUData:
 		bsr.s	Copy128
 	endr
 	dbf	d7,.CopyChunks
-
-	if (IMGLENGTH&$7FF)<>0			; Copy leftover data
-		move.w	#(IMGLENGTH&$7FF)/4-1,d7
-
-.CopyLeftovers:
-		move.l	(a1)+,(a2)+
-		dbf	d7,.CopyLeftovers
-
-		if (IMGLENGTH&2)<>0
-			move.w	(a1)+,(a2)+
-		endif
-		if (IMGLENGTH&1)<>0
-			move.b	(a1)+,(a2)+
-		endif
-	endif
 
 	lea	subSprites,a1			; Copy sprite data
 	lea	sprites.w,a2
