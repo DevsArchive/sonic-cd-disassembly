@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Sub CPU FMV handler
+; Sub CPU opening FMV handler
 ; -------------------------------------------------------------------------
 
 	include	"_Include/Common.i"
@@ -23,15 +23,7 @@
 	bsr.w	InitPCMRegs			; Initialize PCM registers
 	move.b	#%11111100,PCMONOFF		; Unmute PCM1 and PCM2
 
-	; Note: The good ending loads the bad ending STM file, and vice versa.
-	; This is not a typo.
-	if DATAFILE=0
-		move.w	#FID_OPENSTM,d0		; Opening FMV data
-	elseif DATAFILE=1
-		move.w	#FID_BADENDSTM,d0	; Bad ending FMV data
-	elseif DATAFILE=2
-		move.w	#FID_GOODENDSTM,d0	; Good ending FMV data
-	endif
+	move.w	#FID_OPENSTM,d0			; Opening FMV data
 	jsr	GetFileName.w
 	
 	move.w	#FFUNC_FINDFILE,d0		; Find FMV data file
@@ -54,24 +46,12 @@
 	lea	FMVPCMBUF,a0			; Get PCM data
 	moveq	#0,d0				; PCM bank ID
 	
-	if DATAFILE=0
-		move.w	#$80,d1			; Stream to PCM buffer 1
-	endif
+	move.w	#$80,d1				; Stream to PCM buffer 1
 	btst	#FMVF_PBUF,FileVars+feFMV	; Are we streaming to the first PCM buffer?
-	if DATAFILE=0
-		beq.s	.StreamPCM		; If so, branch
-	else
-		beq.s	.PCMBuffer1		; If so, branch
-	endif
+	beq.s	.StreamPCM			; If so, branch
 
 .PCMBuffer2:
 	move.w	#$88,d1				; Stream to PCM buffer 2
-	if DATAFILE<>0
-		bra.s	.StreamPCM
-		
-.PCMBuffer1:
-		move.w	#$80,d1			; Stream to PCM buffer 1
-	endif
 	
 .StreamPCM:
 	lea	PCMREGS,a6			; Set PCM bank ID
@@ -121,17 +101,10 @@
 ; -------------------------------------------------------------------------
 
 .Stop:
-	if DATAFILE=0
-		move.w	#FFUNC_RESET,d0		; Reset the file engine
-		jsr	FileFunc.w
-		move.w	#CDCSTOP,d0		; Stop CDC
-		jsr	_CDBIOS.w
-	else
-		move.w	#CDCSTOP,d0		; Stop CDC
-		jsr	_CDBIOS.w
-		move.w	#FFUNC_RESET,d0		; Reset the file engine
-		jsr	FileFunc.w
-	endif
+	move.w	#FFUNC_RESET,d0			; Reset the file engine
+	jsr	FileFunc.w
+	move.w	#CDCSTOP,d0			; Stop CDC
+	jsr	_CDBIOS.w
 	move.w	#MSCPAUSEON,d0			; Pause CDDA music
 	jsr	_CDBIOS.w
 
@@ -282,44 +255,12 @@ Set1MMode:
 ; -------------------------------------------------------------------------
 
 SyncWithMainCPU:
-	if DATAFILE=0
-		btst	#1,GAMAINFLAG&$FFFFFF	; Is the Main CPU ready?
-		beq.s	SyncWithMainCPU		; If not, wait
-		btst	#1,GAMAINFLAG&$FFFFFF
-		beq.s	SyncWithMainCPU		; If not, wait
-		btst	#1,GAMAINFLAG&$FFFFFF
-		beq.s	SyncWithMainCPU		; If not, wait
-	else
-		btst	#1,GAMAINFLAG&$FFFFFF	; Is the Main CPU ready?
-		beq.s	.CheckStop		; If not, branch
-		btst	#1,GAMAINFLAG&$FFFFFF
-		beq.s	.CheckStop		; If not, branch
-		btst	#1,GAMAINFLAG&$FFFFFF
-		bne.s	.End			; If so, branch
-	
-.CheckStop:
-		btst	#2,GAMAINFLAG&$FFFFFF	; Is the FMV being stopped?
-		beq.s	SyncWithMainCPU		; If not, branch
-		btst	#2,GAMAINFLAG&$FFFFFF
-		beq.s	SyncWithMainCPU		; If not, branch
-		btst	#2,GAMAINFLAG&$FFFFFF
-		beq.s	SyncWithMainCPU		; If not, branch
-
-.End:
-	endif
+	btst	#1,GAMAINFLAG&$FFFFFF		; Is the Main CPU ready?
+	beq.s	SyncWithMainCPU			; If not, wait
+	btst	#1,GAMAINFLAG&$FFFFFF
+	beq.s	SyncWithMainCPU			; If not, wait
+	btst	#1,GAMAINFLAG&$FFFFFF
+	beq.s	SyncWithMainCPU			; If not, wait
 	rts
-	
-; -------------------------------------------------------------------------
-; Copy of the system program's IRQ2 handler
-; -------------------------------------------------------------------------
-
-	if DATAFILE<>0
-SPIRQ2Copy:
-		movem.l	d0-a6,-(sp)		; Save registers
-		move.w	#FFUNC_OPER,d0		; Perform engine operation
-		jsr	FileFunc.w
-		movem.l	(sp)+,d0-a6		; Restore registers
-		rts
-	endif
 	
 ; -------------------------------------------------------------------------

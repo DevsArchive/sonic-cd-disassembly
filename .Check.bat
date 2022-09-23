@@ -38,6 +38,7 @@ fc /b _Original\%REGPATH%\SPEEND.MMD _Built\Files\SPEEND.MMD
 fc /b _Original\%REGPATH%\OPEN_S.BIN _Built\Files\OPEN_S.BIN
 fc /b _Original\%REGPATH%\GOODEND.BIN _Built\Files\GOODEND.BIN
 fc /b _Original\%REGPATH%\BADEND.BIN _Built\Files\BADEND.BIN
+fc /b _Original\%REGPATH%\PTEST.BIN _Built\Files\PTEST.BIN
 fc /b _Original\%REGPATH%\PLANET_M.MMD _Built\Files\PLANET_M.MMD
 fc /b _Original\%REGPATH%\PLANET_S.BIN _Built\Files\PLANET_S.BIN
 fc /b _Original\%REGPATH%\PLANET_D.BIN _Built\Files\PLANET_D.BIN
