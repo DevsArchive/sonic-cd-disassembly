@@ -22,7 +22,7 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
             - Prototype version (DUMMY5, DUMMY6, DUMMY7, DUMMY8, DUMMY9)
         - Easter eggs (NISI, DUMMY0, DUMMY1, DUMMY2, DUMMY3)
         - Best of staff times (DUMMY4)
-	- Secret special stage credits (SPEEND)
+	    - Secret special stage credits (SPEEND)
 * Level
     - Palmtree Panic Act 1 (R11A, R11B, R11C, R11D, DEMO11A)
     - Wacky Workbench Act 1 (R61A)
