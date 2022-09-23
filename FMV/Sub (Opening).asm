@@ -17,7 +17,7 @@
 
 	bsr.w	InitPCMWave			; Initialize PCM wave
 	bsr.w	Set1MMode			; Set to 1M/1M mode
-	bsr.w	SyncWithMainCPU			; Sync with Main CPU
+	bsr.w	WaitMainCPUInit			; Wait for the Main CPU to be initialized
 	
 	move.b	#$80,PCMCTRL			; Enable PCM sound
 	bsr.w	InitPCMRegs			; Initialize PCM registers
@@ -251,16 +251,16 @@ Set1MMode:
 	rts
 
 ; -------------------------------------------------------------------------
-; Sync with the Main CPU
+; Wait for the Main CPU to be initialized
 ; -------------------------------------------------------------------------
 
-SyncWithMainCPU:
+WaitMainCPUInit:
 	btst	#1,GAMAINFLAG&$FFFFFF		; Is the Main CPU ready?
-	beq.s	SyncWithMainCPU			; If not, wait
+	beq.s	WaitMainCPUInit			; If not, wait
 	btst	#1,GAMAINFLAG&$FFFFFF
-	beq.s	SyncWithMainCPU			; If not, wait
+	beq.s	WaitMainCPUInit			; If not, wait
 	btst	#1,GAMAINFLAG&$FFFFFF
-	beq.s	SyncWithMainCPU			; If not, wait
+	beq.s	WaitMainCPUInit			; If not, wait
 	rts
 	
 ; -------------------------------------------------------------------------

@@ -35,6 +35,7 @@ fc /b _Original\%REGPATH%\DUMMY7.MMD _Built\Files\DUMMY7.MMD
 fc /b _Original\%REGPATH%\DUMMY8.MMD _Built\Files\DUMMY8.MMD
 fc /b _Original\%REGPATH%\DUMMY9.MMD _Built\Files\DUMMY9.MMD
 fc /b _Original\%REGPATH%\SPEEND.MMD _Built\Files\SPEEND.MMD
+fc /b _Original\%REGPATH%\OPEN_M.MMD _Built\Files\OPEN_M.MMD
 fc /b _Original\%REGPATH%\OPEN_S.BIN _Built\Files\OPEN_S.BIN
 fc /b _Original\%REGPATH%\GOODEND.BIN _Built\Files\GOODEND.BIN
 fc /b _Original\%REGPATH%\BADEND.BIN _Built\Files\BADEND.BIN

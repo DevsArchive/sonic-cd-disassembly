@@ -60,7 +60,7 @@ SPInit:
 	andi.b	#$FA,GAMEMMODE.w		; Set to 2M mode
 	
 	move.w	#FFUNC_INIT,d0			; Initialize file engine
-	jsr	FileFunc
+	jsr	FileFunc.l
 
 SPNull:
 	rts
@@ -80,13 +80,13 @@ SPXFile:
 
 SPMain:
 	move.w	#FFUNC_GETFILES,d0		; Get files
-	jsr	FileFunc
+	jsr	FileFunc.l
 
 .Wait:
 	jsr	_WAITVSYNC.w			; VSync
 
 	move.w	#FFUNC_STATUS,d0		; Is the operation finished?
-	jsr	FileFunc
+	jsr	FileFunc.l
 	bcs.s	.Wait				; If not, wait
 
 	cmpi.w	#FSTAT_OK,d0			; Was the operation a success?
@@ -124,7 +124,7 @@ SPMain:
 	ALIGN	SPIRQ2
 	movem.l	d0-a6,-(sp)			; Save registers
 	move.w	#FFUNC_OPER,d0			; Perform engine operation
-	jsr	FileFunc
+	jsr	FileFunc.l
 	movem.l	(sp)+,d0-a6			; Restore registers
 	rts
 
@@ -138,13 +138,13 @@ SPMain:
 
 	ALIGN	LoadFile
 	move.w	#FFUNC_LOADFILE,d0		; Start file loading
-	jsr	FileFunc
+	jsr	FileFunc.l
 
 .WaitFileLoad:
 	jsr	_WAITVSYNC.w			; VSync
 	
 	move.w	#FFUNC_STATUS,d0		; Is the operation finished?
-	jsr	FileFunc
+	jsr	FileFunc.l
 	bcs.s	.WaitFileLoad			; If not, wait
 
 	cmpi.w	#FSTAT_OK,d0			; Was the operation a success?

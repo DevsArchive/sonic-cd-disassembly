@@ -1,7 +1,7 @@
 @echo off
 set REGION=1
 set OUTPUT=SCD.iso
-set ASM68K=_Bin\asm68k.exe /p /o ae-,l. /e REGION=%REGION%
+set ASM68K=_Bin\asm68k.exe /p /o ae-,l.,ow+ /e REGION=%REGION%
 set AS=_Bin\asw.exe -q -xx -n -A -L -U -E -i .
 set P2BIN=_Bin\p2bin.exe
 
@@ -66,7 +66,8 @@ if exist "_Built\Files\DUMMY5.MMD" (
 %ASM68K% /e PROTOTYPE=0 /e H32=0 /e EASTEREGG=3 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY2.MMD", , "Title Screen\Secrets\Sound Test Image (Batman).lst"
 %ASM68K% /e PROTOTYPE=0 /e H32=0 /e EASTEREGG=4 "Title Screen\Secrets\Sound Test Image.asm", "_Built\Files\DUMMY3.MMD", , "Title Screen\Secrets\Sound Test Image (Cute Sonic).lst"
 
-%ASM68K% /e "FMV\Sub (Opening).asm", "_Built\Files\OPEN_S.BIN", , "FMV\Sub (Opening).lst"
+%ASM68K% "FMV\Main (Opening).asm", "_Built\Files\OPEN_M.MMD", , "FMV\Main (Opening).lst"
+%ASM68K% "FMV\Sub (Opening).asm", "_Built\Files\OPEN_S.BIN", , "FMV\Sub (Opening).lst"
 %ASM68K% /e DATAFILE=0 "FMV\Sub (Ending).asm", "_Built\Files\GOODEND.BIN", , "FMV\Sub (Good Ending).lst"
 %ASM68K% /e DATAFILE=1 "FMV\Sub (Ending).asm", "_Built\Files\BADEND.BIN", , "FMV\Sub (Bad Ending).lst"
 %ASM68K% "FMV\Sub (Pencil Test).asm", "_Built\Files\PTEST.BIN", , "FMV\Sub (Pencil Test).lst"
