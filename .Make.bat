@@ -13,6 +13,10 @@ if %REGION%==1 (copy _Original\USA\*.* _Built\Files > nul)
 if %REGION%==2 (copy _Original\Europe\*.* _Built\Files > nul)
 del _Built\Files\.gitkeep > nul
 
+if %REGION%==0 (set FMVWAV="FMV\Data\Opening (Japan, Europe).wav")
+if %REGION%==1 (set FMVWAV="FMV\Data\Opening (USA).wav")
+if %REGION%==2 (set FMVWAV="FMV\Data\Opening (Japan, Europe).wav")
+
 %AS% "Sound Drivers\FM\_Driver.asm"
 if exist "Sound Drivers\FM\_Driver.p" (
     %P2BIN% "Sound Drivers\FM\_Driver.p" "_Built\Misc\FM Sound Driver.bin"
@@ -71,7 +75,7 @@ if exist "_Built\Files\DUMMY5.MMD" (
 %ASM68K% /e DATAFILE=0 "FMV\Sub (Ending).asm", "_Built\Files\GOODEND.BIN", , "FMV\Sub (Good Ending).lst"
 %ASM68K% /e DATAFILE=1 "FMV\Sub (Ending).asm", "_Built\Files\BADEND.BIN", , "FMV\Sub (Bad Ending).lst"
 %ASM68K% "FMV\Sub (Pencil Test).asm", "_Built\Files\PTEST.BIN", , "FMV\Sub (Pencil Test).lst"
-if %REGION%==1 ( _Bin\MakeSTM.exe "FMV\Data\Opening.gif" "FMV\Data (Japan, Europe).wav" 0 0 "_Built\Files\OPN.STM" )
+_Bin\MakeSTM.exe "FMV\Data\Opening.gif" %FMVWAV% 0 0 "_Built\Files\OPN.STM"
 
 %ASM68K% "Visual Mode\Main.asm", "_Built\Files\VM____.MMD", , "Visual Mode\Main.lst"
 
