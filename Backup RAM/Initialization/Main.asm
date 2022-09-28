@@ -802,10 +802,10 @@ VSync:
 	rts
 
 ; -------------------------------------------------------------------------
-; Press down all buttons
+; Set all buttons
 ; -------------------------------------------------------------------------
 
-PressAllButtons:
+SetAllButtons:
 	move.w	#$FF00,ctrlData			; Press down all buttons
 	rts
 
