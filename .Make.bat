@@ -75,6 +75,8 @@ if exist "_Built\Files\DUMMY5.MMD" (
 %ASM68K% /e DATAFILE=0 "FMV\Sub (Ending).asm", "_Built\Files\GOODEND.BIN", , "FMV\Sub (Good Ending).lst"
 %ASM68K% /e DATAFILE=1 "FMV\Sub (Ending).asm", "_Built\Files\BADEND.BIN", , "FMV\Sub (Bad Ending).lst"
 %ASM68K% "FMV\Sub (Pencil Test).asm", "_Built\Files\PTEST.BIN", , "FMV\Sub (Pencil Test).lst"
+echo.
+echo Making opening FMV STM...
 _Bin\MakeSTM.exe "FMV\Data\Opening.gif" %FMVWAV% 0 0 "_Built\Files\OPN.STM"
 
 %ASM68K% "Visual Mode\Main.asm", "_Built\Files\VM____.MMD", , "Visual Mode\Main.lst"
