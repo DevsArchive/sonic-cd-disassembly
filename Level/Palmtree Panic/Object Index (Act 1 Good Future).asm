@@ -39,7 +39,7 @@ ObjectIndex:
 	dc.l	ObjFlower			; 1F - Flower
 	dc.l	ObjCollapsePlatform		; 20 - Collaping platform
 	dc.l	ObjPlatform			; 21 - Platform
-	dc.l	ObjKamemusi			; 22 - Kamemusi badnik/projectiles
+	dc.l	ObjTamabboh			; 22 - Tamabboh badnik/projectiles
 	dc.l	ObjMissile			; 23 - Missile (scrapped)
 	dc.l	ObjAnimal			; 24 - Animal
 	dc.l	ObjNull				; 25 - Blank

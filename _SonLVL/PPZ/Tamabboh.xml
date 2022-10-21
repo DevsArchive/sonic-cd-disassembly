@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ObjDef xmlns="http://www.sonicretro.org" Name="Tamabboh" Image="normal" RememberState="true">
+  <Images>
+    <ImageFromMappings id="normal">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Tamabboh/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Tamabboh/Data/Mappings.asm" label="unk_20B96E" startpal="1" />
+    </ImageFromMappings>
+    <ImageFromMappings id="damaged">
+      <ArtFile filename="../Level/Palmtree Panic/Objects/Tamabboh/Data/Art.nem" />
+      <MapFile type="ASM" filename="../Level/Palmtree Panic/Objects/Tamabboh/Data/Mappings.asm" label="unk_20B984" startpal="1" />
+    </ImageFromMappings>
+  </Images>
+  <Subtypes>
+    <Subtype id="00" name="Normal" image="normal" />
+    <Subtype id="FF" name="Damaged" image="damaged" />
+  </Subtypes>
+</ObjDef>

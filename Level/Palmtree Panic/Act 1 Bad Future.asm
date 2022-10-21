@@ -61,7 +61,7 @@
 	include	"Level/Palmtree Panic/Objects/Anton/Main.asm"
 	include	"Level/Palmtree Panic/Objects/Pata-Bata/Main.asm"
 	include	"Level/Palmtree Panic/Objects/Mosqui/Main.asm"
-	include	"Level/Palmtree Panic/Objects/Kamemusi/Main.asm"
+	include	"Level/Palmtree Panic/Objects/Tamabboh/Main.asm"
 	include	"Level/Palmtree Panic/Objects/Taga-Taga/Main.asm"
 	include	"Level/Palmtree Panic/Objects/Missile/Main.asm"
 	include	"Level/Palmtree Panic/Objects/Springboard/Main.asm"

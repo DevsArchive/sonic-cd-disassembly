@@ -2,32 +2,32 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Kamemusi object
+; Tamabboh object
 ; -------------------------------------------------------------------------
 
-ObjKamemusi:
+ObjTamabboh:
 	cmpi.b	#1,oSubtype(a0)
-	beq.w	ObjKamemusiMissile
+	beq.w	ObjTamabbohMissile
 	jsr	DestroyOnGoodFuture
 	moveq	#0,d0
 	move.b	oRoutine(a0),d0
-	move.w	ObjKamemusi_Index(pc,d0.w),d0
-	jsr	ObjKamemusi_Index(pc,d0.w)
+	move.w	ObjTamabboh_Index(pc,d0.w),d0
+	jsr	ObjTamabboh_Index(pc,d0.w)
 	jsr	DrawObject
 	move.w	oVar2A(a0),d0
 	jmp	CheckObjDespawn2
-; End of function ObjKamemusi
+; End of function ObjTamabboh
 
 ; -------------------------------------------------------------------------
-ObjKamemusi_Index:dc.w	ObjKamemusi_Init-ObjKamemusi_Index
-	dc.w	ObjKamemusi_Position-ObjKamemusi_Index
-	dc.w	ObjKamemusi_Main-ObjKamemusi_Index
-	dc.w	ObjKamemusi_Wait1-ObjKamemusi_Index
-	dc.w	ObjKamemusi_Wait2-ObjKamemusi_Index
-	dc.w	ObjKamemusi_Fire-ObjKamemusi_Index
+ObjTamabboh_Index:dc.w	ObjTamabboh_Init-ObjTamabboh_Index
+	dc.w	ObjTamabboh_Position-ObjTamabboh_Index
+	dc.w	ObjTamabboh_Main-ObjTamabboh_Index
+	dc.w	ObjTamabboh_Wait1-ObjTamabboh_Index
+	dc.w	ObjTamabboh_Wait2-ObjTamabboh_Index
+	dc.w	ObjTamabboh_Fire-ObjTamabboh_Index
 ; -------------------------------------------------------------------------
 
-ObjKamemusi_Init:
+ObjTamabboh_Init:
 	addq.b	#2,oRoutine(a0)
 	ori.b	#4,oSprFlags(a0)
 	move.b	#4,oPriority(a0)
@@ -40,27 +40,27 @@ ObjKamemusi_Init:
 	jsr	SetObjectTileID
 	tst.b	oSubtype(a0)
 	bne.s	.AltMaps
-	lea	MapSpr_Kamemusi1(pc),a1
-	lea	Ani_Kamemusi1(pc),a2
+	lea	MapSpr_Tamabboh1(pc),a1
+	lea	Ani_Tamabboh1(pc),a2
 	move.l	#-$A000,d0
 	bra.s	.SetMaps
 
 ; -------------------------------------------------------------------------
 
 .AltMaps:
-	lea	MapSpr_Kamemusi2(pc),a1
-	lea	Ani_Kamemusi2(pc),a2
+	lea	MapSpr_Tamabboh2(pc),a1
+	lea	Ani_Tamabboh2(pc),a2
 	move.l	#-$5000,d0
 
 .SetMaps:
 	move.l	a1,4(a0)
 	move.l	a2,oVar30(a0)
 	move.l	d0,oVar2C(a0)
-; End of function ObjKamemusi_Init
+; End of function ObjTamabboh_Init
 
 ; -------------------------------------------------------------------------
 
-ObjKamemusi_Position:
+ObjTamabboh_Position:
 	move.l	#$10000,d0
 	add.l	d0,oY(a0)
 	jsr	CheckFloorEdge
@@ -70,11 +70,11 @@ ObjKamemusi_Position:
 
 .End:
 	rts
-; End of function ObjKamemusi_Position
+; End of function ObjTamabboh_Position
 
 ; -------------------------------------------------------------------------
 
-ObjKamemusi_Main:
+ObjTamabboh_Main:
 	tst.w	debugMode
 	bne.s	.SkipRange
 	tst.b	$28(a0)
@@ -88,7 +88,7 @@ ObjKamemusi_Main:
 
 .DoRange:
 	lea	objPlayerSlot.w,a1
-	bsr.s	ObjKamemusi_CheckInRange
+	bsr.s	ObjTamabboh_CheckInRange
 	bcs.s	.NextState
 
 .SkipRange:
@@ -117,18 +117,18 @@ ObjKamemusi_Main:
 	neg.l	oVar2C(a0)
 	bchg	#0,oSprFlags(a0)
 	bchg	#0,oFlags(a0)
-	bra.s	ObjKamemusi_Main
+	bra.s	ObjTamabboh_Main
 
 ; -------------------------------------------------------------------------
 
 .NextState:
 	addq.b	#2,oRoutine(a0)
 	rts
-; End of function ObjKamemusi_Main
+; End of function ObjTamabboh_Main
 
 ; -------------------------------------------------------------------------
 
-ObjKamemusi_CheckInRange:
+ObjTamabboh_CheckInRange:
 	move.w	oY(a1),d0
 	sub.w	oY(a0),d0
 	subi.w	#-$50,d0
@@ -142,25 +142,25 @@ ObjKamemusi_CheckInRange:
 
 .End:
 	rts
-; End of function ObjKamemusi_CheckInRange
+; End of function ObjTamabboh_CheckInRange
 
 ; -------------------------------------------------------------------------
 
-ObjKamemusi_Wait1:
+ObjTamabboh_Wait1:
 	addq.b	#2,oRoutine(a0)
 	move.b	#1,oAnim(a0)
-; End of function ObjKamemusi_Wait1
+; End of function ObjTamabboh_Wait1
 
 ; -------------------------------------------------------------------------
 
-ObjKamemusi_Wait2:
+ObjTamabboh_Wait2:
 	movea.l	oVar30(a0),a1
 	jmp	AnimateObject
-; End of function ObjKamemusi_Wait2
+; End of function ObjTamabboh_Wait2
 
 ; -------------------------------------------------------------------------
 
-ObjKamemusi_Fire:
+ObjTamabboh_Fire:
 	move.b	#4,oRoutine(a0)
 	move.b	#0,oAnim(a0)
 	move.w	#$78,oVar34(a0)
@@ -174,20 +174,20 @@ ObjKamemusi_Fire:
 	jsr	PlayFMSound
 
 .SkipSound:
-	bsr.s	ObjKamemusi_InitMissile
+	bsr.s	ObjTamabboh_InitMissile
 	sf	oVar3F(a1)
 	jsr	FindObjSlot
 	bne.s	.End
-	bsr.s	ObjKamemusi_InitMissile
+	bsr.s	ObjTamabboh_InitMissile
 	st	oVar3F(a1)
 
 .End:
 	rts
-; End of function ObjKamemusi_Fire
+; End of function ObjTamabboh_Fire
 
 ; -------------------------------------------------------------------------
 
-ObjKamemusi_InitMissile:
+ObjTamabboh_InitMissile:
 	move.b	oID(a0),oID(a1)
 	move.b	#1,oSubtype(a1)
 	move.w	oTile(a0),oTile(a1)
@@ -197,41 +197,41 @@ ObjKamemusi_InitMissile:
 	move.w	oY(a0),oY(a1)
 	subi.w	#10,oY(a1)
 	rts
-; End of function ObjKamemusi_InitMissile
+; End of function ObjTamabboh_InitMissile
 
 ; -------------------------------------------------------------------------
-Ani_Kamemusi1:
-	include	"Level/Palmtree Panic/Objects/Kamemusi/Data/Animations (Normal).asm"
+Ani_Tamabboh1:
+	include	"Level/Palmtree Panic/Objects/Tamabboh/Data/Animations (Normal).asm"
 	even
-Ani_Kamemusi2:
-	include	"Level/Palmtree Panic/Objects/Kamemusi/Data/Animations (Damaged).asm"
+Ani_Tamabboh2:
+	include	"Level/Palmtree Panic/Objects/Tamabboh/Data/Animations (Damaged).asm"
 	even
-	include	"Level/Palmtree Panic/Objects/Kamemusi/Data/Mappings.asm"
+	include	"Level/Palmtree Panic/Objects/Tamabboh/Data/Mappings.asm"
 	even
 
 ; -------------------------------------------------------------------------
 
-ObjKamemusiMissile:
+ObjTamabbohMissile:
 	moveq	#0,d0
 	move.b	oRoutine(a0),d0
-	move.w	ObjKamemusiMissile_Index(pc,d0.w),d0
-	jsr	ObjKamemusiMissile_Index(pc,d0.w)
+	move.w	ObjTamabbohMissile_Index(pc,d0.w),d0
+	jsr	ObjTamabbohMissile_Index(pc,d0.w)
 	jmp	DrawObject
-; End of function ObjKamemusiMissile
+; End of function ObjTamabbohMissile
 
 ; -------------------------------------------------------------------------
-ObjKamemusiMissile_Index:dc.w	ObjKamemusiMissile_Init-ObjKamemusiMissile_Index
-	dc.w	ObjKamemusiMissile_Main-ObjKamemusiMissile_Index
+ObjTamabbohMissile_Index:dc.w	ObjTamabbohMissile_Init-ObjTamabbohMissile_Index
+	dc.w	ObjTamabbohMissile_Main-ObjTamabbohMissile_Index
 ; -------------------------------------------------------------------------
 
-ObjKamemusiMissile_Init:
+ObjTamabbohMissile_Init:
 	addq.b	#2,oRoutine(a0)
 	ori.b	#4,oSprFlags(a0)
 	move.b	#$AD,oColType(a0)
 	move.b	#8,oXRadius(a0)
 	move.b	#8,oWidth(a0)
 	move.b	#8,oYRadius(a0)
-	move.l	#MapSpr_KamemusiMissile,oMap(a0)
+	move.l	#MapSpr_TamabbohMissile,oMap(a0)
 	move.l	#0,oVar32(a0)
 	move.l	#$2000,oVar36(a0)
 	tst.b	oVar3F(a0)
@@ -250,11 +250,11 @@ ObjKamemusiMissile_Init:
 	move.l	d0,oVar2A(a0)
 	move.l	d1,oVar2E(a0)
 	rts
-; End of function ObjKamemusiMissile_Init
+; End of function ObjTamabbohMissile_Init
 
 ; -------------------------------------------------------------------------
 
-ObjKamemusiMissile_Main:
+ObjTamabbohMissile_Main:
 	tst.b	oSprFlags(a0)
 	bmi.s	.Action
 	jmp	DeleteObject
@@ -278,16 +278,16 @@ ObjKamemusiMissile_Main:
 	add.l	d0,oVar2A(a0)
 	move.l	oVar36(a0),d0
 	add.l	d0,oVar2E(a0)
-	lea	Ani_KamemusiMissile(pc),a1
+	lea	Ani_TamabbohMissile(pc),a1
 	jmp	AnimateObject
-; End of function ObjKamemusiMissile_Main
+; End of function ObjTamabbohMissile_Main
 
 ; -------------------------------------------------------------------------
-Ani_KamemusiMissile:
-	include	"Level/Palmtree Panic/Objects/Kamemusi/Data/Animations (Missile).asm"
+Ani_TamabbohMissile:
+	include	"Level/Palmtree Panic/Objects/Tamabboh/Data/Animations (Missile).asm"
 	even
-MapSpr_KamemusiMissile:
-	include	"Level/Palmtree Panic/Objects/Kamemusi/Data/Mappings (Missile).asm"
+MapSpr_TamabbohMissile:
+	include	"Level/Palmtree Panic/Objects/Tamabboh/Data/Mappings (Missile).asm"
 	even
 
 ; -------------------------------------------------------------------------

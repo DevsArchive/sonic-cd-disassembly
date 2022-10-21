@@ -19,7 +19,7 @@ DebugItemIndex:
 	DBGITEM	$3E, 4, MapSpr_PataBata1,         $239C, 0,   0, 0, 0
 	DBGITEM	$3F, 4, MapSpr_Anton,             $2386, 0,   0, 0, 0
 	DBGITEM	$40, 4, MapSpr_TagaTaga1,         $2419, 0,   0, 0, 0
-	DBGITEM	$22, 4, MapSpr_Kamemusi1,         $23D0, 0,   0, 0, 0
+	DBGITEM	$22, 4, MapSpr_Tamabboh1,         $23D0, 0,   0, 0, 0
 	DBGITEM	$0A, 1, MapSpr_Spring1,           $520,  0,   0, 0, 0
 	DBGITEM	$0A, 1, MapSpr_Spring1,           $520,  0,   2, 0, 0
 	DBGITEM	$0A, 1, MapSpr_Spring2,           $520,  4,   0, 0, 0

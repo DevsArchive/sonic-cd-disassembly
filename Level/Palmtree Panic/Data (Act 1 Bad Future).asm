@@ -120,7 +120,7 @@ PLC_Cam2_Full:
 	dc.w	$70C0
 	dc.l	Art_PataBata
 	dc.w	$7380
-	dc.l	Art_Kamemusi
+	dc.l	Art_Tamabboh
 	dc.w	$7A00
 	dc.l	Art_TagaTaga
 	dc.w	$8320
@@ -143,7 +143,7 @@ PLC_Cam3_Full:
 	dc.w	$70C0
 	dc.l	Art_PataBata
 	dc.w	$7380
-	dc.l	Art_Kamemusi
+	dc.l	Art_Tamabboh
 	dc.w	$7A00
 	dc.l	Art_TunnelWaterfall
 	dc.w	$8160
@@ -188,14 +188,14 @@ PLC_Cam5_Full:
 	
 PLC_Cam1_Incr:
 	dc.w	1
-	dc.l	Art_Kamemusi
+	dc.l	Art_Tamabboh
 	dc.w	$7A00
 	dc.l	Art_TagaTaga
 	dc.w	$8320
 	
 PLC_Cam2_Incr:
 	dc.w	3
-	dc.l	Art_Kamemusi
+	dc.l	Art_Tamabboh
 	dc.w	$7A00
 	dc.l	Art_TunnelWaterfall
 	dc.w	$8160
@@ -442,8 +442,8 @@ Art_PataBata:
 Art_TagaTaga:
 	incbin	"Level/Palmtree Panic/Objects/Taga-Taga/Data/Art.nem"
 	even
-Art_Kamemusi:
-	incbin	"Level/Palmtree Panic/Objects/Kamemusi/Data/Art.nem"
+Art_Tamabboh:
+	incbin	"Level/Palmtree Panic/Objects/Tamabboh/Data/Art.nem"
 	even
 Art_Springboard:
 	incbin	"Level/Palmtree Panic/Objects/Springboard/Data/Art.nem"

@@ -37,7 +37,7 @@ DebugItemIndex:
 	DBGITEM	$3D, 4, MapSpr_Mosqui1,           $2396, 0,   0, 0, 0
 	DBGITEM	$3E, 4, MapSpr_PataBata1,         $243F, 0,   0, 0, 0
 	DBGITEM	$3F, 4, MapSpr_Anton,             $23ED, 0,   0, 0, 0
-	DBGITEM	$22, 4, MapSpr_Kamemusi1,         $2403, 0,   0, 0, 0
+	DBGITEM	$22, 4, MapSpr_Tamabboh1,         $2403, 0,   0, 0, 0
 	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  0,   0, 0, 0
 	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  1,   0, 0, 1
 	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  2,   0, 0, 2

@@ -1,7 +1,7 @@
-MapSpr_Kamemusi1:
-	dc.w	unk_20B96E-MapSpr_Kamemusi1
-	dc.w	unk_20B98A-MapSpr_Kamemusi1
-	dc.w	unk_20B99A-MapSpr_Kamemusi1
+MapSpr_Tamabboh1:
+	dc.w	unk_20B96E-MapSpr_Tamabboh1
+	dc.w	unk_20B98A-MapSpr_Tamabboh1
+	dc.w	unk_20B99A-MapSpr_Tamabboh1
 unk_20B96E:	dc.b	  3
 	dc.b	$F1 ; ñ
 	dc.b	 $D
@@ -19,10 +19,10 @@ unk_20B96E:	dc.b	  3
 	dc.b	 $C
 	dc.b	$F8 ; ø
 
-MapSpr_Kamemusi2:
-	dc.w	unk_20B984-MapSpr_Kamemusi2
-	dc.w	unk_20B98A-MapSpr_Kamemusi2
-	dc.w	unk_20B99A-MapSpr_Kamemusi2
+MapSpr_Tamabboh2:
+	dc.w	unk_20B984-MapSpr_Tamabboh2
+	dc.w	unk_20B98A-MapSpr_Tamabboh2
+	dc.w	unk_20B99A-MapSpr_Tamabboh2
 unk_20B984:	dc.b	  1
 	dc.b	$F0 ; ð
 	dc.b	 $F
