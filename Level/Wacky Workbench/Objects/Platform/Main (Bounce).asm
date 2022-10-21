@@ -66,7 +66,7 @@ ObjBouncePlatform_Bounced:
 	clr.w	oYVel(a0)
 
 .CheckFloor:
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.Solid
 	jsr	ObjBouncePlatform_CheckFloor(pc)
@@ -93,7 +93,7 @@ ObjBouncePlatform_Landed:
 	jsr	ObjBouncePlatform_Move(pc)
 	tst.w	oYVel(a0)
 	bmi.s	.Solid
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.Solid
 	clr.w	oYVel(a0)

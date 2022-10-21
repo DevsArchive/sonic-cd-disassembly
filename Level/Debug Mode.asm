@@ -99,8 +99,8 @@ UpdateDebugMode:
 	move.b	$A(a2,d1.w),oSubtype(a1)
 	move.b	$C(a2,d1.w),oSubtype2(a1)
 	move.b	$D(a2,d1.w),oMapFrame(a1)
-	move.w	8(a0),oX(a1)
-	move.w	$C(a0),oY(a1)
+	move.w	oX(a0),oX(a1)
+	move.w	oY(a0),oY(a1)
 	move.b	oSprFlags(a0),d0
 	andi.b	#3,d0
 	move.b	d0,oSprFlags(a1)

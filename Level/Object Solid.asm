@@ -18,7 +18,7 @@ ClearObjRide:
 	bne.s	.End
 	tst.b	oPlayerCharge(a1)
 	beq.s	.NoSound
-	move.w	#$AB,d0
+	move.w	#FM_AB,d0
 	jsr	PlayFMSound
 
 .NoSound:
@@ -125,7 +125,7 @@ SolidObject2:
 	bra.s	SolidObject
 ; -------------------------------------------------------------------------
 
-SolidObject1:
+TopSolidObject:
 	move.b	#1,oRoutine2(a0)
 
 ; -------------------------------------------------------------------------

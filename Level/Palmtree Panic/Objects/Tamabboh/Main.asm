@@ -53,7 +53,7 @@ ObjTamabboh_Init:
 	move.l	#-$5000,d0
 
 .SetMaps:
-	move.l	a1,4(a0)
+	move.l	a1,oMap(a0)
 	move.l	a2,oVar30(a0)
 	move.l	d0,oVar2C(a0)
 ; End of function ObjTamabboh_Init
@@ -63,7 +63,7 @@ ObjTamabboh_Init:
 ObjTamabboh_Position:
 	move.l	#$10000,d0
 	add.l	d0,oY(a0)
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.End
 	addq.b	#2,oRoutine(a0)
@@ -77,11 +77,11 @@ ObjTamabboh_Position:
 ObjTamabboh_Main:
 	tst.w	debugMode
 	bne.s	.SkipRange
-	tst.b	$28(a0)
+	tst.b	oSubtype(a0)
 	bne.s	.SkipRange
-	tst.w	$34(a0)
+	tst.w	oVar34(a0)
 	beq.s	.DoRange
-	subq.w	#1,$34(a0)
+	subq.w	#1,oVar34(a0)
 	bra.s	.SkipRange
 
 ; -------------------------------------------------------------------------
@@ -102,7 +102,7 @@ ObjTamabboh_Main:
 .ChlTirm:
 	cmpi.w	#$80,d0
 	bge.s	.TurnAround
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	cmpi.w	#-7,d1
 	blt.s	.TurnAround
 	cmpi.w	#7,d1
@@ -170,7 +170,7 @@ ObjTamabboh_Fire:
 	bne.s	.End
 	tst.b	oSprFlags(a0)
 	bpl.s	.SkipSound
-	move.w	#$A0,d0
+	move.w	#FM_A0,d0
 	jsr	PlayFMSound
 
 .SkipSound:
@@ -262,7 +262,7 @@ ObjTamabbohMissile_Main:
 ; -------------------------------------------------------------------------
 
 .Action:
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.MoveAnim
 	jmp	DeleteObject

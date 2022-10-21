@@ -94,14 +94,14 @@ ObjSeesaw_Main:
 	move.w	a0,-(sp)
 	movea.w	oSeesawPtfm2(a0),a0
 	lea	objPlayerSlot.w,a1
-	jsr	SolidObject1
+	jsr	TopSolidObject
 	jsr	DrawObject
 	movea.w	(sp)+,a0
 
 	move.w	a0,-(sp)
 	movea.w	oSeesawPtfm1(a0),a0
 	lea	objPlayerSlot.w,a1
-	jsr	SolidObject1
+	jsr	TopSolidObject
 	sne	oSeesawStood(a0)
 	jsr	DrawObject
 	movea.w	(sp)+,a0
@@ -163,7 +163,7 @@ ObjSeesaw_SlideDown:
 	
 	move.w	a0,-(sp)
 	movea.w	a2,a0
-	jsr	CheckFloorEdge2
+	jsr	ObjGetFloorDist2
 	movea.w	(sp)+,a0
 	tst.w	d1
 	bmi.s	.Landed

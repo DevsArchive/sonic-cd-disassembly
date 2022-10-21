@@ -23,7 +23,7 @@ ObjPlatform_SolidObj:
 	lea	objPlayerSlot.w,a1
 	move.w	oX(a0),d3
 	move.w	oY(a0),d4
-	jmp	SolidObject1
+	jmp	TopSolidObject
 ; End of function ObjPlatform_SolidObj
 
 ; -------------------------------------------------------------------------
@@ -101,7 +101,7 @@ ObjPlatform_Main:
 	add.w	d0,d0
 	move.w	ObjPlatform_Subtypes(pc,d0.w),d0
 	jsr	ObjPlatform_Subtypes(pc,d0.w)
-	move.w	$38(a0),d0
+	move.w	oVar38(a0),d0
 	andi.w	#$FF80,d0
 	move.w	cameraX.w,d1
 	subi.w	#$80,d1

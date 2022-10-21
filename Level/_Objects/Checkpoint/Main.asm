@@ -140,7 +140,7 @@ ObjCheckpoint_Main:
 	move.b	#1,spawnMode			; Spawn at checkpoint
 	bsr.w	ObjCheckpoint_SaveData		; Save level data at this point
 
-	move.w	#$AE,d0				; Play checkpoint sound
+	move.w	#FM_CHECKPOINT,d0		; Play checkpoint sound
 	jmp	PlayFMSound
 
 .End:

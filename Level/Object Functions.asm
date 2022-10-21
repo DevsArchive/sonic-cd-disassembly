@@ -205,7 +205,7 @@ DrawObject:
 
 DrawOtherObject:
 	lea	objDrawQueue.w,a2		; Get the object draw queue for this object's priority level
-	move.w	$18(a1),d0
+	move.w	oPriority(a1),d0
 	lsr.w	#1,d0
 	andi.w	#$380,d0
 	adda.w	d0,a2

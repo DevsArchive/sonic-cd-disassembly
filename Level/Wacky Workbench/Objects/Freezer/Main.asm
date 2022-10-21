@@ -90,7 +90,7 @@ ObjFreezer_IceBlock:
 	add.l	d0,d3
 	move.l	d3,oY(a0)
 	
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.UpdateY
 	

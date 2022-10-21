@@ -55,7 +55,7 @@ ObjBreakableWall_Main:
 ; -------------------------------------------------------------------------
 
 .BreakUp:
-	move.w	#$B0,d0
+	move.w	#FM_B0,d0
 	jsr	PlayFMSound
 	lea	objPlayerSlot.w,a6
 	asr	oXVel(a6)

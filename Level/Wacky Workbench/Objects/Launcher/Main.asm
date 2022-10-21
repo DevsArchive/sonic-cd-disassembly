@@ -54,7 +54,7 @@ ObjLauncher_Init:
 
 ObjLauncher_Main:
 	lea	objPlayerSlot.w,a1
-	jsr	SolidObject1
+	jsr	TopSolidObject
 	beq.s	.End
 	bset	#0,oPlayerCtrl(a1)
 	move.w	oX(a0),oX(a1)
@@ -77,7 +77,7 @@ ObjLauncher_Launch:
 	move.l	d1,oX(a0)
 	
 	lea	objPlayerSlot.w,a1
-	jsr	SolidObject1
+	jsr	TopSolidObject
 	
 	move.w	p1CtrlData.w,d0
 	andi.b	#$70,d0

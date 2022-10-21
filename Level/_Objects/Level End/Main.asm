@@ -43,7 +43,7 @@ ObjCapsule_Init:
 	ori.b	#4,oSprFlags(a0)
 	addq.b	#2,oRoutine(a0)
 	move.b	#4,oPriority(a0)
-	move.l	#MapSpr_FlowerCapsule,4(a0)
+	move.l	#MapSpr_FlowerCapsule,oMap(a0)
 	move.w	#$2481,oTile(a0)
 	move.b	#$20,oXRadius(a0)
 	move.b	#$20,oWidth(a0)
@@ -66,7 +66,7 @@ ObjCapsule_Main:
 	move.b	objPlayerSlot+oXRadius.w,d1
 	ext.w	d1
 	addi.w	#$20,d1
-	sub.w	8(a0),d0
+	sub.w	oX(a0),d0
 	add.w	d1,d0
 	bmi.s	.BounceX
 	add.w	d1,d1
@@ -105,7 +105,7 @@ ObjCapsule_Explode:
 	lea	ObjCapsule_ExplosionLocs(pc,d0.w),a2
 	jsr	FindObjSlot
 	bne.s	.End
-	move.w	#$9E,d0
+	move.w	#FM_9E,d0
 	jsr	PlayFMSound
 	move.b	#$18,oID(a1)
 	move.b	#1,oRoutine2(a1)
@@ -123,15 +123,16 @@ ObjCapsule_Explode:
 
 .FinishUp:
 	bsr.w	ObjCapsule_SpawnSeeds
-	addq.b	#2,$24(a0)
-	move.b	#$3C,$2A(a0)
+	addq.b	#2,oRoutine(a0)
+	move.b	#$3C,oVar2A(a0)
 
 .End:
 	rts
 ; End of function ObjCapsule_Explode
 
 ; -------------------------------------------------------------------------
-ObjCapsule_ExplosionLocs:dc.b	0, 0
+ObjCapsule_ExplosionLocs:
+	dc.b	0, 0
 	dc.b	$20, $F8
 	dc.b	$E0, 0
 	dc.b	$E8, $F8
@@ -188,7 +189,7 @@ ObjCapsule_FlowerSeeds:
 	lea	Ani_FlowerCapsule,a1
 	jsr	AnimateObject
 	jsr	ObjMoveGrv
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.End
 	move.b	#$1F,oID(a0)
@@ -349,7 +350,7 @@ ObjBigRing_Main:
 	move.w	#0,oXVel(a1)
 	move.w	#0,oPlayerGVel(a1)
 	move.b	#1,scrollLock.w
-	move.w	#$AF,d0
+	move.w	#FM_AF,d0
 	jsr	PlayFMSound
 	jsr	FindObjSlot
 	bne.s	ObjBigRing_Main
@@ -574,7 +575,7 @@ ObjSignpost_Main:
 	addq.b	#2,oRoutine(a0)
 	clr.b	speedShoesFlag
 	clr.b	invincibleFlag
-	move.w	#$9D,d0
+	move.w	#FM_SIGNPOST,d0
 	jmp	PlayFMSound
 
 ; -------------------------------------------------------------------------
@@ -605,11 +606,11 @@ LoadEndOfAct:
 	bne.w	.End
 	tst.b	timeZone
 	bne.s	.NotPast
-	move.w	#$82,d0
+	move.w	#SCMD_FADEPCM,d0
 	jsr	SubCPUCmd
 
 .NotPast:
-	move.w	#$6B,d0
+	move.w	#SCMD_LVLENDMUS,d0
 	jsr	SubCPUCmd
 	bset	#0,ctrlLocked.w
 	move.w	#$808,playerCtrlHold.w

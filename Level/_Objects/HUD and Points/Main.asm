@@ -144,7 +144,7 @@ AddPoints:
 	addi.l	#5000,nextLifeScore
 	addq.b	#1,lives
 	addq.b	#1,updateHUDLives
-	move.w	#$7A,d0
+	move.w	#SCMD_YESSFX,d0
 	jmp	SubCPUCmd
 
 ; -------------------------------------------------------------------------

@@ -155,7 +155,7 @@ ObjFloatBlock_SolidObj:
 ObjFloatBlock_SolidObj2:
 	move.w	oX(a0),d3
 	move.w	oY(a0),d4
-	jmp	SolidObject1
+	jmp	TopSolidObject
 ; End of function ObjFloatBlock_SolidObj2
 
 ; -------------------------------------------------------------------------

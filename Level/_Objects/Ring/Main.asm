@@ -213,10 +213,7 @@ ObjRing_Init:
 ; -------------------------------------------------------------------------
 
 ObjRing_Main:
-
-; FUNCTION CHUNK AT 00209F08 SIZE 00000004 BYTES
-
-	tst.b	1(a0)
+	tst.b	oSprFlags(a0)
 	bmi.s	.DoAnim
 	move.w	oVar32(a0),d0
 	andi.w	#$FF80,d0
@@ -294,7 +291,7 @@ ObjRing_Destroy:
 CollectRing:
 	addq.w	#1,rings
 	ori.b	#1,updateHUDRings
-	move.w	#$95,d0
+	move.w	#FM_RING,d0
 	cmpi.w	#100,rings
 	bcs.s	.PlaySound
 	bset	#1,livesFlags
@@ -307,7 +304,7 @@ CollectRing:
 .GainLife:
 	addq.b	#1,lives
 	addq.b	#1,updateHUDLives
-	move.w	#$7A,d0
+	move.w	#SCMD_YESSFX,d0
 	jmp	SubCPUCmd
 
 ; -------------------------------------------------------------------------
@@ -405,7 +402,7 @@ ObjLostRing_Init:
 	move.w	#0,rings
 	move.b	#$80,updateHUDRings
 	move.b	#0,livesFlags
-	move.w	#$94,d0
+	move.w	#FM_RINGLOSS,d0
 	jsr	PlayFMSound
 ; End of function ObjLostRing_Init
 
@@ -420,7 +417,7 @@ ObjLostRing_Main:
 	add.b	d7,d0
 	andi.b	#3,d0
 	bne.s	.ChkDel
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.ChkDel
 	add.w	d1,oY(a0)

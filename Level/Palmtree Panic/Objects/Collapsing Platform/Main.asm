@@ -72,11 +72,8 @@ ObjCollapsePlatform_Init:
 ; -------------------------------------------------------------------------
 
 ObjCollapsePlatform_Main:
-
-; FUNCTION CHUNK AT 0020C32C SIZE 000001F4 BYTES
-
 	lea	objPlayerSlot.w,a1
-	jsr	SolidObject1
+	jsr	TopSolidObject
 	bne.s	.StandOn
 	rts
 
@@ -84,7 +81,7 @@ ObjCollapsePlatform_Main:
 
 .StandOn:
 	jsr	ClearObjRide
-	move.w	#$A3,d0
+	move.w	#FM_A3,d0
 	jsr	PlayFMSound
 	addq.b	#2,oRoutine(a0)
 	move.b	oSubtype(a0),d0
@@ -103,7 +100,7 @@ ObjCollapsePlatform_Delay:
 	move.b	oVar3E(a0),d0
 	beq.s	.End
 	lea	objPlayerSlot.w,a1
-	jsr	SolidObject1
+	jsr	TopSolidObject
 	beq.s	.End
 	tst.w	oVar2A(a0)
 	bne.s	.End
@@ -166,7 +163,7 @@ ObjCollapsePlatform_BreakUp_MultiRow:
 	move.b	(a6)+,d6
 	move.w	d6,d4
 	asl.w	#3,d4
-	add.w	$C(a0),d4
+	add.w	oY(a0),d4
 	move.w	#9,d2
 	move.b	oID(a0),oVar3F(a0)
 
@@ -219,7 +216,7 @@ ObjCollapsePlatform_BreakUp_MultiRow:
 
 .Solid:
 	lea	objPlayerSlot.w,a1
-	jsr	SolidObject1
+	jsr	TopSolidObject
 	beq.s	.Delete
 	jsr	ClearObjRide
 
@@ -304,7 +301,7 @@ ObjCollapsePlatform_BreakUp_SingleRow:
 
 .Solid2:
 	lea	objPlayerSlot.w,a1
-	jsr	SolidObject1
+	jsr	TopSolidObject
 	beq.s	.Delete2
 	jsr	ClearObjRide
 

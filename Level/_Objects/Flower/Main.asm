@@ -62,7 +62,7 @@ ObjFlower_Init:
 ; -------------------------------------------------------------------------
 
 ObjFlower_Seed:
-	jsr	CheckFloorEdge			; Have we touched the floor yet?
+	jsr	ObjGetFloorDist			; Have we touched the floor yet?
 	tst.w	d1
 	bpl.s	.Fall				; If not, branch
 	add.w	d1,oY(a0)			; Align to the floor

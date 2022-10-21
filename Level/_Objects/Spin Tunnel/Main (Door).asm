@@ -35,7 +35,7 @@ ObjTunnelDoor_ChkPlayer:
 	move.w	oX(a0),oX(a1)
 	move.w	oY(a0),oY(a1)
 	subq.w	#4,oY(a1)
-	move.w	#$A4,d0
+	move.w	#FM_A4,d0
 	jmp	PlayFMSound
 
 ; -------------------------------------------------------------------------
@@ -48,7 +48,7 @@ ObjTunnelDoor_ChkPlayer:
 .Solid:
 	move.w	oX(a0),d3
 	move.w	oY(a0),d4
-	jmp	SolidObject1
+	jmp	TopSolidObject
 ; End of function ObjTunnelDoor_ChkPlayer
 
 ; -------------------------------------------------------------------------
@@ -155,10 +155,10 @@ ObjTunnelDoorSplash_Init:
 	move.b	oSubtype(a0),oAnim(a0)
 	moveq	#$D,d0
 	jsr	SetObjectTileID
-	move.w	#$A2,d0
+	move.w	#FM_A2,d0
 	cmpi.b	#2,oSubtype(a0)
 	bcs.s	.PlaySound
-	move.w	#$A1,d0
+	move.w	#FM_A1,d0
 
 .PlaySound:
 	jsr	PlayFMSound

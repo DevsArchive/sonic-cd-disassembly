@@ -172,7 +172,7 @@ Start:
 	move.b	#1,enableDisplay		; Set to enable display
 	
 	bsr.w	StopZ80				; Play sound
-	move.b	#$D8,FMDrvQueue2
+	move.b	#FM_D8,FMDrvQueue2
 	bsr.w	StartZ80
 	
 	bsr.w	PrepFadeFromWhite		; Prepare fade from white

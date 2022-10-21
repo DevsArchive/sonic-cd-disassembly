@@ -172,7 +172,7 @@ Player_TouchEnemy:
 
 .GivePoints:
 	bsr.w	AddPoints
-	move.w	#$96,d0
+	move.w	#FM_DESTROY,d0
 	jsr	PlayFMSound
 	move.b	#$18,oID(a1)
 	move.b	#0,oRoutine(a1)
@@ -291,7 +291,7 @@ KillPlayer:
 	move.b	#$18,oAnim(a0)
 	bset	#7,oTile(a0)
 	move.b	#0,oPriority(a0)
-	move.w	#$93,d0
+	move.w	#FM_HURT,d0
 	jsr	PlayFMSound
 
 .End:

@@ -270,7 +270,7 @@ SCMD_GIGGLESFX	rs.b	1			; Play Amy giggle voice clip
 SCMD_YELPSFX	rs.b	1			; Play Amy yelp voice clip
 SCMD_STOMPSFX	rs.b	1			; Play boss stomp sound
 SCMD_BUMPERSFX	rs.b	1			; Play bumper sound
-SCMD_PastMUS	rs.b	1			; Play Past music
+SCMD_PASTMUS	rs.b	1			; Play Past music
 SCMD_DAGARDEN	rs.b	1			; Load D.A. Garden
 SCMD_FADEPCM	rs.b	1			; Fade out PCM
 SCMD_STOPPCM	rs.b	1			; Stop PCM

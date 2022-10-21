@@ -32,7 +32,7 @@ ObjSpinPlatform:
 ObjSpinPlatform_Solid:
 	move.w	oX(a0),d3
 	move.w	oY(a0),d4
-	jmp	SolidObject1
+	jmp	TopSolidObject
 
 ; -------------------------------------------------------------------------
 

@@ -25,8 +25,8 @@ ObjTunnelDoorV_Index:
 ; -------------------------------------------------------------------------
 
 ObjTunnelDoorV_SolidObj:
-	move.w	8(a0),d3
-	move.w	$C(a0),d4
+	move.w	oX(a0),d3
+	move.w	oY(a0),d4
 	jmp	SolidObject
 ; End of function ObjTunnelDoorV_SolidObj
 
@@ -64,7 +64,7 @@ ObjTunnelDoorV_Main:
 	move.b	#4,oRoutine(a0)
 	btst	#7,oSprFlags(a0)
 	beq.s	.NotRange
-	move.w	#$A4,d0
+	move.w	#FM_A4,d0
 	jsr	PlayFMSound
 	move.b	#1,oMapFrame(a0)
 

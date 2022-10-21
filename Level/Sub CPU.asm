@@ -10,7 +10,7 @@
 ; -------------------------------------------------------------------------
 
 FadeOutMusic:
-	move.w	#$E,d0
+	move.w	#SCMD_FADECDA,d0		; Fade out CD music
 
 ; -------------------------------------------------------------------------
 ; Send a command to the Sub CPU
@@ -20,7 +20,7 @@ FadeOutMusic:
 ; -------------------------------------------------------------------------
 
 SubCPUCmd:
-	cmpi.w	#$67,d0				; Is this the command to play the boss music?
+	cmpi.w	#SCMD_BOSSMUS,d0		; Is this the command to play the boss music?
 	bne.s	.NotBossMusic			; If not, branch
 	move.b	#1,bossMusic			; Mark boss music as being played
 

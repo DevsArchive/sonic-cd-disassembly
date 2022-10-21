@@ -57,7 +57,7 @@ ObjMovingSpring_Init:
 ; -------------------------------------------------------------------------
 
 ObjMovingSpring_AlignToGround:
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.Sink
 	add.w	d1,oY(a0)
@@ -77,7 +77,7 @@ ObjMovingSpring_AlignToGround:
 ObjMovingSpring_Main:
 	tst.w	timeStopTimer
 	bne.s	.Display
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	add.w	d1,oY(a0)
 	move.w	oVar32(a0),d0
 	sub.w	oY(a0),d0
@@ -273,7 +273,7 @@ ObjSpring_Main_Up:
 	bclr	#3,oFlags(a1)
 	move.b	#$10,oAnim(a1)
 	bclr	#3,oFlags(a0)
-	move.w	#$98,d0
+	move.w	#FM_SPRING,d0
 	jmp	PlayFMSound
 ; End of function ObjSpring_Main_Up
 
@@ -297,15 +297,15 @@ ObjSpring_Reset_Up:
 ; -------------------------------------------------------------------------
 
 ObjSpring_SolidObject2:
-	move.w	8(a0),d3
-	move.w	$C(a0),d4
+	move.w	oX(a0),d3
+	move.w	oY(a0),d4
 	jmp	SolidObject
 ; End of function ObjSpring_SolidObject2
 
 ; -------------------------------------------------------------------------
 
 ObjSpring_Main_Side:
-	tst.b	1(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.End
 	lea	objPlayerSlot.w,a1
 	bsr.s	ObjSpring_SolidObject2
@@ -339,7 +339,7 @@ ObjSpring_Main_Side:
 	clr.b	oAngle(a1)
 	bclr	#5,oFlags(a0)
 	bclr	#5,oFlags(a1)
-	move.w	#$98,d0
+	move.w	#FM_SPRING,d0
 	jmp	PlayFMSound
 ; End of function ObjSpring_Main_Side
 
@@ -392,7 +392,7 @@ ObjSpring_Main_Down:
 	bset	#1,oFlags(a1)
 	bclr	#3,oFlags(a1)
 	bclr	#3,oFlags(a0)
-	move.w	#$98,d0
+	move.w	#FM_SPRING,d0
 	jsr	PlayFMSound
 ; End of function ObjSpring_Main_Down
 
@@ -462,7 +462,7 @@ ObjSpring_Main_Diag:
 	bclr	#5,oFlags(a1)
 	bclr	#3,oFlags(a0)
 	bclr	#5,oFlags(a0)
-	move.w	#$98,d0
+	move.w	#FM_SPRING,d0
 	jsr	PlayFMSound
 ; End of function ObjSpring_Main_Diag
 

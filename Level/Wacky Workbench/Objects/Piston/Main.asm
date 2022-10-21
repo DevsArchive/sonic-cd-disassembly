@@ -36,7 +36,7 @@ ObjPiston:
 
 ObjPiston_Solid:
 	lea	objPlayerSlot.w,a1
-	jmp	SolidObject1
+	jmp	TopSolidObject
 
 ; -------------------------------------------------------------------------
 

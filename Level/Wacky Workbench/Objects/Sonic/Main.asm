@@ -44,7 +44,7 @@ ObjSonic_ChkBoredom:
 .GotXVel:
 	move.w	#0,oPlayerGVel(a0)
 
-	move.w	#$79,d0				; Play "I'm outta here" sound
+	move.w	#SCMD_GIVEUPSFX,d0		; Play "I'm outta here" sound
 	bra.w	SubCPUCmd
 
 .End:
@@ -748,7 +748,7 @@ ObjSonic_Display:
 	bne.s	.StopInvinc			; If so, branch
 	tst.b	timeZone			; Are we in the past?
 	bne.s	.NotPast			; If not, branch
-	move.w	#$E,d0				; Fade out music
+	move.w	#SCMD_FADECDA,d0		; Fade out music
 	jsr	SubCPUCmd
 
 .NotPast:
@@ -776,7 +776,7 @@ ObjSonic_Display:
 	bne.s	.StopSpeedShoes			; If so, branch
 	tst.b	timeZone			; Are we in the past?
 	bne.s	.NotPast2			; If not, branch
-	move.w	#$E,d0				; Fade out music
+	move.w	#SCMD_FADECDA,d0		; Fade out music
 	jsr	SubCPUCmd
 
 .NotPast2:
@@ -890,7 +890,7 @@ ObjSonic_TimeWarp:
 	move.b	timeZone,d0			; Get current time zone
 	bne.s	.GetNewTime			; If we are not in the past, branch
 
-	move.w	#$82,d0				; Fade out music
+	move.w	#SCMD_FADEPCM,d0		; Fade out PCM music
 	jsr	SubCPUCmd
 
 	moveq	#0,d0				; We are currently in the past
@@ -1315,7 +1315,7 @@ ObjSonic_MoveGround:
 	bra.s	.CheckCharge			; Check for peelout/spindash charge
 
 .BalanceGround:
-	jsr	CheckFloorEdge			; Are we leaning near a ledge on either side?
+	jsr	ObjGetFloorDist			; Are we leaning near a ledge on either side?
 	cmpi.w	#$C,d1
 	blt.s	.CheckCharge			; If not, branch
 	cmpi.b	#3,oPlayerPriAngle(a0)		; Are we leaning near a ledge on the right?
@@ -1428,7 +1428,7 @@ ObjSonic_MoveGround:
 	beq.s	.DontCharge			; If not, branch
 
 	move.b	#1,oPlayerCharge(a0)		; Set the look double tap timer to be active
-	move.w	#$9C,d0				; Play charge sound
+	move.w	#FM_9C,d0			; Play charge sound
 	jsr	PlayFMSound
 
 .DontCharge:
@@ -1438,7 +1438,7 @@ ObjSonic_MoveGround:
 	cmpi.b	#30,oPlayerCharge(a0)		; Have we fully charged the peelout?
 	beq.s	.UnleashPeelout			; If so, branch
 
-	move.w	#$AB,d0				; Play charge stop sound
+	move.w	#FM_AB,d0			; Play charge stop sound
 	jsr	PlayFMSound
 	move.b	#0,oPlayerCharge(a0)		; Stop charging
 	move.w	#0,oPlayerGVel(a0)
@@ -1446,7 +1446,7 @@ ObjSonic_MoveGround:
 
 .UnleashPeelout:
 	move.b	#0,oPlayerCharge(a0)		; Stop charging
-	move.w	#$91,d0				; Play charge release sound
+	move.w	#FM_91,d0			; Play charge release sound
 	jsr	PlayFMSound
 	bra.w	.ResetScreen			; Reset screen position
 
@@ -1505,7 +1505,7 @@ ObjSonic_MoveGround:
 	neg.w	oPlayerGVel(a0)
 
 .PlaySpindashSound:
-	move.w	#$9C,d0				; Play charge sound
+	move.w	#FM_9C,d0			; Play charge sound
 	jsr	PlayFMSound
 	bsr.w	ObjSonic_StartRoll		; Start rolling for the spindash
 
@@ -1518,7 +1518,7 @@ ObjSonic_MoveGround:
 	btst	#1,playerCtrlHold.w		; Are we holding down?
 	beq.s	.ResetScreen			; If not, branch
 
-	move.b	#8,$1C(a0)			; Set animation to ducking animation
+	move.b	#8,oAnim(a0)			; Set animation to ducking animation
 	cmpi.w	#8,camYCenter.w			; Has the screen scrolled dowm all the way?
 	beq.s	.Settle				; If so, branch
 	subq.w	#2,camYCenter.w			; Move the screen down
@@ -1686,7 +1686,7 @@ ObjSonic_MoveGndLeft:
 
 	move.b	#$D,oAnim(a0)			; Set animation to skidding animation
 	bclr	#0,oFlags(a0)			; Face right
-	move.w	#$90,d0				; Play skidding sound
+	move.w	#FM_SKID,d0			; Play skidding sound
 	jsr	PlayFMSound
 
 .End:
@@ -1739,7 +1739,7 @@ ObjSonic_MoveGndRight:
 
 	move.b	#$D,oAnim(a0)			; Set animation to skidding animation
 	bset	#0,oFlags(a0)			; Face left
-	move.w	#$90,d0				; Play skidding sound
+	move.w	#FM_SKID,d0			; Play skidding sound
 	jsr	PlayFMSound
 
 .End:
@@ -1818,7 +1818,7 @@ ObjSonic_MoveRoll:
 	rts
 
 .ChargeNotFull:
-	move.w	#$AB,d0				; Play charge stop sound
+	move.w	#FM_AB,d0			; Play charge stop sound
 	jsr	PlayFMSound
 
 	move.b	#0,oPlayerCharge(a0)		; Stop charging
@@ -1833,7 +1833,7 @@ ObjSonic_MoveRoll:
 	bne.s	.ChargeNotFull			; If not, branch
 
 	move.b	#0,oPlayerCharge(a0)		; Stop charging
-	move.w	#$91,d0				; Play charge release sound
+	move.w	#FM_91,d0			; Play charge release sound
 	jsr	PlayFMSound
 
 	btst	#0,oFlags(a0)			; Are we facing left?
@@ -2098,7 +2098,7 @@ ObjSonic_LevelBound:
 .CheckBottom:
 	move.w	bottomBound.w,d0		; Have we crossed the bottom boundary?
 	addi.w	#224,d0
-	cmp.w	$C(a0),d0
+	cmp.w	oY(a0),d0
 	blt.s	.Bottom				; If so, branch
 	rts
 
@@ -2231,7 +2231,7 @@ ObjSonic_CheckJump:
 	clr.b	oPlayerStick(a0)		; Mark as not sticking to terrain
 	clr.b	lookMode.w			; Reset look double tap timer and flags
 
-	move.w	#$92,d0				; Play jump sound
+	move.w	#FM_JUMP,d0			; Play jump sound
 	jsr	PlayFMSound
 
 	btst	#2,oFlags(a0)			; Were we rolling?
@@ -2853,7 +2853,7 @@ ObjSonic_Restart:
 	bclr	#1,plcLoadFlags			; Set to reload the title card upon restarting
 
 .Skip:
-	move.w	#$E,d0				; Set to fade out music
+	move.w	#SCMD_FADECDA,d0		; Set to fade out music
 
 	tst.b	lives				; Are we out of lives?
 	beq.s	.SendCmd			; If so, branch
@@ -2976,7 +2976,7 @@ ObjSonic_SpecialChunks:
 
 .RollTunnel:
 	if REGION<>USA
-		move.w	#$9C,d0			; Play roll sound
+		move.w	#FM_9C,d0		; Play roll sound
 		jsr	PlayFMSound
 	endif
 	jmp	ObjSonic_StartRoll		; Start rolling

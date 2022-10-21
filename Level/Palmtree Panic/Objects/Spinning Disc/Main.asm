@@ -180,7 +180,7 @@ ObjSpinningDisc_CheckJump:
 	bclr	#5,oFlags(a1)
 	move.b	#1,oPlayerJump(a1)
 	clr.b	oPlayerStick(a1)
-	move.w	#$A0,d0
+	move.w	#FM_A0,d0
 	jsr	PlayFMSound
 	tst.b	miniSonic
 	beq.s	.NotMini

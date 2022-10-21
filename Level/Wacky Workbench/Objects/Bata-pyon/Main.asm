@@ -76,7 +76,7 @@ ObjBataPyon_Fall:
 	move.l	oBataYVel(a0),d0
 	add.l	d0,oY(a0)
 
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	move.w	d1,oBataColDist(a0)
 	move.w	oBataSensorX(a0),d3
 	movea.l	oBataWallChk(a0),a1

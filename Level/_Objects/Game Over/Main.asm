@@ -7,7 +7,7 @@
 
 ObjGameOver:
 	moveq	#0,d0
-	move.b	$24(a0),d0
+	move.b	oRoutine(a0),d0
 	move.w	ObjGameOver_Index(pc,d0.w),d0
 	jmp	ObjGameOver_Index(pc,d0.w)
 ; End of function ObjGameOver
@@ -18,7 +18,7 @@ ObjGameOver_Index:dc.w	ObjGameOver_Init-ObjGameOver_Index
 ; -------------------------------------------------------------------------
 
 ObjGameOver_Init:
-	move.w	#$82,d0
+	move.w	#SCMD_FADEPCM,d0
 	jsr	SubCPUCmd
 	addq.b	#2,oRoutine(a0)
 	move.w	#$E0,oYScr(a0)
@@ -31,7 +31,7 @@ ObjGameOver_Init:
 	beq.s	.NotTimeOver
 	tst.b	lives
 	beq.s	.GameOver
-	move.l	#MapSpr_GameOver2,4(a0)
+	move.l	#MapSpr_GameOver2,oMap(a0)
 	addq.b	#2,powerup
 	bra.s	.GameOver
 
@@ -62,7 +62,7 @@ ObjGameOver_Init:
 	move.w	#$120,oVar2A(a1)
 	tst.b	lives
 	bne.s	ObjGameOver_Main
-	move.w	#$6E,d0
+	move.w	#SCMD_GMOVERMUS,d0
 	jmp	SubCPUCmd
 ; End of function ObjGameOver_Init
 

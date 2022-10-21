@@ -247,7 +247,7 @@ ObjSemiBomb_Fall:
 	add.l	d0,oY(a0)
 	addi.l	#$4000,oSemiBombYVel(a0)
 	
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.End
 	addq.b	#2,oRoutine(a0)

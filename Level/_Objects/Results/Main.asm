@@ -7,7 +7,7 @@
 
 ObjResults:
 	moveq	#0,d0
-	move.b	$24(a0),d0
+	move.b	oRoutine(a0),d0
 	move.w	ObjResults_Index(pc,d0.w),d0
 	jmp	ObjResults_Index(pc,d0.w)
 ; End of function ObjResults
@@ -89,10 +89,10 @@ ObjResults_WaitPLC:
 ; -------------------------------------------------------------------------
 
 .NotSSZ3:
-	move.l	#MapSpr_Results1,4(a1)
+	move.l	#MapSpr_Results1,oMap(a1)
 	tst.b	goodFuture
 	beq.s	.GotMaps
-	move.l	#MapSpr_Results3,4(a1)
+	move.l	#MapSpr_Results3,oMap(a1)
 
 .GotMaps:
 	move.w	d1,d2
@@ -177,7 +177,7 @@ ObjResults_BonusCountdown:
 	endif
 	tst.b	specialStage
 	beq.s	.Display
-	move.w	#$C8,d0
+	move.w	#FM_SSWARP,d0
 	jsr	PlayFMSound
 
 .Display:
@@ -203,14 +203,14 @@ ObjResults_BonusCountdown:
 	bne.s	.HaveBonus
 	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
 		jsr	StopZ80
-		move.b	#$9A,FMDrvQueue1
+		move.b	#FM_KACHING,FMDrvQueue1
 		jsr	StartZ80
 		cmpi.w	#$2D,oVar32(a0)
 		bcc.s	.NoSFX
 		move.w	#$2D,oVar32(a0)
 		bra.s	.NoSFX
 	else
-		move.w	#$9A,d0
+		move.w	#FM_KACHING,d0
 		jsr	PlayFMSound
 		bra.s	.NoSFX
 	endif
@@ -225,7 +225,7 @@ ObjResults_BonusCountdown:
 .TestSFX:
 	btst	#0,oVar32(a0)
 	bne.s	.NoSFX
-	move.w	#$BD,d0
+	move.w	#FM_BD,d0
 	jsr	PlayFMSound
 
 .NoSFX:

@@ -33,7 +33,7 @@ ObjPlatform_Solid:
 	lea	objPlayerSlot.w,a1
 	move.w	oX(a0),d3
 	move.w	oY(a0),d4
-	jmp	SolidObject1
+	jmp	TopSolidObject
 
 ; -------------------------------------------------------------------------
 

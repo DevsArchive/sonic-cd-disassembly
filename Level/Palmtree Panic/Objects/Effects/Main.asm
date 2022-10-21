@@ -28,7 +28,7 @@ ObjWaterfall_Init:
 	move.b	#$10,oWidth(a0)
 	move.w	#$3BA,oTile(a0)
 	andi.w	#$FFF0,oY(a0)
-	move.w	$C(a0),oVar2A(a0)
+	move.w	oY(a0),oVar2A(a0)
 	addi.w	#$180,oVar2A(a0)
 	rts
 

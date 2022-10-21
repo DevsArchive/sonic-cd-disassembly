@@ -129,7 +129,7 @@ ObjRobotGenerator_Exploding:
 	move.w	oY(a0),oY(a1)
 	add.w	d5,oX(a1)
 	add.w	d6,oY(a1)
-	move.w	#$9E,d0
+	move.w	#FM_9E,d0
 	jsr	PlayFMSound
 
 .End:
@@ -150,7 +150,7 @@ ObjRobotGenerator_BreakDown:
 	bne.s	.End
 	subq.b	#6,oRoutine(a0)
 	move.w	oVar30(a0),oY(a0)
-	move.w	#$D9,d0
+	move.w	#FM_D9,d0
 	jmp	PlayFMSound
 
 ; -------------------------------------------------------------------------

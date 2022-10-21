@@ -144,7 +144,7 @@ ObjProjector_Exploding:
 	move.w	oY(a0),oY(a1)
 	add.w	d5,oX(a1)
 	add.w	d6,oY(a1)
-	move.w	#$9E,d0
+	move.w	#FM_9E,d0
 	jsr	PlayFMSound
 
 .End:
@@ -161,7 +161,7 @@ ObjProjector_Exploding:
 ; -------------------------------------------------------------------------
 
 ObjProjector_Destroyed:
-	subq.w	#1,$2A(a0)
+	subq.w	#1,oVar2A(a0)
 	bne.s	locret_20E6E6
 	st	projDestroyed
 	bra.w	ObjProjector_Destroy

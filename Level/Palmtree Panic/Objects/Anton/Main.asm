@@ -55,7 +55,7 @@ ObjAnton_Init:
 ObjAnton_Place:
 	move.l	#$10000,d0
 	add.l	d0,oY(a0)
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.End
 	addq.b	#2,oRoutine(a0)
@@ -77,7 +77,7 @@ ObjAnton_Main:
 .AbsDX:
 	cmpi.w	#$80,d0
 	bge.s	.TurnAround
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	cmpi.w	#-7,d1
 	blt.s	.TurnAround
 	cmpi.w	#7,d1

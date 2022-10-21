@@ -247,7 +247,7 @@ ObjSpikeBomb_Explode:
 	move.b	#$18,oID(a0)
 	move.b	#0,oRoutine(a0)
 	move.b	#1,oExplodeBadnik(a0)
-	move.w	#$9E,d0
+	move.w	#FM_9E,d0
 	jmp	PlayFMSound
 
 ; -------------------------------------------------------------------------

@@ -84,7 +84,7 @@ ObjTagaTaga_Jump:
 	move.l	oVar30(a0),oVar34(a0)
 	tst.b	oSprFlags(a0)
 	bpl.s	ObjTagaTaga_Main
-	move.w	#$A2,d0
+	move.w	#FM_A2,d0
 	jsr	PlayFMSound
 ; End of function ObjTagaTaga_Jump
 
@@ -101,11 +101,11 @@ ObjTagaTaga_Main:
 	move.b	#2,oRoutine(a0)
 	tst.b	oSprFlags(a0)
 	bpl.s	ObjTagaTaga_DoAnim
-	move.w	#$A2,d0
+	move.w	#FM_A2,d0
 	jsr	PlayFMSound
 
 ObjTagaTaga_DoAnim:
-	movea.l	$3C(a0),a1
+	movea.l	oVar3C(a0),a1
 	jmp	AnimateObject
 ; End of function ObjTagaTaga_Main
 

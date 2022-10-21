@@ -129,8 +129,8 @@ Player_ChooseAngle:
 ; -------------------------------------------------------------------------
 
 Player_GetFloorDist:
-	move.w	$C(a0),d2
-	move.w	8(a0),d3
+	move.w	oY(a0),d2
+	move.w	oX(a0),d3
 ; End of function Player_GetFloorDist
 
 ; START	OF FUNCTION CHUNK FOR Player_CalcRoomInFront
@@ -155,10 +155,10 @@ Player_GetPriAngle:
 ; END OF FUNCTION CHUNK	FOR Player_CalcRoomInFront
 ; -------------------------------------------------------------------------
 
-CheckFloorEdge:
+ObjGetFloorDist:
 	move.w	oX(a0),d3
 
-CheckFloorEdge2:
+ObjGetFloorDist2:
 	move.w	oY(a0),d2
 	moveq	#0,d0
 	move.b	oYRadius(a0),d0
@@ -177,7 +177,7 @@ CheckFloorEdge2:
 
 .End:
 	rts
-; End of function CheckFloorEdge
+; End of function ObjGetFloorDist
 
 ; -------------------------------------------------------------------------
 ; START	OF FUNCTION CHUNK FOR Player_CalcRoomOverHead

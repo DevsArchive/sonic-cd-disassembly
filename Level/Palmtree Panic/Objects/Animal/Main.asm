@@ -157,7 +157,7 @@ ObjGroundAnimal_Main:
 	smi	d0
 	addq.b	#1,d0
 	move.b	d0,oMapFrame(a0)
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.NoFlip
 	add.w	d1,oY(a0)

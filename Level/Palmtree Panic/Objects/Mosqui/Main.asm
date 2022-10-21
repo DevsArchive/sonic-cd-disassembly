@@ -123,7 +123,7 @@ ObjMosqui_Animate:
 
 ObjMosqui_Dive:
 	addq.w	#6,oY(a0)
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	cmpi.w	#-8,d1
 	bgt.s	.End
 	subi.w	#-8,d1
@@ -131,7 +131,7 @@ ObjMosqui_Dive:
 	addq.b	#2,oRoutine(a0)
 	tst.b	oSprFlags(a0)
 	bpl.s	.End
-	move.w	#$A7,d0
+	move.w	#FM_A7,d0
 	jsr	PlayFMSound
 
 .End:

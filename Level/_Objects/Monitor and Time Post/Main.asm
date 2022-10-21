@@ -143,12 +143,12 @@ ObjTimepost_Main:
 	addq.b	#2,oRoutine(a0)
 	bsr.w	ObjMonitor_GetSavedFlags
 	bset	#0,2(a2,d0.w)
-	move.w	#$77,d0
-	move.b	#$FF,timeWarpDir.w
+	move.w	#SCMD_PASTSFX,d0
+	move.b	#-1,timeWarpDir.w
 	cmpi.b	#8,oSubtype(a0)
 	beq.s	.PlaySnd
 	move.b	#1,timeWarpDir.w
-	subq.w	#1,d0
+	subq.w	#SCMD_PASTSFX-SCMD_FUTURESFX,d0
 
 .PlaySnd:
 	jsr	SubCPUCmd
@@ -308,7 +308,7 @@ ObjMonitor_Main:
 	move.b	oRoutine2(a0),d0
 	beq.s	.CheckSolid
 	bsr.w	ObjMoveGrv
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.w	ObjMonitor_Animate
 	add.w	d1,oY(a0)
@@ -344,7 +344,7 @@ ObjMonitor_Display:
 ; -------------------------------------------------------------------------
 
 ObjMonitor_Break:
-	move.w	#$96,d0
+	move.w	#FM_DESTROY,d0
 	jsr	PlayFMSound
 	addq.b	#4,oRoutine(a0)
 	move.b	#0,oColType(a0)
@@ -435,7 +435,7 @@ ObjMonitorContents_Main:
 .Gain1UP:
 	addq.b	#1,lives
 	addq.b	#1,updateHUDLives
-	move.w	#$7A,d0
+	move.w	#SCMD_YESSFX,d0
 	jmp	SubCPUCmd
 
 ; -------------------------------------------------------------------------
@@ -455,7 +455,7 @@ ObjMonitorContents_Main:
 	beq.w	.Gain1UP
 
 .RingSound:
-	move.w	#$95,d0
+	move.w	#FM_RING,d0
 	jmp	PlayFMSound
 
 ; -------------------------------------------------------------------------
@@ -470,7 +470,7 @@ ObjMonitorContents_Main:
 ObjMonitorContents_GainShield:
 	move.b	#1,shieldFlag
 	move.b	#3,objShieldSlot.w
-	move.w	#$97,d0
+	move.w	#FM_SHIELD,d0
 	jmp	PlayFMSound
 ; End of function ObjMonitorContents_GainShield
 
@@ -500,15 +500,12 @@ ObjMonitorContents_GainInvinc:
 	move.b	#4,objInvStar4Slot+oAnim.w
 	tst.b	timeZone
 	bne.s	.NotPast
-	move.w	#$82,d0
+	move.w	#SCMD_FADEPCM,d0
 	jsr	SubCPUCmd
 
 .NotPast:
-	move.w	#$6D,d0
+	move.w	#SCMD_INVINCMUS,d0
 	jmp	SubCPUCmd
-; End of function ObjMonitorContents_GainInvinc
-
-; -------------------------------------------------------------------------
 	rts
 
 ; -------------------------------------------------------------------------
@@ -530,11 +527,11 @@ ObjMonitorContents_NotInvinc:
 	move.w	#$80,sonicDeceleration.w
 	tst.b	timeZone
 	bne.s	.NotPast
-	move.w	#$82,d0
+	move.w	#SCMD_FADEPCM,d0
 	jsr	SubCPUCmd
 
 .NotPast:
-	move.w	#$6C,d0
+	move.w	#SCMD_SHOESMUS,d0
 	jmp	SubCPUCmd
 
 ; -------------------------------------------------------------------------
@@ -550,7 +547,7 @@ ObjMonitorContents_NotInvinc:
 .NotTimeStop:
 	cmpi.b	#6,d0
 	bne.s	.NotBlueRing
-	move.w	#$9D,d0
+	move.w	#FM_SIGNPOST,d0
 	jsr	PlayFMSound
 	move.b	#1,blueRing
 	rts

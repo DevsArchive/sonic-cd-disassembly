@@ -371,7 +371,7 @@ Level_MainLoop:
 	clr.b	lives				; Cap lives at 0
 
 .GotLives:
-	move.w	#$E,d0				; Fade out music
+	move.w	#SCMD_FADECDA,d0		; Fade out music
 	jsr	SubCPUCmd
 
 	bsr.w	ResetSavedObjFlags		; Reset saved object flags
@@ -576,20 +576,20 @@ PlayLevelMusic:
 ; -------------------------------------------------------------------------
 
 MusicPlayCmds:
-	dc.b	$80, $F, $11, $10		; PPZ
-	dc.b	$80, $12, $14, $13		; CCZ
-	dc.b	$80, $15, $17, $16		; TTZ
-	dc.b	$80, $18, $1A, $19		; QQZ
-	dc.b	$80, $1B, $1D, $1C		; WWZ
-	dc.b	$80, $1E, $20, $1F		; SSZ
-	dc.b	$80, $21, $66, $22		; MMZ
+	dc.b	SCMD_PASTMUS, SCMD_R1AMUS, SCMD_R1DMUS, SCMD_R1CMUS
+	dc.b	SCMD_PASTMUS, SCMD_R3AMUS, SCMD_R3DMUS, SCMD_R3CMUS
+	dc.b	SCMD_PASTMUS, SCMD_R4AMUS, SCMD_R4DMUS, SCMD_R4CMUS
+	dc.b	SCMD_PASTMUS, SCMD_R5AMUS, SCMD_R5DMUS, SCMD_R5CMUS
+	dc.b	SCMD_PASTMUS, SCMD_R6AMUS, SCMD_R6DMUS, SCMD_R6CMUS
+	dc.b	SCMD_PASTMUS, SCMD_R7AMUS, SCMD_R7DMUS, SCMD_R7CMUS
+	dc.b	SCMD_PASTMUS, SCMD_R8AMUS, SCMD_R8DMUS, SCMD_R8CMUS
 
 ; -------------------------------------------------------------------------
 ; Play Palmtree Panic present music
 ; -------------------------------------------------------------------------
 
 PlayLevelMusic2:
-	move.w	#$F,d0				; Play PPZ present music
+	move.w	#SCMD_R1AMUS,d0			; Play PPZ present music
 	jsr	SubCPUCmd
 	; Continue to load the life icon
 
@@ -619,7 +619,7 @@ LoadLifeIcon:
 ; -------------------------------------------------------------------------
 
 PauseMusic:
-	move.w	#$AB,d0				; Stop FM sound
+	move.w	#FM_AB,d0			; Stop FM sound
 	jsr	PlayFMSound
 
 	bset	#7,paused.w			; Set the music as paused
@@ -631,7 +631,7 @@ PauseMusic:
 	beq.s	.Past				; If so, branch
 
 .PauseMusic:
-	move.w	#$D5,d0				; Pause CD music
+	move.w	#SCMD_PAUSECDA,d0		; Pause CD music
 	jmp	SubCPUCmd
 
 .Past:
@@ -640,7 +640,7 @@ PauseMusic:
 	tst.b	speedShoesFlag			; Do we have speed shoes?
 	bne.s	.PauseMusic			; If so, pause the speed shoes music
 
-	move.w	#$90,d0				; Pause PCM music
+	move.w	#SCMD_PAUSEPCM,d0		; Pause PCM music
 	jmp	SubCPUCmd
 
 .End:
@@ -660,7 +660,7 @@ UnpauseMusic:
 	beq.s	.Past				; If so, branch
 
 .UnpauseMusic:
-	move.w	#$D6,d0				; Unpause CD music
+	move.w	#SCMD_UNPAUSECDA,d0		; Unpause CD music
 	jmp	SubCPUCmd
 
 .Past:
@@ -669,7 +669,7 @@ UnpauseMusic:
 	tst.b	speedShoesFlag			; Do we have speed shoes?
 	bne.s	.UnpauseMusic			; If so, unpause the speed shoes music
 
-	move.w	#$91,d0				; Unpause PCM music
+	move.w	#SCMD_UNPAUSEPCM,d0		; Unpause PCM music
 	jmp	SubCPUCmd
 
 .End:

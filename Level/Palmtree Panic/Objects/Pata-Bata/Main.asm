@@ -48,7 +48,7 @@ ObjPataBata:
 
 ObjPataBata_Main:
 	move.l	oVar30(a0),d0
-	add.l	d0,8(a0)
+	add.l	d0,oX(a0)
 	move.w	oX(a0),d0
 	sub.w	oVar2A(a0),d0
 	bpl.s	.AbsDX

@@ -31,7 +31,7 @@ ObjSonicHole_Init:
 	move.w	#$3BB,oTile(a0)
 
 .NotPast:
-	move.l	#MapSpr_SonicHole,4(a0)
+	move.l	#MapSpr_SonicHole,oMap(a0)
 	move.b	#$10,oWidth(a0)
 	move.b	#$10,oYRadius(a0)
 	move.b	#6,oPriority(a0)
@@ -65,7 +65,7 @@ ObjSonicHole_Main:
 	cmpi.w	#$40,d0
 	bcc.s	.End
 	bsr.s	ObjSonicHole_SetDisplay
-	move.w	#$A3,d0
+	move.w	#FM_A3,d0
 	jsr	PlayFMSound
 	addq.b	#2,oRoutine(a0)
 	bra.s	ObjSonicHole_Display

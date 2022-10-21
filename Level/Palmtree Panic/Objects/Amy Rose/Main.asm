@@ -15,7 +15,7 @@ ObjAmyRose:
 	bsr.w	ObjAmyRose_MakeHearts
 	jsr	DrawObject
 	jsr	CheckObjDespawn
-	cmpi.b	#$2F,0(a0)
+	cmpi.b	#$2F,oID(a0)
 	beq.s	.End
 
 .ResetPal:
@@ -45,10 +45,10 @@ ObjAmyRose_Init:
 	bsr.w	ObjAmyRose_LoadPal
 
 .PlaceLoop:
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	beq.s	.FoundFloor
-	add.w	d1,$C(a0)
+	add.w	d1,oY(a0)
 	bra.w	.PlaceLoop
 
 ; -------------------------------------------------------------------------
@@ -152,7 +152,7 @@ ObjAmyRose_Main:
 ; -------------------------------------------------------------------------
 
 .ChkFloor:
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	cmpi.w	#7,d1
 	bpl.s	.WallBump
 	cmpi.w	#-7,d1
@@ -172,7 +172,7 @@ ObjAmyRose_Main:
 	bne.s	.ChkIfJump
 
 .ChkFloor2:
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	add.w	d1,oY(a0)
 	move.b	#1,oAnim(a0)
 	lea	Ani_AmyRose,a1
@@ -209,7 +209,7 @@ ObjAmyRose_Main:
 	move.b	#4,oMapFrame(a0)
 
 .GoingUp:
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.End
 	clr.w	oYVel(a0)
@@ -299,7 +299,7 @@ ObjAmyRose_WaitLand:
 	move.b	#7,oMapFrame(a0)
 
 .ChkFloor:
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	tst.w	d1
 	bpl.s	.End
 	clr.w	oXVel(a0)
@@ -320,7 +320,7 @@ ObjAmyRose_SlowSonic:
 	movem.l	a0-a1,-(sp)
 	exg	a0,a1
 	bsr.w	ObjectMoveX
-	jsr	CheckFloorEdge
+	jsr	ObjGetFloorDist
 	add.w	d1,oY(a0)
 	movem.l	(sp)+,a0-a1
 	tst.w	oXVel(a1)
@@ -469,7 +469,7 @@ ObjAmyRose_CheckGrabSonic:
 	clr.w	oXVel(a0)
 	move.b	#7,oMapFrame(a0)
 	move.b	#4,oRoutine(a0)
-	move.w	#$7C,d0
+	move.w	#SCMD_GIGGLESFX,d0
 	jsr	SubCPUCmd
 
 .End:
