@@ -2,10 +2,10 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Scrapped badnik ("ene_tama") object
+; Object tile ID set function
 ; -------------------------------------------------------------------------
 
-ObjScrappedBadnik:
+SetObjectTileID:
 	rts
 
 ; -------------------------------------------------------------------------

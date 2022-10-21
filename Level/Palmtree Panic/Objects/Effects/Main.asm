@@ -23,7 +23,7 @@ ObjWaterfall_Index:
 ObjWaterfall_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_Waterfall,oMap(a0)
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.b	#$10,oWidth(a0)
 	move.w	#$3BA,oTile(a0)

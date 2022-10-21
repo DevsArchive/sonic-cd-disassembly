@@ -6,9 +6,9 @@
 ; -------------------------------------------------------------------------
 
 ClearObjRide:
-	btst	#3,oStatus(a0)
+	btst	#3,oFlags(a0)
 	beq.s	.End
-	btst	#3,oStatus(a1)
+	btst	#3,oFlags(a1)
 	beq.s	.End
 	moveq	#0,d0
 	move.b	oPlayerStandObj(a1),d0
@@ -23,9 +23,9 @@ ClearObjRide:
 
 .NoSound:
 	clr.b	oPlayerStick(a1)
-	bset	#1,oStatus(a1)
-	bclr	#3,oStatus(a1)
-	bclr	#3,oStatus(a0)
+	bset	#1,oFlags(a1)
+	bclr	#3,oFlags(a1)
+	bclr	#3,oFlags(a0)
 	btst	#6,oPlayerCtrl(a1)
 	bne.s	.ReleasePlayer
 	cmpi.b	#$17,oAnim(a1)
@@ -36,7 +36,7 @@ ClearObjRide:
 	clr.b	oPlayerStandObj(a1)
 	cmpi.b	#$2B,oAnim(a1)
 	bne.s	.End
-	bclr	#1,oStatus(a1)
+	bclr	#1,oFlags(a1)
 
 .End:
 	rts
@@ -53,18 +53,18 @@ RideObject:
 .NotHurt:
 	clr.b	oRoutine2(a0)
 	clr.b	oPlayerJump(a1)
-	bset	#3,oStatus(a0)
+	bset	#3,oFlags(a0)
 	bne.s	.SetRide
 	cmpi.b	#$2B,oAnim(a1)
 	bne.s	.NotGivingUp
-	bclr	#3,oStatus(a0)
+	bclr	#3,oFlags(a0)
 	bra.w	ClearObjRide
 
 ; -------------------------------------------------------------------------
 
 .NotGivingUp:
-	bclr	#4,oStatus(a1)
-	bclr	#2,oStatus(a1)
+	bclr	#4,oFlags(a1)
+	bclr	#2,oFlags(a1)
 	beq.s	.SetRide
 	tst.b	miniSonic
 	beq.s	.NotMini
@@ -84,7 +84,7 @@ RideObject:
 	move.b	#0,oAnim(a1)
 
 .SetRide:
-	bset	#3,oStatus(a1)
+	bset	#3,oFlags(a1)
 	beq.s	.SetInteract
 	moveq	#0,d0
 	move.b	oPlayerStandObj(a1),d0
@@ -93,7 +93,7 @@ RideObject:
 	cmpa.w	d0,a0
 	beq.s	.End
 	movea.l	d0,a2
-	bclr	#3,oStatus(a2)
+	bclr	#3,oFlags(a2)
 
 .SetInteract:
 	move.w	a0,d0
@@ -112,7 +112,7 @@ RideObject:
 	move.w	oXVel(a1),oPlayerGVel(a1)
 
 .ClearAirBit:
-	bclr	#1,oStatus(a1)
+	bclr	#1,oFlags(a1)
 
 .End:
 	rts
@@ -139,9 +139,9 @@ SolidObject:
 	bcc.w	.ClearTouch
 	tst.b	oID(a1)
 	beq.w	.ClearTouch
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.w	.ClearTouch
-	tst.b	lvlDebugMode
+	tst.b	debugMode
 	bne.w	.ClearTouch
 	move.b	oWidth(a0),d1
 	ext.w	d1
@@ -156,7 +156,7 @@ SolidObject:
 	bcc.w	.ClearTouch
 	cmpi.b	#$2B,oAnim(a1)
 	bne.s	.NotGivingUp
-	btst	#3,oStatus(a0)
+	btst	#3,oFlags(a0)
 	bne.s	.CheckYRange
 	bra.w	.ClearTouch
 
@@ -208,7 +208,7 @@ SolidObject:
 	beq.w	.ClearTouch
 	cmpi.b	#$A,oID(a0)
 	bne.s	.NotSpring
-	btst	#1,oStatus(a1)
+	btst	#1,oFlags(a1)
 	bne.w	.ClearTouch
 
 .NotSpring:
@@ -236,10 +236,10 @@ SolidObject:
 
 .HaltOnX:
 	bsr.w	CrushAgainstWall
-	btst	#1,oStatus(a1)
+	btst	#1,oFlags(a1)
 	bne.s	.ClearXSpd
-	bset	#5,oStatus(a1)
-	bset	#5,oStatus(a0)
+	bset	#5,oFlags(a1)
+	bset	#5,oFlags(a0)
 	move.w	#0,oPlayerGVel(a1)
 
 .ClearXSpd:
@@ -252,8 +252,8 @@ SolidObject:
 .LeaveXSpd:
 	bsr.w	ClearObjPush
 	bsr.w	CrushAgainstWall
-	bclr	#5,oStatus(a1)
-	bclr	#5,oStatus(a0)
+	bclr	#5,oFlags(a1)
+	bclr	#5,oFlags(a0)
 	moveq	#0,d0
 	rts
 
@@ -262,7 +262,7 @@ SolidObject:
 .CollideVert:
 	cmpi.b	#$19,oID(a0)
 	bne.s	.NotMonitor
-	btst	#2,oStatus(a1)
+	btst	#2,oFlags(a1)
 	bne.w	.ClearTouch
 
 .NotMonitor:
@@ -368,14 +368,14 @@ SolidObject:
 	bne.s	.CheckCrushFloor
 	cmpi.b	#2,oRoutine2(a0)
 	beq.s	.AlignToBottom
-	btst	#1,oRender(a0)
+	btst	#1,oSprFlags(a0)
 	bne.s	.AlignToBottom
 	bra.s	.ClearTouch
 
 ; -------------------------------------------------------------------------
 
 .CheckCrushFloor:
-	btst	#1,oStatus(a1)
+	btst	#1,oFlags(a1)
 	bne.s	.AlignToBottom
 	tst.w	oYVel(a0)
 	beq.s	.AlignToBottom

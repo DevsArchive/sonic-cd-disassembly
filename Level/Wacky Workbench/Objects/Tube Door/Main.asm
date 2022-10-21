@@ -17,7 +17,7 @@ ObjTubeDoor:
 	jsr	.Index(pc,d0.w)
 
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -45,7 +45,7 @@ ObjTubeDoor_Solid:
 
 ObjTubeDoor_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.w	#$4410,oTile(a0)
 	move.l	#MapSpr_TubeDoor,oMap(a0)
@@ -54,8 +54,8 @@ ObjTubeDoor_Init:
 	
 	tst.b	oSubtype(a0)
 	beq.s	ObjTubeDoor_Main
-	bset	#0,oRender(a0)
-	bset	#0,oStatus(a0)
+	bset	#0,oSprFlags(a0)
+	bset	#0,oFlags(a0)
 
 ; -------------------------------------------------------------------------
 
@@ -86,7 +86,7 @@ ObjTubeDoor_Main:
 .Open:
 	clr.w	oTDoorTime(a0)
 	addq.b	#2,oRoutine(a0)
-	btst	#7,oRender(a0)
+	btst	#7,oSprFlags(a0)
 	beq.s	.Solid
 	move.w	#FM_A4,d0
 	jsr	PlayFMSound

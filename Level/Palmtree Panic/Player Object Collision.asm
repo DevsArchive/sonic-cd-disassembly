@@ -26,7 +26,7 @@ Player_ObjCollide:
 	move.w	#$5F,d6
 
 .Loop:
-	tst.b	oRender(a1)
+	tst.b	oSprFlags(a1)
 	bpl.s	.Next
 	move.b	oColType(a1),d0
 	bne.s	.CheckWidth
@@ -146,7 +146,7 @@ Player_TouchEnemy:
 	move.b	#0,oColType(a1)
 	subq.b	#1,oColStatus(a1)
 	bne.s	.End
-	bset	#7,oStatus(a1)
+	bset	#7,oFlags(a1)
 
 .End:
 	rts
@@ -154,7 +154,7 @@ Player_TouchEnemy:
 ; -------------------------------------------------------------------------
 
 .KillEnemy:
-	bset	#7,oStatus(a1)
+	bset	#7,oFlags(a1)
 	moveq	#0,d0
 	move.w	scoreChain.w,d0
 	addq.w	#2,scoreChain.w
@@ -207,7 +207,7 @@ EnemyPoints:
 ; -------------------------------------------------------------------------
 
 Player_TouchHazard2:
-	bset	#7,oStatus(a1)
+	bset	#7,oFlags(a1)
 
 Player_TouchHazard:
 	tst.b	timeWarpFlag
@@ -230,7 +230,7 @@ Player_TouchHazard:
 HurtPlayer:
 	tst.b	shieldFlag
 	bne.s	.ClearCharge
-	tst.w	levelRings
+	tst.w	rings
 	beq.w	.CheckKill
 	jsr	FindObjSlot
 	bne.s	.ClearCharge
@@ -247,10 +247,10 @@ HurtPlayer:
 .SetHurt:
 	move.b	#4,oRoutine(a0)
 	bsr.w	Player_ResetOnFloor
-	bset	#1,oStatus(a0)
+	bset	#1,oFlags(a0)
 	move.w	#-$400,oYVel(a0)
 	move.w	#-$200,oXVel(a0)
-	btst	#6,oStatus(a0)
+	btst	#6,oFlags(a0)
 	beq.s	.NoWater
 	move.w	#-$200,oYVel(a0)
 	move.w	#-$100,oXVel(a0)
@@ -278,12 +278,12 @@ HurtPlayer:
 ; -------------------------------------------------------------------------
 
 KillPlayer:
-	tst.w	lvlDebugMode
+	tst.w	debugMode
 	bne.s	.End
 	move.b	#0,invincibleFlag
 	move.b	#6,oRoutine(a0)
 	bsr.w	Player_ResetOnFloor
-	bset	#1,oStatus(a0)
+	bset	#1,oFlags(a0)
 	move.w	#-$700,oYVel(a0)
 	move.w	#0,oXVel(a0)
 	move.w	#0,oPlayerGVel(a0)
@@ -354,7 +354,7 @@ Player_TouchSpecial:
 	bcc.s	.TouchEnemy
 	move.w	oX(a1),d0
 	subq.w	#4,d0
-	btst	#0,oStatus(a1)
+	btst	#0,oFlags(a1)
 	beq.s	.NotFlipped
 	subi.w	#$10,d0
 

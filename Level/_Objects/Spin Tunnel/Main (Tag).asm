@@ -15,7 +15,7 @@ ObjSpinTunnel:
 	jsr	DrawObject
 
 .NoDisplay:
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjSpinTunnel
 
 ; -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ ObjSpinTunnel_Index:
 
 ObjSpinTunnel_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.w	#$544,oTile(a0)
 	move.l	#MapSpr_Powerup,oMap(a0)
 	move.b	oSubtype(a0),oMapFrame(a0)
@@ -51,7 +51,7 @@ ObjSpinTunnel_Main:
 
 .AbsVX:
 	move.w	#$A00,d1
-	cmpi.b	#5,levelZone
+	cmpi.b	#5,zone
 	bne.s	.GotXCap
 	move.w	#$D00,d1
 
@@ -100,10 +100,10 @@ ObjSpinTunnel_Main:
 .CheckYSign:
 	move.w	d0,oYVel(a1)
 	move.w	d0,oPlayerGVel(a1)
-	bset	#1,oStatus(a1)
+	bset	#1,oFlags(a1)
 
 .SetRoll:
-	bset	#2,oStatus(a1)
+	bset	#2,oFlags(a1)
 	bne.s	.End
 	move.b	#$E,oYRadius(a1)
 	move.b	#7,oXRadius(a1)
@@ -144,7 +144,7 @@ ObjSpinTunnel_Main:
 .GotLaunch:
 	cmpi.b	#2,oSubtype(a0)
 	beq.s	.SkipAir
-	bset	#1,oStatus(a1)
+	bset	#1,oFlags(a1)
 
 .SkipAir:
 	move.w	d0,oXVel(a1)
@@ -165,7 +165,7 @@ ObjSpinTunnel_Main:
 ; -------------------------------------------------------------------------
 
 ObjSpinTunnel_CheckInRange:
-	tst.b	lvlDebugMode
+	tst.b	debugMode
 	bne.s	.NotInRange
 	move.w	oX(a1),d0
 	sub.w	oX(a0),d0

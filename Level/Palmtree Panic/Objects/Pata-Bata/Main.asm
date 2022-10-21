@@ -10,7 +10,7 @@ ObjPataBata:
 	tst.b	oRoutine(a0)
 	bne.w	ObjPataBata_Main
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.b	#$2A,oColType(a0)
 	move.b	#$10,oXRadius(a0)
@@ -20,7 +20,7 @@ ObjPataBata:
 	move.w	oY(a0),oVar2C(a0)
 	move.w	#$8000,oVar2E(a0)
 	moveq	#1,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 	tst.b	oSubtype(a0)
 	bne.s	.Damaged
 	move.l	#-$8000,d0
@@ -60,8 +60,8 @@ ObjPataBata_Main:
 	neg.l	oVar30(a0)
 	move.l	oVar30(a0),d0
 	add.l	d0,oX(a0)
-	bchg	#0,oRender(a0)
-	bchg	#0,oStatus(a0)
+	bchg	#0,oSprFlags(a0)
+	bchg	#0,oFlags(a0)
 	clr.w	oVar34(a0)
 
 .NoFlip:
@@ -78,7 +78,7 @@ ObjPataBata_Main:
 	jsr	AnimateObject
 	jsr	DrawObject
 	move.w	oVar2A(a0),d0
-	jmp	CheckObjDespawn2Time
+	jmp	CheckObjDespawn2
 ; End of function ObjPataBata
 
 ; -------------------------------------------------------------------------

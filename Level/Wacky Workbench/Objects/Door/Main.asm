@@ -21,7 +21,7 @@ ObjDoor:
 	jsr	.Index(pc,d0.w)
 
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -43,7 +43,7 @@ ObjDoor_Solid:
 
 ObjDoor_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.l	#MapSpr_Door,oMap(a0)
 	move.w	oY(a0),oDoorY(a0)
@@ -51,7 +51,7 @@ ObjDoor_Init:
 	move.b	#32,oYRadius(a0)
 	move.b	#8,oWidth(a0)
 	
-	cmpi.b	#2,levelAct
+	cmpi.b	#2,act
 	bne.s	.NotAct3
 	move.w	#$330,oTile(a0)
 	move.b	#32,oYRadius(a0)

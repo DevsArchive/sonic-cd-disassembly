@@ -29,7 +29,7 @@ ObjMovingSpring_Index:
 
 ObjMovingSpring_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#4,oPriority(a0)
 	move.l	#MapSpr_MovingSpring,oMap(a0)
 	move.b	#8,oWidth(a0)
@@ -37,7 +37,7 @@ ObjMovingSpring_Init:
 	move.w	oX(a0),oVar36(a0)
 	move.w	#$180,oXVel(a0)
 	moveq	#$E,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 	jsr	FindObjSlot
 	beq.s	.GenSpring
 	jmp	DeleteObject
@@ -111,7 +111,7 @@ ObjSpring2_Index:dc.w	ObjSpring2_Init-ObjSpring2_Index
 ObjSpring2_Init:
 	move.l	#MapSpr_Spring1,oMap(a0)
 	move.w	#$8520,oTile(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#$10,oWidth(a0)
 	move.b	#8,oYRadius(a0)
 	move.b	#4,oPriority(a0)
@@ -134,7 +134,7 @@ ObjSpring:
 	moveq	#0,d0
 	move.b	oRoutine(a0),d0
 	beq.s	.DoControl
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.DisplayOnly
 
 .DoControl:
@@ -188,7 +188,7 @@ ObjSpring_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_Spring1,oMap(a0)
 	move.w	#$520,oTile(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#$10,oWidth(a0)
 	move.b	#8,oYRadius(a0)
 	move.w	oX(a0),oVar36(a0)
@@ -217,17 +217,17 @@ ObjSpring_Init:
 	move.l	#MapSpr_Spring3,oMap(a0)
 	move.l	d0,-(sp)
 	moveq	#$F,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 	move.l	(sp)+,d0
 	bra.s	.NoFlip
 
 ; -------------------------------------------------------------------------
 
 .SubtypeB3Clear:
-	btst	#1,oRender(a0)
+	btst	#1,oSprFlags(a0)
 	beq.s	.NoFlip
 	move.b	#$E,oRoutine(a0)
-	bset	#1,oStatus(a0)
+	bset	#1,oFlags(a0)
 
 .NoFlip:
 	btst	#1,d0
@@ -254,7 +254,7 @@ ObjSpring_SolidObject:
 ; -------------------------------------------------------------------------
 
 ObjSpring_Main_Up:
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.End
 	lea	objPlayerSlot.w,a1
 	bsr.s	ObjSpring_SolidObject
@@ -269,10 +269,10 @@ ObjSpring_Main_Up:
 	move.b	#4,oRoutine(a0)
 	addq.w	#8,oY(a1)
 	move.w	oVar30(a0),oYVel(a1)
-	bset	#1,oStatus(a1)
-	bclr	#3,oStatus(a1)
+	bset	#1,oFlags(a1)
+	bclr	#3,oFlags(a1)
 	move.b	#$10,oAnim(a1)
-	bclr	#3,oStatus(a0)
+	bclr	#3,oFlags(a0)
 	move.w	#$98,d0
 	jmp	PlayFMSound
 ; End of function ObjSpring_Main_Up
@@ -287,7 +287,7 @@ ObjSpring_Anim_Up:
 ; -------------------------------------------------------------------------
 
 ObjSpring_Reset_Up:
-	bclr	#3,oStatus(a0)
+	bclr	#3,oFlags(a0)
 	move.b	#1,oPrevAnim(a0)
 	subq.b	#4,oRoutine(a0)
 	move.b	#0,oMapFrame(a0)
@@ -309,7 +309,7 @@ ObjSpring_Main_Side:
 	bpl.s	.End
 	lea	objPlayerSlot.w,a1
 	bsr.s	ObjSpring_SolidObject2
-	btst	#5,oStatus(a0)
+	btst	#5,oFlags(a0)
 	bne.s	.Action
 
 .End:
@@ -321,24 +321,24 @@ ObjSpring_Main_Side:
 	move.b	#$A,oRoutine(a0)
 	move.w	oVar30(a0),oXVel(a1)
 	addq.w	#8,oX(a1)
-	bset	#0,oStatus(a1)
-	btst	#0,oStatus(a0)
+	bset	#0,oFlags(a1)
+	btst	#0,oFlags(a0)
 	bne.s	.NoFlip
 	subi.w	#$10,oX(a1)
 	neg.w	oXVel(a1)
-	bclr	#0,oStatus(a1)
+	bclr	#0,oFlags(a1)
 
 .NoFlip:
 	move.w	#$F,oPlayerMoveLock(a1)
 	move.w	oXVel(a1),oPlayerGVel(a1)
-	btst	#2,oStatus(a1)
+	btst	#2,oFlags(a1)
 	bne.s	.ClearAngle
 	move.b	#0,oAnim(a1)
 
 .ClearAngle:
 	clr.b	oAngle(a1)
-	bclr	#5,oStatus(a0)
-	bclr	#5,oStatus(a1)
+	bclr	#5,oFlags(a0)
+	bclr	#5,oFlags(a1)
 	move.w	#$98,d0
 	jmp	PlayFMSound
 ; End of function ObjSpring_Main_Side
@@ -373,7 +373,7 @@ ObjSpring_SolidObject3:
 ; -------------------------------------------------------------------------
 
 ObjSpring_Main_Down:
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.End
 	lea	objPlayerSlot.w,a1
 	bsr.s	ObjSpring_SolidObject3
@@ -389,9 +389,9 @@ ObjSpring_Main_Down:
 	subq.w	#8,oY(a1)
 	move.w	oVar30(a0),oYVel(a1)
 	neg.w	oYVel(a1)
-	bset	#1,oStatus(a1)
-	bclr	#3,oStatus(a1)
-	bclr	#3,oStatus(a0)
+	bset	#1,oFlags(a1)
+	bclr	#3,oFlags(a1)
+	bclr	#3,oFlags(a0)
 	move.w	#$98,d0
 	jsr	PlayFMSound
 ; End of function ObjSpring_Main_Down
@@ -415,12 +415,12 @@ ObjSpring_Reset_Down:
 ; -------------------------------------------------------------------------
 
 ObjSpring_Main_Diag:
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.End
 	lea	objPlayerSlot.w,a1
 	bsr.w	ObjSpring_SolidObject
 	bne.s	.Action
-	btst	#5,oStatus(a0)
+	btst	#5,oFlags(a0)
 	bne.s	.Action
 
 .End:
@@ -442,26 +442,26 @@ ObjSpring_Main_Diag:
 	move.w	d0,oYVel(a1)
 	move.w	d1,oXVel(a1)
 	addq.w	#8,oY(a1)
-	btst	#1,oRender(a0)
+	btst	#1,oSprFlags(a0)
 	beq.s	.NoVFlip
 	subi.w	#$10,oY(a1)
 	neg.w	oYVel(a1)
 
 .NoVFlip:
-	bclr	#0,oStatus(a1)
+	bclr	#0,oFlags(a1)
 	subq.w	#8,oX(a1)
-	btst	#0,oStatus(a0)
+	btst	#0,oFlags(a0)
 	beq.s	.NoHFlip
 	addi.w	#$10,oX(a1)
-	bset	#0,oStatus(a1)
+	bset	#0,oFlags(a1)
 	neg.w	oXVel(a1)
 
 .NoHFlip:
-	bset	#1,oStatus(a1)
-	bclr	#3,oStatus(a1)
-	bclr	#5,oStatus(a1)
-	bclr	#3,oStatus(a0)
-	bclr	#5,oStatus(a0)
+	bset	#1,oFlags(a1)
+	bclr	#3,oFlags(a1)
+	bclr	#5,oFlags(a1)
+	bclr	#3,oFlags(a0)
+	bclr	#5,oFlags(a0)
 	move.w	#$98,d0
 	jsr	PlayFMSound
 ; End of function ObjSpring_Main_Diag

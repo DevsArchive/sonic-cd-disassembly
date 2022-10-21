@@ -18,7 +18,7 @@ ObjBouncePlatform:
 	jsr	.Index(pc,d0.w)
 
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ ObjBouncePlatform_JmpToSolid:
 
 ObjBouncePlatform_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.w	#$43E8,oTile(a0)
 	move.l	#MapSpr_BouncePlatform,oMap(a0)
@@ -73,7 +73,7 @@ ObjBouncePlatform_Bounced:
 	bne.s	.Landed
 	move.w	#-$600,oYVel(a0)
 	move.w	#$10,oBPtfmGrav(a0)
-	btst	#7,oRender(a0)
+	btst	#7,oSprFlags(a0)
 	beq.s	.Solid
 	move.w	#FM_B4,d0
 	jsr	PlayFMSound
@@ -182,9 +182,9 @@ ObjBouncePlatform_Solid:
 
 .Solid:
 	move.w	oYVel(a1),oBPftmYVel(a0)
-	btst	#3,oStatus(a1)
+	btst	#3,oFlags(a1)
 	beq.s	.CheckSolid
-	btst	#1,oStatus(a1)
+	btst	#1,oFlags(a1)
 	bne.s	.CheckSolid
 	clr.w	oYVel(a1)
 

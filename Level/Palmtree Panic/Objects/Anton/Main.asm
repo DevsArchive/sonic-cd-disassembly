@@ -13,7 +13,7 @@ ObjAnton:
 	jsr	ObjAnton_Index(pc,d0.w)
 	jsr	DrawObject
 	move.w	oVar2E(a0),d0
-	jmp	CheckObjDespawn2Time
+	jmp	CheckObjDespawn2
 ; End of function ObjAnton
 
 ; -------------------------------------------------------------------------
@@ -23,7 +23,7 @@ ObjAnton_Index:	dc.w	ObjAnton_Init-ObjAnton_Index
 ; -------------------------------------------------------------------------
 
 ObjAnton_Init:
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#4,oPriority(a0)
 	move.l	#MapSpr_Anton,oMap(a0)
 	move.b	#$18,oXRadius(a0)
@@ -32,7 +32,7 @@ ObjAnton_Init:
 	move.b	#$29,oColType(a0)
 	move.w	oX(a0),oVar2E(a0)
 	moveq	#2,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 	tst.b	oSubtype(a0)
 	bne.s	.Damaged
 	move.l	#-$10000,d0
@@ -90,8 +90,8 @@ ObjAnton_Main:
 
 .TurnAround:
 	neg.l	oVar2A(a0)
-	bchg	#0,oRender(a0)
-	bchg	#0,oStatus(a0)
+	bchg	#0,oSprFlags(a0)
+	bchg	#0,oFlags(a0)
 	bra.s	ObjAnton_Main
 ; End of function ObjAnton_Main
 

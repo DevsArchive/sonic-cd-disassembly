@@ -95,7 +95,7 @@ ObjMove:
 
 	move.w	oXVel(a0),d0			; Get X velocity
 
-	btst	#3,oStatus(a0)			; Are we standing on an object?
+	btst	#3,oFlags(a0)			; Are we standing on an object?
 	beq.s	.NotOnObj			; If not, branch
 
 	moveq	#0,d1				; Get the object we are standing on
@@ -107,7 +107,7 @@ ObjMove:
 	bne.s	.NotOnObj			; If not, branch
 
 	move.w	#-$100,d1			; Get resistance value
-	btst	#0,oStatus(a1)			; Is the object flipped?
+	btst	#0,oFlags(a1)			; Is the object flipped?
 	beq.s	.NotNeg				; If not, branch
 	neg.w	d1				; Flip the resistance value
 
@@ -136,9 +136,9 @@ ObjMove:
 ; -------------------------------------------------------------------------
 
 DrawObject:
-	bclr	#7,oRender(a0)			; Mark this object as offscreen
+	bclr	#7,oSprFlags(a0)		; Mark this object as offscreen
 
-	move.b	oRender(a0),d0			; Is this object to be drawn relative to a camera?
+	move.b	oSprFlags(a0),d0		; Is this object to be drawn relative to a camera?
 	andi.w	#$C,d0
 	beq.w	.DrawObj			; If not, branch
 
@@ -267,9 +267,9 @@ DrawObjects:
 	tst.b	(a0)				; Is this object loaded?
 	beq.w	.NextObj			; If not, branch
 
-	move.b	oRender(a0),d0			; Is this object to be drawn relative to a camera?
+	move.b	oSprFlags(a0),d0		; Is this object to be drawn relative to a camera?
 	move.b	d0,d4
-	andi.w	#$C,d0
+	andi.w	#%00001100,d0
 	beq.w	.ScreenPos			; If not, branch
 
 	movea.l	ObjDrawCameras(pc,d0.w),a1	; Get camera that the object is relative to
@@ -344,7 +344,7 @@ DrawObjects:
 	bsr.w	DrawSprite			; Draw the sprite
 
 .DrawDone:
-	bset	#7,oRender(a0)			; Mark the object as onscreen
+	bset	#7,oSprFlags(a0)		; Mark the object as onscreen
 
 .NextObj:
 	addq.w	#2,d6				; Next entry in the draw queue

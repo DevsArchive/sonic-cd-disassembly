@@ -37,9 +37,9 @@ ObjRing_Deltas:	dc.b	$10, 0
 ; -------------------------------------------------------------------------
 
 ObjRing_Init:
-	lea	lvlObjRespawns,a2
+	lea	savedObjFlags,a2
 	moveq	#0,d0
-	move.b	oRespawn(a0),d0
+	move.b	oSavedFlagsID(a0),d0
 	move.w	d0,d1
 	add.w	d1,d1
 	add.w	d1,d0
@@ -157,7 +157,7 @@ ObjRing_Init:
 	move.l	#MapSpr_Ring,oMap(a1)
 	move.w	#$A7AE,oTile(a1)
 	move.b	#2,oPriority(a1)
-	cmpi.b	#6,levelZone
+	cmpi.b	#6,zone
 	bne.s	.NotMMZ
 	move.b	#0,oPriority(a1)
 	move.b	oSubtype2(a0),oSubtype2(a1)
@@ -167,11 +167,11 @@ ObjRing_Init:
 	move.b	#2,oPriority(a1)
 
 .NotMMZ:
-	move.b	#4,oRender(a1)
+	move.b	#4,oSprFlags(a1)
 	move.b	#$47,oColType(a1)
 	move.b	#8,oWidth(a1)
 	move.b	#8,oYRadius(a1)
-	move.b	oRespawn(a0),oRespawn(a1)
+	move.b	oSavedFlagsID(a0),oSavedFlagsID(a1)
 	move.b	d1,oVar34(a1)
 
 .Next:
@@ -243,9 +243,9 @@ ObjRing_Collect:
 	move.b	#0,oColType(a0)
 	move.b	#1,oPriority(a0)
 	bsr.w	CollectRing
-	lea	lvlObjRespawns,a2
+	lea	savedObjFlags,a2
 	moveq	#0,d0
-	move.b	oRespawn(a0),d0
+	move.b	oSavedFlagsID(a0),d0
 	move.w	d0,d1
 	add.w	d1,d1
 	add.w	d1,d0
@@ -292,21 +292,21 @@ ObjRing_Destroy:
 ; -------------------------------------------------------------------------
 
 CollectRing:
-	addq.w	#1,levelRings
-	ori.b	#1,updateRings
+	addq.w	#1,rings
+	ori.b	#1,updateHUDRings
 	move.w	#$95,d0
-	cmpi.w	#100,levelRings
+	cmpi.w	#100,rings
 	bcs.s	.PlaySound
-	bset	#1,lifeFlags
+	bset	#1,livesFlags
 	beq.s	.GainLife
-	cmpi.w	#200,levelRings
+	cmpi.w	#200,rings
 	bcs.s	.PlaySound
-	bset	#2,lifeFlags
+	bset	#2,livesFlags
 	bne.s	.PlaySound
 
 .GainLife:
-	addq.b	#1,lifeCount
-	addq.b	#1,updateLives
+	addq.b	#1,lives
+	addq.b	#1,updateHUDLives
 	move.w	#$7A,d0
 	jmp	SubCPUCmd
 
@@ -336,7 +336,7 @@ ObjLostRing_Index:dc.w	ObjLostRing_Init-ObjLostRing_Index
 ObjLostRing_Init:
 	movea.l	a0,a1
 	moveq	#0,d5
-	move.w	levelRings,d5
+	move.w	rings,d5
 	moveq	#$20,d0
 	cmp.w	d0,d5
 	bcs.s	.NoCap
@@ -364,7 +364,7 @@ ObjLostRing_Init:
 	move.b	oSubtype2(a0),oSubtype2(a1)
 	move.w	#$A7AE,oTile(a1)
 	move.b	#3,oPriority(a1)
-	cmpi.b	#6,levelZone
+	cmpi.b	#6,zone
 	bne.s	.NotMMZ
 	move.b	#0,oPriority(a1)
 	tst.b	oSubtype2(a0)
@@ -373,7 +373,7 @@ ObjLostRing_Init:
 	andi.b	#$7F,oTile(a1)
 
 .NotMMZ:
-	move.b	#4,oRender(a1)
+	move.b	#4,oSprFlags(a1)
 	move.b	#$47,oColType(a1)
 	move.b	#8,oWidth(a1)
 	move.b	#8,oYRadius(a1)
@@ -402,9 +402,9 @@ ObjLostRing_Init:
 	dbf	d5,.Loop
 
 .DidInit:
-	move.w	#0,levelRings
-	move.b	#$80,updateRings
-	move.b	#0,lifeFlags
+	move.w	#0,rings
+	move.b	#$80,updateHUDRings
+	move.b	#0,livesFlags
 	move.w	#$94,d0
 	jsr	PlayFMSound
 ; End of function ObjLostRing_Init
@@ -412,14 +412,11 @@ ObjLostRing_Init:
 ; -------------------------------------------------------------------------
 
 ObjLostRing_Main:
-
-; FUNCTION CHUNK AT 0020A0EE SIZE 00000004 BYTES
-
 	move.b	ringLossAnimFrame,oMapFrame(a0)
 	bsr.w	ObjMove
 	addi.w	#$18,oYVel(a0)
 	bmi.s	.ChkDel
-	move.b	lvlFrameCount+3,d0
+	move.b	levelVIntCounter+3,d0
 	add.b	d7,d0
 	andi.b	#3,d0
 	bne.s	.ChkDel

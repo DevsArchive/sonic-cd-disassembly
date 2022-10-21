@@ -244,10 +244,10 @@ MainLoop:
 	btst	#1,specStageFlags		; Are we in time attack mode?
 	beq.s	.MarkDone			; If not, branch
 	move.l	specStageTimer,timeAttackTime	; Save time
-	move.b	#1,lifeCount			; Mark the stage as beaten or not
+	move.b	#1,lives			; Mark the stage as beaten or not
 	tst.b	ufoCount
 	beq.s	.MarkDone
-	move.b	#0,lifeCount
+	move.b	#0,lives
 
 .MarkDone:
 	bset	#0,GAMAINFLAG			; Tell Sub CPU the stage is over
@@ -290,7 +290,7 @@ Results:
 	bsr.w	GiveWordRAMAccess		; Give Word RAM access to the Sub CPU
 	
 	move.b	#0,demoActive.w			; Deactivate the demo
-	move.b	#0,enteredBigRing		; Clear big ring entered flag
+	move.b	#0,specialStage			; Clear special stage flag
 	move.w	#6,vintRoutine.w		; Fade to white
 	bsr.w	FadeToWhite
 	move.b	specStageID,curSpecStage	; Save next stage ID
@@ -432,25 +432,25 @@ TallyScore:
 ; -------------------------------------------------------------------------
 
 AddScore:
-	move.l	levelScore,d1			; Add points
+	move.l	score,d1			; Add points
 	add.l	d1,d0
 
 .Check1UP:
 	cmp.l	nextLifeScore,d0		; Have we crossed an extra life score threshold?
 	bcs.s	.SetScore			; If not, branch
 	addi.l	#5000,nextLifeScore		; Set next extra life score threshold
-	addq.b	#1,lifeCount			; Add life
+	addq.b	#1,lives			; Add life
 	addq.w	#1,extraPlayerCnt.w		; Add extra player icon
-	cmpi.b	#250,lifeCount			; Do we have more than 249 lives?
+	cmpi.b	#250,lives			; Do we have more than 249 lives?
 	bcs.s	.Check1UP			; If not, check for more lives to add
-	move.b	#249,lifeCount			; Cap at 249 lives
+	move.b	#249,lives			; Cap at 249 lives
 	bra.s	.Check1UP			; Check for more lives to add
 
 .SetScore:
-	move.l	d0,levelScore			; Set score
-	cmpi.l	#1000000,levelScore		; Is the score too large?
+	move.l	d0,score			; Set score
+	cmpi.l	#1000000,score			; Is the score too large?
 	bcs.s	.End				; If not, branch
-	move.l	#999999,levelScore		; Cap the score
+	move.l	#999999,score			; Cap the score
 
 .End:
 	rts
@@ -2809,7 +2809,7 @@ DrawResultsScore:
 	lea	DrawNum_10000000(pc),a1		; Draw score
 	VDPCMD	move.l,$C730,VRAM,WRITE,d4
 	VDPCMD	move.l,$C7B0,VRAM,WRITE,d5
-	move.l	levelScore,d0
+	move.l	score,d0
 	moveq	#8-1,d1
 
 ; -------------------------------------------------------------------------

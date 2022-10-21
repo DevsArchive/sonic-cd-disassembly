@@ -11,7 +11,7 @@ ObjTunnelDoorV:
 	move.w	ObjTunnelDoorV_Index(pc,d0.w),d0
 	jsr	ObjTunnelDoorV_Index(pc,d0.w)
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjTunnelDoorV
 
 ; -------------------------------------------------------------------------
@@ -36,11 +36,11 @@ ObjTunnelDoorV_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_FlapDoorV,oMap(a0)
 	move.b	#1,oPriority(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#4,oWidth(a0)
 	move.b	#$18,oYRadius(a0)
 	moveq	#$C,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 ; End of function ObjTunnelDoorV_Init
 
 ; -------------------------------------------------------------------------
@@ -62,7 +62,7 @@ ObjTunnelDoorV_Main:
 	bcc.s	.NotRange
 	clr.w	oVar3A(a0)
 	move.b	#4,oRoutine(a0)
-	btst	#7,oRender(a0)
+	btst	#7,oSprFlags(a0)
 	beq.s	.NotRange
 	move.w	#$A4,d0
 	jsr	PlayFMSound

@@ -20,10 +20,10 @@ ObjTunnelPath:
 	beq.s	.NoTimeTravel
 
 	moveq	#0,d0
-	move.b	oRespawn(a0),d0
+	move.b	oSavedFlagsID(a0),d0
 	beq.s	.NoTimeTravel
 	
-	lea	lvlObjRespawns,a1
+	lea	savedObjFlags,a1
 	move.w	d0,d1
 	add.w	d1,d1
 	add.w	d1,d0
@@ -36,14 +36,14 @@ ObjTunnelPath:
 	add.w	d2,d1
 	bpl.s	.CapTimeZone
 	moveq	#0,d1
-	bra.s	.ClearRespawnFlag
+	bra.s	.MarkUnloaded
 	
 .CapTimeZone:
 	cmpi.w	#3,d1
-	bcs.s	.ClearRespawnFlag
+	bcs.s	.MarkUnloaded
 	moveq	#2,d1
 	
-.ClearRespawnFlag:
+.MarkUnloaded:
 	add.w	d1,d0
 	bclr	#7,2(a1,d0.w)
 
@@ -61,7 +61,7 @@ ObjTunnelPath:
 	
 	cmpi.b	#4,oRoutine(a0)
 	bcc.s	.End
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 .End:
 	rts
@@ -78,7 +78,7 @@ ObjTunnelPath:
 
 ObjTunnelPath_Init:
 	move.l	#MapSpr_Powerup,oMap(a0)
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.b	#$10,oWidth(a0)
 	move.w	#$541,oTile(a0)
@@ -131,10 +131,10 @@ ObjTunnelPath_Main:
 .NoInvisiblePlayer:
 	move.b	#2,oAnim(a6)
 	move.w	#$800,oPlayerGVel(a6)
-	bclr	#6,oRender(a6)
+	bclr	#6,oSprFlags(a6)
 	tst.b	oSubtype(a0)
 	bpl.s	.NotHighLayer
-	bset	#6,oRender(a6)
+	bset	#6,oSprFlags(a6)
 	
 .NotHighLayer:
 	cmpi.b	#4,oRoutine(a6)
@@ -144,9 +144,9 @@ ObjTunnelPath_Main:
 .NotHurt2:
 	move.w	#0,oXVel(a6)
 	move.w	#0,oYVel(a6)
-	bclr	#5,oStatus(a0)
-	bclr	#5,oStatus(a6)
-	bset	#1,oStatus(a6)
+	bclr	#5,oFlags(a0)
+	bclr	#5,oFlags(a6)
+	bset	#1,oFlags(a6)
 	move.w	oX(a0),oX(a6)
 	move.w	oY(a0),oY(a6)
 	clr.b	oTunnelVar32(a0)

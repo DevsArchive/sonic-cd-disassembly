@@ -11,7 +11,7 @@ ObjTunnelDoor:
 	move.w	ObjTunnelDoor_Index(pc,d0.w),d0
 	jsr	ObjTunnelDoor_Index(pc,d0.w)
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjTunnelDoor
 
 ; -------------------------------------------------------------------------
@@ -57,7 +57,7 @@ ObjTunnelDoor_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_TunnelDoor,oMap(a0)
 	move.b	#1,oPriority(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#$2C,oWidth(a0)
 	cmpi.b	#2,oSubtype(a0)
 	bne.s	.NotNarrow
@@ -66,7 +66,7 @@ ObjTunnelDoor_Init:
 .NotNarrow:
 	move.b	#8,oYRadius(a0)
 	moveq	#$C,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 ; End of function ObjTunnelDoor_Init
 
 ; -------------------------------------------------------------------------
@@ -149,12 +149,12 @@ ObjTunnelDoorSplash_Index:
 
 ObjTunnelDoorSplash_Init:
 	addq.b	#2,oRoutine(a0)
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.l	#MapSpr_TunnelDoorSplash,oMap(a0)
 	move.b	oSubtype(a0),oAnim(a0)
 	moveq	#$D,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 	move.w	#$A2,d0
 	cmpi.b	#2,oSubtype(a0)
 	bcs.s	.PlaySound

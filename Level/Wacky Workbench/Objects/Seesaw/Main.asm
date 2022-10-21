@@ -23,7 +23,7 @@ ObjSeesaw:
 	jsr	.Index(pc,d0.w)
 	
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 	
 ; -------------------------------------------------------------------------
 
@@ -36,7 +36,7 @@ ObjSeesaw:
 
 ObjSeesaw_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.b	#24,oXRadius(a0)
 	move.b	#24,oWidth(a0)
@@ -57,15 +57,15 @@ ObjSeesaw_Init:
 	move.w	a1,oSeesawPtfm2(a0)
 	addi.w	#40,oX(a1)
 	addi.w	#24,oY(a1)
-	bset	#0,oRender(a1)
-	bset	#0,oStatus(a1)
+	bset	#0,oSprFlags(a1)
+	bset	#0,oFlags(a1)
 	rts
 
 ; -------------------------------------------------------------------------
 
 ObjSeesaw_InitSub:
 	move.b	oID(a0),oID(a1)
-	move.b	oRender(a0),oRender(a1)
+	move.b	oSprFlags(a0),oSprFlags(a1)
 	move.b	oPriority(a0),oPriority(a1)
 	move.w	oTile(a0),oTile(a1)
 	move.l	oMap(a0),oMap(a1)

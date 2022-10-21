@@ -34,10 +34,10 @@ ObjFloatBlock_Index:
 
 ObjFloatBlock_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.l	#MapSpr_FloatBlock,oMap(a0)
 	moveq	#5,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 	move.b	#1,oPriority(a0)
 	move.b	#$C,oWidth(a0)
 	move.b	#$C,oYRadius(a0)
@@ -52,7 +52,7 @@ ObjFloatBlock_Main:
 	beq.s	.Display
 	cmpi.b	#2,timeZone
 	bne.s	.Appear
-	btst	#3,oStatus(a0)
+	btst	#3,oFlags(a0)
 	bne.s	.StartFall
 	bra.s	.Display
 
@@ -60,7 +60,7 @@ ObjFloatBlock_Main:
 
 .Appear:
 	move.b	#0,oMapFrame(a0)
-	btst	#3,oStatus(a0)
+	btst	#3,oFlags(a0)
 	beq.s	.Display
 	move.b	#6,oRoutine(a0)
 	move.b	#1,oAnim(a0)
@@ -95,7 +95,7 @@ ObjFloatBlock_Fall:
 
 ObjFloatBlock_Appear:
 	bsr.w	ObjFloatBlock_SolidObj
-	btst	#3,oStatus(a0)
+	btst	#3,oFlags(a0)
 	bne.s	.Animate
 	move.b	#2,oRoutine(a0)
 	rts
@@ -113,7 +113,7 @@ ObjFloatBlock_Appear:
 ObjFloatBlock_Visible:
 	move.b	#0,oAnim(a0)
 	bsr.w	ObjFloatBlock_SolidObj
-	btst	#3,oStatus(a0)
+	btst	#3,oFlags(a0)
 	bne.s	.Animate
 	addq.b	#2,oRoutine(a0)
 	move.b	#2,oAnim(a0)

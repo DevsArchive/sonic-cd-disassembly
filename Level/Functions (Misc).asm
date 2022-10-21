@@ -21,15 +21,15 @@ CheckObjDespawnS1:
 
 	sub.w	d1,d0				; Has the object gone offscreen?
 	cmpi.w	#$80+(320+$40)+$80,d0
-	bhi.w	.NoDraw				; If so, mark it as "gone offscreen"
+	bhi.w	.NoDraw				; If so, branch
 	bra.w	DrawObject			; If not, draw the object's sprite
 
 .NoDraw:
-	lea	lvlObjRespawns,a2		; Prepare object respawn table
+	lea	savedObjFlags,a2		; Saved object flags table
 	moveq	#0,d0
-	move.b	oRespawn(a0),d0			; Get the object's respawn index
-	beq.s	.NoClear			; If it doesn't have one, branch
-	bclr	#7,2(a2,d0.w)			; Mark it as "gone offscreen"
+	move.b	oSavedFlagsID(a0),d0		; Get table entry ID
+	beq.s	.NoClear			; If the object doesn't have one, branch
+	bclr	#7,2(a2,d0.w)			; Mark as unloaded
 
 .NoClear:
 	bra.w	DeleteObject			; Delete the object

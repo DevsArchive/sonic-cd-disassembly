@@ -14,7 +14,7 @@ ObjAmyRose:
 	jsr	ObjAmyRose_Index(pc,d0.w)
 	bsr.w	ObjAmyRose_MakeHearts
 	jsr	DrawObject
-	jsr	CheckObjDespawnTime
+	jsr	CheckObjDespawn
 	cmpi.b	#$2F,0(a0)
 	beq.s	.End
 
@@ -35,10 +35,7 @@ ObjAmyRose_Index:dc.w	ObjAmyRose_Init-ObjAmyRose_Index
 ; -------------------------------------------------------------------------
 
 ObjAmyRose_Init:
-
-; FUNCTION CHUNK AT 0020EDA0 SIZE 00000062 BYTES
-
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.w	#$2370,oTile(a0)
 	move.b	#1,oPriority(a0)
 	move.l	#MapSpr_AmyRose,oMap(a0)
@@ -115,7 +112,7 @@ ObjAmyRose_Main:
 
 .GetAccel:
 	move.w	#-$10,d0
-	btst	#0,oStatus(a0)
+	btst	#0,oFlags(a0)
 	bne.s	.NoFlip
 	neg.w	d0
 
@@ -232,7 +229,7 @@ ObjAmyRose_HoldSonic:
 	bsr.w	ObjAmyRose_SlowSonic
 	bsr.w	ObjAmyRose_SetFacing
 	moveq	#$C,d0
-	btst	#0,oStatus(a1)
+	btst	#0,oFlags(a1)
 	bne.s	.NoFlip
 	neg.w	d0
 
@@ -244,7 +241,7 @@ ObjAmyRose_HoldSonic:
 	bsr.w	Player_Jump
 	btst	#0,oPlayerCtrl(a1)
 	beq.s	.PlayerJumped
-	cmpi.l	#$93200,levelTime
+	cmpi.l	#(9<<16)|(50<<8)|0,time
 	bcc.s	.ForceJump
 	move.b	#3,oAnim(a0)
 	lea	Ani_AmyRose,a1
@@ -271,7 +268,7 @@ ObjAmyRose_HoldSonic:
 ObjAmyRose_FollowSonic:
 	move.b	#6,oMapFrame(a0)
 	move.w	#$80,d0
-	btst	#0,oStatus(a0)
+	btst	#0,oFlags(a0)
 	bne.s	.NoFlip
 	neg.w	d0
 
@@ -368,18 +365,18 @@ Player_Jump2:
 	muls.w	d2,d0
 	asr.l	#8,d0
 	add.w	d0,oYVel(a1)
-	bset	#1,oStatus(a1)
-	bclr	#5,oStatus(a1)
+	bset	#1,oFlags(a1)
+	bclr	#5,oFlags(a1)
 	move.b	#1,oPlayerJump(a1)
 	clr.b	oPlayerStick(a1)
 	move.b	#$13,oYRadius(a1)
 	move.b	#9,oXRadius(a1)
-	btst	#2,oStatus(a1)
+	btst	#2,oFlags(a1)
 	bne.s	Player_Jump_RollJmp
 	move.b	#$E,oYRadius(a1)
 	move.b	#7,oXRadius(a1)
 	addq.w	#5,oY(a1)
-	bset	#2,oStatus(a1)
+	bset	#2,oFlags(a1)
 	move.b	#2,oAnim(a1)
 
 Player_Jump_Done:
@@ -388,7 +385,7 @@ Player_Jump_Done:
 ; -------------------------------------------------------------------------
 
 Player_Jump_RollJmp:
-	bset	#4,oStatus(a1)
+	bset	#4,oFlags(a1)
 	rts
 ; End of function Player_Jump2
 
@@ -415,12 +412,12 @@ ObjAmyRose_CheckGrabSonic:
 ; -------------------------------------------------------------------------
 
 .ChkRange:
-	cmpi.l	#$93200,levelTime
+	cmpi.l	#(9<<16)|(50<<8)|0,time
 	bcc.w	.End
 	lea	objPlayerSlot.w,a1
-	tst.b	lvlDebugMode
+	tst.b	debugMode
 	bne.w	.End
-	btst	#0,oStatus(a1)
+	btst	#0,oFlags(a1)
 	bne.s	.GetDX
 	move.w	oX(a1),d0
 	sub.w	oX(a0),d0
@@ -452,9 +449,9 @@ ObjAmyRose_CheckGrabSonic:
 	neg.w	d0
 
 .AbsVX:
-	btst	#1,oStatus(a1)
+	btst	#1,oFlags(a1)
 	bne.s	.NoGrab
-	btst	#2,oStatus(a1)
+	btst	#2,oFlags(a1)
 	bne.s	.NoGrab
 	tst.b	oPlayerHurt(a1)
 	bne.s	.NoGrab
@@ -466,7 +463,7 @@ ObjAmyRose_CheckGrabSonic:
 	bne.s	.NoGrab
 	tst.b	invincibleFlag
 	bne.s	.NoGrab
-	bclr	#2,oStatus(a1)
+	bclr	#2,oFlags(a1)
 	ori.b	#$81,oVar3E(a0)
 	clr.w	oYVel(a0)
 	clr.w	oXVel(a0)
@@ -571,13 +568,13 @@ AnimateObjSimple:
 	move.b	d0,d1
 	andi.b	#$1F,d0
 	move.b	d0,oMapFrame(a0)
-	move.b	oStatus(a0),d0
+	move.b	oFlags(a0),d0
 	rol.b	#3,d1
 	eor.b	d0,d1
 	andi.b	#3,d1
-	andi.b	#$FC,oRender(a0)
-	or.b	d1,oRender(a0)
-	move.b	oRender(a2),oAnimTime(a0)
+	andi.b	#$FC,oSprFlags(a0)
+	or.b	d1,oSprFlags(a0)
+	move.b	oSprFlags(a2),oAnimTime(a0)
 	addq.b	#2,oAnimFrame(a0)
 
 .End:
@@ -598,7 +595,7 @@ ObjAmyRose_MakeHearts:
 	bne.s	.End
 	move.b	#$30,oID(a1)
 	moveq	#8,d1
-	btst	#0,oStatus(a0)
+	btst	#0,oFlags(a0)
 	beq.s	.NoFlip
 	move.w	#-$A,d1
 
@@ -635,16 +632,16 @@ ObjAmyRose_SetFacing:
 ; -------------------------------------------------------------------------
 
 ObjAmyRose_XUnflip:
-	bclr	#0,oStatus(a0)
-	bclr	#0,oRender(a0)
+	bclr	#0,oFlags(a0)
+	bclr	#0,oSprFlags(a0)
 	rts
 ; End of function ObjAmyRose_XUnflip
 
 ; -------------------------------------------------------------------------
 
 ObjAmyRose_XFlip:
-	bset	#0,oStatus(a0)
-	bset	#0,oRender(a0)
+	bset	#0,oFlags(a0)
+	bset	#0,oSprFlags(a0)
 	rts
 ; End of function ObjAmyRose_XFlip
 
@@ -677,7 +674,7 @@ ObjAmyHeart:
 	move.w	ObjAmyHeart_Index(pc,d0.w),d0
 	jsr	ObjAmyHeart_Index(pc,d0.w)
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjAmyHeart
 
 ; -------------------------------------------------------------------------
@@ -687,7 +684,7 @@ ObjAmyHeart_Index:dc.w	ObjAmyHeart_Init-ObjAmyHeart_Index
 
 ObjAmyHeart_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.w	#$370,oTile(a0)
 	move.l	#MapSpr_AmyRose,oMap(a0)
 	move.b	#8,oMapFrame(a0)

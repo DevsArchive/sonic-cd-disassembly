@@ -57,14 +57,14 @@ ErrorTrap:
 Start:
 	btst	#6,IOCTRL3			; Have the controller ports been initialized?
 	beq.s	.DoInit				; If so, do start RAM clear
-	cmpi.l	#'init',lvlInitFlag		; Have we already initialized?
+	cmpi.l	#'init',initFlag		; Have we already initialized?
 	beq.w	.GameInit			; If so, branch
 
 .DoInit:
-	lea	unkLvlBuffer,a6			; Clear RAM section starting at $FF1000
+	lea	unkBuffer,a6			; Clear unknown buffer
 	moveq	#0,d7
-	move.w	#$FF,d6				; Clear $400 bytes...
-	move.w	#$7F,d6				; ...or actually $200 bytes!
+	move.w	#$400/4-1,d6
+	move.w	#$200/4-1,d6
 
 .ClearRAM:
 	move.l	d7,(a6)+
@@ -74,7 +74,7 @@ Start:
 	andi.b	#$C0,d0
 	move.b	d0,versionCache
 
-	move.l	#'init',lvlInitFlag		; Mark as done
+	move.l	#'init',initFlag		; Mark as done
 
 .GameInit:
 	bsr.w	InitVDP				; Initialize VDP

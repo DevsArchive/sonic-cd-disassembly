@@ -2,16 +2,25 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Wacky Workbench Act 1 Present object art manager
+; Palmtree Panic Act 1 Bad Future section data
 ; -------------------------------------------------------------------------
 
-LoadCamPLCFull:
-	moveq	#2,d0
-	jmp	LoadPLC
-
-LoadCamPLCIncr:
-
-LevelObj_SetBaseTile:
-	rts
-
+SectionRanges:
+	dc.w	$700
+	dc.w	$1100
+	dc.w	$1A00
+	dc.w	-1
+	
+SectionUpdatePLCs:
+	dc.w	7
+	dc.w	8
+	dc.w	9
+	dc.w	$A
+	
+SectionInitPLCs:
+	dc.w	2
+	dc.w	4
+	dc.w	5
+	dc.w	6
+	
 ; -------------------------------------------------------------------------

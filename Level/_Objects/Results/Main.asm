@@ -38,7 +38,7 @@ ObjResults_Init:
 ObjResults_WaitPLC:
 	tst.l	plcBuffer.w
 	bne.s	.End
-	cmpi.w	#$502,levelZone
+	cmpi.w	#$502,zoneAct
 	beq.s	.LoadResults
 	lea	objPlayerSlot.w,a6
 	move.w	cameraX.w,d0
@@ -77,7 +77,7 @@ ObjResults_WaitPLC:
 	move.b	#$3A,oID(a1)
 	move.b	#4,oRoutine(a1)
 	move.w	#$83C4,oTile(a1)
-	cmpi.w	#$502,levelZone
+	cmpi.w	#$502,zoneAct
 	bne.s	.NotSSZ3
 	move.w	#$82F2,oTile(a1)
 	move.l	#MapSpr_Results2,oMap(a1)
@@ -103,7 +103,7 @@ ObjResults_WaitPLC:
 	move.b	7(a2,d2.w),oMapFrame(a1)
 	cmpi.b	#2,d1
 	bne.s	.GotFrame
-	move.b	levelAct,d2
+	move.b	act,d2
 	add.b	d2,oMapFrame(a1)
 
 .GotFrame:
@@ -156,7 +156,7 @@ ObjResults_MoveToDest:
 ; -------------------------------------------------------------------------
 
 ObjResults_BonusCountdown:
-	move.b	#1,updateResultsBonus.w
+	move.b	#1,updateHUDBonus.w
 	moveq	#0,d0
 	tst.w	bonusCount1.w
 	bne.s	.GiveBonus1
@@ -175,7 +175,7 @@ ObjResults_BonusCountdown:
 		cmpi.w	#$1E,oVar32(a0)
 		bne.s	.Display
 	endif
-	tst.b	enteredBigRing
+	tst.b	specialStage
 	beq.s	.Display
 	move.w	#$C8,d0
 	jsr	PlayFMSound
@@ -238,12 +238,12 @@ ObjResults_BonusCountdown:
 
 ObjResults_NextLevel:
 	move.w	#2,levelRestart
-	move.b	#0,resetLevelFlags
-	clr.w	lastCamPLC
+	move.b	#0,spawnMode
+	clr.w	sectionID
 	clr.l	flowerCount
 	clr.b	unkLevelFlag
 	clr.b	projDestroyed
-	clr.b	lastCheckpoint
+	clr.b	checkpoint
 	tst.b	timeAttackMode
 	beq.s	.NotTimeAttack
 	bclr	#0,plcLoadFlags
@@ -251,7 +251,7 @@ ObjResults_NextLevel:
 .NotTimeAttack:
 	bclr	#1,plcLoadFlags
 	move.b	#1,timeZone
-	move.w	level,d0
+	move.w	zoneAct,d0
 	addq.b	#1,d0
 	cmpi.b	#2,d0
 	bne.s	.NotAct3
@@ -265,11 +265,11 @@ ObjResults_NextLevel:
 	move.b	#0,d0
 
 .SameZone:
-	move.w	d0,levelZone
-	jsr	ResetRespawnTable
+	move.w	d0,zoneAct
+	jsr	ResetSavedObjFlags
 	jsr	FadeOutMusic
 	jsr	DrawObject
-	move.b	levelAct,d0
+	move.b	act,d0
 	subq.b	#1,d0
 	bpl.s	.NotAct1
 	clr.b	goodFutureFlags

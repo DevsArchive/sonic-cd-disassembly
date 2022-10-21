@@ -39,12 +39,12 @@ AnimateObject:
 	andi.b	#$1F,d0				; Set sprite frame
 	move.b	d0,oMapFrame(a0)
 
-	move.b	oStatus(a0),d0			; Apply status flip flags to render flip flags
+	move.b	oFlags(a0),d0			; Apply flip flags
 	rol.b	#3,d1
 	eor.b	d0,d1
-	andi.b	#3,d1
-	andi.b	#$FC,oRender(a0)
-	or.b	d1,oRender(a0)
+	andi.b	#%00000011,d1
+	andi.b	#%11111100,oSprFlags(a0)
+	or.b	d1,oSprFlags(a0)
 
 	addq.b	#1,oAnimFrame(a0)		; Update animation frame
 

@@ -40,7 +40,7 @@ ObjectIndex:
 	dc.l	ObjCollapsePlatform		; 20 - Collaping platform
 	dc.l	ObjPlatform			; 21 - Platform
 	dc.l	ObjKamemusi			; 22 - Kamemusi badnik/projectiles
-	dc.l	ObjScrappedBadnik		; 23 - Scrapped badnik ("ene_tama")
+	dc.l	ObjMissile			; 23 - Missile (scrapped)
 	dc.l	ObjAnimal			; 24 - Animal
 	dc.l	ObjNull				; 25 - Blank
 	dc.l	ObjSpikes			; 26 - Spikes

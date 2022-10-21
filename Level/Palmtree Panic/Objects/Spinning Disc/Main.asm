@@ -25,7 +25,7 @@ ObjSpinningDisc:
 
 .SkipAnim:
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjSpinningDisc
 
 ; -------------------------------------------------------------------------
@@ -36,11 +36,11 @@ ObjSpinningDisc_Index:
 
 ObjSpinningDisc_Init:
 	addq.b	#2,oRoutine(a0)
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.b	#4,oPriority(a0)
 	move.l	#MapSpr_SpinningDisc,oMap(a0)
 	moveq	#6,d0
-	jsr	LevelObj_SetBaseTile(pc)
+	jsr	SetObjectTileID(pc)
 	move.b	#$10,oWidth(a0)
 	move.b	#8,oYRadius(a0)
 ; End of function ObjSpinningDisc_Init
@@ -48,7 +48,7 @@ ObjSpinningDisc_Init:
 ; -------------------------------------------------------------------------
 
 ObjSpinningDisc_Main:
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.w	.End
 	lea	objPlayerSlot.w,a1
 	bsr.s	ObjSpinningDisc_SolidObj
@@ -161,7 +161,7 @@ ObjSpinningDisc_CheckJump:
 	beq.w	.End2
 	clr.b	oPlayerCtrl(a1)
 	move.w	#$680,d2
-	btst	#6,oStatus(a0)
+	btst	#6,oFlags(a0)
 	beq.s	.NoWater
 	move.w	#$380,d2
 
@@ -176,8 +176,8 @@ ObjSpinningDisc_CheckJump:
 	muls.w	d2,d0
 	asr.l	#8,d0
 	add.w	d0,oYVel(a1)
-	bset	#1,oStatus(a1)
-	bclr	#5,oStatus(a1)
+	bset	#1,oFlags(a1)
+	bclr	#5,oFlags(a1)
 	move.b	#1,oPlayerJump(a1)
 	clr.b	oPlayerStick(a1)
 	move.w	#$A0,d0
@@ -195,7 +195,7 @@ ObjSpinningDisc_CheckJump:
 	move.b	#9,oXRadius(a1)
 
 .GotSize:
-	btst	#2,oStatus(a1)
+	btst	#2,oFlags(a1)
 	bne.s	.RollJump
 	tst.b	miniSonic
 	beq.s	.NotMini2
@@ -211,7 +211,7 @@ ObjSpinningDisc_CheckJump:
 	addq.w	#5,oY(a1)
 
 .SetRoll:
-	bset	#2,oStatus(a1)
+	bset	#2,oFlags(a1)
 	move.b	#2,oAnim(a1)
 
 .End2:
@@ -220,7 +220,7 @@ ObjSpinningDisc_CheckJump:
 ; -------------------------------------------------------------------------
 
 .RollJump:
-	bset	#4,oStatus(a1)
+	bset	#4,oFlags(a1)
 	rts
 ; END OF FUNCTION CHUNK	FOR ObjSpinningDisc_Main
 

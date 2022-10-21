@@ -18,7 +18,7 @@ ObjFreezer:
 	move.w	.Index(pc,d0.w),d0
 	jsr	.Index(pc,d0.w)
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 	
 ; -------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ ObjFreezer:
 ; -------------------------------------------------------------------------
 
 ObjFreezer_Init:
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.w	#$310,oTile(a0)
 	move.l	#MapSpr_Freezer,oMap(a0)
 	move.b	#120,oFreezerTime(a0)
@@ -54,7 +54,7 @@ ObjFreezer_Main:
 	move.l	a0,oFreezerParent(a1)
 	move.b	#5,oID(a1)
 	move.b	#3,oPriority(a1)
-	ori.b	#4,oRender(a1)
+	ori.b	#4,oSprFlags(a1)
 	move.w	oTile(a0),oTile(a1)
 	move.l	oMap(a0),oMap(a1)
 	move.w	oX(a0),oX(a1)
@@ -124,8 +124,8 @@ ObjFreezer_IceLanded:
 	move.b	#$E,oYRadius(a1)
 	move.b	#7,oXRadius(a1)
 	addq.w	#5,oY(a1)
-	bset	#2,oStatus(a1)
-	bclr	#5,oStatus(a1)
+	bset	#2,oFlags(a1)
+	bclr	#5,oFlags(a1)
 	move.b	#2,oAnim(a1)
 	move.w	#FM_JUMP,d0
 	jsr	PlayFMSound
@@ -218,7 +218,7 @@ ObjFreezer_IcePieceBreak:
 	
 	move.b	#5,oID(a1)
 	move.b	#$C,oRoutine(a1)
-	ori.b	#4,oRender(a1)
+	ori.b	#4,oSprFlags(a1)
 	move.w	oX(a0),oX(a1)
 	move.w	oY(a0),oY(a1)
 	move.w	#$2E1,oTile(a1)
@@ -234,7 +234,7 @@ ObjFreezer_IcePieceBreak:
 	move.b	2(a3,d1.w),oFreezerBreak(a1)
 	move.b	3(a3,d1.w),oMapFrame(a1)
 	move.b	4(a3,d1.w),d2
-	or.b	d2,oRender(a1)
+	or.b	d2,oSprFlags(a1)
 	
 	move.b	5(a3,d1.w),d2
 	ext.w	d2
@@ -273,7 +273,7 @@ ObjFreezer_FreezeSonic:
 	move.l	a2,oFreezerParent(a1)
 	
 	move.b	#5,oID(a1)
-	ori.b	#4,oRender(a1)
+	ori.b	#4,oSprFlags(a1)
 	move.w	oX(a2),oX(a1)
 	move.w	oY(a2),oY(a1)
 	move.w	#$2E1,oTile(a1)

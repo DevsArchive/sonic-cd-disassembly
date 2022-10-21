@@ -2,59 +2,60 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Common objects
+; Load saved data
 ; -------------------------------------------------------------------------
 
-TimeTravel_LoadData:
-	move.w	travelX,oX(a6)
-	move.w	travelY,oY(a6)
-	move.b	travelStatus,oStatus(a6)
-	move.w	travelGVel,oPlayerGVel(a6)
-	move.w	travelXVel,oXVel(a6)
-	move.w	travelYVel,oYVel(a6)
-	move.w	travelRingCnt,levelRings
-	move.b	travelLifeFlags,lifeFlags
-	move.l	travelTime,levelTime
-	move.b	travelWaterRout,waterRoutine.w
-	move.w	travelBtmBound,bottomBound.w
-	move.w	travelBtmBound,destBottomBound.w
-	move.w	travelCamX,cameraX.w
-	move.w	travelCamY,cameraY.w
-	move.w	travelCamBgX,cameraBgX.w
-	move.w	travelCamBgY,cameraBgY.w
-	move.w	travelCamBg2X,cameraBg2X.w
-	move.w	travelCamBg2Y,cameraBg2Y.w
-	move.w	travelCamBg3X,cameraBg3X.w
-	move.w	travelCamBg3Y,cameraBg3Y.w
-	cmpi.b	#6,levelZone
+LoadTimeWarpData:
+	move.w	warpX,oX(a6)
+	move.w	warpY,oY(a6)
+	move.b	warpPlayerFlags,oFlags(a6)
+	move.w	warpGVel,oPlayerGVel(a6)
+	move.w	warpXVel,oXVel(a6)
+	move.w	warpYVel,oYVel(a6)
+	move.w	warpRings,rings
+	move.b	warpLivesFlags,livesFlags
+	move.l	warpTime,time
+	move.b	warpWaterRoutine,waterRoutine.w
+	move.w	warpBtmBound,bottomBound.w
+	move.w	warpBtmBound,destBottomBound.w
+	move.w	warpCamX,cameraX.w
+	move.w	warpCamY,cameraY.w
+	move.w	warpCamBgX,cameraBgX.w
+	move.w	warpCamBgY,cameraBgY.w
+	move.w	warpCamBg2X,cameraBg2X.w
+	move.w	warpCamBg2Y,cameraBg2Y.w
+	move.w	warpCamBg3X,cameraBg3X.w
+	move.w	warpCamBg3Y,cameraBg3Y.w
+	cmpi.b	#6,zone
 	bne.s	.NoMini2
-	move.b	travelMiniSonic,miniSonic
+	move.b	warpMiniSonic,miniSonic
 
 .NoMini2:
-	tst.b	resetLevelFlags
-	bpl.s	.End2
-	move.w	travelX,d0
+	tst.b	spawnMode
+	bpl.s	.End
+	move.w	warpX,d0
 	subi.w	#320/2,d0
 	move.w	d0,leftBound.w
 
-.End2:
+.End:
 	rts
-; END OF FUNCTION CHUNK	FOR ObjCheckpoint_LoadData
+	
 ; -------------------------------------------------------------------------
 
-ObjCheckpoint_LoadData:
+LoadCheckpointData:
 	lea	objPlayerSlot.w,a6
-	cmpi.b	#2,resetLevelFlags
-	beq.w	TimeTravel_LoadData
-	move.b	savedResetLvlFlags,resetLevelFlags
+	cmpi.b	#2,spawnMode
+	beq.w	LoadTimeWarpData
+	
+	move.b	savedSpawnMode,spawnMode
 	move.w	savedX,oX(a6)
 	move.w	savedY,oY(a6)
-	clr.w	levelRings
-	clr.b	lifeFlags
-	move.l	savedTime,levelTime
-	move.b	#59,levelTime+3
-	subq.b	#1,levelTime+2
-	move.b	savedWaterRout,waterRoutine.w
+	clr.w	rings
+	clr.b	livesFlags
+	move.l	savedTime,time
+	move.b	#59,timeFrames
+	subq.b	#1,timeSeconds
+	move.b	savedWaterRoutine,waterRoutine.w
 	move.w	savedBtmBound,bottomBound.w
 	move.w	savedBtmBound,destBottomBound.w
 	move.w	savedCamX,cameraX.w
@@ -65,19 +66,19 @@ ObjCheckpoint_LoadData:
 	move.w	savedCamBg2Y,cameraBg2Y.w
 	move.w	savedCamBg3X,cameraBg3X.w
 	move.w	savedCamBg3Y,cameraBg3Y.w
-	cmpi.b	#6,levelZone
+	cmpi.b	#6,zone
 	bne.s	.NoMini
 	move.b	savedMiniSonic,miniSonic
 
 .NoMini:
-	cmpi.b	#2,levelZone
+	cmpi.b	#2,zone
 	bne.s	.NoWater
 	move.w	savedWaterHeight,waterHeight2.w
-	move.b	savedWaterRout,waterRoutine.w
+	move.b	savedWaterRoutine,waterRoutine.w
 	move.b	savedWaterFull,waterFullscreen.w
 
 .NoWater:
-	tst.b	resetLevelFlags
+	tst.b	spawnMode
 	bpl.s	.End
 	move.w	savedX,d0
 	subi.w	#320/2,d0
@@ -85,6 +86,5 @@ ObjCheckpoint_LoadData:
 
 .End:
 	rts
-; End of function ObjCheckpoint_LoadData
 
 ; -------------------------------------------------------------------------

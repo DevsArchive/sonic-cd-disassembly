@@ -19,7 +19,7 @@ ObjSwitch:
 
 ObjSwitch_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.b	#16,oXRadius(a0)
 	move.b	#16,oWidth(a0)
@@ -54,7 +54,7 @@ ObjSwitch_Main:
 .CheckPress:
 	cmpi.w	#$00FF,oSwitchPressPrv(a0)
 	bne.s	.CheckUnpress
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.PressedFrame
 	move.w	#FM_BF,d0
 	jsr	PlayFMSound
@@ -76,7 +76,7 @@ ObjSwitch_Main:
 
 .Draw:
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 

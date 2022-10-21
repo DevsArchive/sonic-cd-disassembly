@@ -28,7 +28,7 @@ ObjMinomusi:
 	jsr	.Index(pc,d0.w)
 	
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -47,7 +47,7 @@ ObjMinomusi:
 
 ObjMinomusi_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.b	#16,oYRadius(a0)
 	move.b	#16,oXRadius(a0)
@@ -76,7 +76,7 @@ ObjMinomusi_Init:
 	move.b	#-1,oSubtype2(a1)
 	move.w	oX(a0),oX(a1)
 	move.w	oY(a0),oY(a1)
-	move.b	oRender(a0),oRender(a1)
+	move.b	oSprFlags(a0),oSprFlags(a1)
 	move.b	oPriority(a0),oPriority(a1)
 	addq.b	#1,oPriority(a1)
 	move.w	oTile(a0),oTile(a1)
@@ -214,7 +214,7 @@ ObjMinomusi_Attack:
 	move.w	oX(a0),oX(a1)
 	move.w	oY(a0),oY(a1)
 	addq.w	#4,oY(a1)
-	move.b	oRender(a0),oRender(a1)
+	move.b	oSprFlags(a0),oSprFlags(a1)
 	move.b	oPriority(a0),oPriority(a1)
 	move.w	oTile(a0),oTile(a1)
 	move.l	oMap(a0),oMap(a1)
@@ -224,7 +224,7 @@ ObjMinomusi_Attack:
 	move.w	a0,oMinoParent(a1)
 	move.b	#$B5,oColType(a1)
 	
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.End
 	move.w	#FM_B7,d0
 	jsr	PlayFMSound

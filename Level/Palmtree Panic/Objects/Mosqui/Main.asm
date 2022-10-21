@@ -13,7 +13,7 @@ ObjMosqui:
 	jsr	ObjMosqui_Index(pc,d0.w)
 	jsr	DrawObject
 	move.w	oVar2A(a0),d0
-	jmp	CheckObjDespawn2Time
+	jmp	CheckObjDespawn2
 ; End of function ObjMosqui
 
 ; -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ ObjMosqui_Index:dc.w	ObjMosqui_Init-ObjMosqui_Index
 
 ObjMosqui_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.b	#$10,oXRadius(a0)
 	move.b	#$10,oWidth(a0)
@@ -34,7 +34,7 @@ ObjMosqui_Init:
 	move.b	#$2B,oColType(a0)
 	move.w	oX(a0),oVar2A(a0)
 	moveq	#0,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 	tst.b	oSubtype(a0)
 	bne.s	.Damaged
 	lea	MapSpr_Mosqui1(pc),a1
@@ -58,7 +58,7 @@ ObjMosqui_Init:
 ; -------------------------------------------------------------------------
 
 ObjMosqui_Main:
-	tst.w	lvlDebugMode
+	tst.w	debugMode
 	bne.s	.SkipRange
 	lea	objPlayerSlot.w,a1
 	bsr.s	ObjMosqui_CheckInRange
@@ -76,8 +76,8 @@ ObjMosqui_Main:
 	cmpi.w	#$80,d0
 	blt.s	.Animate
 	neg.l	oVar2C(a0)
-	bchg	#0,oRender(a0)
-	bchg	#0,oStatus(a0)
+	bchg	#0,oSprFlags(a0)
+	bchg	#0,oFlags(a0)
 	bra.s	.SkipRange
 
 ; -------------------------------------------------------------------------
@@ -129,7 +129,7 @@ ObjMosqui_Dive:
 	subi.w	#-8,d1
 	add.w	d1,oY(a0)
 	addq.b	#2,oRoutine(a0)
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.End
 	move.w	#$A7,d0
 	jsr	PlayFMSound
@@ -141,9 +141,9 @@ ObjMosqui_Dive:
 ; -------------------------------------------------------------------------
 
 ObjMosqui_Wait:
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bmi.s	.End
-	jmp	CheckObjDespawnTime_Despawn
+	jmp	DespawnObject
 
 ; -------------------------------------------------------------------------
 

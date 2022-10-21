@@ -62,10 +62,10 @@ EndingStLocsS1:
 ; -------------------------------------------------------------------------
 
 LevelSizeLoad_StartPos:
-	tst.b	resetLevelFlags			; Was the level reset midway?
-	beq.s	.DefaultStart			; If not, branch
+	tst.b	spawnMode			; Is the player being spawned at the beginning?
+	beq.s	.DefaultStart			; If so, branch
 
-	jsr	ObjCheckpoint_LoadData		; Load checkpoint data
+	jsr	LoadCheckpointData		; Load checkpoint data
 	moveq	#0,d0				; Get player position
 	moveq	#0,d1
 	move.w	oX(a6),d1
@@ -494,12 +494,12 @@ ScrollCamY:
 	moveq	#0,d1				; Get how far we have scrolled vertically
 	move.w	oY(a6),d0
 	sub.w	cameraY.w,d0
-	btst	#2,oStatus(a6)			; Is the player rolling?
+	btst	#2,oFlags(a6)			; Is the player rolling?
 	beq.s	.NoRoll				; If not, branch
 	subq.w	#5,d0				; Account for the different height
 
 .NoRoll:
-	btst	#1,oStatus(a6)			; Is the player in the air?
+	btst	#1,oFlags(a6)			; Is the player in the air?
 	beq.s	.OnGround			; If not, branch
 
 	addi.w	#$20,d0
@@ -673,22 +673,22 @@ DrawLevel:
 	lea	VDPCTRL,a5			; Prepare VDP ports
 	lea	VDPDATA,a6
 
-	lea	lvlScrollFlagsCopy+2,a2		; Update background
-	lea	lvlCamXBgCopy,a3
+	lea	scrollFlagsBgCopy,a2		; Update background
+	lea	camXBgCopy,a3
 	lea	levelLayout+$40.w,a4
 	move.w	#$6000,d2
 	bsr.w	DrawLevelBG1
 
-	lea	lvlScrollFlagsCopy+4,a2		; Update background 2
-	lea	lvlCamXBg2Copy,a3
+	lea	scrollFlagsBg2Copy,a2		; Update background 2
+	lea	camXBg2Copy,a3
 	bsr.w	DrawLevelBG2
 
-	lea	lvlScrollFlagsCopy+6,a2		; Update background 3
-	lea	lvlCamXBg3Copy,a3
+	lea	scrollFlagsBg3Copy,a2		; Update background 3
+	lea	camXBg3Copy,a3
 	bsr.w	DrawLevelBG3
 
-	lea	lvlScrollFlagsCopy,a2		; Update foreground
-	lea	lvlCamXCopy,a3
+	lea	scrollFlagsCopy,a2		; Update foreground
+	lea	camXCopy,a3
 	lea	levelLayout.w,a4
 	move.w	#$4000,d2
 
@@ -833,10 +833,10 @@ DrawLevelBG1:
 ; -------------------------------------------------------------------------
 
 .CameraSects:
-	dc.l	lvlCamXBgCopy			; BG1 (static)
-	dc.l	lvlCamXBgCopy			; BG1 (dynamic)
-	dc.l	lvlCamXBg2Copy			; BG2 (dynamic)
-	dc.l	lvlCamXBg3Copy			; BG3 (dynamic)
+	dc.l	camXBgCopy			; BG1 (static)
+	dc.l	camXBgCopy			; BG1 (dynamic)
+	dc.l	camXBg2Copy			; BG2 (dynamic)
+	dc.l	camXBg3Copy			; BG3 (dynamic)
 
 ; -------------------------------------------------------------------------
 

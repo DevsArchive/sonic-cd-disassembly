@@ -50,7 +50,7 @@ ObjTitleCard_Init:
 	move.b	6(a2,d2.w),oMapFrame(a1)
 	cmpi.b	#5,d1
 	bne.s	.NotActNum
-	move.b	levelAct,d3
+	move.b	act,d3
 	add.b	d3,oMapFrame(a1)
 
 .NotActNum:

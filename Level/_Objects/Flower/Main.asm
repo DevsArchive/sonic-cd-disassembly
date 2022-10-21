@@ -31,7 +31,7 @@ ObjFlower:
 ; -------------------------------------------------------------------------
 
 ObjFlower_Init:
-	ori.b	#4,oRender(a0)			; Set render flags
+	ori.b	#4,oSprFlags(a0)		; Set sprite flags
 	move.b	#1,oPriority(a0)		; Set priority
 	move.b	#0,oYRadius(a0)			; Set Y radius
 	move.w	#$A6D7,oTile(a0)		; Set base tile
@@ -43,16 +43,16 @@ ObjFlower_Init:
 	move.l	#MapSpr_Flower,oMap(a0)		; Set mappings
 
 	tst.b	oSubtype(a0)			; Should we be able to respawn?
-	bne.s	.NoRespawn			; If not, branch
+	bne.s	.NoFlags			; If not, branch
 
-	bsr.w	ObjFlower_GetRespawnAddr	; Get respawn flags
+	bsr.w	ObjFlower_GetSavedFlags		; Get saved flags
 	move.b	(a1),d0
 	move.b	#4,oRoutine(a0)			; Set routine to animate
 	move.b	#3,oAnim(a0)			; Set animation to flower animation
 	btst	#6,d0				; Have we already spawned?
 	bne.s	ObjFlower_Animate		; If so, branch
 
-.NoRespawn:
+.NoFlags:
 	move.w	#2,oAnim(a0)			; Set animation to seed animation (and have it reset)
 	move.b	#2,oRoutine(a0)			; Set routine to seed
 	move.w	#$6D7,oTile(a0)			; Set base tile to use palette line 0
@@ -70,8 +70,9 @@ ObjFlower_Seed:
 	tst.b	oSubtype(a0)			; Should we be able to respawn?
 	bne.s	.TouchDown			; If not, branch
 
-	bsr.w	ObjFlower_GetRespawnAddr	; Get flower index and increment flower count in this time zone
-	lea	flowerCount,a2
+	bsr.w	ObjFlower_GetSavedFlags		; Get saved flags
+	
+	lea	flowerCount,a2			; Increment flower count in this time zone
 	move.b	(a2,d1.w),d0
 	addq.b	#1,(a2,d1.w)
 
@@ -97,16 +98,16 @@ ObjFlower_Animate:
 	bra.w	AnimateObject
 
 ; -------------------------------------------------------------------------
-; Get a flower object's respawn table entry
+; Get a flower object's saved flags
 ; -------------------------------------------------------------------------
 ; RETURNS:
 ;	d1.w - Offset in table
-;	a1.l - Address of table entry
+;	a1.l - Pointer to entry
 ; -------------------------------------------------------------------------
 
-ObjFlower_GetRespawnAddr:
-	moveq	#0,d0				; Get base respawn table entry offset
-	move.b	oRespawn(a0),d0
+ObjFlower_GetSavedFlags:
+	moveq	#0,d0				; Get base table offset
+	move.b	oSavedFlagsID(a0),d0
 	move.w	d0,d1
 	add.w	d1,d1
 	add.w	d1,d0
@@ -116,7 +117,7 @@ ObjFlower_GetRespawnAddr:
 	bclr	#7,d1
 	add.w	d1,d0
 
-	lea	lvlObjRespawns,a1		; Get respawn table entry address
+	lea	savedObjFlags,a1		; Get saved flags
 	lea	2(a1,d0.w),a1
 	rts
 

@@ -25,7 +25,7 @@ ObjSpinSplash:
 ObjSpinSplash_Init:
 	addq.b	#2,oRoutine(a0)			; Advance routine
 
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.l	#MapSpr_TunnelWaterfall,oMap(a0)
 	move.w	#$3E4,oTile(a0)
 	tst.b	timeZone

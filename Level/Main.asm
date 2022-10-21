@@ -31,7 +31,7 @@ LevelStart:
 	clr.b	vintRoutine.w			; Reset V-INT routine ID
 	clr.b	usePlayer2			; Clear unused "use player 2" flag
 	if DEMO<>0
-		move.b	#0,lastCheckpoint	; Reset checkpoint if in a demo
+		move.b	#0,checkpoint		; Reset checkpoint if in a demo
 	endif
 	move.b	#0,paused.w			; Clear pause flag
 
@@ -39,44 +39,44 @@ LevelStart:
 	bne.s	.NoReset			; If they were loaded before, branch
 
 	clr.b	palFadeFlags			; Mark palette fading as inactive
-	clr.b	lastCheckpoint			; Reset checkpoint
+	clr.b	checkpoint			; Reset checkpoint
 	move.l	#5000,nextLifeScore		; Reset next score for 1-UP
 
-	bsr.w	ResetRespawnTable		; Clear respawn table
+	bsr.w	ResetSavedObjFlags		; Reset saved object flags
 
-	clr.b	resetLevelFlags			; Clear level reset flags
+	clr.b	spawnMode			; Spawn at beginning
 	clr.b	goodFutureFlags			; Clear good future flags
-	clr.l	levelScore			; Clear score
+	clr.l	score				; Clear score
 
-	move.b	#3,lifeCount			; Reset life count to 3
+	move.b	#3,lives			; Reset life count to 3
 	tst.b	timeAttackMode			; Are we in time attack mode?
 	beq.s	.NoReset			; If not, branch
-	move.b	#1,lifeCount			; Reset life count to 1
+	move.b	#1,lives			; Reset life count to 1
 
 .NoReset:
 	bset	#7,gameMode.w			; Mark level as initializing
 	bsr.w	ClearPLCs			; Clear PLCs
 
-	tst.b	enteredBigRing			; Have we entered a big ring before?
-	bne.s	.EnteredBigRing			; If so, branch
-	btst	#7,timeZone			; Were we time travelling before?
+	tst.b	specialStage			; Are we exiting from a special stage?
+	bne.s	.FromSpecialStage		; If so, branch
+	btst	#7,timeZone			; Were we time warping before?
 	beq.s	.FadeToBlack			; If not, branch
 
 	bset	#0,palFadeFlags			; Mark palette fading as active
 	beq.s	.SkipFade			; If it was active before, branch
 
-.EnteredBigRing:
+.FromSpecialStage:
 	bsr.w	FadeToWhite			; Fade to white
 	bclr	#0,palFadeFlags			; Mark palette fading as inactive
 
 .SkipFade:
-	clr.b	timeWarpDir.w			; Reset time travel direction
+	clr.b	timeWarpDir.w			; Reset time warp direction
 	tst.w	levelRestart			; Was the level restart flag set?
 	beq.w	.CheckNormalLoad		; If not, branch
 	move.w	#0,levelRestart			; Clear level restart flag
-	cmpi.b	#2,levelAct			; Are we in act 3?
+	cmpi.b	#2,act				; Are we in act 3?
 	bne.s	.End				; If not, branch
-	bclr	#7,timeZone			; Clear time travel flag
+	bclr	#7,timeZone			; Clear time warp flag
 
 .End:
 	rts
@@ -96,11 +96,11 @@ LevelStart:
 	bra.s	.ClearPal			; Get out of here
 
 .CheckNoLives:
-	tst.b	lifeCount			; Do we have any lives?
+	tst.b	lives				; Do we have any lives?
 	bne.s	.CheckNormalLoad		; If so, branch
 	move.b	#0,plcLoadFlags			; Mark PLCs as not loaded
-	move.b	#0,lastCheckpoint		; Clear checkpoint
-	move.b	#0,resetLevelFlags		; Clear level level flags
+	move.b	#0,checkpoint			; Reset checkpoint
+	move.b	#0,spawnMode			; Spawn at beginning
 	move.b	#0,palFadeFlags			; Mark palette fading as inactive
 
 .ClearPal:
@@ -131,7 +131,7 @@ LevelStart:
 	moveq	#0,d0				; Fill palette with black
 	btst	#0,palClearFlags		; Should we fill the palette with white?
 	bne.s	.UseWhite			; If so, branch
-	btst	#7,timeZone			; Were we time travelling before?
+	btst	#7,timeZone			; Were we time warping before?
 	beq.s	.ClearPal2			; If not, branch
 
 .UseWhite:
@@ -165,7 +165,7 @@ LevelStart:
 	moveq	#1,d0				; Load standard PLCs immediately
 	bsr.w	LoadPLCImm
 
-	clr.b	lvlLoadShieldArt		; Reset shield art load flag
+	clr.b	powerup				; Reset powerup ID
 	clr.l	flowerCount			; Clear flower count
 
 	lea	objDrawQueue.w,a1		; Clear object sprite draw queue
@@ -192,13 +192,13 @@ LevelStart:
 	move.l	d0,(a1)+
 	dbf	d1,.ClearObjects
 
-	lea	unkLvlBuffer2,a1		; Clear an unknown buffer
+	lea	unkBuffer2,a1			; Clear an unknown buffer
 	moveq	#0,d0
 	move.w	#$1000/4-1,d1
 
-.ClearunkLvlBuffer:
+.ClearUnkBuffer:
 	move.l	d0,(a1)+
-	dbf	d1,.ClearunkLvlBuffer
+	dbf	d1,.ClearUnkBuffer
 
 	lea	miscVariables.w,a1		; Clear misc. variables
 	moveq	#0,d0
@@ -235,7 +235,7 @@ LevelStart:
 	move.w	#$8ADF,vdpReg0A.w		; Set H-INT counter to 233
 	move.w	vdpReg0A.w,(a6)
 
-	move.w	#30,playerAirLeft		; Set air timer
+	move.w	#30,drownTimer			; Set drown timer
 
 	move	#$2300,sr			; Enable interrupts
 	moveq	#3,d0				; Load Sonic's palette into both palette buffers
@@ -273,7 +273,7 @@ LevelStart:
 	bne.s	.SkipTitleCard			; If it was already loaded, branch
 	move.b	#$3C,objTtlCardSlot.w		; Load the title card
 	move.b	#1,ctrlLocked.w			; Lock controls
-	clr.b	lastCamPLC			; Reset last camera PLC
+	clr.b	sectionID			; Reset section
 
 .SkipTitleCard:
 	move.w	#0,playerCtrl.w			; Clear controller data
@@ -284,36 +284,36 @@ LevelStart:
 	move.b	#0,unkLevelFlag			; Clear unknown flag
 
 	moveq	#0,d0
-	tst.b	resetLevelFlags			; Was the level reset?
-	bne.s	.SkipClear			; If so, branch
-	move.w	d0,levelRings			; Reset ring count
-	move.l	d0,levelTime			; Reset time
-	move.b	d0,lifeFlags			; Reset 1UP flags
+	tst.b	spawnMode			; Is the player being spawned at the beginning?
+	bne.s	.SkipClear			; If not, branch
+	move.w	d0,rings			; Reset ring count
+	move.l	d0,time				; Reset time
+	move.b	d0,livesFlags			; Reset 1UP flags
 
 .SkipClear:
-	move.b	d0,lvlTimeOver			; Clear time over flag
+	move.b	d0,timeOver			; Clear time over flag
 	move.b	d0,shieldFlag			; Clear shield flag
 	move.b	d0,invincibleFlag		; Clear invincible  flag
 	move.b	d0,speedShoesFlag		; Clear speed shoes flag
 	move.b	d0,timeWarpFlag			; Clear time warp flag
-	move.w	d0,lvlDebugMode			; Clear debug mode flag
+	move.w	d0,debugMode			; Clear debug mode flag
 	move.w	d0,levelRestart			; Clear level restart flag
-	move.w	d0,lvlFrameTimer		; Reset frame timer
-	move.b	d0,resetLevelFlags		; Clear level reset flags
-	move.b	#1,updateScore			; Update the score in the HUD
-	move.b	#1,updateRings			; Update the ring count in the HUD
-	move.b	#1,updateTime			; Update the time in the HUD
-	move.b	#1,updateLives			; Update the life counter in the HUD
-	move.b	#$80,updateRings		; Initialize the score in the HUD
-	move.b	#$80,updateScore		; Initialize the score in the HUD
+	move.w	d0,levelFrames			; Reset frame counter
+	move.b	d0,spawnMode			; Spawn at the beginning
+	move.b	#1,updateHUDScore		; Update the score in the HUD
+	move.b	#1,updateHUDRings		; Update the ring count in the HUD
+	move.b	#1,updateHUDTime		; Update the time in the HUD
+	move.b	#1,updateHUDLives		; Update the life counter in the HUD
+	move.b	#$80,updateHUDRings		; Initialize the score in the HUD
+	move.b	#$80,updateHUDScore		; Initialize the score in the HUD
 
 	move.w	#0,demoS1Index.w		; Clear demo data index (Sonic 1 leftover)
 	move.w	#$202F,palFadeInfo.w		; Set to fade palette lines 1-3
 
 	jsr	UpdateAnimTiles			; Update animated tiles
 
-	move.b	#1,lvlEnableDisplay		; Set to enable display on palette fade
-	bclr	#7,timeZone			; Stop time travelling
+	move.b	#1,fadeEnableDisplay		; Set to enable display on palette fade
+	bclr	#7,timeZone			; Stop time warp
 	beq.s	.ChkPalFade			; If we weren't to begin with, branch
 
 .FromWhite:
@@ -366,16 +366,16 @@ Level_MainLoop:
 		cmpi.b	#$70,d0			; Were A, B, and C pressed?
 		bne.s	Level_MainLoop		; If not, branch
 	endif
-	subq.b	#1,lifeCount			; Take away a life
+	subq.b	#1,lives			; Take away a life
 	bpl.s	.GotLives			; If we haven't run out, branch
-	clr.b	lifeCount			; Cap lives at 0
+	clr.b	lives				; Cap lives at 0
 
 .GotLives:
 	move.w	#$E,d0				; Fade out music
 	jsr	SubCPUCmd
 
-	bsr.w	ResetRespawnTable		; Clear respawn table
-	clr.b	resetLevelFlags			; Clear level reset flags
+	bsr.w	ResetSavedObjFlags		; Reset saved object flags
+	clr.b	spawnMode			; Spawn at the beginning
 	move.w	#1,levelRestart			; Restart the level
 	bra.s	.DoReset
 
@@ -384,12 +384,12 @@ Level_MainLoop:
 	beq.w	Level_MainLoop			; If not, branch
 	
 .IsDemo:
-	clr.b	lifeCount			; Set lives to 0
+	clr.b	lives				; Set lives to 0
 
 .DoReset:
 	clr.b	paused.w			; Clear pause flag
 	clr.w	demoMode			; Clear demo mode flag
-	clr.b	lastCheckpoint			; Clear checkpoint flag
+	clr.b	checkpoint			; Reset checkpoint
 	if DEMO<>0
 		move.w	#$800,demoDataIndex.w	; Stop the demo
 	endif
@@ -398,16 +398,16 @@ Level_MainLoop:
 .NotPaused:
 	bsr.w	UnpauseMusic			; Unpause music
 
-	addq.w	#1,lvlFrameTimer		; Increment frame timer
+	addq.w	#1,levelFrames			; Increment frame counter
 
-	jsr	ObjectManager			; Load level objects
+	jsr	SpawnObjects			; Spawn objects
 	jsr	RunObjects			; Run objects
 
 	cmpi.w	#$800,demoDataIndex.w		; Is the demo over?
 	beq.w	LevelStart			; If so, restart the level
 	tst.w	levelRestart			; Is the level restarting?
 	bne.w	LevelStart			; If so, restart the level
-	tst.w	lvlDebugMode			; Are we in debug mode?
+	tst.w	debugMode			; Are we in debug mode?
 	bne.s	.DoScroll			; If so, branch
 	cmpi.b	#6,objPlayerSlot+oRoutine.w	; Is the player dead?
 	bcs.s	.DoScroll			; If not, branch
@@ -426,7 +426,7 @@ Level_MainLoop:
 	bsr.w	PaletteCycle			; Handle palette cycling
 
 .SkipPalCycle:
-	jsr	LoadCamPLCIncr			; Load camera based PLCs
+	jsr	UpdateSectionArt		; Update section art
 	bsr.w	ProcessPLCs			; Process PLCs
 	bsr.w	UpdateGlobalAnims		; Update global animations
 
@@ -440,9 +440,9 @@ LoadPlayer:
 	lea	objPlayerSlot.w,a1		; Player object
 	moveq	#1,d0				; Set player object ID
 	move.b	d0,oID(a1)
-	tst.b	resetLevelFlags			; Was the level reset midway?
-	beq.s	.End				; If not, branch
-	move.w	#$78,oPlayerHurt(a1)		; If so, make the player invulnerable for a bit
+	tst.b	spawnMode			; Is the player being spawned at the beginning?
+	beq.s	.End				; If so, branch
+	move.w	#$78,oPlayerHurt(a1)		; If not, make the player invulnerable for a bit
 
 .End:
 	rts
@@ -490,7 +490,7 @@ RestoreZoneFlowers:
 
 LoadLevelCollision:
 	moveq	#0,d0				; Get level collision pointer
-	move.b	levelZone,d0
+	move.b	zone,d0
 	lsl.w	#2,d0
 	move.l	LevelColIndex(pc,d0.w),collisionPtr.w
 	rts
@@ -526,13 +526,13 @@ UpdateGlobalAnims:
 	andi.b	#3,ringAnimFrame		; Keep the frame in range
 
 .Unknown:
-	subq.b	#1,lvlUnkAnimTimer		; Decrement Sonic 1 unused animation timer
+	subq.b	#1,unkAnimTimer			; Decrement Sonic 1 unused animation timer
 	bpl.s	.RingSpill			; If it hasn't run out, branch
-	move.b	#7,lvlUnkAnimTimer		; Reset animation timer
-	addq.b	#1,lvlUnkAnimFrame		; Increment frame
-	cmpi.b	#6,lvlUnkAnimFrame		; Keep the frame in range
+	move.b	#7,unkAnimTimer			; Reset animation timer
+	addq.b	#1,unkAnimFrame			; Increment frame
+	cmpi.b	#6,unkAnimFrame			; Keep the frame in range
 	bcs.s	.RingSpill
-	move.b	#0,lvlUnkAnimFrame
+	move.b	#0,unkAnimFrame
 
 .RingSpill:
 	tst.b	ringLossAnimTimer		; Has the ring spill timer run out?
@@ -565,7 +565,7 @@ PlayLevelMusic:
 	add.b	goodFuture,d0			; Apply good future flag
 
 .NotFuture:
-	move.b	levelZone,d1			; Send music play Sub CPU command
+	move.b	zone,d1				; Send music play Sub CPU command
 	add.w	d1,d1
 	add.w	d1,d1
 	add.w	d0,d1
@@ -710,7 +710,7 @@ VInt_Finish:
 	bsr.w	RunTimeWarp			; Run time warp timer
 
 VInt_Done:
-	addq.l	#1,lvlFrameCount		; Increment frame counter
+	addq.l	#1,levelVIntCounter		; Increment frame counter
 
 	movem.l	(sp)+,d0-a6			; Restore registers
 	rte
@@ -739,7 +739,7 @@ VInt_Index:
 VInt_Lag:
 	tst.b	levelStarted			; Has the level started?
 	beq.w	VInt_Finish			; If not, branch
-	cmpi.b	#2,levelZone			; Are we in Tidal Tempest?
+	cmpi.b	#2,zone				; Are we in Tidal Tempest?
 	bne.w	VInt_Finish			; If not, branch
 
 	move.w	VDPCTRL,d0
@@ -839,9 +839,9 @@ VInt_Level:
 	jsr	StartZ80			; Start the Z80
 
 	movem.l	cameraX.w,d0-d7			; Draw level
-	movem.l	d0-d7,lvlCamXCopy
+	movem.l	d0-d7,camXCopy
 	movem.l	scrollFlags.w,d0-d1
-	movem.l	d0-d1,lvlScrollFlagsCopy
+	movem.l	d0-d1,scrollFlagsCopy
 	bsr.w	DrawLevel
 
 	bsr.w	DecompPLCSlow			; Process PLC art decompression
@@ -869,9 +869,9 @@ VInt_LevelLoad:
 	jsr	StartZ80			; Start the Z80
 
 	movem.l	cameraX.w,d0-d7			; Draw level
-	movem.l	d0-d7,lvlCamXCopy
+	movem.l	d0-d7,camXCopy
 	movem.l	scrollFlags.w,d0-d1
-	movem.l	d0-d1,lvlScrollFlagsCopy
+	movem.l	d0-d1,scrollFlagsCopy
 	bsr.w	DrawLevel
 
 	bra.w	DecompPLCFast			; Process PLC art decompression
@@ -895,9 +895,9 @@ VInt_UnkE:
 VInt_PalFade:
 	bsr.w	DoVIntUpdates			; Do V-INT updates
 
-	cmpi.b	#1,lvlEnableDisplay		; Should we enable display?
+	cmpi.b	#1,fadeEnableDisplay		; Should we enable display?
 	bne.s	.SetHIntCounter			; If not, branch
-	addq.b	#1,lvlEnableDisplay		; Set display as enabled
+	addq.b	#1,fadeEnableDisplay		; Mark display as enabled
 
 	move.w	vdpReg01.w,d0			; Enable display
 	ori.b	#$40,d0

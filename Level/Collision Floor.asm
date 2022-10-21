@@ -13,7 +13,7 @@
 ; -------------------------------------------------------------------------
 
 Player_GroundCol:
-	btst	#3,oStatus(a0)			; Are we standing on an object?
+	btst	#3,oFlags(a0)			; Are we standing on an object?
 	beq.s	.OnGround			; If not, then we are on the ground
 
 	moveq	#0,d0				; Reset angle buffers
@@ -120,8 +120,8 @@ Player_WalkFloor:
 	tst.b	oPlayerStick(a0)		; Are we sticking to a surface?
 	bne.s	.SetY				; If so, align to the floor anyways
 
-	bset	#1,oStatus(a0)			; Fall off the ground
-	bclr	#5,oStatus(a0)
+	bset	#1,oFlags(a0)			; Fall off the ground
+	bclr	#5,oFlags(a0)
 	move.b	#1,oPrevAnim(a0)
 	rts
 
@@ -293,8 +293,8 @@ Player_WalkVertR:
 	tst.b	oPlayerStick(a0)		; Are we sticking to a surface?
 	bne.s	.SetX				; If so, align to the wall anyways
 
-	bset	#1,oStatus(a0)			; Fall off the ground
-	bclr	#5,oStatus(a0)
+	bset	#1,oFlags(a0)			; Fall off the ground
+	bclr	#5,oFlags(a0)
 	move.b	#1,oPrevAnim(a0)
 	rts
 
@@ -363,8 +363,8 @@ Player_WalkCeiling:
 	tst.b	oPlayerStick(a0)		; Are we sticking to a surface?
 	bne.s	.SetY				; If so, align to the ceiling anyways
 
-	bset	#1,oStatus(a0)			; Fall off the ground
-	bclr	#5,oStatus(a0)
+	bset	#1,oFlags(a0)			; Fall off the ground
+	bclr	#5,oFlags(a0)
 	move.b	#1,oPrevAnim(a0)
 	rts
 
@@ -433,8 +433,8 @@ Player_WalkVertL:
 	tst.b	oPlayerStick(a0)		; Are we sticking to a surface?
 	bne.s	.SetX				; If so, align to the wall anyways
 
-	bset	#1,oStatus(a0)			; Fall off the ground
-	bclr	#5,oStatus(a0)
+	bset	#1,oFlags(a0)			; Fall off the ground
+	bclr	#5,oFlags(a0)
 	move.b	#1,oPrevAnim(a0)
 	rts
 
@@ -453,7 +453,7 @@ GetLevelBlock:
 	move.w	d2,d0				; Get Y position
 	lsr.w	#1,d0
 	andi.w	#$780,d0			; Limit from 0 to $EFF in most levels
-	cmpi.b	#2,levelZone			; Are we in Tidal Tempest?
+	cmpi.b	#2,zone				; Are we in Tidal Tempest?
 	bne.s	.NotTTZ				; If not, branch
 	andi.w	#$380,d0			; Limit from 0 to $6FF in Tidal Tempest
 
@@ -469,18 +469,18 @@ GetLevelBlock:
 	beq.s	.Blank				; If it's a blank chunk, branch
 	bmi.s	.LoopChunk			; If it's a loop chunk, branch
 
-	cmpi.b	#5,levelZone			; Are we in Stardust Speedway?
+	cmpi.b	#5,zone				; Are we in Stardust Speedway?
 	beq.s	.SSZ				; If so, branch
-	cmpi.b	#6,levelZone			; Are we in Metallic Madness?
+	cmpi.b	#6,zone				; Are we in Metallic Madness?
 	bne.s	.NotMMZ				; If not, branch
 
 .SSZ:
 	andi.w	#$7FFF,oTile(a0)		; Set the object's sprite to be low priority
 
 .NotMMZ:
-	cmpi.b	#4,levelZone			; Are we in Wacky Workbench?
+	cmpi.b	#4,zone				; Are we in Wacky Workbench?
 	bne.s	.NotWWZ				; If not, branch
-	bclr	#6,oRender(a0)			; Move the object onto the lower path layer
+	bclr	#6,oSprFlags(a0)		; Move the object onto the lower path layer
 
 .NotWWZ:
 	subq.b	#1,d1				; Prepare chunk data index value from X and Y position
@@ -504,14 +504,14 @@ GetLevelBlock:
 .LoopChunk:
 	andi.w	#$7F,d1				; Get chunk ID
 
-	cmpi.b	#4,levelZone			; Are we in Wacky Workbench?
+	cmpi.b	#4,zone				; Are we in Wacky Workbench?
 	bne.s	.NotWWZ2			; If not, branch
 
-	btst	#6,oRender(a0)			; Is the object on the higher path layer?
+	btst	#6,oSprFlags(a0)		; Is the object on the higher path layer?
 	bne.s	.LowPlane			; If so, branch
 	cmpi.b	#$14,d1				; Is this chunk $14?
 	bne.w	.GetBlock			; If not, branch
-	bset	#6,oRender(a0)			; Move the object onto the higher path layer
+	bset	#6,oSprFlags(a0)		; Move the object onto the higher path layer
 	andi.b	#$7F,oTile(a0)			; Set the object's sprite to be low priority
 	bra.w	.GetBlock
 
@@ -542,7 +542,7 @@ GetLevelBlock:
 ; -------------------------------------------------------------------------
 
 .NotWWZ2:
-	cmpi.b	#5,levelZone			; Are we in Stardust Speedway?
+	cmpi.b	#5,zone				; Are we in Stardust Speedway?
 	bne.w	.NotSSZ				; If not, branch
 
 	ori.w	#$8000,oTile(a0)		; Set the object's sprite to be high priority
@@ -551,7 +551,7 @@ GetLevelBlock:
 	cmpi.b	#6,d1				; Is this chunk 6?
 	beq.s	.SwapChunkIfLow			; If so, branch
 
-	tst.b	lvlDrawLowPlane			; Should things be on the high plane?
+	tst.b	layer				; Are we on the first layer?
 	beq.w	.GetBlock			; If so, branch
 	andi.w	#$7FFF,oTile(a0)		; Set the object's sprite to be low priority
 	cmpi.b	#$28,d1				; Is this chunk $28?
@@ -568,7 +568,7 @@ GetLevelBlock:
 
 .SwapChunkIfLow:
 	andi.w	#$7FFF,oTile(a0)		; Set the object's sprite to be low priority
-	btst	#6,oRender(a0)			; Is the object on the lower path layer?
+	btst	#6,oSprFlags(a0)		; Is the object on the lower path layer?
 	beq.w	.GetBlock			; If so, branch
 
 .SwapChunk:
@@ -578,13 +578,13 @@ GetLevelBlock:
 ; -------------------------------------------------------------------------
 
 .NotSSZ:
-	cmpi.b	#6,levelZone			; Are we in Metallic Madness?
+	cmpi.b	#6,zone				; Are we in Metallic Madness?
 	bne.s	.NotMMZ2			; If not, branch
 	cmpi.b	#3,oID(a0)			; Is this a player object?
 	bcc.w	.GetBlock			; If not, branch
 
 	ori.w	#$8000,oTile(a0)		; Set the object's sprite to be high priority
-	tst.b	lvlDrawLowPlane			; Should things be on the high plane?
+	tst.b	layer				; Are we on layer 1?
 	beq.s	.GetBlock			; If so, branch
 	andi.w	#$7FFF,oTile(a0)		; Set the object's sprite to be low priority
 
@@ -626,7 +626,7 @@ GetLevelBlock:
 ; -------------------------------------------------------------------------
 
 .NotMMZ2:
-	btst	#6,oRender(a0)			; Is the object on the lower path layer?
+	btst	#6,oSprFlags(a0)		; Is the object on the lower path layer?
 	beq.s	.GetBlock			; If so, branch
 
 	addq.w	#1,d1				; Swap chunks

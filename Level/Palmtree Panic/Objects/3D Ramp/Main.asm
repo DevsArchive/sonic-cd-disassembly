@@ -13,7 +13,7 @@ Obj3DPlant:
 	jsr	Obj3DPlant_Index(pc,d0.w)
 	jsr	DrawObject
 	move.w	oVar2A(a0),d0
-	bra.w	CheckObjDespawn2Time
+	bra.w	CheckObjDespawn2
 ; End of function Obj3DPlant
 
 ; -------------------------------------------------------------------------
@@ -23,7 +23,7 @@ Obj3DPlant_Index:
 ; -------------------------------------------------------------------------
 
 Obj3DPlant_Init:
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.l	#MapSpr_3DPlant,oMap(a0)
 	move.w	#$4424,oTile(a0)
 	move.b	#$18,oWidth(a0)
@@ -54,7 +54,7 @@ Obj3DPlant_Init:
 	move.w	oTile(a0),oTile(a1)
 	move.b	oWidth(a0),oWidth(a1)
 	move.b	oYRadius(a0),oYRadius(a1)
-	ori.b	#4,oRender(a1)
+	ori.b	#4,oSprFlags(a1)
 	move.w	Obj3DPlant_Offsets1(pc,d2.w),d1
 	add.w	d1,oX(a1)
 	move.w	oX(a1),oVar2C(a1)
@@ -78,7 +78,7 @@ Obj3DPlant_Init:
 	move.w	oTile(a0),oTile(a1)
 	move.b	#$C,oWidth(a1)
 	move.b	#$C,oYRadius(a1)
-	ori.b	#4,oRender(a1)
+	ori.b	#4,oSprFlags(a1)
 	move.w	Obj3DPlant_Offsets2(pc,d2.w),d1
 	add.w	d1,oX(a1)
 	addq.b	#2,d2
@@ -139,7 +139,7 @@ Obj3DPlant_Main:
 Obj3DFall:
 	move.w	Obj3DFall_Index(pc,d0.w),d0
 	jsr	Obj3DFall_Index(pc,d0.w)
-	bra.w	CheckObjDespawnTime
+	bra.w	CheckObjDespawn
 ; End of function Obj3DFall
 
 ; -------------------------------------------------------------------------
@@ -149,7 +149,7 @@ Obj3DFall_Index:dc.w	Obj3DFall_Init-Obj3DFall_Index
 
 Obj3DFall_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 ; End of function Obj3DFall_Init
 
 ; -------------------------------------------------------------------------
@@ -184,7 +184,7 @@ Obj3DFall_Main:
 	move.b	#$E,oYRadius(a0)
 	move.b	#7,oXRadius(a0)
 	addq.w	#5,oY(a0)
-	bset	#2,oStatus(a6)
+	bset	#2,oFlags(a6)
 
 .End:
 	rts
@@ -202,7 +202,7 @@ Obj3DRamp:
 	jsr	Obj3DRamp_Index(pc,d0.w)
 	jsr	DrawObject
 	move.w	oVar2A(a0),d0
-	bra.w	CheckObjDespawn2Time
+	bra.w	CheckObjDespawn2
 ; End of function Obj3DRamp
 
 ; -------------------------------------------------------------------------
@@ -212,7 +212,7 @@ Obj3DRamp_Index:dc.w	Obj3DRamp_Init-Obj3DRamp_Index
 
 Obj3DRamp_Init:
 	addq.b	#2,oRoutine(a0)
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.l	#MapSpr_3DRamp,oMap(a0)
 	move.w	#$441,oTile(a0)
@@ -221,8 +221,8 @@ Obj3DRamp_Init:
 	move.w	oX(a0),oVar2A(a0)
 	tst.b	oSubtype(a0)
 	beq.s	Obj3DRamp_Main
-	bset	#0,oRender(a0)
-	bset	#0,oStatus(a0)
+	bset	#0,oSprFlags(a0)
+	bset	#0,oFlags(a0)
 ; End of function Obj3DRamp_Init
 
 ; -------------------------------------------------------------------------
@@ -298,7 +298,7 @@ Obj3DRamp_Main:
 ; -------------------------------------------------------------------------
 
 .SkipTimer:
-	btst	#1,oStatus(a6)
+	btst	#1,oFlags(a6)
 	bne.s	.End
 
 .ChkTouch:

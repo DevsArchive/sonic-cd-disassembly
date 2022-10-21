@@ -26,7 +26,7 @@ ObjSnakeMain:
 	lea	objPlayerSlot.w,a1
 	jsr	SolidObject
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ ObjSnakeMain:
 
 ObjSnakeMain_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.b	#16,oXRadius(a0)
 	move.b	#16,oWidth(a0)

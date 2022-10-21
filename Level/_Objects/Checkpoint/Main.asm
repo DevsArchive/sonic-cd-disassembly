@@ -9,11 +9,11 @@
 ; Save data at a checkpoint
 ; -------------------------------------------------------------------------
 
-ObjCheckpoint_SaveData:				; Save some values
-	move.b	resetLevelFlags,savedResetLvlFlags
+ObjCheckpoint_SaveData:
+	move.b	spawnMode,savedSpawnMode	; Save some values
 	move.w	objPlayerSlot+oX.w,savedX
 	move.w	objPlayerSlot+oY.w,savedY
-	move.b	waterRoutine.w,savedWaterRout
+	move.b	waterRoutine.w,savedWaterRoutine
 	move.w	bottomBound.w,savedBtmBound
 	move.w	cameraX.w,savedCamX
 	move.w	cameraY.w,savedCamY
@@ -24,13 +24,13 @@ ObjCheckpoint_SaveData:				; Save some values
 	move.w	cameraBg3X.w,savedCamBg3X
 	move.w	cameraBg3Y.w,savedCamBg3Y
 	move.w	waterHeight2.w,savedWaterHeight
-	move.b	waterRoutine.w,savedWaterRout
+	move.b	waterRoutine.w,savedWaterRoutine
 	move.b	waterFullscreen.w,savedWaterFull
 
-	move.l	levelTime,d0			; Move the level timer to 5:00 if we are past that
-	cmpi.l	#$50000,d0
+	move.l	time,d0				; Move the time to 5:00 if we are past that
+	cmpi.l	#(5<<16)|(0<<8)|0,d0
 	bcs.s	.StoreTime
-	move.l	#$50000,d0
+	move.l	#(5<<16)|(0<<8)|0,d0
 
 .StoreTime:
 	move.l	d0,savedTime
@@ -57,7 +57,7 @@ ObjCheckpoint:
 	jsr	.Index(pc,d0.w)
 
 	jsr	DrawObject			; Draw sprite
-	jmp	CheckObjDespawnTime		; Check if we should despawn
+	jmp	CheckObjDespawn			; Check if we should despawn
 
 ; -------------------------------------------------------------------------
 
@@ -76,12 +76,12 @@ ObjCheckpoint_Init:
 
 	move.l	#MapSpr_Checkpoint,oMap(a0)	; Set mappings
 	move.w	#$6CB,oTile(a0)			; Set base tile
-	move.b	#4,oRender(a0)			; Set render flags
+	move.b	#4,oSprFlags(a0)		; Set sprite flags
 	move.b	#8,oWidth(a0)			; Set width
 	move.b	#$18,oYRadius(a0)		; Set Y radius
 	move.b	#4,oPriority(a0)		; Set priority
 
-	move.b	lastCheckpoint,d0		; Has a later checkpoint already been activated?
+	move.b	checkpoint,d0			; Has a later checkpoint been activated?
 	cmp.b	oSubtype(a0),d0
 	bcs.s	.Unactivated			; If not, branch
 
@@ -104,7 +104,7 @@ ObjCheckpoint_Init:
 .Unactivated2:
 	move.l	#MapSpr_Checkpoint,oMap(a1)	; Set ball mappings
 	move.w	#$6CB,oTile(a1)			; Set ball base tile
-	move.b	#4,oRender(a1)			; Set ball render flags
+	move.b	#4,oSprFlags(a1)		; Set ball sprite flags
 	move.b	#8,oWidth(a1)			; Set ball width
 	move.b	#8,oYRadius(a1)			; Set ball Y radius
 	move.b	#3,oPriority(a1)		; Set ball priority
@@ -135,9 +135,9 @@ ObjCheckpoint_Main:
 
 	clr.b	oColType(a0)			; Disable collision
 	move.b	#1,oChkPntActive(a0)		; Mark as activated
-	move.b	oSubtype(a0),lastCheckpoint	; Set current checkpoint ID to ours
+	move.b	oSubtype(a0),checkpoint		; Set checkpoint ID
 
-	move.b	#1,resetLevelFlags		; Mark checkpoint as active in the level
+	move.b	#1,spawnMode			; Spawn at checkpoint
 	bsr.w	ObjCheckpoint_SaveData		; Save level data at this point
 
 	move.w	#$AE,d0				; Play checkpoint sound

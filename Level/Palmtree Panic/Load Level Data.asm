@@ -35,10 +35,9 @@ LoadLevelData:
 	movea.l	(sp)+,a2			; Skip over to PLC ID
 	addq.w	#4,a2
 
-	tst.b	resetLevelFlags			; Was the level reset midway?
-	beq.s	.ChkStdPLC			; If not, branch
-
-	jmp	LoadCamPLCFull			; Reload camera based PLCs
+	tst.b	spawnMode			; Is the player being spawned at the beginning?
+	beq.s	.ChkStdPLC			; If so, branch
+	jmp	LoadSectionArt			; If not, load section art
 
 .ChkStdPLC:
 	btst	#1,plcLoadFlags			; Was the title card marked as loaded?

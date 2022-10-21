@@ -20,7 +20,7 @@ ObjPoints_Index:dc.w	ObjPoints_Init-ObjPoints_Index
 
 ObjPoints_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.w	#$6C6,oTile(a0)
 	move.l	#MapSpr_Points,oMap(a0)
 	move.b	oSubtype(a0),oMapFrame(a0)
@@ -96,7 +96,7 @@ ObjHUD_Main:
 	bne.s	.Display
 	tst.b	oSubtype2(a0)
 	beq.s	.ChkDebug
-	tst.w	levelRings
+	tst.w	rings
 	beq.s	.ChkFlashRings
 	bclr	#5,oTile(a0)
 	bra.s	.Display
@@ -104,7 +104,7 @@ ObjHUD_Main:
 ; -------------------------------------------------------------------------
 
 .ChkFlashRings:
-	move.b	lvlFrameCount+3,d0
+	move.b	levelVIntCounter+3,d0
 	andi.b	#$F,d0
 	bne.s	.Display
 	eori.b	#$20,oTile(a0)
@@ -129,8 +129,8 @@ MapSpr_HUD:
 ; -------------------------------------------------------------------------
 
 AddPoints:
-	move.b	#1,updateScore
-	lea	levelScore,a3
+	move.b	#1,updateHUDScore
+	lea	score,a3
 	add.l	d0,(a3)
 	move.l	#999999,d1
 	cmp.l	(a3),d1
@@ -142,8 +142,8 @@ AddPoints:
 	cmp.l	nextLifeScore,d0
 	bcs.s	.End
 	addi.l	#5000,nextLifeScore
-	addq.b	#1,lifeCount
-	addq.b	#1,updateLives
+	addq.b	#1,lives
+	addq.b	#1,updateHUDLives
 	move.w	#$7A,d0
 	jmp	SubCPUCmd
 
@@ -162,7 +162,7 @@ UpdateHUD:
 	bsr.w	HudDb_XY
 	move.l	#$73600002,d0
 	moveq	#0,d1
-	move.b	lvlObjRespawns,d1
+	move.b	savedObjFlags,d1
 	move.w	objPlayerSlot+oY.w,d2
 	lsr.w	#1,d2
 	andi.w	#$380,d2
@@ -173,7 +173,7 @@ UpdateHUD:
 	moveq	#0,d1
 	move.b	(a1,d2.w),d1
 	andi.w	#$7F,d1
-	move.w	lvlDebugBlock,d1
+	move.w	debugBlock,d1
 	andi.w	#$7FF,d1
 	lea	Hud_100,a2
 	moveq	#2,d6
@@ -183,32 +183,32 @@ UpdateHUD:
 ; -------------------------------------------------------------------------
 
 .NormalHUD:
-	tst.b	updateScore
+	tst.b	updateHUDScore
 	beq.s	.ChkRings
 	bpl.s	.UpdateScore
 	bsr.w	Hud_Base
 
 .UpdateScore:
-	clr.b	updateScore
+	clr.b	updateHUDScore
 	move.l	#$70600002,d0
-	move.l	levelScore,d1
+	move.l	score,d1
 	bsr.w	Hud_Score
 
 .ChkRings:
-	tst.b	updateRings
+	tst.b	updateHUDRings
 	beq.s	.ChkTime
 	bpl.s	.UpdateRings
 	bsr.w	Hud_InitRings
 
 .UpdateRings:
-	clr.b	updateRings
+	clr.b	updateHUDRings
 	move.l	#$73600002,d0
 	moveq	#0,d1
-	move.w	levelRings,d1
+	move.w	rings,d1
 	cmpi.w	#1000,d1
 	bcs.s	.CappedRings
 	move.w	#999,d1
-	move.w	d1,levelRings
+	move.w	d1,rings
 
 .CappedRings:
 	bsr.w	Hud_Rings
@@ -216,12 +216,12 @@ UpdateHUD:
 .ChkTime:
 	tst.w	debugCheat
 	bne.w	.ChkLives
-	tst.b	updateTime
+	tst.b	updateHUDTime
 	beq.w	.ChkLives
 	tst.w	paused.w
 	bne.w	.ChkLives
-	lea	levelTime,a1
-	cmpi.l	#$93B3B,(a1)+
+	lea	time,a1
+	cmpi.l	#(9<<16)|(59<<8)|59,(a1)+
 	beq.w	SetTimeOver
 	tst.b	ctrlLocked.w
 	bne.s	.UpdateTimer
@@ -241,21 +241,21 @@ UpdateHUD:
 .UpdateTimer:
 	move.l	#$72200002,d0
 	moveq	#0,d1
-	move.b	levelTime+1,d1
+	move.b	timeMinutes,d1
 	bsr.w	Hud_Mins
 	move.l	#$72600002,d0
 	moveq	#0,d1
-	move.b	levelTime+2,d1
+	move.b	timeSeconds,d1
 	bsr.w	Hud_SecsCentisecs
 	move.l	#$72E00002,d0
 	moveq	#0,d1
-	move.b	levelTime+3,d1
+	move.b	timeFrames,d1
 	mulu.w	#100,d1
 	divu.w	#60,d1
 	swap	d1
 	move.w	#0,d1
 	swap	d1
-	cmpi.l	#$93B3B,levelTime
+	cmpi.l	#(9<<16)|(59<<8)|59,time
 	bne.s	.UpdateCentisecs
 	move.w	#99,d1
 
@@ -263,17 +263,17 @@ UpdateHUD:
 	bsr.w	Hud_SecsCentisecs
 
 .ChkLives:
-	tst.b	updateLives
+	tst.b	updateHUDLives
 	beq.s	.ChkBonus
-	clr.b	updateLives
+	clr.b	updateHUDLives
 	bsr.w	Hud_Lives
 
 .ChkBonus:
-	tst.b	updateResultsBonus.w
+	tst.b	updateHUDBonus.w
 	beq.s	.End
-	clr.b	updateResultsBonus.w
+	clr.b	updateHUDBonus.w
 	move.l	#$47800002,d0
-	cmpi.w	#$502,levelZone
+	cmpi.w	#$502,zoneAct
 	bne.s	.GotVRAMLoc
 	move.l	#$6D400001,d0
 
@@ -282,7 +282,7 @@ UpdateHUD:
 	move.w	bonusCount1.w,d1
 	bsr.w	Hud_Bonus
 	move.l	#$48C00002,d0
-	cmpi.w	#$502,levelZone
+	cmpi.w	#$502,zoneAct
 	bne.s	.NotSSZ3
 	move.l	#$6E800001,d0
 
@@ -299,12 +299,12 @@ UpdateHUD:
 SetTimeOver:
 	btst	#7,timeZone
 	bne.s	.End2
-	clr.b	updateTime
-	move.l	#0,levelTime
+	clr.b	updateHUDTime
+	move.l	#0,time
 	lea	objPlayerSlot.w,a0
 	movea.l	a0,a2
 	bsr.w	KillPlayer
-	move.b	#1,lvlTimeOver
+	move.b	#1,timeOver
 
 .End2:
 	rts
@@ -573,7 +573,7 @@ Hud_Hex:
 Hud_Lives:
 	move.l	#$74A00002,d0
 	moveq	#0,d1
-	move.b	lifeCount,d1
+	move.b	lives,d1
 	cmpi.b	#9,d1
 	bcs.s	.Max9Lives
 	moveq	#9,d1

@@ -26,7 +26,7 @@ ObjPohBee:
 	lea	Ani_PohBee(pc),a1
 	jsr	AnimateObject
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -46,7 +46,7 @@ ObjPohBee:
 
 ObjPohBee_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.b	#24,oXRadius(a0)
 	move.b	#24,oWidth(a0)
@@ -121,15 +121,15 @@ ObjPohBee_CheckPlayer:
 	subi.w	#240,d0
 	bcc.s	.NotFound
 
-	btst	#0,oRender(a0)
+	btst	#0,oSprFlags(a0)
 	sne	d2
 	eor.b	d1,d2
 	beq.s	.FoundPlayer
 
 	neg.l	oPohXVel(a0)
 	neg.w	oPohShootX(a0)
-	bchg	#0,oRender(a0)
-	bchg	#0,oStatus(a0)
+	bchg	#0,oSprFlags(a0)
+	bchg	#0,oFlags(a0)
 
 .FoundPlayer:
 	moveq	#-1,d0
@@ -155,8 +155,8 @@ ObjPohBee_WaitFlip:
 
 	neg.l	oPohXVel(a0)
 	neg.w	oPohShootX(a0)
-	bchg	#0,oRender(a0)
-	bchg	#0,oStatus(a0)
+	bchg	#0,oSprFlags(a0)
+	bchg	#0,oFlags(a0)
 
 .End:
 	rts
@@ -210,7 +210,7 @@ ObjPohBee_Shoot:
 	bne.w	.End
 	move.b	oID(a0),oID(a1)
 	move.b	#-1,oSubtype(a1)
-	move.b	oRender(a0),oRender(a1)
+	move.b	oSprFlags(a0),oSprFlags(a1)
 	move.w	oTile(a0),oTile(a1)
 	move.l	#MapSpr_PohBeeMissile,oMap(a1)
 	move.b	#1,oPriority(a1)
@@ -225,7 +225,7 @@ ObjPohBee_Shoot:
 	move.w	oX(a0),oX(a1)
 	move.w	#7,d0
 	move.l	#$20000,d1
-	btst	#0,oRender(a0)
+	btst	#0,oSprFlags(a0)
 	bne.s	.SetX
 	neg.w	d0
 	neg.l	d1
@@ -234,7 +234,7 @@ ObjPohBee_Shoot:
 	add.w	d0,oX(a1)
 	move.l	d1,oPohMissXVel(a1)
 
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.End
 	move.w	#FM_A0,d0
 	jsr	PlayFMSound
@@ -293,7 +293,7 @@ ObjPohBeeMissile:
 	jsr	.Index(pc,d0.w)
 
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -340,7 +340,7 @@ ObjPohBeeMissile_Move:
 ; -------------------------------------------------------------------------
 
 ObjPohBeeMissile_Move2:
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bmi.s	.OnScreen
 	jmp	DeleteObject
 

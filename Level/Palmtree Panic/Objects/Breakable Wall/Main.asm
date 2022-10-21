@@ -21,7 +21,7 @@ ObjBreakableWall_Index:
 
 ObjBreakableWall_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.b	#$10,oXRadius(a0)
 	move.b	#$10,oWidth(a0)
@@ -50,7 +50,7 @@ ObjBreakableWall_Main:
 	lea	objPlayerSlot.w,a1
 	jsr	SolidObject
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -79,7 +79,7 @@ ObjBreakableWall_Main:
 	move.b	oRoutine(a0),oRoutine(a1)
 	move.w	oX(a0),oX(a1)
 	move.w	oY(a0),oY(a1)
-	move.b	oRender(a0),oRender(a1)
+	move.b	oSprFlags(a0),oSprFlags(a1)
 	move.b	oPriority(a0),oPriority(a1)
 	move.l	oMap(a0),oMap(a1)
 	move.w	oTile(a0),oTile(a1)

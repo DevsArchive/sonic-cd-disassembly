@@ -26,7 +26,7 @@ ObjFlyingAnimal_Index:
 
 ObjFlyingAnimal_Init:
 	addq.b	#2,oRoutine(a0)
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.l	#$8080108,oYRadius(a0)
 	move.l	#MapSpr_FlyingAnimal,oMap(a0)
 	move.w	oX(a0),oVar2A(a0)
@@ -71,7 +71,7 @@ ObjFlyingAnimal_Flying:
 	jsr	AnimateObject
 	jsr	DrawObject
 	move.w	oVar2A(a0),d0
-	jmp	CheckObjDespawn2Time
+	jmp	CheckObjDespawn2
 ; End of function ObjFlyingAnimal_Flying
 
 ; -------------------------------------------------------------------------
@@ -131,7 +131,7 @@ ObjGroundAnimal_Index:
 
 ObjGroundAnimal_Init:
 	addq.b	#2,oRoutine(a0)
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.l	#$8080408,oYRadius(a0)
 	move.l	#MapSpr_GroundAnimal,oMap(a0)
 	bsr.w	ObjAnimal_SetBaseTile
@@ -168,7 +168,7 @@ ObjGroundAnimal_Main:
 
 ObjGroundAnimal_Draw:
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjGroundAnimal_Main
 
 ; -------------------------------------------------------------------------
@@ -202,8 +202,8 @@ ObjAnimal_Destroy:
 ; -------------------------------------------------------------------------
 
 ObjAnimal_XFlip:
-	bchg	#0,oRender(a0)
-	bchg	#0,oStatus(a0)
+	bchg	#0,oSprFlags(a0)
+	bchg	#0,oFlags(a0)
 	rts
 ; End of function ObjAnimal_XFlip
 
@@ -212,7 +212,7 @@ ObjAnimal_XFlip:
 ObjAnimal_SetBaseTile:
 	lea	ObjAnimal_BaseTileList(pc),a1
 	moveq	#0,d0
-	move.b	levelAct,d0
+	move.b	act,d0
 	asl.w	#2,d0
 	add.b	timeZone,d0
 	add.w	d0,d0

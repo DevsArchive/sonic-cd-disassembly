@@ -6,7 +6,7 @@
 ; -------------------------------------------------------------------------
 
 ObjSpringBoard_Platform:
-	tst.b	lvlDebugMode
+	tst.b	debugMode
 	bne.s	.NoTouch
 	cmpi.b	#6,oRoutine(a1)
 	bcc.s	.NoTouch
@@ -17,7 +17,7 @@ ObjSpringBoard_Platform:
 ; -------------------------------------------------------------------------
 
 .NoTouch:
-	bclr	#3,oStatus(a0)
+	bclr	#3,oFlags(a0)
 	moveq	#0,d1
 	rts
 
@@ -70,14 +70,14 @@ ObjSpringBoard_Platform:
 	add.w	d3,d5
 	cmp.w	d5,d4
 	bpl.s	.ClearRide
-	bset	#3,oStatus(a0)
+	bset	#3,oFlags(a0)
 	moveq	#$FFFFFFFF,d1
 	rts
 
 ; -------------------------------------------------------------------------
 
 .ClearRide:
-	bclr	#3,oStatus(a0)
+	bclr	#3,oFlags(a0)
 	moveq	#0,d1
 	rts
 ; End of function ObjSpringBoard_Platform
@@ -99,7 +99,7 @@ ObjSpringBoard:
 	move.b	oRoutine(a0),d0
 	move.w	ObjSpringBoard_Index(pc,d0.w),d0
 	jsr	ObjSpringBoard_Index(pc,d0.w)
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjSpringBoard
 
 ; -------------------------------------------------------------------------
@@ -114,25 +114,25 @@ ObjSpringBoard_Index:dc.w	ObjSpringBoard_Init-ObjSpringBoard_Index
 
 ObjSpringBoard_Init:
 	move.l	#MapSpr_SpringBoard,oMap(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.b	#$10,oWidth(a0)
 	move.b	#$18,oXRadius(a0)
 	move.b	#4,oYRadius(a0)
 	moveq	#7,d0
-	jsr	LevelObj_SetBaseTile(pc)
+	jsr	SetObjectTileID(pc)
 	move.b	#3,d0
 	move.b	#2,d1
 	tst.b	oSubtype(a0)
 	bne.s	.Flip
-	btst	#0,oRender(a0)
+	btst	#0,oSprFlags(a0)
 	beq.s	.NoFlip
 
 .Flip:
 	move.b	#4,d0
 	move.b	#4,d1
-	bclr	#0,oRender(a0)
-	bclr	#0,oStatus(a0)
+	bclr	#0,oSprFlags(a0)
+	bclr	#0,oFlags(a0)
 
 .NoFlip:
 	move.b	d0,oAnim(a0)
@@ -181,7 +181,7 @@ ObjSpringBoard_UnkFlip:
 	tst.b	d1
 	bne.w	.Touching
 	move.b	#4,oRoutine(a0)
-	btst	#1,oStatus(a1)
+	btst	#1,oFlags(a1)
 	beq.s	.ChkBounce
 	move.b	#$C,oRoutine(a0)
 
@@ -222,28 +222,28 @@ ObjSpringBoard_BounceFlip:
 	neg.w	d0
 	move.w	d0,oYVel(a1)
 	move.b	#$40,oVar2A(a0)
-	bset	#1,oStatus(a1)
+	bset	#1,oFlags(a1)
 	beq.s	.ClearJump
 	clr.b	oPlayerJump(a1)
 
 .ClearJump:
-	bclr	#5,oStatus(a1)
+	bclr	#5,oFlags(a1)
 	clr.b	oPlayerStick(a1)
 	move.b	#$13,oYRadius(a1)
 	move.b	#9,oXRadius(a1)
-	btst	#2,oStatus(a1)
+	btst	#2,oFlags(a1)
 	bne.s	.RollJump
 	move.b	#$E,oYRadius(a1)
 	move.b	#7,oXRadius(a1)
 	addq.w	#5,oY(a1)
-	bset	#2,oStatus(a1)
+	bset	#2,oFlags(a1)
 	move.b	#2,oAnim(a1)
 	bra.s	.NoTouch
 
 ; -------------------------------------------------------------------------
 
 .RollJump:
-	bset	#4,oStatus(a1)
+	bset	#4,oFlags(a1)
 
 .NoTouch:
 	move.b	oVar2A(a0),d0
@@ -288,7 +288,7 @@ ObjSpringBoard_UnkNormal:
 	tst.b	d1
 	bne.w	.NoTouch
 	move.b	#2,oRoutine(a0)
-	btst	#1,oStatus(a1)
+	btst	#1,oFlags(a1)
 	beq.s	.ChkBounce
 	move.b	#$A,oRoutine(a0)
 
@@ -325,28 +325,28 @@ ObjSpringBoard_BounceNormal:
 	neg.w	d0
 	move.w	d0,oYVel(a1)
 	move.b	#$40,oVar2A(a0)
-	bset	#1,oStatus(a1)
+	bset	#1,oFlags(a1)
 	beq.s	.ClearJump
 	clr.b	oPlayerJump(a1)
 
 .ClearJump:
-	bclr	#5,oStatus(a1)
+	bclr	#5,oFlags(a1)
 	clr.b	oPlayerStick(a1)
 	move.b	#$13,oYRadius(a1)
 	move.b	#9,oXRadius(a1)
-	btst	#2,oStatus(a1)
+	btst	#2,oFlags(a1)
 	bne.s	.RollJump
 	move.b	#$E,oYRadius(a1)
 	move.b	#7,oXRadius(a1)
 	addq.w	#5,oY(a1)
-	bset	#2,oStatus(a1)
+	bset	#2,oFlags(a1)
 	move.b	#2,oAnim(a1)
 	bra.s	.Touching
 
 ; -------------------------------------------------------------------------
 
 .RollJump:
-	bset	#4,oStatus(a1)
+	bset	#4,oFlags(a1)
 
 .Touching:
 	move.b	oVar2A(a0),d0

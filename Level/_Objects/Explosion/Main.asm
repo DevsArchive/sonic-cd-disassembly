@@ -57,7 +57,7 @@ ObjExplosion:
 ObjExplosion_Init:
 	addq.b	#2,oRoutine(a0)			; Advance routine
 
-	ori.b	#4,oRender(a0)			; Set render flags
+	ori.b	#4,oSprFlags(a0)		; Set sprite flags
 	move.b	#1,oPriority(a0)		; Set priority
 	move.w	#$8680,oTile(a0)		; Set base tile
 	tst.b	oExplodeLoPrio(a0)		; Should our sprite be low priority?

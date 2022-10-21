@@ -13,7 +13,7 @@ ObjTagaTaga:
 	jsr	ObjTagaTaga_Index(pc,d0.w)
 	jsr	DrawObject
 	move.w	oVar2A(a0),d0
-	jmp	CheckObjDespawn2Time
+	jmp	CheckObjDespawn2
 ; End of function ObjTagaTaga
 
 ; -------------------------------------------------------------------------
@@ -26,7 +26,7 @@ ObjTagaTaga_Index:dc.w	ObTagaTaga_Init-ObjTagaTaga_Index
 
 ObTagaTaga_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.b	#$10,oXRadius(a0)
 	move.b	#$10,oWidth(a0)
@@ -34,7 +34,7 @@ ObTagaTaga_Init:
 	move.w	oX(a0),oVar2A(a0)
 	move.w	oY(a0),oVar2C(a0)
 	moveq	#3,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 	tst.b	oSubtype(a0)
 	bne.s	.Damaged
 	lea	MapSpr_TagaTaga1(pc),a1
@@ -82,7 +82,7 @@ ObjTagaTaga_Jump:
 	move.b	#$2E,oColType(a0)
 	move.l	oVar2C(a0),oY(a0)
 	move.l	oVar30(a0),oVar34(a0)
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	ObjTagaTaga_Main
 	move.w	#$A2,d0
 	jsr	PlayFMSound
@@ -99,7 +99,7 @@ ObjTagaTaga_Main:
 	cmp.w	oVar2C(a0),d0
 	ble.s	ObjTagaTaga_DoAnim
 	move.b	#2,oRoutine(a0)
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	ObjTagaTaga_DoAnim
 	move.w	#$A2,d0
 	jsr	PlayFMSound

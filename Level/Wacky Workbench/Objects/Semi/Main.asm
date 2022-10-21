@@ -24,7 +24,7 @@ ObjSemi:
 	jsr	.Index(pc,d0.w)
 
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -41,7 +41,7 @@ ObjSemi:
 
 ObjSemi_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.b	#16,oYRadius(a0)
 	move.b	#19,oXRadius(a0)
@@ -173,7 +173,7 @@ ObjSemi_Attack:
 	move.l	oY(a0),oY(a1)
 	addi.w	#10,oY(a1)
 	move.b	#-1,oSubtype2(a1)
-	move.b	oRender(a0),oRender(a1)
+	move.b	oSprFlags(a0),oSprFlags(a1)
 	move.b	oPriority(a0),oPriority(a1)
 	addq.b	#1,oPriority(a1)
 	
@@ -217,7 +217,7 @@ ObjSemiBomb:
 	jsr	.Index(pc,d0.w)
 
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 	
 ; -------------------------------------------------------------------------
 
@@ -285,7 +285,7 @@ ObjSemiBomb_Explode:
 	move.b	#$18,oID(a0)
 	move.b	#0,oRoutine(a0)
 	move.b	#1,oExplodeBadnik(a0)
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.End
 	move.w	#FM_9E,d0
 	jsr	PlayFMSound

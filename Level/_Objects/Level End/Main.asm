@@ -40,7 +40,7 @@ ObjCapsule_Index:dc.w	ObjCapsule_Init-ObjCapsule_Index
 ; -------------------------------------------------------------------------
 
 ObjCapsule_Init:
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	addq.b	#2,oRoutine(a0)
 	move.b	#4,oPriority(a0)
 	move.l	#MapSpr_FlowerCapsule,4(a0)
@@ -58,7 +58,7 @@ ObjCapsule_Main:
 	lea	objPlayerSlot.w,a6
 	bsr.w	ObjCapsule_CheckCollision
 	beq.s	.End
-	clr.b	updateTime
+	clr.b	updateHUDTime
 	move.b	#2,oMapFrame(a0)
 	move.b	#$78,oVar2A(a0)
 	addq.b	#2,oRoutine(a0)
@@ -154,7 +154,7 @@ ObjCapsule_SpawnSeeds:
 	jsr	FindObjSlot
 	bne.s	.End
 	move.b	#$15,oID(a1)
-	ori.b	#4,oRender(a1)
+	ori.b	#4,oSprFlags(a1)
 	move.w	oX(a0),oX(a1)
 	move.w	oY(a0),oY(a1)
 	move.b	#$A,oRoutine(a1)
@@ -202,7 +202,7 @@ ObjCapsule_FlowerSeeds:
 ; -------------------------------------------------------------------------
 
 ObjCapsule_CheckCollision:
-	btst	#2,oStatus(a6)
+	btst	#2,oFlags(a6)
 	beq.s	.NoCollide
 	move.b	oXRadius(a6),d1
 	ext.w	d1
@@ -251,7 +251,7 @@ ObjBigRingFlash_Index:dc.w	ObjBigRingFlash_Init-ObjBigRingFlash_Index
 ; -------------------------------------------------------------------------
 
 ObjBigRingFlash_Init:
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	addq.b	#2,oRoutine(a0)
 	move.w	#$3EF,oTile(a0)
 	move.l	#MapSpr_BigRingFlash,oMap(a0)
@@ -278,10 +278,10 @@ ObjBigRing:
 
 	tst.b	oSubtype(a0)
 	bne.s	ObjBigRingFlash
-	cmpi.w	#50,levelRings
+	cmpi.w	#50,rings
 	bcc.s	.Proceed
 	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
-		jmp	CheckObjDespawnTime
+		jmp	CheckObjDespawn
 	else
 		jmp	DeleteObject
 	endif
@@ -325,7 +325,7 @@ ObjBigRing_Init:
 
 .Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.w	#$2488,oTile(a0)
 	move.l	#MapSpr_BigRing,oMap(a0)
 	move.b	#$20,oXRadius(a0)
@@ -339,7 +339,7 @@ ObjBigRing_Main:
 	lea	objPlayerSlot.w,a1
 	bsr.w	ObjBigRing_CheckCollision
 	beq.s	ObjBigRing_Animate
-	move.b	#1,enteredBigRing
+	move.b	#1,specialStage
 	addq.b	#2,oRoutine(a0)
 	move.w	cameraX.w,d0
 	addi.w	#$150,d0
@@ -407,12 +407,12 @@ ObjGoalPost:
 	move.b	oRoutine(a0),d0
 	move.w	ObjGoalPost_Index(pc,d0.w),d0
 	jsr	ObjGoalPost_Index(pc,d0.w)
-	cmpi.b	#2,levelAct
+	cmpi.b	#2,act
 	beq.s	.MarkGone
 	jsr	DrawObject
 
 .MarkGone:
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjGoalPost
 
 ; -------------------------------------------------------------------------
@@ -422,7 +422,7 @@ ObjGoalPost_Index:dc.w	ObjGoalPost_Init-ObjGoalPost_Index
 ; -------------------------------------------------------------------------
 
 ObjGoalPost_Init:
-	cmpi.w	#$201,levelZone
+	cmpi.w	#$201,zoneAct
 	bne.s	.Init
 	cmpi.b	#1,timeZone
 	bne.s	.Init
@@ -443,7 +443,7 @@ ObjGoalPost_Init:
 
 .Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#4,oPriority(a0)
 	move.l	#MapSpr_GoalSignpost,oMap(a0)
 	move.b	#$10,oXRadius(a0)
@@ -490,7 +490,7 @@ ObjGoalPost_Null:
 
 ObjGoalPost_SetBaseTile:
 	moveq	#0,d0
-	move.w	level,d0
+	move.w	zoneAct,d0
 	lsl.b	#7,d0
 	lsr.w	#4,d0
 	move.b	timeZone,d1
@@ -502,7 +502,7 @@ ObjGoalPost_SetBaseTile:
 	add.b	d1,d1
 	add.b	d1,d0
 	move.w	ObjGoalPost_BaseTileList(pc,d0.w),oTile(a0)
-	cmpi.b	#3,levelZone
+	cmpi.b	#3,zone
 	beq.s	.End
 	ori.w	#$8000,oTile(a0)
 
@@ -539,13 +539,13 @@ ObjSignpost_Index:dc.w	ObjSignpost_Init-ObjSignpost_Index
 
 ObjSignpost_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#$18,oXRadius(a0)
 	move.b	#$18,oWidth(a0)
 	move.b	#$20,oYRadius(a0)
 	move.b	#4,oPriority(a0)
 	move.w	#$43C,oTile(a0)
-	cmpi.b	#3,levelZone
+	cmpi.b	#3,zone
 	beq.s	.NotHighPriority
 	ori.b	#$80,oTile(a0)
 
@@ -568,7 +568,7 @@ ObjSignpost_Main:
 	bcc.s	.End
 	move.w	cameraX.w,leftBound.w
 	move.w	cameraX.w,destLeftBound.w
-	clr.b	updateTime
+	clr.b	updateHUDTime
 	move.b	#$78,oVar2A(a0)
 	move.b	#0,oMapFrame(a0)
 	addq.b	#2,oRoutine(a0)
@@ -613,7 +613,7 @@ LoadEndOfAct:
 	jsr	SubCPUCmd
 	bset	#0,ctrlLocked.w
 	move.w	#$808,playerCtrlHold.w
-	cmpi.w	#$502,levelZone
+	cmpi.w	#$502,zoneAct
 	bne.s	.NotSSZ3
 	move.w	#0,playerCtrlHold.w
 
@@ -623,12 +623,12 @@ LoadEndOfAct:
 	jsr	FindObjSlot
 	move.b	#$3A,oID(a1)
 	move.b	#$10,oVar32(a1)
-	move.b	#1,updateResultsBonus.w
+	move.b	#1,updateHUDBonus.w
 	moveq	#0,d0
-	move.b	levelTime+1,d0
+	move.b	timeMinutes,d0
 	mulu.w	#60,d0
 	moveq	#0,d1
-	move.b	levelTime+2,d1
+	move.b	timeSeconds,d1
 	add.w	d1,d0
 	divu.w	#$F,d0
 	moveq	#$14,d1
@@ -639,8 +639,8 @@ LoadEndOfAct:
 .GetBonus:
 	add.w	d0,d0
 	move.w	TimeBonuses(pc,d0.w),bonusCount1.w
-	move.w	levelRings,d0
-	mulu.w	#$64,d0
+	move.w	rings,d0
+	mulu.w	#100,d0
 	move.w	d0,bonusCount2.w
 
 .End:

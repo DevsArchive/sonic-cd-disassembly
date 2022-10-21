@@ -19,7 +19,7 @@ ObjSpinPlatform:
 
 	jsr	DrawObject
 	move.w	oSPtfmX(a0),d0
-	jmp	CheckObjDespawn2Time
+	jmp	CheckObjDespawn2
 
 ; -------------------------------------------------------------------------
 
@@ -37,7 +37,7 @@ ObjSpinPlatform_Solid:
 ; -------------------------------------------------------------------------
 
 ObjSpinPlatform_Init:
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.w	#$436A,oTile(a0)
 	move.l	#MapSpr_SpinPlatform,oMap(a0)
@@ -59,9 +59,9 @@ ObjSpinPlatform_Main:
 	bsr.w	ObjSpinPlatform_Solid
 	beq.s	.End
 
-	bset	#0,oStatus(a1)
-	andi.b	#$FC,oRender(a1)
-	ori.b	#1,oRender(a1)
+	bset	#0,oFlags(a1)
+	andi.b	#$FC,oSprFlags(a1)
+	ori.b	#1,oSprFlags(a1)
 	bset	#0,oPlayerCtrl(a1)
 	bne.s	.AlreadySpinning
 	move.b	#$2D,oAnim(a1)
@@ -214,8 +214,8 @@ ObjSpinPlatform_CheckJump:
 	asr.l	#8,d0
 	add.w	d0,oYVel(a1)
 
-	bset	#1,oStatus(a1)
-	bclr	#5,oStatus(a1)
+	bset	#1,oFlags(a1)
+	bclr	#5,oFlags(a1)
 	move.b	#1,oPlayerJump(a1)
 	clr.b	oPlayerStick(a1)
 	tst.b	miniSonic
@@ -229,7 +229,7 @@ ObjSpinPlatform_CheckJump:
 	move.b	#9,oXRadius(a1)
 
 .GotSize:
-	btst	#2,oStatus(a1)
+	btst	#2,oFlags(a1)
 	bne.s	.RollJump
 	tst.b	miniSonic
 	beq.s	.NotMini2
@@ -243,14 +243,14 @@ ObjSpinPlatform_CheckJump:
 	addq.w	#5,oY(a1)
 
 .SetRoll:
-	bset	#2,oStatus(a1)
+	bset	#2,oFlags(a1)
 	move.b	#2,oAnim(a1)
 
 .End:
 	rts
 
 .RollJump:
-	bset	#4,oStatus(a1)
+	bset	#4,oFlags(a1)
 	rts
 
 ; -------------------------------------------------------------------------
@@ -319,7 +319,7 @@ ObjSpinPlatform_MoveX2:
 ; -------------------------------------------------------------------------
 
 ObjSpinPlatform_GetOffset:
-	move.w	lvlFrameTimer,d0
+	move.w	levelFrames,d0
 	andi.w	#$FF,d0
 	jsr	CalcSine
 	add.w	d0,d0

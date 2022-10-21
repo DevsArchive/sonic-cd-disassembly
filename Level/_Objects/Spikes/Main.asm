@@ -20,13 +20,13 @@ ObjSpikes_Index:dc.w	ObjSpikes_Init-ObjSpikes_Index
 ObjSpikes_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_Spikes,oMap(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	moveq	#$A,d0
-	jsr	LevelObj_SetBaseTile(pc)
+	jsr	SetObjectTileID(pc)
 	move.b	#$10,oWidth(a0)
 	move.b	#8,oYRadius(a0)
-	btst	#1,oRender(a0)
+	btst	#1,oSprFlags(a0)
 	beq.s	ObjSpikes_Main
 	move.b	#$12,oWidth(a0)
 	move.b	#$83,oColType(a0)
@@ -44,7 +44,7 @@ ObjSpikes_Main:
 .AbsDY:
 	cmpi.w	#$20,d0
 	bcc.s	.Display
-	btst	#1,oRender(a0)
+	btst	#1,oSprFlags(a0)
 	beq.s	.ChkStand
 	lea	objPlayerSlot.w,a1
 	jsr	SolidObject
@@ -55,7 +55,7 @@ ObjSpikes_Main:
 .ChkStand:
 	jsr	SolidObject
 	beq.s	.Display
-	btst	#3,oStatus(a0)
+	btst	#3,oFlags(a0)
 	beq.s	.Display
 	tst.b	timeWarpFlag
 	bne.s	.Display
@@ -81,7 +81,7 @@ ObjSpikes_Main:
 
 .Display:
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjSpikes_Main
 
 ; -------------------------------------------------------------------------

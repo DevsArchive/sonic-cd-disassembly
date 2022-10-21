@@ -25,7 +25,7 @@ ObjBataPyon:
 	jsr	.Index(pc,d0.w)
 
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -39,7 +39,7 @@ ObjBataPyon:
 
 ObjBataPyon_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.w	#$2438,oTile(a0)
 	move.b	#16,oXRadius(a0)
@@ -205,8 +205,8 @@ ObjBataPyon_Jump:
 ObjBataPyon_Flip:
 	move.b	oBataJumpCnt(a0),oBataJumpsLeft(a0)
 
-	bchg	#0,oRender(a0)
-	bchg	#0,oStatus(a0)
+	bchg	#0,oSprFlags(a0)
+	bchg	#0,oFlags(a0)
 	neg.l	oBataXVel(a0)
 	neg.w	oBataSensorX(a0)
 

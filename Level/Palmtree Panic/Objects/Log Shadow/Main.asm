@@ -11,7 +11,7 @@ ObjLogShadow:
 	move.w	ObjLogShadow_Index(pc,d0.w),d0
 	jsr	ObjLogShadow_Index(pc,d0.w)
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjLogShadow
 
 ; -------------------------------------------------------------------------
@@ -22,7 +22,7 @@ ObjLogShadow_Index:
 
 ObjLogShadow_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#6,oPriority(a0)
 	move.l	#MapSpr_LogShadow,oMap(a0)
 	move.b	oSubtype(a0),oMapFrame(a0)
@@ -49,7 +49,7 @@ ObjLogShadow_SetBaseTile:
 
 .NotFuture:
 	add.w	d0,d0
-	add.b	levelAct,d0
+	add.b	act,d0
 	add.w	d0,d0
 	move.w	ObjLogShadow_BaseTileList(pc,d0.w),oTile(a0)
 	ori.w	#$4000,oTile(a0)

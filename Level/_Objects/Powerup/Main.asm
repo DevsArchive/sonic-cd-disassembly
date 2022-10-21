@@ -22,7 +22,7 @@ ObjPowerup_Index:
 ObjPowerup_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_Powerup,oMap(a0)
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.b	#$10,oWidth(a0)
 	move.w	#$544,oTile(a0)
@@ -47,13 +47,13 @@ ObjPowerup_Shield:
 	bne.s	.End
 	move.w	objPlayerSlot+oX.w,oX(a0)
 	move.w	objPlayerSlot+oY.w,oY(a0)
-	move.b	objPlayerSlot+oStatus.w,oStatus(a0)
-	cmpi.b	#6,levelZone
+	move.b	objPlayerSlot+oFlags.w,oFlags(a0)
+	cmpi.b	#6,zone
 	bne.s	.Animate
-	ori.b	#$80,2(a0)
-	tst.b	lvlDrawLowPlane
+	ori.b	#$80,oTile(a0)
+	tst.b	layer
 	beq.s	.Animate
-	andi.b	#$7F,2(a0)
+	andi.b	#$7F,oTile(a0)
 
 .Animate:
 	lea	Ani_Powerup,a1
@@ -94,10 +94,10 @@ ObjPowerup_TimeStars:
 ; -------------------------------------------------------------------------
 
 ObjPowerup_ShowStars:
-	cmpi.b	#6,levelZone
+	cmpi.b	#6,zone
 	bne.s	.GotPriority
 	ori.b	#$80,oTile(a0)
-	tst.b	lvlDrawLowPlane
+	tst.b	layer
 	beq.s	.GotPriority
 	andi.b	#$7F,oTile(a0)
 
@@ -129,14 +129,14 @@ ObjPowerup_ShowStars:
 	lea	(a1,d0.w),a1
 	move.w	(a1)+,oX(a0)
 	move.w	(a1)+,oY(a0)
-	move.b	objPlayerSlot+oStatus.w,oStatus(a0)
+	move.b	objPlayerSlot+oFlags.w,oFlags(a0)
 	lea	Ani_Powerup,a1
 	jsr	AnimateObject
 
 ; -------------------------------------------------------------------------
 
 ObjPowerup_ChkSaveRout:
-	move.b	lvlLoadShieldArt,d0
+	move.b	powerup,d0
 	andi.b	#$F,d0
 	cmpi.b	#8,d0
 	bcs.s	.SaveRout
@@ -147,8 +147,8 @@ ObjPowerup_ChkSaveRout:
 .SaveRout:
 	cmp.b	oRoutine(a0),d0
 	beq.s	.Display
-	move.b	oRoutine(a0),lvlLoadShieldArt
-	bset	#7,lvlLoadShieldArt
+	move.b	oRoutine(a0),powerup
+	bset	#7,powerup
 
 .Display:
 	jmp	DrawObject
@@ -156,10 +156,10 @@ ObjPowerup_ChkSaveRout:
 ; -------------------------------------------------------------------------
 
 LoadShieldArt:
-	bclr	#7,lvlLoadShieldArt
+	bclr	#7,powerup
 	beq.s	.End
 	moveq	#0,d0
-	move.b	lvlLoadShieldArt,d0
+	move.b	powerup,d0
 	subq.b	#2,d0
 	add.w	d0,d0
 	movea.l	ShieldArtIndex(pc,d0.w),a1

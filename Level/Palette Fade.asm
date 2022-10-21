@@ -47,7 +47,7 @@ FadeColorsFromBlack:
 	bsr.s	FadeColorFromBlack		; Fade a color
 	dbf	d0,.Loop			; Loop until finished
 
-	cmpi.b	#1,levelZone			; Are we in level ID 1 (Labyrinth Zone in Sonic 1)?
+	cmpi.b	#1,zone				; Are we in level ID 1 (Labyrinth Zone in Sonic 1)?
 	bne.s	.End				; If not, branch
 
 	moveq	#0,d0				; Get starting palette fade locations for water
@@ -216,7 +216,7 @@ FadeColorsFromWhite:
 	bsr.s	FadeColorFromWhite		; Fade a color
 	dbf	d0,.Loop			; Loop until finished
 
-	cmpi.b	#1,levelZone			; Are we in level ID 1 (Labyrinth Zone in Sonic 1)?
+	cmpi.b	#1,zone				; Are we in level ID 1 (Labyrinth Zone in Sonic 1)?
 	bne.s	.End				; If not, branch
 
 	moveq	#0,d0				; Get starting palette fade locations for water

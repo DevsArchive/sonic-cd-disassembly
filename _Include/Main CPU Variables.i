@@ -43,37 +43,40 @@ palClearFlags		rs.b	1		; Palette clear flags
 endingID		rs.b	1		; Ending ID
 specStageLost		rs.b	1		; Special stage lost flag
 			rs.b	$DA
-unkLvlBuffer 		rs.b	$200		; Unknown level buffer
-lvlObjRespawns 		rs.b	$2FE		; Level object respawn flags
+unkBuffer 		rs.b	$200		; Unknown level buffer
+savedObjFlags 		rs.b	$2FE		; Saved object flags
 			rs.l	1
 levelRestart		rs.w	1		; Level restart flag
-lvlFrameTimer 		rs.w	1		; Level frame timer
-level			rs.b	0		; Level ID
-levelZone		rs.b	1		; Zone ID
-levelAct		rs.b	1		; Act ID
-lifeCount		rs.b	1		; Life count
+levelFrames 		rs.w	1		; Level frame counter
+zoneAct			rs.b	0		; Zone and act ID
+zone			rs.b	1		; Zone ID
+act			rs.b	1		; Act ID
+lives			rs.b	1		; Life count
 usePlayer2 		rs.b	1		; Use player 2
-playerAirLeft 		rs.w	1		; Player air left
-lvlTimeOver 		rs.b	1		; Level time over
-lifeFlags 		rs.b	1		; Life flags
-updateLives 		rs.b	1		; Update HUD life count
-updateRings 		rs.b	1		; Update HUD ring count
-updateTime 		rs.b	1		; Update HUD timer
-updateScore 		rs.b	1		; Update HUD score
-levelRings		rs.w	1		; Level ring count
-levelTime		rs.l	1		; Level time
-levelScore		rs.l	1		; Level score
+drownTimer 		rs.w	1		; Drown timer
+timeOver 		rs.b	1		; Level time over
+livesFlags 		rs.b	1		; Lives flags
+updateHUDLives 		rs.b	1		; Update HUD life count
+updateHUDRings 		rs.b	1		; Update HUD ring count
+updateHUDTime 		rs.b	1		; Update HUD timer
+updateHUDScore 		rs.b	1		; Update HUD score
+rings			rs.w	1		; Ring count
+time			rs.b	1		; Time
+timeMinutes		rs.b	1		; Minutes
+timeSeconds		rs.b	1		; Seconds
+timeFrames		rs.b	1		; Centiseconds
+score			rs.l	1		; Score
 plcLoadFlags		rs.b	1		; PLC load flags
 palFadeFlags		rs.b	1		; Palette fade flags
 shieldFlag 		rs.b	1		; Shield flag
 invincibleFlag 		rs.b	1		; Invincible flag
 speedShoesFlag 		rs.b	1		; Speed shoes flag
 timeWarpFlag 		rs.b	1		; Time warp flag
-resetLevelFlags		rs.b	1		; Reset level flags
-savedResetLvlFlags	rs.b	1		; Saved reset level flags
+spawnMode		rs.b	1		; Spawn mode flag
+savedSpawnMode		rs.b	1		; Saved spawn mode flag
 savedX 			rs.w	1		; Saved X position
 savedY 			rs.w	1		; Saved Y position
-travelRingCnt		rs.w	1		; Time travel saved ring count
+warpRings		rs.w	1		; Time warp ring count
 savedTime 		rs.l	1		; Saved time
 timeZone		rs.b	1		; Time zone
 			rs.b	1
@@ -87,101 +90,103 @@ savedCamBg2Y		rs.w	1		; Saved background camera Y position 2
 savedCamBg3X		rs.w	1		; Saved background camera X position 3
 savedCamBg3Y		rs.w	1		; Saved background camera Y position 3
 savedWaterHeight	rs.b	1		; Saved water height
-savedWaterRout		rs.b	1		; Saved water routine
+savedWaterRoutine	rs.b	1		; Saved water routine
 savedWaterFull		rs.b	1		; Saved water fullscreen flag
-travelLifeFlags		rs.b	1		; Time travel saved life flags
-travelResetLvlFlags	rs.b	1		; Time travel saved reset level flags
+warpLivesFlags		rs.b	1		; Time warp lives flags
+warpSpawnMode		rs.b	1		; Time warp spawn mode flag
 			rs.b	1
-travelX 		rs.w	1		; Time travel saved X position
-travelY 		rs.w	1		; Time travel saved Y position
-travelStatus		rs.b	1
+warpX 			rs.w	1		; Time warp X position
+warpY 			rs.w	1		; Time warp Y position
+warpPlayerFlags		rs.b	1		; Time warp flags
 			rs.b	1
-travelBtmBound		rs.w	1		; Time travel saved bottom boundary
-travelCamX		rs.w	1		; Time travel saved camera X position
-travelCamY		rs.w	1		; Time travel saved camera Y position
-travelCamBgX		rs.w	1		; Time travel saved background camera X position
-travelCamBgY		rs.w	1		; Time travel saved background camera Y position
-travelCamBg2X		rs.w	1		; Time travel saved background camera X position 2
-travelCamBg2Y		rs.w	1		; Time travel saved background camera Y position 2
-travelCamBg3X		rs.w	1		; Time travel saved background camera X position 3
-travelCamBg3Y		rs.w	1		; Time travel saved background camera Y position 3
-travelWaterHeight	rs.w	1		; Time travel saved water height
-travelWaterRout		rs.b	1		; Time travel saved water routine
-travelWaterFull		rs.b	1		; Time travel saved water fullscreen flag
-travelGVel 		rs.w	1		; Time travel saved ground velocity
-travelXVel 		rs.w	1		; Time travel saved X velocity
-travelYVel 		rs.w	1		; Time travel saved Y velocity
+warpBtmBound		rs.w	1		; Time warp bottom boundary
+warpCamX		rs.w	1		; Time warp camera X position
+warpCamY		rs.w	1		; Time warp camera Y position
+warpCamBgX		rs.w	1		; Time warp background camera X position
+warpCamBgY		rs.w	1		; Time warp background camera Y position
+warpCamBg2X		rs.w	1		; Time warp background camera X position 2
+warpCamBg2Y		rs.w	1		; Time warp background camera Y position 2
+warpCamBg3X		rs.w	1		; Time warp background camera X position 3
+warpCamBg3Y		rs.w	1		; Time warp background camera Y position 3
+warpWaterHeight		rs.w	1		; Time warp water height
+warpWaterRoutine	rs.b	1		; Time warp water routine
+warpWaterFull		rs.b	1		; Time warp water fullscreen flag
+warpGVel 		rs.w	1		; Time warp ground velocity
+warpXVel 		rs.w	1		; Time warp X velocity
+warpYVel 		rs.w	1		; Time warp Y velocity
 goodFuture		rs.b	1		; Good future flag
-lvlLoadShieldArt	rs.b	1		; Level load shield art flag
+powerup			rs.b	1		; Powerup ID
 unkLevelFlag 		rs.b	1		; Unknown level flag
 projDestroyed		rs.b	1		; Projector destroyed flag
-enteredBigRing		rs.b	1		; Entered big ring flag
+specialStage		rs.b	1		; Special stage flag
 blueRing 		rs.b	1		; Blue ring flag
-travelTime 		rs.l	1		; Time travel saved time
-lastCamPLC		rs.w	1		; Last camera PLC
+warpTime 		rs.l	1		; Time warp time
+sectionID		rs.w	1		; Section ID
 			rs.b	1
 amyCaptured		rs.b	1		; Amy captured flag
 nextLifeScore		rs.l	1		; Next life score
-angleBuffer 		rs.b	1		; Angle buffer
-angleNormalBuf		rs.b	1		; Angle normal buffer
-quadrantNormalBuf	rs.b	1		; Quadrant normal buffer
-floorDist 		rs.b	1		; Floor distance
+debugAngle 		rs.b	1		; Debug angle
+debugAngleShift		rs.b	1		; Debug angle (shifted)
+debugQuadrant		rs.b	1		; Debug quadrant
+debugFloorDist 		rs.b	1		; Debug floor distance
 demoMode		rs.w	1		; Demo mode flag
 			rs.w	1
 s1CreditsIndex		rs.w	1		; Credits index (leftover from Sonic 1)
 versionCache 		rs.b	1		; Hardware version cache
 			rs.b	1
 debugCheat		rs.w	1		; Debug cheat flag
-lvlInitFlag 		rs.l	1		; Level initialized flag
-lastCheckpoint		rs.b	1		; Last checkpoint ID
+initFlag 		rs.l	1		; Initialized flag
+checkpoint		rs.b	1		; Checkpoint ID
 			rs.b	1
 goodFutureFlags		rs.b	1		; Good future flags
 savedMiniSonic		rs.b	1		; Saved mini Sonic flag
 			rs.b	1
-travelMiniSonic		rs.b	1		; Time travel mini Sonic flag
+warpMiniSonic		rs.b	1		; Time warp mini Sonic flag
 			rs.b	$6C
 flowerPosBuf		rs.b	$300		; Flower position buffer
 flowerCount		rs.b	3		; Flower count
-lvlEnableDisplay	rs.b	1		; Enable display in level
-lvlDebugObject 		rs.b	1		; Level debug object
+fadeEnableDisplay	rs.b	1		; Enable display when fading
+debugObject 		rs.b	1		; Level debug object
 			rs.b	1
-lvlDebugMode 		rs.w	1		; Level debug mode
+debugMode 		rs.w	1		; Level debug mode
 			rs.w	1
-lvlFrameCount 		rs.l	1		; Level frame count
+levelVIntCounter	rs.l	1		; Level V-BLANK interrupt counter
 timeStopTimer		rs.w	1		; Time stop timer
 logSpikeAnimTimer	rs.b	1		; Log spike animation timer (leftover from Sonic 1)
 logSpikeAnimFrame	rs.b	1		; Log spike animation frame (leftover from Sonic 1)
 ringAnimTimer		rs.b	1		; Ring animation timer
 ringAnimFrame		rs.b	1		; Ring animation frame
-lvlUnkAnimTimer		rs.b	1		; Unknown animation timer (leftover from Sonic 1)
-lvlUnkAnimFrame		rs.b	1		; Unknown animation frame (leftover from Sonic 1)
+unkAnimTimer		rs.b	1		; Unknown animation timer (leftover from Sonic 1)
+unkAnimFrame		rs.b	1		; Unknown animation frame (leftover from Sonic 1)
 ringLossAnimTimer	rs.b	1		; Ring loss animation timer
 ringLossAnimFrame	rs.b	1		; Ring loss animation frame
 ringLossAnimAccum	rs.w	1		; Ring loss animation accumulator
 			rs.b	$C
-lvlCamXCopy		rs.l	1		; Level camera X position copy
-lvlCamYCopy		rs.l	1		; Level camera Y position copy
-lvlCamXBgCopy		rs.l	1		; Level camera background X position copy
-lvlCamYBgCopy		rs.l	1		; Level camera background Y position copy
-lvlCamXBg2Copy		rs.l	1		; Level camera background X position 2 copy
-lvlCamYBg2Copy		rs.l	1		; Level camera background Y position 2 copy
-lvlCamXBg3Copy		rs.l	1		; Level camera background X position 3 copy
-lvlCamYBg3Copy		rs.l	1		; Level camera background Y position 3 copy
-lvlScrollFlagsCopy	rs.l	1		; Level scroll flags copy
+camXCopy		rs.l	1		; Camera X position copy
+camYCopy		rs.l	1		; Camera Y position copy
+camXBgCopy		rs.l	1		; Camera background X position copy
+camYBgCopy		rs.l	1		; Camera background Y position copy
+camXBg2Copy		rs.l	1		; Camera background X position 2 copy
+camYBg2Copy		rs.l	1		; Camera background Y position 2 copy
+camXBg3Copy		rs.l	1		; Camera background X position 3 copy
+camYBg3Copy		rs.l	1		; Camera background Y position 3 copy
+scrollFlagsCopy		rs.w	1		; Scroll flags copy
+scrollFlagsBgCopy	rs.w	1		; Scroll flags copy (background)
+scrollFlagsBg2Copy	rs.w	1		; Scroll flags copy (background 2)
+scrollFlagsBg3Copy	rs.w	1		; Scroll flags copy (background 3)
+debugBlock 		rs.w	1		; Level debug block ID
 			rs.l	1
-lvlDebugBlock 		rs.w	1		; Level debug block ID
-			rs.l	1
-lvlDebugSubtype2	rs.b	1		; Level debug subtype 2 ID
+debugSubtype2		rs.b	1		; Level debug subtype 2 ID
 waterSwayAngle		rs.b	1		; Water sway angle
-lvlDrawLowPlane		rs.b	1		; Level draw on low plane flag
+layer			rs.b	1		; Layer ID
 levelStarted		rs.b	1		; Level started flag
-bossMusicPlaying	rs.b	1		; Boss music playing flag
+bossMusic		rs.b	1		; Boss music flag
 			rs.b	1
 wwzBeamMode		rs.b	1		; Wacky Workbench electric beam mode
 miniSonic 		rs.b	1		; Mini Sonic flag
 			rs.b	$24
 aniArtBuffer 		rs.b	$480		; Animated art buffer
-lvlLayerSpeeds 		rs.b	$200		; Level layer speeds
+scrlSectSpeeds		rs.b	$200		; Scroll section speeds
 MAINVARSSZ		EQU	__rs-MAINVARS	; Size of Main CPU global variables area
 
 WORKRAMFILE		rs.b	$6000		; Work RAM file data

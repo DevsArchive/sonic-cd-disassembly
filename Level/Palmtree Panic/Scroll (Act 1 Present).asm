@@ -60,10 +60,10 @@ EndingStLocsS1:
 ; -------------------------------------------------------------------------
 
 LevelSizeLoad_StartPos:
-	tst.b	resetLevelFlags			; Was the level reset midway?
-	beq.s	.DefaultStart			; If not, branch
+	tst.b	spawnMode			; Is the player being spawned at the beginning?
+	beq.s	.DefaultStart			; If so, branch
 
-	jsr	ObjCheckpoint_LoadData		; Load checkpoint data
+	jsr	LoadCheckpointData		; Load checkpoint data
 	moveq	#0,d0				; Get player position
 	moveq	#0,d1
 	move.w	objPlayerSlot+oX.w,d1
@@ -163,7 +163,7 @@ InitLevelScroll:
 	add.w	d1,d2
 	move.w	d2,cameraBg2X.w
 
-	lea	lvlLayerSpeeds,a2		; Clear cloud speeds
+	lea	scrlSectSpeeds,a2		; Clear cloud speeds
 	moveq	#$12,d6
 
 .ClearSpeeds:
@@ -261,7 +261,7 @@ LevelScroll:
 	clr.b	scrollFlagsBg3.w
 	clr.b	scrollFlagsBg2.w
 
-	lea	lvlLayerSpeeds,a2		; Set speeds for the clouds
+	lea	scrlSectSpeeds,a2		; Set speeds for the clouds
 	addi.l	#$10000,(a2)+
 	addi.l	#$E000,(a2)+
 	addi.l	#$C000,(a2)+
@@ -286,7 +286,7 @@ LevelScroll:
 	neg.w	d0
 	swap	d0
 
-	lea	lvlLayerSpeeds,a2		; Prepare cloud speeds
+	lea	scrlSectSpeeds,a2		; Prepare cloud speeds
 	moveq	#10-1,d6			; Number of cloud sections
 
 .CloudsScroll:
@@ -630,12 +630,12 @@ ScrollCamY:
 	moveq	#0,d1				; Get how far we have scrolled vertically
 	move.w	objPlayerSlot+oY.w,d0
 	sub.w	cameraY.w,d0
-	btst	#2,objPlayerSlot+oStatus.w	; Is the player rolling?
+	btst	#2,objPlayerSlot+oFlags.w	; Is the player rolling?
 	beq.s	.NoRoll				; If not, branch
 	subq.w	#5,d0				; Account for the different height
 
 .NoRoll:
-	btst	#1,objPlayerSlot+oStatus.w	; Is the player in the air?
+	btst	#1,objPlayerSlot+oFlags.w	; Is the player in the air?
 	beq.s	.OnGround			; If not, branch
 
 	addi.w	#$20,d0
@@ -809,14 +809,14 @@ DrawLevel:
 	lea	VDPCTRL,a5			; Prepare VDP ports
 	lea	VDPDATA,a6
 
-	lea	lvlScrollFlagsCopy+2,a2		; Update background
-	lea	lvlCamXBgCopy,a3
+	lea	scrollFlagsBgCopy,a2		; Update background
+	lea	camXBgCopy,a3
 	lea	levelLayout+$40.w,a4
 	move.w	#$6000,d2
 	bsr.w	DrawLevelBG1
 
-	lea	lvlScrollFlagsCopy,a2		; Update foreground
-	lea	lvlCamXCopy,a3
+	lea	scrollFlagsCopy,a2		; Update foreground
+	lea	camXCopy,a3
 	lea	levelLayout.w,a4
 	move.w	#$4000,d2
 
@@ -961,10 +961,10 @@ DrawLevelBG1:
 ; -------------------------------------------------------------------------
 
 .CameraSects:
-	dc.l	lvlCamXBgCopy			; BG1 (static)
-	dc.l	lvlCamXBgCopy			; BG1 (dynamic)
-	dc.l	lvlCamXBg2Copy			; BG2 (dynamic)
-	dc.l	lvlCamXBg3Copy			; BG3 (dynamic)
+	dc.l	camXBgCopy			; BG1 (static)
+	dc.l	camXBgCopy			; BG1 (dynamic)
+	dc.l	camXBg2Copy			; BG2 (dynamic)
+	dc.l	camXBg3Copy			; BG3 (dynamic)
 
 ; -------------------------------------------------------------------------
 

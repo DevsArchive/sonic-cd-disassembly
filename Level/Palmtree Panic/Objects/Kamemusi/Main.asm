@@ -15,7 +15,7 @@ ObjKamemusi:
 	jsr	ObjKamemusi_Index(pc,d0.w)
 	jsr	DrawObject
 	move.w	oVar2A(a0),d0
-	jmp	CheckObjDespawn2Time
+	jmp	CheckObjDespawn2
 ; End of function ObjKamemusi
 
 ; -------------------------------------------------------------------------
@@ -29,7 +29,7 @@ ObjKamemusi_Index:dc.w	ObjKamemusi_Init-ObjKamemusi_Index
 
 ObjKamemusi_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#4,oPriority(a0)
 	move.b	#$2C,oColType(a0)
 	move.b	#$10,oXRadius(a0)
@@ -37,7 +37,7 @@ ObjKamemusi_Init:
 	move.b	#$F,oYRadius(a0)
 	move.w	oX(a0),oVar2A(a0)
 	moveq	#4,d0
-	jsr	LevelObj_SetBaseTile
+	jsr	SetObjectTileID
 	tst.b	oSubtype(a0)
 	bne.s	.AltMaps
 	lea	MapSpr_Kamemusi1(pc),a1
@@ -75,7 +75,7 @@ ObjKamemusi_Position:
 ; -------------------------------------------------------------------------
 
 ObjKamemusi_Main:
-	tst.w	lvlDebugMode
+	tst.w	debugMode
 	bne.s	.SkipRange
 	tst.b	$28(a0)
 	bne.s	.SkipRange
@@ -115,8 +115,8 @@ ObjKamemusi_Main:
 
 .TurnAround:
 	neg.l	oVar2C(a0)
-	bchg	#0,oRender(a0)
-	bchg	#0,oStatus(a0)
+	bchg	#0,oSprFlags(a0)
+	bchg	#0,oFlags(a0)
 	bra.s	ObjKamemusi_Main
 
 ; -------------------------------------------------------------------------
@@ -168,7 +168,7 @@ ObjKamemusi_Fire:
 	bne.s	.End
 	jsr	FindObjSlot
 	bne.s	.End
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.SkipSound
 	move.w	#$A0,d0
 	jsr	PlayFMSound
@@ -226,7 +226,7 @@ ObjKamemusiMissile_Index:dc.w	ObjKamemusiMissile_Init-ObjKamemusiMissile_Index
 
 ObjKamemusiMissile_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#$AD,oColType(a0)
 	move.b	#8,oXRadius(a0)
 	move.b	#8,oWidth(a0)
@@ -255,7 +255,7 @@ ObjKamemusiMissile_Init:
 ; -------------------------------------------------------------------------
 
 ObjKamemusiMissile_Main:
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bmi.s	.Action
 	jmp	DeleteObject
 

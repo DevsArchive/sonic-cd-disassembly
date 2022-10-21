@@ -22,7 +22,7 @@ FadeOutMusic:
 SubCPUCmd:
 	cmpi.w	#$67,d0				; Is this the command to play the boss music?
 	bne.s	.NotBossMusic			; If not, branch
-	move.b	#1,bossMusicPlaying		; Mark boss music as being played
+	move.b	#1,bossMusic			; Mark boss music as being played
 
 .NotBossMusic:
 	move.w	d0,GACOMCMD0			; Set command ID

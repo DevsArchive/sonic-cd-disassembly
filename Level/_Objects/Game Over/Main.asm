@@ -26,23 +26,23 @@ ObjGameOver_Init:
 	move.w	#$120,oVar2A(a0)
 	move.w	#$8544,oTile(a0)
 	move.l	#MapSpr_GameOver1,oMap(a0)
-	move.b	#8,lvlLoadShieldArt
-	bclr	#0,lvlTimeOver
+	move.b	#8,powerup
+	bclr	#0,timeOver
 	beq.s	.NotTimeOver
-	tst.b	lifeCount
+	tst.b	lives
 	beq.s	.GameOver
 	move.l	#MapSpr_GameOver2,4(a0)
-	addq.b	#2,lvlLoadShieldArt
+	addq.b	#2,powerup
 	bra.s	.GameOver
 
 ; -------------------------------------------------------------------------
 
 .NotTimeOver:
-	tst.b	lifeCount
+	tst.b	lives
 	bne.s	.Destroy
 
 .GameOver:
-	bset	#7,lvlLoadShieldArt
+	bset	#7,powerup
 	jsr	FindObjSlot
 	beq.s	.LoadAuxObj
 
@@ -60,7 +60,7 @@ ObjGameOver_Init:
 	move.w	#$E0,oYScr(a1)
 	move.w	#$1C0,oX(a1)
 	move.w	#$120,oVar2A(a1)
-	tst.b	lifeCount
+	tst.b	lives
 	bne.s	ObjGameOver_Main
 	move.w	#$6E,d0
 	jmp	SubCPUCmd

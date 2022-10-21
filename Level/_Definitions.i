@@ -32,13 +32,14 @@ oVar\$c		EQU	c
 
 	rsreset
 oID		rs.b	1			; ID
-oRender		rs.b	1			; Render flags
+oSprFlags	rs.b	1			; Sprite flags
 oTile		rs.w	1			; Base tile ID
 oMap		rs.l	1			; Sprite mappings pointer
 oX		rs.w	1			; X position
 oYScr		rs.b	0			; Y position (screen mode)
 oXSub		rs.w	1			; X position subpixel
-oY		rs.l	1			; Y position
+oY		rs.w	1			; Y position
+oYSub		rs.w	1			; Y position subpixel
 oXVel		rs.w	1			; X velocity
 oYVel		rs.w	1			; Y velocity
 		rs.b	2
@@ -54,8 +55,8 @@ oAnimTime	rs.b	1			; Animation timer
 		rs.b	1
 oColType	rs.b	1			; Collision type
 oColStatus	rs.b	1			; Collision status
-oStatus		rs.b	1			; Status flags
-oRespawn	rs.b	1			; Respawn table entry ID
+oFlags		rs.b	1			; Flags
+oSavedFlagsID	rs.b	1			; Saved flags entry ID
 oRoutine	rs.b	1			; Routine ID
 oRoutine2	rs.b	1			; Secondary routine ID
 oAngle		rs.b	1			; Angle
@@ -98,7 +99,7 @@ oPlayerHangAni		EQU	oVar1F		; Hanging animation timer
 
 	rsset	WORKRAM+$2000
 blockBuffer 		rs.b	$2000		; Block buffer
-unkLvlBuffer2 		rs.b	$1000		; Unknown buffer
+unkBuffer2 		rs.b	$1000		; Unknown buffer
 			rs.b	$3000
 
 	rsset	WORKRAM+$FF00A000
@@ -249,7 +250,7 @@ horizBlkCrossedBg3	rs.b	1		; Horizontal block crossed flag (background 3)
 			rs.b	1
 			rs.b	1
 			rs.b	1
-scrollFlags 		rs.w	1		; Scroll flags
+scrollFlags		rs.w	1		; Scroll flags
 scrollFlagsBg		rs.w	1		; Scroll flags (background)
 scrollFlagsBg2		rs.w	1		; Scroll flags (background 2)
 scrollFlagsBg3		rs.w	1		; Scroll flags (background 3)
@@ -267,7 +268,7 @@ primaryAngle		rs.b	1		; Primary angle
 secondaryAngle		rs.b	1		; Secondary angle
 			rs.b	1
 			
-objManagerRout		rs.b	1		; Object manager routine ID
+objSpawnRoutine		rs.b	1		; Object spawn routine ID
 			rs.b	1
 objPrevCamX		rs.w	1		; Previous camera X position
 objLoadAddrR		rs.l	1		; Object layout address (right side)
@@ -307,7 +308,7 @@ ctrlLocked 		rs.b	1		; Controls locked flag
 scoreChain		rs.w	1		; Score chain
 bonusCount1		rs.w	1		; Bonus countdown 1
 bonusCount2		rs.w	1		; Bonus countdown 2
-updateResultsBonus	rs.b	1		; Update results bonus flag
+updateHUDBonus		rs.b	1		; Update results bonus flag
 			rs.b	3
 savedSR 		rs.w	1		; Saved status register
 			rs.b	4

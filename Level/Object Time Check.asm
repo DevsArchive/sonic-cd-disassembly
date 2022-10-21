@@ -20,9 +20,9 @@ DestroyOnGoodFuture:
 	move.w	d5,oX(a0)
 	move.w	d6,oY(a0)
 	move.b	#$18,oID(a0)
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	.NoReturn
-	move.w	#$9E,d0
+	move.w	#FM_9E,d0
 	jsr	PlayFMSound
 
 .NoReturn:
@@ -42,7 +42,7 @@ CheckAnimalPrescence:
 	tst.b	projDestroyed
 	bne.s	.End
 	addq.l	#4,sp
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 

@@ -13,7 +13,7 @@ ObjRobotGenerator:
 	jsr	DrawObject
 	cmpi.b	#2,oRoutine(a0)
 	bgt.s	.End
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -31,14 +31,14 @@ ObjRobotGenerator_Index:
 
 ObjRobotGenerator_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#4,oPriority(a0)
 	move.b	#$22,oXRadius(a0)
 	move.b	#$22,oWidth(a0)
 	move.b	#$20,oYRadius(a0)
 	lea	ObjRobotGenerator_BaseTileList(pc),a1
 	moveq	#0,d0
-	move.b	levelAct,d0
+	move.b	act,d0
 	asl.w	#2,d0
 	add.b	timeZone,d0
 	add.w	d0,d0

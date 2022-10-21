@@ -11,7 +11,7 @@ ObjScenery:
 	move.w	ObjScenery_Index(pc,d0.w),d0
 	jsr	ObjScenery_Index(pc,d0.w)
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjScenery
 
 ; -------------------------------------------------------------------------
@@ -22,7 +22,7 @@ ObjScenery_Index:
 
 ObjScenery_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.l	#MapSpr_Scenery,oMap(a0)
 	move.b	oSubtype(a0),oMapFrame(a0)
 	move.b	#$10,oWidth(a0)
@@ -49,7 +49,7 @@ ObjScenery_SetBaseTile:
 
 .NotFuture:
 	add.w	d0,d0
-	add.b	levelAct,d0
+	add.b	act,d0
 	add.w	d0,d0
 	move.w	ObjScenery_BaseTileList(pc,d0.w),oTile(a0)
 	ori.w	#$4000,oTile(a0)

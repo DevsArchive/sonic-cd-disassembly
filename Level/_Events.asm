@@ -7,7 +7,7 @@
 
 RunLevelEvents:
 	moveq	#0,d0				; Run level events
-	move.b	levelZone,d0
+	move.b	zone,d0
 	add.w	d0,d0
 	move.w	.Events(pc,d0.w),d0
 	jsr	.Events(pc,d0.w)
@@ -43,7 +43,7 @@ RunLevelEvents:
 	addq.w	#8,d0
 	cmp.w	bottomBound.w,d0
 	bcs.s	.ShiftDown			; If not, branch
-	btst	#1,objPlayerSlot+oStatus.w	; Is the player in the air?
+	btst	#1,objPlayerSlot+oFlags.w	; Is the player in the air?
 	beq.s	.ShiftDown			; If not, branch
 	add.w	d1,d1				; If so, quadruple the shift speed
 	add.w	d1,d1
@@ -70,7 +70,7 @@ RunLevelEvents:
 
 LevEvents_PPZ:
 	moveq	#0,d0				; Run act specific level events
-	move.b	levelAct,d0
+	move.b	act,d0
 	add.w	d0,d0
 	move.w	LevEvents_PPZ_Index(pc,d0.w),d0
 	jmp	LevEvents_PPZ_Index(pc,d0.w)
@@ -100,7 +100,7 @@ LevEvents_PPZ1:
 	cmpi.w	#$840,cameraX.w			; Is the camera's X position < $840?
 	bcs.s	.End				; If so, branch
 
-	tst.b	updateTime			; Is the level timer running?
+	tst.b	updateHUDTime			; Is the level timer running?
 	beq.s	.AlreadySet			; If not, branch
 
 	cmpi.w	#$820,leftBound.w		; Has the left boundary been set
@@ -143,7 +143,7 @@ LevEvents_PPZ3:
 
 LevEvents_CCZ:
 	moveq	#0,d0				; Run act specific level events
-	move.b	levelAct,d0
+	move.b	act,d0
 	add.w	d0,d0
 	move.w	LevEvents_CCZ_Index(pc,d0.w),d0
 	jmp	LevEvents_CCZ_Index(pc,d0.w)
@@ -228,7 +228,7 @@ LevEvents_WWZ:
 
 LevEvents_QQZ:
 	moveq	#0,d0				; Run act specific level events
-	move.b	levelAct,d0
+	move.b	act,d0
 	add.w	d0,d0
 	move.w	LevEvents_QQZ_Index(pc,d0.w),d0
 	jmp	LevEvents_QQZ_Index(pc,d0.w)
@@ -276,7 +276,7 @@ LevEvents_QQZ3:
 
 LevEvents_MMZ:
 	moveq	#0,d0				; Run act specific level events
-	move.b	levelAct,d0
+	move.b	act,d0
 	add.w	d0,d0
 	move.w	LevEvents_MMZ_Index(pc,d0.w),d0
 	jmp	LevEvents_MMZ_Index(pc,d0.w)
@@ -316,7 +316,7 @@ LevEvents_MMZ3:
 
 LevEvents_TTZ:
 	moveq	#0,d0				; Run act specific level events
-	move.b	levelAct,d0
+	move.b	act,d0
 	add.w	d0,d0
 	move.w	LevEvents_TTZ_Index(pc,d0.w),d0
 	jmp	LevEvents_TTZ_Index(pc,d0.w)
@@ -379,7 +379,7 @@ LevEvents_TTZ3:
 
 LevEvents_SSZ:
 	moveq	#0,d0				; Run act specific level events
-	move.b	levelAct,d0
+	move.b	act,d0
 	add.w	d0,d0
 	move.w	LevEvents_SSZ_Index(pc,d0.w),d0
 	jmp	LevEvents_SSZ_Index(pc,d0.w)
@@ -462,7 +462,7 @@ SetBossBounds:
 .CheckNearBound:
 	cmpi.w	#4,d1
 	bge.s	.NoYLock			; If not, branch
-	move.w	destBottomBound.w,bottomBound.w; Update bottom boundary
+	move.w	destBottomBound.w,bottomBound.w	; Update bottom boundary
 
 .NoYLock:
 	move.w	objPlayerSlot+oX.w,d0		; Get player's position

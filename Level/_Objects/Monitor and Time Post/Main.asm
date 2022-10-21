@@ -14,7 +14,7 @@ ObjTimeIcon:
 	beq.s	.End
 	cmpi.w	#$5A,timeWarpTimer.w
 	bcs.s	.Display
-	btst	#0,lvlFrameTimer+1
+	btst	#0,levelFrames+1
 	bne.s	.End
 
 .Display:
@@ -70,7 +70,7 @@ ObjTimepost:
 	move.w	ObjTimepost_Index(pc,d0.w),d0
 	jsr	ObjTimepost_Index(pc,d0.w)
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjTimepostTimeIcon
 
 ; -------------------------------------------------------------------------
@@ -86,9 +86,9 @@ ObjTimepost_Init:
 	move.b	#$E,oXRadius(a0)
 	move.l	#MapSpr_MonitorTimePost,oMap(a0)
 	move.w	#$5A8,oTile(a0)
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
-	cmpi.b	#6,levelZone
+	cmpi.b	#6,zone
 	bne.s	.NotFront
 	tst.b	oSubtype2(a0)
 	bne.s	.NotFront
@@ -98,7 +98,7 @@ ObjTimepost_Init:
 .NotFront:
 	move.b	#$F,oWidth(a0)
 	move.b	oSubtype(a0),oAnim(a0)
-	bsr.w	ObjMonitor_GetRespawn
+	bsr.w	ObjMonitor_GetSavedFlags
 	bclr	#7,2(a2,d0.w)
 	move.b	#$A,oMapFrame(a0)
 	cmpi.b	#8,oSubtype(a0)
@@ -124,24 +124,24 @@ ObjTimepost_Main:
 	tst.b	oColStatus(a0)
 	beq.s	.End
 	clr.b	oColStatus(a0)
-	cmpi.b	#6,levelZone
+	cmpi.b	#6,zone
 	bne.s	.ChkTouch
 	tst.b	oSubtype2(a0)
 	beq.s	.NotBack
-	tst.b	lvlDrawLowPlane
+	tst.b	layer
 	beq.s	.End
 	bra.s	.ChkTouch
 
 ; -------------------------------------------------------------------------
 
 .NotBack:
-	tst.b	lvlDrawLowPlane
+	tst.b	layer
 	bne.s	.End
 
 .ChkTouch:
 	move.b	#$3C,oVar2A(a0)
 	addq.b	#2,oRoutine(a0)
-	bsr.w	ObjMonitor_GetRespawn
+	bsr.w	ObjMonitor_GetSavedFlags
 	bset	#0,2(a2,d0.w)
 	move.w	#$77,d0
 	move.b	#$FF,timeWarpDir.w
@@ -183,10 +183,10 @@ ObjTimepost_Done:
 
 ; -------------------------------------------------------------------------
 
-ObjMonitor_GetRespawn:
-	lea	lvlObjRespawns,a2
+ObjMonitor_GetSavedFlags:
+	lea	savedObjFlags,a2
 	moveq	#0,d0
-	move.b	oRespawn(a0),d0
+	move.b	oSavedFlagsID(a0),d0
 	move.w	d0,d1
 	add.w	d1,d1
 	add.w	d1,d0
@@ -212,22 +212,22 @@ ObjMonitor_GetRespawn:
 .GotTime:
 	add.w	d1,d0
 	rts
-; End of function ObjMonitor_GetRespawn
+; End of function ObjMonitor_GetSavedFlags
 
 ; -------------------------------------------------------------------------
 
 ObjMonitor_SolidObj:
-	cmpi.b	#6,levelZone
+	cmpi.b	#6,zone
 	bne.s	.DoSolid
-	tst.b	lvlDrawLowPlane
-	beq.s	.ChkHighPlane
+	tst.b	layer
+	beq.s	.Layer1
 	tst.b	oSubtype2(a0)
 	bne.s	.DoSolid
 	rts
 
 ; -------------------------------------------------------------------------
 
-.ChkHighPlane:
+.Layer1:
 	tst.b	oSubtype2(a0)
 	beq.s	.DoSolid
 	rts
@@ -247,7 +247,7 @@ ObjMonitorTimepost:
 	bne.s	ObjMonitor
 	tst.b	timeAttackMode
 	beq.s	ObjMonitor
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -275,7 +275,7 @@ ObjMonitor_Init:
 	move.l	#MapSpr_MonitorTimePost,oMap(a0)
 	move.w	#$5A8,oTile(a0)
 	move.b	#3,oPriority(a0)
-	cmpi.b	#6,levelZone
+	cmpi.b	#6,zone
 	bne.s	.NotMMZ
 	tst.b	oSubtype2(a0)
 	bne.s	.NotMMZ
@@ -283,9 +283,9 @@ ObjMonitor_Init:
 	move.b	#0,oPriority(a0)
 
 .NotMMZ:
-	move.b	#4,oRender(a0)
+	move.b	#4,oSprFlags(a0)
 	move.b	#$F,oWidth(a0)
-	bsr.w	ObjMonitor_GetRespawn
+	bsr.w	ObjMonitor_GetSavedFlags
 	bclr	#7,2(a2,d0.w)
 	btst	#0,2(a2,d0.w)
 	beq.s	.NotBroken
@@ -303,7 +303,7 @@ ObjMonitor_Init:
 ; -------------------------------------------------------------------------
 
 ObjMonitor_Main:
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.w	ObjMonitor_Display
 	move.b	oRoutine2(a0),d0
 	beq.s	.CheckSolid
@@ -319,7 +319,7 @@ ObjMonitor_Main:
 ; -------------------------------------------------------------------------
 
 .CheckSolid:
-	tst.b	oRender(a0)
+	tst.b	oSprFlags(a0)
 	bpl.s	ObjMonitor_Animate
 	lea	objPlayerSlot.w,a1
 	bsr.w	ObjMonitor_SolidObj
@@ -338,7 +338,7 @@ ObjMonitor_Animate:
 
 ObjMonitor_Display:
 	bsr.w	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 ; End of function ObjMonitor_Display
 
 ; -------------------------------------------------------------------------
@@ -367,7 +367,7 @@ ObjMonitor_Break:
 	move.b	oSubtype2(a0),oSubtype2(a1)
 
 .NoExplosion:
-	bsr.w	ObjMonitor_GetRespawn
+	bsr.w	ObjMonitor_GetSavedFlags
 	bset	#0,2(a2,d0.w)
 	move.b	#$11,oMapFrame(a0)
 	bra.w	DrawObject
@@ -397,7 +397,7 @@ ObjMonitorContents_Init:
 	andi.b	#$7F,oTile(a0)
 
 .NotPriority:
-	move.b	#$24,oRender(a0)
+	move.b	#$24,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	move.b	#8,oWidth(a0)
 	move.w	#-$300,oYVel(a0)
@@ -433,8 +433,8 @@ ObjMonitorContents_Main:
 	bne.s	.Not1UP
 
 .Gain1UP:
-	addq.b	#1,lifeCount
-	addq.b	#1,updateLives
+	addq.b	#1,lives
+	addq.b	#1,updateHUDLives
 	move.w	#$7A,d0
 	jmp	SubCPUCmd
 
@@ -443,15 +443,15 @@ ObjMonitorContents_Main:
 .Not1UP:
 	cmpi.b	#1,d0
 	bne.s	.Not10Rings
-	addi.w	#10,levelRings
-	ori.b	#1,updateRings
-	cmpi.w	#100,levelRings
+	addi.w	#10,rings
+	ori.b	#1,updateHUDRings
+	cmpi.w	#100,rings
 	bcs.s	.RingSound
-	bset	#1,lifeFlags
+	bset	#1,livesFlags
 	beq.w	.Gain1UP
-	cmpi.w	#200,levelRings
+	cmpi.w	#200,rings
 	bcs.s	.RingSound
-	bset	#2,lifeFlags
+	bset	#2,livesFlags
 	beq.w	.Gain1UP
 
 .RingSound:

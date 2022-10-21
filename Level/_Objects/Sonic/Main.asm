@@ -33,11 +33,11 @@ ObjSonic_ChkBoredom:
 	ori.b	#$80,oTile(a0)
 	move.b	#0,oPriority(a0)
 
-	move.b	#1,lifeCount			; Make it so a game over happens
+	move.b	#1,lives			; Make it so a game over happens
 
 	move.w	#-$500,oYVel(a0)		; Make the player jump
 	move.w	#$100,oXVel(a0)
-	btst	#0,oStatus(a0)
+	btst	#0,oFlags(a0)
 	beq.s	.GotXVel
 	neg.w	oXVel(a0)
 
@@ -67,16 +67,16 @@ ObjSonic:
 			
 .CheckDebug:
 		endif
-		tst.b	lvlDebugMode		; Are we in debug mode?
+		tst.b	debugMode		; Are we in debug mode?
 		beq.s	.NormalMode		; If not, branch
-		jmp	DebugMode		; Handle debug mode
+		jmp	UpdateDebugMode		; Handle debug mode
 
 .NormalMode:
 	endif
 	move.b	oPlayerCharge(a0),d0		; Get charge time
 	beq.s	.RunRoutines			; If it's 0, branch
 	addq.b	#1,d0				; Increment the charge time
-	btst	#2,oStatus(a0)			; Are we spindashing?
+	btst	#2,oFlags(a0)			; Are we spindashing?
 	beq.s	.Peelout			; If not, branch
 	cmpi.b	#45,d0				; Is the spindash fully charged?
 	bcs.s	.SetChargeTimer			; If not, branch
@@ -148,7 +148,7 @@ ObjSonic_Init:
 	move.w	#$780,oTile(a0)			; Set base tile
 	move.b	#2,oPriority(a0)		; Set priority
 	move.b	#$18,oWidth(a0)			; Set width
-	move.b	#4,oRender(a0)			; Set render flags
+	move.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 
 	move.w	#$600,sonicTopSpeed.w		; Set physics values
 	move.w	#$C,sonicAcceleration.w
@@ -160,10 +160,10 @@ ObjSonic_Init:
 ; -------------------------------------------------------------------------
 
 ObjSonic_MakeWaterfallSplash:
-	tst.b	levelZone			; Are we in Palmtree Panic zone?
+	tst.b	zone				; Are we in Palmtree Panic zone?
 	bne.s	.End				; If not, branch
 
-	move.b	lvlFrameTimer+1,d0		; Are we on an odd numbered frame?
+	move.b	levelFrames+1,d0		; Are we on an odd numbered frame?
 	andi.b	#1,d0
 	bne.s	.End				; If so, branch
 
@@ -192,8 +192,8 @@ ObjSonic_MakeWaterfallSplash:
 	moveq	#0,d0
 
 .SetFlip:
-	move.b	d0,oRender(a1)
-	move.b	d0,oStatus(a1)
+	move.b	d0,oSprFlags(a1)
+	move.b	d0,oFlags(a1)
 
 .End:
 	rts
@@ -291,7 +291,7 @@ ObjSonic_Main:
 	beq.s	.NoDebug			; If not, branch
 	btst	#4,p1CtrlTap.w			; Was the B button pressed?
 	beq.s	.NoDebug			; If not, branch
-	move.b	#1,lvlDebugMode			; Enter debug mode
+	move.b	#1,debugMode			; Enter debug mode
 	rts
 
 .NoDebug:
@@ -302,7 +302,7 @@ ObjSonic_Main:
 .CtrlLock:
 	btst	#0,oPlayerCtrl(a0)		; Are we being controlled by another object?
 	beq.s	.NormalCtrl			; If not, branch
-	cmpi.b	#6,levelZone			; Are we in Metallic Madness?
+	cmpi.b	#6,zone				; Are we in Metallic Madness?
 	bne.s	.NotMMZ				; If not, branch
 
 	clr.w	timeWarpTimer.w			; Disable time warping
@@ -315,7 +315,7 @@ ObjSonic_Main:
 
 .NormalCtrl:
 	moveq	#0,d0				; Run player mode routine
-	move.b	oStatus(a0),d0
+	move.b	oFlags(a0),d0
 	andi.w	#6,d0
 	move.w	ObjSonic_ModeIndex(pc,d0.w),d1
 	jsr	ObjSonic_ModeIndex(pc,d1.w)
@@ -372,7 +372,7 @@ LevelMusicIDs2_S1:
 ; -------------------------------------------------------------------------
 
 ObjSonic_Display:
-	cmpi.w	#210,timeWarpTimer.w		; Are we about to time travel?
+	cmpi.w	#210,timeWarpTimer.w		; Are we about to time warp?
 	bcc.s	.SkipDisplay			; If so, branch
 
 	move.w	oPlayerHurt(a0),d0		; Get current hurt time
@@ -397,7 +397,7 @@ ObjSonic_Display:
 
 	tst.b	speedShoesFlag			; Is the speed shoes music playing?
 	bne.s	.StopInvinc			; If so, branch
-	tst.b	bossMusicPlaying		; Is the boss music playing?
+	tst.b	bossMusic			; Is the boss music playing?
 	bne.s	.StopInvinc			; If so, branch
 	tst.b	timeZone			; Are we in the past?
 	bne.s	.NotPast			; If not, branch
@@ -425,7 +425,7 @@ ObjSonic_Display:
 
 	tst.b	invincibleFlag			; Is the invincibility music playing?
 	bne.s	.StopSpeedShoes			; If so, branch
-	tst.b	bossMusicPlaying		; Is the boss music playing?
+	tst.b	bossMusic			; Is the boss music playing?
 	bne.s	.StopSpeedShoes			; If so, branch
 	tst.b	timeZone			; Are we in the past?
 	bne.s	.NotPast2			; If not, branch
@@ -461,14 +461,14 @@ ObjSonic_RecordPos:
 ; -------------------------------------------------------------------------
 
 ObjSonic_Water:
-	cmpi.b	#2,levelZone			; Are we in Tidal Tempest?
+	cmpi.b	#2,zone				; Are we in Tidal Tempest?
 	beq.s	.HasWater			; If so, branch
 
 .End:
 	rts
 
 .HasWater:
-	cmpi.b	#1,levelAct			; Are we in act 2 of Tidal Tempest?
+	cmpi.b	#1,act				; Are we in act 2 of Tidal Tempest?
 	bne.s	.NotAct2			; If not, branch
 	cmpi.w	#$C8,oX(a0)			; Are we in the wrapping section?
 	bcs.s	.End				; If so, branch
@@ -478,7 +478,7 @@ ObjSonic_Water:
 	cmp.w	oY(a0),d0
 	bge.s	.OutWater			; If not, branch
 
-	bset	#6,oStatus(a0)			; Mark as underwater
+	bset	#6,oFlags(a0)			; Mark as underwater
 	bne.s	.End				; If we were already marked as such, branch
 
 	bsr.w	ResumeMusicS1			; In Sonic 1, this routine would resume the background music from the drowning music
@@ -504,7 +504,7 @@ ObjSonic_Water:
 	bpl.s	.End				; If we are moving downwards, branch
 
 .LeaveWater:
-	bclr	#6,oStatus(a0)			; Mark as not underwater
+	bclr	#6,oFlags(a0)			; Mark as not underwater
 	beq.s	.End				; If we were already marked as such, branch
 
 	move.w	#$600,sonicTopSpeed.w		; Return physics back to normal
@@ -527,44 +527,44 @@ ObjSonic_Water:
 	rts
 
 ; -------------------------------------------------------------------------
-; Save various variables for time travel
+; Save time warp data
 ; -------------------------------------------------------------------------
 
-TimeTravel_SaveData:				; Save some values
-	move.b	resetLevelFlags,travelResetLvlFlags
-	move.w	oX(a0),travelX
-	move.w	oY(a0),travelY
-	move.w	oPlayerGVel(a0),travelGVel
-	move.w	oXVel(a0),travelXVel
-	move.w	oYVel(a0),travelYVel
-	move.b	oStatus(a0),travelStatus
-	bclr	#3,travelStatus			; Don't be marked as standing on an object
-	bclr	#6,travelStatus			; Don't be marked as being underwater
-	move.b	waterRoutine.w,travelWaterRout
-	move.w	bottomBound.w,travelBtmBound
-	move.w	cameraX.w,travelCamX
-	move.w	cameraY.w,travelCamY
-	move.w	cameraBgX.w,travelCamBgX
-	move.w	cameraBgY.w,travelCamBgY
-	move.w	cameraBg2X.w,travelCamBg2X
-	move.w	cameraBg2Y.w,travelCamBg2Y
-	move.w	cameraBg3X.w,travelCamBg3X
-	move.w	cameraBg3Y.w,travelCamBg3Y
-	move.w	waterHeight2.w,travelWaterHeight
-	move.b	waterRoutine.w,travelWaterRout
-	move.b	waterFullscreen.w,travelWaterFull
-	move.w	levelRings,travelRingCnt
-	move.b	lifeFlags,travelLifeFlags
+SaveTimeWarpData:
+	move.b	spawnMode,warpSpawnMode		; Save some values
+	move.w	oX(a0),warpX
+	move.w	oY(a0),warpY
+	move.w	oPlayerGVel(a0),warpGVel
+	move.w	oXVel(a0),warpXVel
+	move.w	oYVel(a0),warpYVel
+	move.b	oFlags(a0),warpPlayerFlags
+	bclr	#3,warpPlayerFlags		; Not standing on an object
+	bclr	#6,warpPlayerFlags		; Not underwater
+	move.b	waterRoutine.w,warpWaterRoutine
+	move.w	bottomBound.w,warpBtmBound
+	move.w	cameraX.w,warpCamX
+	move.w	cameraY.w,warpCamY
+	move.w	cameraBgX.w,warpCamBgX
+	move.w	cameraBgY.w,warpCamBgY
+	move.w	cameraBg2X.w,warpCamBg2X
+	move.w	cameraBg2Y.w,warpCamBg2Y
+	move.w	cameraBg3X.w,warpCamBg3X
+	move.w	cameraBg3Y.w,warpCamBg3Y
+	move.w	waterHeight2.w,warpWaterHeight
+	move.b	waterRoutine.w,warpWaterRoutine
+	move.b	waterFullscreen.w,warpWaterFull
+	move.w	rings,warpRings
+	move.b	livesFlags,warpLivesFlags
 
-	move.l	levelTime,d0			; Move the level timer to 5:00 if we are past that
-	cmpi.l	#$50000,d0
+	move.l	time,d0				; Move the time to 5:00 if we are past that
+	cmpi.l	#(5<<16)|(0<<8)|0,d0
 	bcs.s	.CapTime
-	move.l	#$50000,d0
+	move.l	#(5<<16)|(0<<8)|0,d0
 
 .CapTime:
-	move.l	d0,travelTime
+	move.l	d0,warpTime
 
-	move.b	miniSonic,travelMiniSonic
+	move.b	miniSonic,warpMiniSonic
 	rts
 
 ; -------------------------------------------------------------------------
@@ -572,7 +572,7 @@ TimeTravel_SaveData:				; Save some values
 ; -------------------------------------------------------------------------
 
 ObjSonic_TimeWarp:
-	cmpi.w	#0,levelZone			; Are we in Palmtree Panic act 1?
+	cmpi.w	#0,zoneAct			; Are we in Palmtree Panic act 1?
 	bne.s	.NotPPZ1			; If not, branch
 	tst.b	timeZone			; Are we in the past?
 	beq.s	.Past				; If so, branch
@@ -603,17 +603,17 @@ ObjSonic_TimeWarp:
 
 .TimerGoing:
 	move.w	timeWarpTimer.w,d1		; Get current time warp time
-	cmpi.w	#230,d1				; Should we time travel now?
+	cmpi.w	#230,d1				; Should we time warp now?
 	bcs.s	.KeepGoing			; If not, branch
 
-	move.b	#1,levelRestart			; Set to go to the time travel cutscene
+	move.b	#1,levelRestart			; Set to go to the time warp cutscene
 	bra.w	FadeOutMusic
 
 .KeepGoing:
-	cmpi.w	#210,d1				; Are we about to time travel soon?
+	cmpi.w	#210,d1				; Are we about to time warp soon?
 	bcs.s	.CheckStars			; If not, branch
 
-	cmpi.b	#2,resetLevelFlags		; Are we already in the process of time travelling?
+	cmpi.b	#2,spawnMode			; Are we time warping?
 	beq.s	.End				; If so, branch
 
 	move.b	#1,scrollLock.w			; Lock the screen in place
@@ -638,18 +638,17 @@ ObjSonic_TimeWarp:
 	moveq	#2,d0				; Stay in this game's "future" time period
 
 .GotNewTime:
-	bset	#7,d0				; Mark time travel as active
+	bset	#7,d0				; Mark time warp as active
 	move.b	d0,timeZone
 
-	bsr.w	TimeTravel_SaveData		; Save time travel data
-
-	move.b	#2,resetLevelFlags		; Mark that we are now in the process of time travelling
+	bsr.w	SaveTimeWarpData		; Save time warp data
+	move.b	#2,spawnMode			; Spawn from time warp position
 
 .End:
 	rts
 
 .CheckStars:
-	cmpi.w	#90,d1				; Have we tried time travelling for a bit already?
+	cmpi.w	#90,d1				; Have we tried time warping for a bit already?
 	bcc.s	.CheckStop			; If so, branch
 
 	cmp.w	d2,d0				; Are we going fast enough?
@@ -728,7 +727,7 @@ ObjSonic_MdAir:
 	bsr.w	ObjSonic_MoveAir		; Handle movement
 	bsr.w	ObjSonic_LevelBound		; Handle level boundary collision
 	jsr	ObjMoveGrv			; Apply velocity
-	btst	#6,oStatus(a0)			; Are we underwater?
+	btst	#6,oFlags(a0)			; Are we underwater?
 	beq.s	.NoWater			; If not, branch
 	subi.w	#$28,oYVel(a0)			; Apply water gravity resistance
 
@@ -768,7 +767,7 @@ ObjSonic_MdJump:
 	bsr.w	ObjSonic_MoveAir		; Handle movement
 	bsr.w	ObjSonic_LevelBound		; Handle level boundary collision
 	jsr	ObjMoveGrv			; Apply velocity
-	btst	#6,oStatus(a0)			; Are we underwater?
+	btst	#6,oFlags(a0)			; Are we underwater?
 	beq.s	.NoWater			; If not, branch
 	subi.w	#$28,oYVel(a0)			; Apply water gravity resistance
 
@@ -784,7 +783,7 @@ ObjSonic_MdJump:
 ObjSonic_Handle3DRamp:
 	cmpi.b	#1,timeZone			; Are we in the present?
 	bne.s	.End				; If not, branch
-	tst.w	level				; Are we in Palmtree Panic act 1?
+	tst.w	zoneAct				; Are we in Palmtree Panic act 1?
 	bne.s	.End				; If not, branch
 
 	move.w	oY(a0),d0			; Get current chunk that we are in
@@ -815,7 +814,7 @@ ObjSonic_Handle3DRamp:
 	bcc.s	.End				; If not, branch
 
 	move.w	#$600,oXVel(a0)			; Gain a horizontal boost off the 3D ramp
-	btst	#0,oStatus(a0)
+	btst	#0,oFlags(a0)
 	beq.s	.End
 	neg.w	oXVel(a0)
 
@@ -867,13 +866,13 @@ ObjSonic_MoveGround:
 	bra.s	.CheckBalance			; Check for balancing
 
 .Stand:
-	bclr	#5,oStatus(a0)			; Stop pushing
+	bclr	#5,oFlags(a0)			; Stop pushing
 	move.b	#5,oAnim(a0)			; Set animation to idle animation
 
 ; -------------------------------------------------------------------------
 
 .CheckBalance:
-	btst	#3,oStatus(a0)			; Are we standing on an object?
+	btst	#3,oFlags(a0)			; Are we standing on an object?
 	beq.s	.BalanceGround			; If not, branch
 
 	moveq	#0,d0				; Get the object we are standing on
@@ -881,7 +880,7 @@ ObjSonic_MoveGround:
 	lsl.w	#6,d0
 	lea	objects.w,a1
 	lea	(a1,d0.w),a1
-	tst.b	oStatus(a1)			; Is it a special hazardous object?
+	tst.b	oFlags(a1)			; Is it a special hazardous object?
 	bmi.w	.CheckCharge			; If so, branch
 	cmpi.b	#$1E,oID(a1)			; Is it a pinball flipper from CCZ?
 	bne.s	.CheckObjBalance		; If not, branch
@@ -916,7 +915,7 @@ ObjSonic_MoveGround:
 	bne.s	.CheckLeft			; If not, branch
 
 .BalanceRight:
-	btst	#0,oStatus(a0)			; Are we facing left?
+	btst	#0,oFlags(a0)			; Are we facing left?
 	bne.s	.BalanceAniBackwards		; If so, use the backwards animation
 	bra.s	.BalanceAniForwards		; Use the forwards animation
 
@@ -925,7 +924,7 @@ ObjSonic_MoveGround:
 	bne.s	.CheckCharge			; If not, branch
 
 .BalanceLeft:
-	btst	#0,oStatus(a0)			; Are we facing left?
+	btst	#0,oFlags(a0)			; Are we facing left?
 	bne.s	.BalanceAniForwards		; If so, use the forwards animation
 
 .BalanceAniBackwards:
@@ -990,7 +989,7 @@ ObjSonic_MoveGround:
 	sub.w	d2,d1
 
 .NoSpeedShoes:
-	btst	#0,oStatus(a0)			; Are we facing left?
+	btst	#0,oFlags(a0)			; Are we facing left?
 	beq.s	.IncPeeloutCharge		; If not, branch
 	neg.w	d0				; Negate the charge speed increment value
 	neg.w	d1				; Negate the max charge speed
@@ -999,7 +998,7 @@ ObjSonic_MoveGround:
 	add.w	d0,oPlayerGVel(a0)		; Increment charge speed
 
 	move.w	oPlayerGVel(a0),d0		; Get current charge speed
-	btst	#0,oStatus(a0)			; Are we facing left?
+	btst	#0,oFlags(a0)			; Are we facing left?
 	beq.s	.CheckMaxRight			; If not, branch
 	cmp.w	d0,d1				; Have we reached the max charge speed?
 	ble.s	.SetChargeSpeed			; If not, branch
@@ -1094,7 +1093,7 @@ ObjSonic_MoveGround:
 
 	move.b	#1,oPlayerCharge(a0)		; Set the look double tap timer to be active
 	move.w	#$16,oPlayerGVel(a0)		; Set initial spindash charge speed
-	btst	#0,oStatus(a0)
+	btst	#0,oFlags(a0)
 	beq.s	.PlaySpindashSound
 	neg.w	oPlayerGVel(a0)
 
@@ -1210,7 +1209,7 @@ ObjSonic_CheckWallCol:
 
 .ZipLeft:
 	add.w	d1,oXVel(a0)			; Zip to the left
-	bset	#5,oStatus(a0)			; Mark as pushing
+	bset	#5,oFlags(a0)			; Mark as pushing
 	move.w	#0,oPlayerGVel(a0)		; Stop moving
 	rts
 
@@ -1220,7 +1219,7 @@ ObjSonic_CheckWallCol:
 
 .ZipRight:
 	sub.w	d1,oXVel(a0)			; Zip to the right
-	bset	#5,oStatus(a0)			; Mark as pushing
+	bset	#5,oFlags(a0)			; Mark as pushing
 	move.w	#0,oPlayerGVel(a0)		; Stop moving
 	rts
 
@@ -1243,9 +1242,9 @@ ObjSonic_MoveGndLeft:
 	bpl.s	.Skid				; If we are moving right, branch
 
 .Normal:
-	bset	#0,oStatus(a0)			; Face left
+	bset	#0,oFlags(a0)			; Face left
 	bne.s	.Accelerate			; If we were already facing left, branch
-	bclr	#5,oStatus(a0)			; Stop pushing
+	bclr	#5,oFlags(a0)			; Stop pushing
 	move.b	#1,oPrevAnim(a0)		; Reset animation
 
 .Accelerate:
@@ -1279,7 +1278,7 @@ ObjSonic_MoveGndLeft:
 	blt.s	.End				; If not, branch
 
 	move.b	#$D,oAnim(a0)			; Set animation to skidding animation
-	bclr	#0,oStatus(a0)			; Face right
+	bclr	#0,oFlags(a0)			; Face right
 	move.w	#$90,d0				; Play skidding sound
 	jsr	PlayFMSound
 
@@ -1298,9 +1297,9 @@ ObjSonic_MoveGndRight:
 	bmi.s	.Skid
 
 .Normal:
-	bclr	#0,oStatus(a0)			; Face right
+	bclr	#0,oFlags(a0)			; Face right
 	beq.s	.Accelerate			; If we were already facing right, branch
-	bclr	#5,oStatus(a0)			; Stop pushing
+	bclr	#5,oFlags(a0)			; Stop pushing
 	move.b	#1,oPrevAnim(a0)		; Reset animation
 
 .Accelerate:
@@ -1332,7 +1331,7 @@ ObjSonic_MoveGndRight:
 	bgt.s	.End				; If not, branch
 
 	move.b	#$D,oAnim(a0)			; Set animation to skidding animation
-	bset	#0,oStatus(a0)			; Face left
+	bset	#0,oFlags(a0)			; Face left
 	move.w	#$90,d0				; Play skidding sound
 	jsr	PlayFMSound
 
@@ -1382,7 +1381,7 @@ ObjSonic_MoveRoll:
 	sub.w	d2,d1
 
 .NoSpeedShoes:
-	btst	#0,oStatus(a0)			; Are we facing left?
+	btst	#0,oFlags(a0)			; Are we facing left?
 	beq.s	.IncSpindashCharge		; If not, branch
 	neg.w	d0				; Negate the charge speed increment value
 	neg.w	d1				; Negate the max charge speed
@@ -1391,7 +1390,7 @@ ObjSonic_MoveRoll:
 	add.w	d0,oPlayerGVel(a0)		; Increment charge speed
 
 	move.w	oPlayerGVel(a0),d0		; Get current charge speed
-	btst	#0,oStatus(a0)			; Are we facing left?
+	btst	#0,oFlags(a0)			; Are we facing left?
 	beq.s	.CheckMaxRight			; If not, branch
 	cmp.w	d0,d1				; Have we reached the max charge speed?
 	ble.s	.SetChargeSpeed			; If not, branch
@@ -1430,7 +1429,7 @@ ObjSonic_MoveRoll:
 	move.w	#$91,d0				; Play charge release sound
 	jsr	PlayFMSound
 
-	btst	#0,oStatus(a0)			; Are we facing left?
+	btst	#0,oFlags(a0)			; Are we facing left?
 	bne.s	.ChargeLeft			; If so, branch
 	bsr.w	ObjSonic_MoveRollRight		; Charge towards the right
 	bra.s	.Settle				; Settle movement
@@ -1470,7 +1469,7 @@ ObjSonic_MoveRoll:
 	jsr	PlayFMSound
 
 .StopRolling:
-	bclr	#2,oStatus(a0)			; Stop rolling
+	bclr	#2,oFlags(a0)			; Stop rolling
 
 	tst.b	miniSonic			; Are we miniature?
 	beq.s	.NotMini			; If not, branch
@@ -1519,7 +1518,7 @@ ObjSonic_MoveRollLeft:
 	bpl.s	.DecelRoll			; If we are moving right, branch
 
 .StartRoll:
-	bset	#0,oStatus(a0)			; Face left
+	bset	#0,oFlags(a0)			; Face left
 	move.b	#2,oAnim(a0)			; Set animation to rolling animation
 	rts
 
@@ -1541,7 +1540,7 @@ ObjSonic_MoveRollRight:
 	bmi.s	.DecelRoll			; If we are moving left, branch
 
 .StartRoll:
-	bclr	#0,oStatus(a0)			; Face right
+	bclr	#0,oFlags(a0)			; Face right
 	move.b	#2,oAnim(a0)			; Set animation to rolling animation
 	rts
 
@@ -1567,7 +1566,7 @@ ObjSonic_MoveAir:
 
 	cmpi.b	#1,timeZone			; Are we in the present?
 	bne.s	.CheckLeft			; If not, branch
-	tst.w	level				; Are we in Palmtree Panic act 1?
+	tst.w	zoneAct				; Are we in Palmtree Panic act 1?
 	bne.s	.CheckLeft			; If not, branch
 
 	cmpi.w	#$6C8,oX(a0)			; Are we left of the first 3D ramp launch area?
@@ -1583,7 +1582,7 @@ ObjSonic_MoveAir:
 .CheckLeft:
 	btst	#2,playerCtrlHold.w		; Are we holding left?
 	beq.s	.CheckRight			; If not, branch
-	bset	#0,oStatus(a0)			; Face left
+	bset	#0,oFlags(a0)			; Face left
 	sub.w	d5,d0				; Apply acceleration
 	move.w	d6,d1				; Get top speed
 	neg.w	d1
@@ -1594,7 +1593,7 @@ ObjSonic_MoveAir:
 .CheckRight:
 	btst	#3,playerCtrlHold.w		; Are we holding right?
 	beq.s	.SetXVel			; If not, branch
-	bclr	#0,oStatus(a0)			; Face right
+	bclr	#0,oFlags(a0)			; Face right
 	add.w	d5,d0				; Apply acceleration
 	cmp.w	d6,d0				; Have we reached top speed?
 	blt.s	.SetXVel			; If not, branch
@@ -1744,12 +1743,12 @@ ObjSonic_CheckRoll:
 ; -------------------------------------------------------------------------
 
 ObjSonic_StartRoll:
-	btst	#2,oStatus(a0)			; Are we already rolling?
+	btst	#2,oFlags(a0)			; Are we already rolling?
 	beq.s	.DoRoll				; If not, branch
 	bra.s	.SetRollAnim			; If so, don't worry about fixing the hitbox size
 
 .DoRoll:
-	bset	#2,oStatus(a0)			; Mark as rolling
+	bset	#2,oFlags(a0)			; Mark as rolling
 	tst.b	miniSonic			; Are we miniature?
 	beq.s	.NotMini			; If not, branch
 	move.b	#8,oYRadius(a0)			; Set miniature rolling hitbox size
@@ -1795,7 +1794,7 @@ ObjSonic_CheckJump:
 	andi.b	#$70,d0
 	beq.w	.End				; If not, branch
 
-	btst	#3,oStatus(a0)			; Are we standing on an object?
+	btst	#3,oFlags(a0)			; Are we standing on an object?
 	beq.s	.NotOnObj			; If not, branch
 	jsr	ObjSonic_ChkFlipper		; Check if we are on a pinball flipper, and if so, get the angle and speed to launch at
 	beq.s	.GotAngle			; If we were on a pinball flipper, branch
@@ -1809,7 +1808,7 @@ ObjSonic_CheckJump:
 	blt.w	.End				; If not, branch
 
 	move.w	#$680,d2			; Get jump speed (6.5)
-	btst	#6,oStatus(a0)			; Are we underwater?
+	btst	#6,oFlags(a0)			; Are we underwater?
 	beq.s	.NoWater			; If not, branch
 	move.w	#$380,d2			; Get underwater jump speed (3.5)
 
@@ -1827,8 +1826,8 @@ ObjSonic_CheckJump:
 	asr.l	#8,d0
 	add.w	d0,oYVel(a0)
 
-	bset	#1,oStatus(a0)			; Mark as in air
-	bclr	#5,oStatus(a0)			; Stop pushing
+	bset	#1,oFlags(a0)			; Mark as in air
+	bclr	#5,oFlags(a0)			; Stop pushing
 	addq.l	#4,sp				; Stop handling ground specific routines after this
 	move.b	#1,oPlayerJump(a0)		; Mark as jumping
 	clr.b	oPlayerStick(a0)		; Mark as not sticking to terrain
@@ -1837,7 +1836,7 @@ ObjSonic_CheckJump:
 	move.w	#$92,d0				; Play jump sound
 	jsr	PlayFMSound
 
-	btst	#2,oStatus(a0)			; Were we rolling?
+	btst	#2,oFlags(a0)			; Were we rolling?
 	bne.s	.RollJump			; If so, branch
 	tst.b	miniSonic			; Are we miniature?
 	beq.s	.SetJumpSize			; If not, branch
@@ -1852,14 +1851,14 @@ ObjSonic_CheckJump:
 	addq.w	#5,oY(a0)
 
 .StartJump:
-	bset	#2,oStatus(a0)			; Mark as rolling
+	bset	#2,oFlags(a0)			; Mark as rolling
 	move.b	#2,oAnim(a0)			; Set animation to rolling animation
 
 .End:
 	rts
 
 .RollJump:
-	bset	#4,oStatus(a0)			; Mark as roll-jumping
+	bset	#4,oFlags(a0)			; Mark as roll-jumping
 	rts
 
 ; -------------------------------------------------------------------------
@@ -1871,7 +1870,7 @@ ObjSonic_JumpHeight:
 	beq.s	.NotJump			; If not, branch
 
 	move.w	#-$400,d1			; Get minimum jump velocity
-	btst	#6,oStatus(a0)			; Are we underwater?
+	btst	#6,oFlags(a0)			; Are we underwater?
 	beq.s	.GotCapVel			; If not, branch
 	move.w	#-$200,d1			; Get minimum underwater jump velocity
 
@@ -1998,7 +1997,7 @@ ObjSonic_CheckFallOff:
 	nop
 	nop
 	nop
-	bset	#1,oStatus(a0)			; Mark as in air
+	bset	#1,oFlags(a0)			; Mark as in air
 	move.w	#30,oPlayerMoveLock(a0)		; Set movement lock timer
 
 .End:
@@ -2050,11 +2049,11 @@ Player_LevelColInAir:
 	move.w	oYVel(a0),d2
 	jsr	CalcAngle
 
-	move.b	d0,angleBuffer			; Update debug angle buffers
+	move.b	d0,debugAngle			; Update debug angle buffers
 	subi.b	#$20,d0
-	move.b	d0,angleNormalBuf
+	move.b	d0,debugAngleShift
 	andi.b	#$C0,d0
-	move.b	d0,quadrantNormalBuf
+	move.b	d0,debugQuadrant
 
 	cmpi.b	#$40,d0				; Are we moving left?
 	beq.w	Player_LvlColAir_Left		; If so, branch
@@ -2088,7 +2087,7 @@ Player_LvlColAir_Down:
 
 .NotRightWall:
 	bsr.w	Player_CheckFloor		; Are we colliding with the floor?
-	move.b	d1,floorDist
+	move.b	d1,debugFloorDist
 	tst.w	d1
 	bpl.s	.End				; If not, branch
 
@@ -2295,18 +2294,18 @@ Player_LvlColAir_Right:
 ; -------------------------------------------------------------------------
 
 Player_ResetOnFloor:
-	btst	#4,oStatus(a0)			; Did we jump after rolling?
+	btst	#4,oFlags(a0)			; Did we jump after rolling?
 	beq.s	.NoRollJump			; If not, branch
 	nop
 
 .NoRollJump:
-	bclr	#5,oStatus(a0)			; Stop puishing
- 	bclr	#1,oStatus(a0)			; Mark as on the ground
-	bclr	#4,oStatus(a0)			; Clear roll jump flag
+	bclr	#5,oFlags(a0)			; Stop puishing
+ 	bclr	#1,oFlags(a0)			; Mark as on the ground
+	bclr	#4,oFlags(a0)			; Clear roll jump flag
 
-	btst	#2,oStatus(a0)			; Did we land from a jump?
+	btst	#2,oFlags(a0)			; Did we land from a jump?
 	beq.s	.NotJumping			; If not, branch
-	bclr	#2,oStatus(a0)			; Mark as not jumping
+	bclr	#2,oFlags(a0)			; Mark as not jumping
 
 	tst.b	miniSonic			; Are we miniature?
 	beq.s	.NormalSize			; If not, branch
@@ -2339,9 +2338,9 @@ Player_ResetOnFloor:
 ; -------------------------------------------------------------------------
 
 Player_ResetOnSteepSlope:
-	bclr	#5,oStatus(a0)			; Stop puishing
- 	bclr	#1,oStatus(a0)			; Mark as on the ground
-	bclr	#4,oStatus(a0)			; Clear roll jump flag
+	bclr	#5,oFlags(a0)			; Stop puishing
+ 	bclr	#1,oFlags(a0)			; Mark as on the ground
+	bclr	#4,oFlags(a0)			; Clear roll jump flag
 	move.b	#0,oPlayerJump(a0)		; Clear jumping flag
 	move.w	#0,scoreChain.w			; Clear chain bonus counter
 	rts
@@ -2354,7 +2353,7 @@ ObjSonic_Hurt:
 	jsr	ObjMove				; Apply velocity
 
 	addi.w	#$30,oYVel(a0)			; Make gravity stronger
-	btst	#6,oStatus(a0)			; Is Sonic underwater?
+	btst	#6,oFlags(a0)			; Is Sonic underwater?
 	beq.s	.NoWater			; If not, branch
 	subi.w	#$20,oYVel(a0)			; Make the gravity less strong underwater
 
@@ -2378,7 +2377,7 @@ ObjSonic_HurtChkLand:
 	bcs.w	KillPlayer			; If so, branch
 
 	bsr.w	Player_LevelColInAir		; Handle level collision
-	btst	#1,oStatus(a0)			; Are we still in the air?
+	btst	#1,oFlags(a0)			; Are we still in the air?
 	bne.s	.End				; If so, branch
 
 	moveq	#0,d0				; Stop movement
@@ -2418,11 +2417,11 @@ ObjSonic_DeadChkGone:
 	move.w	#-$38,oYVel(a0)			; Make us go upwards a little
 	addq.b	#2,oRoutine(a0)			; Set routine to gone
 
-	clr.b	updateTime			; Stop the level timer
-	addq.b	#1,updateLives			; Decrement life counter
-	subq.b	#1,lifeCount
+	clr.b	updateHUDTime			; Stop the level timer
+	addq.b	#1,updateHUDLives		; Decrement life counter
+	subq.b	#1,lives
 	bpl.s	.CapLives			; If we still have lives left, branch
-	clr.b	lifeCount			; Cap lives at 0
+	clr.b	lives				; Cap lives at 0
 
 .CapLives:
 	cmpi.b	#$2B,oAnim(a0)			; Were we giving up from boredom?
@@ -2431,7 +2430,7 @@ ObjSonic_DeadChkGone:
 	tst.b	timeAttackMode			; Are we in time attack mode?
 	beq.s	.LoadGameOver			; If not, branch
 
-	move.b	#0,lifeCount			; Set lives to 0
+	move.b	#0,lives			; Set lives to 0
 	bra.s	.ResetDelay			; Continue setting the delay timer
 
 .LoadGameOver:
@@ -2439,7 +2438,7 @@ ObjSonic_DeadChkGone:
 	move.b	#$3B,oID(a1)
 
 	move.w	#8*60,oPlayerReset(a0)		; Set game over delay timer to 8 seconds
-	tst.b	lifeCount			; Do we still have lives left?
+	tst.b	lives				; Do we still have lives left?
 	beq.s	.End				; If not, branch
 
 .ResetDelay:
@@ -2464,10 +2463,10 @@ ObjSonic_Restart:
 	move.b	#1,Z80RAM+$1C3E
 	jsr	StartZ80
 
-	bsr.w	ResetRespawnTable		; Reset the respawn table
+	bsr.w	ResetSavedObjFlags		; Reset saved object flags
 	clr.l	flowerCount			; Reset flower count
 
-	tst.b	lastCheckpoint			; Have we hit a checkpoint?
+	tst.b	checkpoint			; Have we hit a checkpoint?
 	bne.s	.Skip				; If so, branch
 	cmpi.b	#1,timeZone			; Are we in the present?
 	bne.s	.Skip				; If not, branch
@@ -2476,18 +2475,18 @@ ObjSonic_Restart:
 .Skip:
 	move.w	#$E,d0				; Set to fade out music
 
-	tst.b	lifeCount			; Are we out of lives?
+	tst.b	lives				; Are we out of lives?
 	beq.s	.SendCmd			; If so, branch
 	cmpi.b	#1,timeZone			; Are we in the present?
-	bne.s	.ClearFlag			; If not, branch
-	tst.b	lastCheckpoint			; Have we hit a checkpoint?
+	bne.s	.SpawnAtStart			; If not, branch
+	tst.b	checkpoint			; Have we hit a checkpoint?
 	beq.s	.SendCmd			; If not, branch
 
-	move.b	#1,resetLevelFlags		; Mark as restarted midway through the level
+	move.b	#1,spawnMode			; Spawn at checkpoint
 	bra.s	.SendCmd			; Continue setting the fade out command
 
-.ClearFlag:
-	clr.b	resetLevelFlags			; Set to fully restart the level
+.SpawnAtStart:
+	clr.b	spawnMode			; Spawn at beginning
 
 .SendCmd:
 	bra.w	SubCPUCmd			; Set the fade out command
@@ -2500,13 +2499,13 @@ ObjSonic_Restart:
 ; -------------------------------------------------------------------------
 
 ObjSonic_SpecialChunks:
-	cmpi.b	#3,levelZone			; Are we in Quartz Quadrant?
+	cmpi.b	#3,zone				; Are we in Quartz Quadrant?
 	beq.s	.HasSpecChunks			; If so, branch
-	cmpi.b	#5,levelZone			; Are we in Stardust Speedway?
+	cmpi.b	#5,zone				; Are we in Stardust Speedway?
 	beq.s	.HasSpecChunks			; If so, branch
-	cmpi.b	#2,levelZone			; Are we in Tidal Tempest?
+	cmpi.b	#2,zone				; Are we in Tidal Tempest?
 	beq.s	.HasSpecChunks			; If so, branch
-	tst.b	levelZone			; Are we in Palmtree Panic?
+	tst.b	zone				; Are we in Palmtree Panic?
 	bne.w	.End				; If not, branch
 
 .HasSpecChunks:
@@ -2523,7 +2522,7 @@ ObjSonic_SpecialChunks:
 
 	cmp.b	specialChunks+2.w,d1		; Are we in a special roll tunnel?
 	bne.s	.NotRoll			; If not, branch
-	tst.b	levelZone			; Are we in Palmtree Panic?
+	tst.b	zone				; Are we in Palmtree Panic?
 	bne.w	.RollTunnel			; If not, branch
 
 	move.w	oY(a0),d0			; Is our Y position greater than or equal to $90?
@@ -2545,33 +2544,33 @@ ObjSonic_SpecialChunks:
 	cmp.b	specialChunks+1.w,d1		; Are we on a special loop?
 	beq.s	.CheckIfInAir			; If so, branch
 
-	bclr	#6,oRender(a0)			; Set to lower path layer
+	bclr	#6,oSprFlags(a0)		; Set to lower path layer
 	rts
 
 .CheckIfInAir:
-	cmpi.b	#5,levelZone			; Are we in Stardust Speedway?
+	cmpi.b	#5,zone				; Are we in Stardust Speedway?
 	beq.w	.SSZ				; If so, branch
 
-	btst	#1,oStatus(a0)			; Are we in the air?
+	btst	#1,oFlags(a0)			; Are we in the air?
 	beq.s	.CheckIfLeft			; If not, branch
-	bclr	#6,oRender(a0)			; Set to lower path layer
+	bclr	#6,oSprFlags(a0)		; Set to lower path layer
 	rts
 
 .CheckIfLeft:
 	move.w	oX(a0),d2			; Are we left of the loop check section?
 	cmpi.b	#$2C,d2
 	bcc.s	.CheckIfRight			; If not, branch
-	bclr	#6,oRender(a0)			; Set to lower path layer
+	bclr	#6,oSprFlags(a0)		; Set to lower path layer
 	rts
 
 .CheckIfRight:
 	cmpi.b	#$E0,d2				; Are we right of the loop check section?
 	bcs.s	.CheckAngle			; If not, branch
-	bset	#6,oRender(a0)			; Set to higher path layer
+	bset	#6,oSprFlags(a0)		; Set to higher path layer
 	rts
 
 .CheckAngle:
-	btst	#6,oRender(a0)			; Are we on the higher path layer?
+	btst	#6,oSprFlags(a0)		; Are we on the higher path layer?
 	bne.s	.HighPath			; If so, branch
 
 	move.b	oAngle(a0),d1			; Get angle
@@ -2579,14 +2578,14 @@ ObjSonic_SpecialChunks:
 
 	cmpi.b	#$80,d1				; Are right of the path swap position?
 	bhi.s	.End				; If so, branch
-	bset	#6,oRender(a0)			; Set to higher path layer
+	bset	#6,oSprFlags(a0)		; Set to higher path layer
 	rts
 
 .HighPath:
 	move.b	oAngle(a0),d1			; Are left of the path swap position?
 	cmpi.b	#$80,d1
 	bls.s	.End				; If so, branch
-	bclr	#6,oRender(a0)			; Set to lower path layer
+	bclr	#6,oSprFlags(a0)		; Set to lower path layer
 
 .End:
 	rts
@@ -2595,7 +2594,7 @@ ObjSonic_SpecialChunks:
 
 .RollTunnel:
 	if REGION<>USA
-		btst	#2,oStatus(a0)		; Are we already rolling?
+		btst	#2,oFlags(a0)		; Are we already rolling?
 		bne.s	.Roll			; If so, branch
 		move.w	#$9C,d0			; Play roll sound
 		jsr	PlayFMSound
@@ -2623,11 +2622,11 @@ ObjSonic_SpecialChunks:
 	bcs.s	.End2				; If so, branch
 
 .SetHighPlane:
-	bclr	#6,oRender(a0)			; Set to lower path layer
+	bclr	#6,oSprFlags(a0)		; Set to lower path layer
 	rts
 
 .SetLowPlane:
-	bset	#6,oRender(a0)			; Set to higher path layer
+	bset	#6,oSprFlags(a0)		; Set to higher path layer
 	rts
 
 .CheckIfAbove:
@@ -2663,10 +2662,10 @@ ObjSonic_Animate:
 	move.b	(a1),d0				; Get animation speed/special flag
 	bmi.s	.SpecialAnim			; If it's a special flag, branch
 
-	move.b	oStatus(a0),d1			; Apply status flip flags to render flip flags
-	andi.b	#1,d1
-	andi.b	#$FC,oRender(a0)
-	or.b	d1,oRender(a0)
+	move.b	oFlags(a0),d1			; Apply horizontal flip flag
+	andi.b	#%00000001,d1
+	andi.b	#%11111100,oSprFlags(a0)
+	or.b	d1,oSprFlags(a0)
 
 	subq.b	#1,oAnimTime(a0)		; Decrement frame duration time
 	bpl.s	.AniDelay			; If it hasn't run out, branch
@@ -2730,8 +2729,8 @@ ObjSonic_Animate:
 
 	moveq	#0,d1				; Initialize flip flags
 	move.b	oAngle(a0),d0			; Get angle
-	move.b	oStatus(a0),d2			; Are we flipped horizontally?
-	andi.b	#1,d2
+	move.b	oFlags(a0),d2			; Are we flipped horizontally?
+	andi.b	#%00000001,d2
 	bne.s	.Flipped			; If so, branch
 	not.b	d0				; If not, flip the angle
 
@@ -2746,14 +2745,14 @@ ObjSonic_Animate:
 
 .CheckInvert:
 	bpl.s	.NoInvert			; If we aren't on an angle where we should flip the sprite, branch
-	moveq	#3,d1				; If we are, set the flip flags accordingly
+	moveq	#%00000011,d1			; If we are, set the flip flags accordingly
 
 .NoInvert:
-	andi.b	#$FC,oRender(a0)		; Apply angle flip flags to render flip flags
+	andi.b	#%11111100,oSprFlags(a0)	; Apply flip flags
 	eor.b	d1,d2
-	or.b	d2,oRender(a0)
+	or.b	d2,oSprFlags(a0)
 
-	btst	#5,oStatus(a0)			; Are we pushing on something?
+	btst	#5,oFlags(a0)			; Are we pushing on something?
 	bne.w	.PushAnim			; If so, branch
 
 	move.w	oPlayerGVel(a0),d2		; Get ground speed
@@ -2845,10 +2844,10 @@ ObjSonic_Animate:
 	lsr.w	#8,d2
 	move.b	d2,oAnimTime(a0)
 
-	move.b	oStatus(a0),d1			; Apply status flip flags to render flip flags
-	andi.b	#1,d1
-	andi.b	#$FC,oRender(a0)
-	or.b	d1,oRender(a0)
+	move.b	oFlags(a0),d1			; Apply horizontal flip flag
+	andi.b	#%00000001,d1
+	andi.b	#%11111100,oSprFlags(a0)
+	or.b	d1,oSprFlags(a0)
 
 	bra.w	.RunAnimScript			; Run animation script
 
@@ -2878,10 +2877,10 @@ ObjSonic_Animate:
 	lea	SonAni_Push,a1			; Get normal pushing sprites
 
 .GotPushAnim:
-	move.b	oStatus(a0),d1			; Apply status flip flags to render flip flags
-	andi.b	#1,d1
-	andi.b	#$FC,oRender(a0)
-	or.b	d1,oRender(a0)
+	move.b	oFlags(a0),d1			; Apply horizontal flip flag
+	andi.b	#%00000001,d1
+	andi.b	#%11111100,oSprFlags(a0)
+	or.b	d1,oSprFlags(a0)
 
 	bra.w	.RunAnimScript			; Run animation script
 
@@ -2899,8 +2898,8 @@ ObjSonic_Animate:
 .MiniSonicRun:
 	moveq	#0,d1				; Initialize flip flags
 	move.b	oAngle(a0),d0			; Get angle
-	move.b	oStatus(a0),d2			; Are we flipped horizontally?
-	andi.b	#1,d2
+	move.b	oFlags(a0),d2			; Are we flipped horizontally?
+	andi.b	#%00000001,d2
 	bne.s	.Flipped2			; If so, branch
 	not.b	d0				; If not, flip the angle
 
@@ -2910,14 +2909,14 @@ ObjSonic_Animate:
 	moveq	#0,d1				; If we are, then don't set the flags anyways
 
 .NoFlip2:
-	andi.b	#$FC,oRender(a0)		; Apply status horizontal flip flag to render flip flags
-	or.b	d2,oRender(a0)
+	andi.b	#%11111100,oSprFlags(a0)	; Apply horizontal flip flag
+	or.b	d2,oSprFlags(a0)
 
 	addi.b	#$30,d0				; Are we running on the floor?
 	cmpi.b	#$60,d0
 	bcs.s	.MiniOnFloor			; If so, branch
 
-	bset	#2,oStatus(a0)			; Mark as rolling
+	bset	#2,oFlags(a0)			; Mark as rolling
 	move.b	#$A,oYRadius(a0)		; Set miniature rolling hitbox size
 	move.b	#5,oXRadius(a0)
 	move.b	#$FF,d0				; Go run the rolling animation instead
@@ -3138,7 +3137,7 @@ ObjSonic_ChkFlipper:
 	sub.w	oX(a1),d3
 	add.w	d2,d3
 
-	btst	#0,oStatus(a1)			; Is the flipper object flipped horizontally?
+	btst	#0,oFlags(a1)			; Is the flipper object flipped horizontally?
 	bne.s	.XFlip				; If so, branch
 
 	move.w	#64,d1				; Invert the force to account for the horizontal flip

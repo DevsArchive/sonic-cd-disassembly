@@ -19,7 +19,7 @@ ObjPlatform:
 
 	jsr	DrawObject
 	move.w	oPtfmX(a0),d0
-	jmp	CheckObjDespawn2Time
+	jmp	CheckObjDespawn2
 
 ; -------------------------------------------------------------------------
 
@@ -38,7 +38,7 @@ ObjPlatform_Solid:
 ; -------------------------------------------------------------------------
 
 ObjPlatform_Init:
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.w	#$436A,oTile(a0)
 	move.l	#MapSpr_Platform,oMap(a0)
@@ -114,7 +114,7 @@ ObjPlatform_MoveX2:
 ; -------------------------------------------------------------------------
 
 ObjPlatform_GetOffset:
-	move.w	lvlFrameTimer,d0
+	move.w	levelFrames,d0
 	andi.w	#$FF,d0
 	jsr	CalcSine
 	add.w	d0,d0

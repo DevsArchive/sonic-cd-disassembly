@@ -21,7 +21,7 @@ ObjElectricBeams:
 	jsr	.Index(pc,d0.w)
 
 	jsr	DrawObject
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 
 ; -------------------------------------------------------------------------
 
@@ -34,7 +34,7 @@ ObjElectricBeams:
 
 ObjElectricBeams_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#4,oPriority(a0)
 	move.w	#$6358,oTile(a0)
 	move.l	#MapSpr_ElectricBeams,oMap(a0)
@@ -62,7 +62,7 @@ ObjElectricBeams_Main:
 	bne.s	.End
 
 .NotFuture:
-	tst.b	levelAct
+	tst.b	act
 	bne.s	.NotAct1
 	move.w	cameraY.w,d0
 	cmpi.w	#$400,d0
@@ -92,7 +92,7 @@ ObjElectricBeams_Main:
 	move.w	#90,oBeamChargeTime(a0)
 	clr.b	oBeamCharge(a0)
 
-	btst	#7,oRender(a0)
+	btst	#7,oSprFlags(a0)
 	beq.s	ObjElectricBeams_Flash
 	move.w	#FM_B2,d0
 	jsr	PlayFMSound

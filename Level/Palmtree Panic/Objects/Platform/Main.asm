@@ -29,17 +29,17 @@ ObjPlatform_SolidObj:
 ; -------------------------------------------------------------------------
 
 ObjPlatform_Init:
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.w	#$44BE,oTile(a0)
 	move.b	#2,oPriority(a0)
 	move.w	oX(a0),oVar38(a0)
 	move.w	oY(a0),oVar3A(a0)
 	move.w	oY(a0),oVar36(a0)
 	move.l	#MapSpr_Platform,d0
-	cmpi.w	#0,levelZone
+	cmpi.w	#0,zone
 	beq.s	.SetMaps
 	move.l	#MapSpr_Platform,d0
-	cmpi.w	#1,levelZone
+	cmpi.w	#1,zone
 	beq.s	.SetMaps
 	move.l	#MapSpr_Platform,d0
 
@@ -541,9 +541,9 @@ ObjPlatform_DoOsc:
 
 ObjPlatform_Destroy:
 	moveq	#0,d0
-	move.b	oRespawn(a0),d0
+	move.b	oSavedFlagsID(a0),d0
 	beq.s	.Delete
-	lea	lvlObjRespawns,a1
+	lea	savedObjFlags,a1
 	move.w	d0,d1
 	add.w	d1,d1
 	add.w	d1,d0

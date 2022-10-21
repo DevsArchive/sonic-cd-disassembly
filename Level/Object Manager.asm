@@ -2,11 +2,11 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; Object manager
+; Object spawner
 ; -------------------------------------------------------------------------
 
-ResetRespawnTable:
-	lea	lvlObjRespawns,a2
+ResetSavedObjFlags:
+	lea	savedObjFlags,a2
 	move.w	#$101,(a2)+
 	move.w	#$BE,d0
 
@@ -14,25 +14,25 @@ ResetRespawnTable:
 	clr.l	(a2)+
 	dbf	d0,.Clear
 	rts
-; End of function ResetRespawnTable
 
 ; -------------------------------------------------------------------------
 
-ObjectManager:
+SpawnObjects:
 	moveq	#0,d0
-	move.b	objManagerRout.w,d0
-	move.w	ObjMan_Index(pc,d0.w),d0
-	jmp	ObjMan_Index(pc,d0.w)
-; End of function ObjectManager
+	move.b	objSpawnRoutine.w,d0
+	move.w	.Index(pc,d0.w),d0
+	jmp	.Index(pc,d0.w)
 
 ; -------------------------------------------------------------------------
-ObjMan_Index:
-	dc.w	ObjMan_Init-ObjMan_Index
-	dc.w	ObjMan_Main-ObjMan_Index
+
+.Index:
+	dc.w	SpawnObjects_Init-.Index
+	dc.w	SpawnObjects_Main-.Index
+
 ; -------------------------------------------------------------------------
 
-ObjMan_Init:
-	addq.b	#2,objManagerRout.w
+SpawnObjects_Init:
+	addq.b	#2,objSpawnRoutine.w
 	lea	ObjectLayouts,a0
 	movea.l	a0,a1
 	adda.w	(a0),a0
@@ -41,7 +41,7 @@ ObjMan_Init:
 	adda.w	2(a1),a1
 	move.l	a1,objLoadAddr2R.w
 	move.l	a1,objLoadAddr2L.w
-	lea	lvlObjRespawns,a2
+	lea	savedObjFlags,a2
 	move.w	#$101,(a2)
 	moveq	#0,d2
 	move.w	cameraX.w,d6
@@ -65,8 +65,6 @@ ObjMan_Init:
 	addq.w	#8,a0
 	bra.s	.ScanRight
 
-; -------------------------------------------------------------------------
-
 .FoundRightmost:
 	move.l	a0,objLoadAddrR.w
 	movea.l	objLoadAddrL.w,a0
@@ -84,23 +82,20 @@ ObjMan_Init:
 	addq.w	#8,a0
 	bra.s	.ScanRight2
 
-; -------------------------------------------------------------------------
-
 .FoundRightmost2:
 	move.l	a0,objLoadAddrL.w
 	move.w	#-1,objPrevCamX.w
-; End of function ObjMan_Init
 
 ; -------------------------------------------------------------------------
 
-ObjMan_Main:
-	lea	lvlObjRespawns,a2
+SpawnObjects_Main:
+	lea	savedObjFlags,a2
 	moveq	#0,d2
 	move.w	cameraX.w,d6
 	andi.w	#$FF80,d6
 	cmp.w	objPrevCamX.w,d6
-	beq.w	ObjMan_SameXRange
-	bge.s	ObjMan_Forward
+	beq.w	SpawnObjects_SameXRange
+	bge.s	SpawnObjects_Forward
 	nop
 	nop
 	nop
@@ -115,25 +110,23 @@ ObjMan_Main:
 	bge.s	.ScanLeft
 	subq.w	#8,a0
 	tst.b	4(a0)
-	bpl.s	.NoRespawn
+	bpl.s	.NoFlags
 	subq.b	#1,1(a2)
 	move.b	1(a2),d2
 
-.NoRespawn:
-	bsr.w	LevelLoadObj
+.NoFlags:
+	bsr.w	SpawnObject
 	bne.s	.ScanDone
 	subq.w	#8,a0
 	bra.s	.Loop
 
-; -------------------------------------------------------------------------
-
 .ScanDone:
 	tst.b	4(a0)
-	bpl.s	.NoRespawn2
+	bpl.s	.NoFlags2
 	addq.b	#1,1(a2)
 	bclr	#7,2(a2,d3.w)
 
-.NoRespawn2:
+.NoFlags2:
 	addq.w	#8,a0
 
 .ScanLeft:
@@ -152,15 +145,11 @@ ObjMan_Main:
 	subq.w	#8,a0
 	bra.s	.Loop2
 
-; -------------------------------------------------------------------------
-
 .End:
 	move.l	a0,objLoadAddrR.w
 	rts
 
-; -------------------------------------------------------------------------
-
-ObjMan_Forward:
+SpawnObjects_Forward:
 	nop
 	nop
 	nop
@@ -173,12 +162,12 @@ ObjMan_Forward:
 	cmp.w	(a0),d6
 	bls.s	.ScanDone2
 	tst.b	4(a0)
-	bpl.s	.NoRespawn3
+	bpl.s	.NoFlags3
 	move.b	(a2),d2
 	addq.b	#1,(a2)
 
-.NoRespawn3:
-	bsr.w	LevelLoadObj
+.NoFlags3:
+	bsr.w	SpawnObject
 	beq.s	.Loop3
 	tst.b	4(a0)
 	bpl.s	.ScanDone2
@@ -202,18 +191,15 @@ ObjMan_Forward:
 	addq.w	#8,a0
 	bra.s	.ScanRight
 
-; -------------------------------------------------------------------------
-
 .End2:
 	move.l	a0,objLoadAddrL.w
 
-ObjMan_SameXRange:
+SpawnObjects_SameXRange:
 	rts
-; End of function ObjMan_Main
 
 ; -------------------------------------------------------------------------
 
-CheckObjOccurs:
+GetSavedObjFlags:
 	moveq	#0,d0
 	move.b	timeZone,d0
 	bclr	#7,d0
@@ -226,26 +212,23 @@ CheckObjOccurs:
 	andi.b	#7,d1
 	btst	d0,d1
 	rts
-; End of function CheckObjOccurs
 
 ; -------------------------------------------------------------------------
 
-LevelLoadObj:
-	bsr.s	CheckObjOccurs
-	beq.s	.SkipObj
+SpawnObject:
+	bsr.s	GetSavedObjFlags
+	beq.s	.Skip
 	tst.b	4(a0)
-	bpl.s	.Load
+	bpl.s	.Spawn
 	bset	#7,2(a2,d3.w)
-	beq.s	.Load
+	beq.s	.Spawn
 
-.SkipObj:
+.Skip:
 	addq.w	#8,a0
 	moveq	#0,d0
 	rts
 
-; -------------------------------------------------------------------------
-
-.Load:
+.Spawn:
 	bsr.w	FindObjSlot
 	bne.s	.End
 	move.w	(a0)+,oX(a1)
@@ -255,23 +238,23 @@ LevelLoadObj:
 	move.w	d0,oY(a1)
 	rol.w	#2,d1
 	andi.b	#3,d1
-	move.b	d1,oRender(a1)
-	move.b	d1,oStatus(a1)
+	move.b	d1,oSprFlags(a1)
+	move.b	d1,oFlags(a1)
 	move.b	(a0)+,d0
-	bpl.s	.NoRespawn
+	bpl.s	.NoSavedFlags
 	andi.b	#$7F,d0
-	move.b	d2,oRespawn(a1)
+	move.b	d2,oSavedFlagsID(a1)
 
-.NoRespawn:
+.NoSavedFlags:
 	move.b	d0,oID(a1)
 	cmpi.b	#$31,d0
-	bne.s	.SetFields
+	bne.s	.SetSubtypes
 	nop
 	nop
 	nop
 	nop
 
-.SetFields:
+.SetSubtypes:
 	move.b	(a0)+,oSubtype(a1)
 	move.b	(a0)+,d0
 	move.b	(a0)+,oSubtype2(a1)
@@ -279,7 +262,6 @@ LevelLoadObj:
 
 .End:
 	rts
-; End of function LevelLoadObj
 
 ; -------------------------------------------------------------------------
 
@@ -295,7 +277,6 @@ FindObjSlot:
 
 .End:
 	rts
-; End of function FindObjSlot
 
 ; -------------------------------------------------------------------------
 
@@ -316,52 +297,49 @@ FindNextObjSlot:
 
 .End:
 	rts
-; End of function FindNextObjSlot
 
 ; -------------------------------------------------------------------------
 
-CheckObjDespawnTime:
-	move.w	8(a0),d0
+CheckObjDespawn:
+	move.w	oX(a0),d0
 
-CheckObjDespawn2Time:
-	tst.b	oRender(a0)
-	bmi.s	CheckObjDespawn_OnScreen
+CheckObjDespawn2:
+	tst.b	oSprFlags(a0)
+	bmi.s	DespawnObjTimeWarp
 	andi.w	#$FF80,d0
 	move.w	cameraX.w,d1
 	subi.w	#$80,d1
 	andi.w	#$FF80,d1
 	sub.w	d1,d0
 	cmpi.w	#$280,d0
-	bls.s	CheckObjDespawn_OnScreen
+	bls.s	DespawnObjTimeWarp
 
-CheckObjDespawnTime_Despawn:
+DespawnObject:
 	moveq	#0,d0
-	move.b	oRespawn(a0),d0
+	move.b	oSavedFlagsID(a0),d0
 	beq.s	.DelObj
-	lea	lvlObjRespawns,a1
+	lea	savedObjFlags,a1
 	move.w	d0,d1
 	add.w	d1,d1
 	add.w	d1,d0
 	moveq	#0,d1
 	move.b	timeZone,d1
 	bclr	#7,d1
-	beq.s	.SetRespawn
+	beq.s	.MarkUnloaded
 	move.b	timeWarpDir.w,d2
 	ext.w	d2
 	neg.w	d2
 	add.w	d2,d1
 	bpl.s	.NoCap
 	moveq	#0,d1
-	bra.s	.SetRespawn
-
-; -------------------------------------------------------------------------
+	bra.s	.MarkUnloaded
 
 .NoCap:
 	cmpi.w	#3,d1
-	bcs.s	.SetRespawn
+	bcs.s	.MarkUnloaded
 	moveq	#2,d1
 
-.SetRespawn:
+.MarkUnloaded:
 	add.w	d1,d0
 	bclr	#7,2(a1,d0.w)
 
@@ -370,11 +348,9 @@ CheckObjDespawnTime_Despawn:
 	moveq	#1,d0
 	rts
 
-; -------------------------------------------------------------------------
-
-CheckObjDespawn_OnScreen:
+DespawnObjTimeWarp:
 	btst	#7,timeZone
-	bne.s	CheckObjDespawnTime_Despawn
+	bne.s	DespawnObject
 	moveq	#0,d0
 	rts
 

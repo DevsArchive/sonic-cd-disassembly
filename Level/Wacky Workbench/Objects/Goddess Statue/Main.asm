@@ -15,7 +15,7 @@ ObjGoddessStatue:
 	move.b	oRoutine(a0),d0
 	move.w	.Index(pc,d0.w),d0
 	jsr	.Index(pc,d0.w)
-	jmp	CheckObjDespawnTime
+	jmp	CheckObjDespawn
 	
 ; -------------------------------------------------------------------------
 
@@ -29,7 +29,7 @@ ObjGoddessStatue:
 
 ObjGoddessStatue_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oRender(a0)
+	ori.b	#4,oSprFlags(a0)
 	move.b	#50,oGoddessCount(a0)
 
 ; -------------------------------------------------------------------------
@@ -85,7 +85,7 @@ ObjGoddessStatue_SpawnRing:
 	move.l	#MapSpr_Ring,oMap(a1)
 	move.w	#$A7AE,oTile(a1)
 	move.b	#3,oPriority(a1)
-	move.b	#4,oRender(a1)
+	move.b	#4,oSprFlags(a1)
 	move.b	#$47,oColType(a1)
 	move.b	#8,oWidth(a1)
 	move.b	#8,oYRadius(a1)
