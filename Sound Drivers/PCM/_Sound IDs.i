@@ -24,7 +24,7 @@ PCMS_YES	rs.b	1			; "Yes"
 PCMS_YEAH	rs.b	1			; "Yeah"
 PCMS_GIGGLE	rs.b	1			; Amy giggle
 PCMS_AMYYELP	rs.b	1			; Amy yelp
-PCMS_STOMP	rs.b	1			; Boss stomp
+PCMS_STOMP	rs.b	1			; Mech stomp
 PCMS_BUMPER	rs.b	1			; Bumper
 PCMS_BREAK	rs.b	1			; Glass break
 		rs.b	4

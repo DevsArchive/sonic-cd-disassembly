@@ -456,7 +456,7 @@ BuRAMWriteParams:
 	dc.w	SPCmd_PlayYeahSFX-.SPCmds	; Play "Yeah" voice clip
 	dc.w	SPCmd_PlayGiggleSFX-.SPCmds	; Play Amy giggle voice clip
 	dc.w	SPCmd_PlayAmyYelpSFX-.SPCmds	; Play Amy yelp voice clip
-	dc.w	SPCmd_PlayStompSFX-.SPCmds	; Play boss stomp sound
+	dc.w	SPCmd_PlayStompSFX-.SPCmds	; Play mech stomp sound
 	dc.w	SPCmd_PlayBumperSFX-.SPCmds	; Play bumper sound
 	dc.w	SPCmd_PlayPastMus-.SPCmds	; Play past music
 	dc.w	SPCmd_LoadDAGarden-.SPCmds	; Load D.A. Garden
@@ -521,7 +521,7 @@ BuRAMWriteParams:
 	dc.w	SPCmd_TestYeahSFX-.SPCmds	; Play "Yeah" voice clip (sound test)
 	dc.w	SPCmd_TestGiggleSFX-.SPCmds	; Play Amy giggle voice clip (sound test)
 	dc.w	SPCmd_TestAmyYelpSFX-.SPCmds	; Play Amy yelp voice clip (sound test)
-	dc.w	SPCmd_TestStompSFX-.SPCmds	; Play boss stomp sound (sound test)
+	dc.w	SPCmd_TestStompSFX-.SPCmds	; Play mech stomp sound (sound test)
 	dc.w	SPCmd_TestBumperSFX-.SPCmds	; Play bumper sound (sound test)
 	dc.w	SPCmd_TestR1BMus-.SPCmds	; Play Palmtree Panic Past music (sound test)
 	dc.w	SPCmd_TestR3BMus-.SPCmds	; Play Collision Chaos Past music (sound test)
@@ -1583,7 +1583,7 @@ SPCmd_PlayAmyYelpSFX:
 	bra.w	SPCmdFinish
 
 ; -------------------------------------------------------------------------
-; Play boss stomp sound
+; Play mech stomp sound
 ; -------------------------------------------------------------------------
 
 SPCmd_PlayStompSFX:
@@ -2358,7 +2358,7 @@ SPCmd_TestAmyYelpSFX:
 	bra.w	SPCmdFinish
 
 ; -------------------------------------------------------------------------
-; Play stomp sound (sound test)
+; Play mech stomp sound (sound test)
 ; -------------------------------------------------------------------------
 
 SPCmd_TestStompSFX:

@@ -13,6 +13,8 @@
 ; Driver
 ; -------------------------------------------------------------------------
 
+BOSS	EQU	0
+
 	org	PCMDriver
 	dc.b	"SNCBNK31.S28    "
 	include	"Sound Drivers/PCM/_Driver.asm"
@@ -31,7 +33,7 @@ SFXIndex:
 	dc.l	SFX_Yeah
 	dc.l	SFX_AmyGiggle
 	dc.l	SFX_AmyYelp
-	dc.l	SFX_BossStomp
+	dc.l	SFX_MechStomp
 	dc.l	SFX_Bumper
 
 ; -------------------------------------------------------------------------
@@ -56,7 +58,7 @@ SFXPriorities:
 	dc.b	$70				; "Yeah"
 	dc.b	$70				; Amy giggle
 	dc.b	$70				; Amy yelp
-	dc.b	$70				; Boss stomp
+	dc.b	$70				; Mech stomp
 	dc.b	$70				; Bumper
 	even
 
@@ -132,7 +134,7 @@ SFX_AmyGiggle:
 SFX_AmyYelp:
 	include	"Sound Drivers/PCM/SFX/Amy Yelp.asm"
 	even
-SFX_BossStomp:
+SFX_MechStomp:
 	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
 	even
 SFX_Bumper:

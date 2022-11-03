@@ -432,7 +432,7 @@ SelectPCM:
 	dc.b	SCMD_YEAHSFXT			; "Yeah"
 	dc.b	SCMD_GIGGLESFXT			; Amy giggle
 	dc.b	SCMD_YELPSFXT			; Amy yelp
-	dc.b	SCMD_STOMPSFXT			; Boss stomp
+	dc.b	SCMD_STOMPSFXT			; Mech stomp
 	dc.b	SCMD_BUMPERSFXT			; Bumper
 	dc.b	SCMD_R1BMUST			; Palmtree Panic past music
 	dc.b	SCMD_R3BMUST			; Collision Chaos past music

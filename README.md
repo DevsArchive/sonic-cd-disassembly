@@ -18,6 +18,8 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
     - Wacky Workbench (SNCBNK6B)
     - Stardust Speedway (SNCBNK7B)
     - Metallic Madness (SNCBNK8B)
+    - Boss (SNCBNKB1)
+    - Final Boss (SNCBNKB2)
 * Title screen (TITLEM and TITLES)
     - Secrets
         - Stage select (STSEL)

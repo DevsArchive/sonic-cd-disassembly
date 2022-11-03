@@ -268,7 +268,7 @@ SCMD_YESSFX	rs.b	1			; Play "Yes" voice clip
 SCMD_YEAHSFX	rs.b	1			; Play "Yeah" voice clip
 SCMD_GIGGLESFX	rs.b	1			; Play Amy giggle voice clip
 SCMD_YELPSFX	rs.b	1			; Play Amy yelp voice clip
-SCMD_STOMPSFX	rs.b	1			; Play boss stomp sound
+SCMD_STOMPSFX	rs.b	1			; Play mech stomp sound
 SCMD_BUMPERSFX	rs.b	1			; Play bumper sound
 SCMD_PASTMUS	rs.b	1			; Play Past music
 SCMD_DAGARDEN	rs.b	1			; Load D.A. Garden
@@ -333,7 +333,7 @@ SCMD_YESSFXT	rs.b	1			; Play "Yes" voice clip (sound test)
 SCMD_YEAHSFXT	rs.b	1			; Play "Yeah" voice clip (sound test)
 SCMD_GIGGLESFXT	rs.b	1			; Play Amy giggle voice clip (sound test)
 SCMD_YELPSFXT	rs.b	1			; Play Amy yelp voice clip (sound test)
-SCMD_STOMPSFXT	rs.b	1			; Play boss stomp sound (sound test)
+SCMD_STOMPSFXT	rs.b	1			; Play mech stomp sound (sound test)
 SCMD_BUMPERSFXT	rs.b	1			; Play bumper sound (sound test)
 SCMD_R1BMUST	rs.b	1			; Play Palmtree Panic Past music (sound test)
 SCMD_R3BMUST	rs.b	1			; Play Collision Chaos Past music (sound test)

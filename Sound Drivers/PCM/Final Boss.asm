@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; SMPS-PCM driver (Palmtree Panic Zone)
+; SMPS-PCM driver (Final Boss)
 ; -------------------------------------------------------------------------
 
 	include	"_Include/Common.i"
@@ -13,10 +13,10 @@
 ; Driver
 ; -------------------------------------------------------------------------
 
-BOSS	EQU	0
+BOSS	EQU	1
 
 	org	PCMDriver
-	dc.b	"SNCBNK25.S28    "
+	dc.b	"SNCBNK36.S28    "
 	include	"Sound Drivers/PCM/_Driver.asm"
 
 ; -------------------------------------------------------------------------
@@ -41,9 +41,7 @@ SFXIndex:
 ; -------------------------------------------------------------------------
 
 SongPriorities:
-	dc.b	$80				; Palmtree Panic Zone Past
-	dc.b	$80				; Invalid
-	dc.b	$80				; Invalid
+	dc.b	$80				; Final Boss loop
 	even
 
 ; -------------------------------------------------------------------------
@@ -81,14 +79,14 @@ CmdPriorities:
 ; -------------------------------------------------------------------------
 
 SongIndex:
-	dc.l	Song_PPZPast
+	dc.l	Song_FinalBossLoop
 
 ; -------------------------------------------------------------------------
 ; Songs
 ; -------------------------------------------------------------------------
 
-Song_PPZPast:
-	include	"Sound Drivers/PCM/Music/Palmtree Panic Past.asm"
+Song_FinalBossLoop:
+	include	"Sound Drivers/PCM/Music/Final Boss Loop.asm"
 	even
 
 ; -------------------------------------------------------------------------
@@ -96,7 +94,7 @@ Song_PPZPast:
 ; -------------------------------------------------------------------------
 
 SFX_Unknown:
-	include	"Sound Drivers/PCM/SFX/Unknown (Palmtree Panic).asm"
+	include	"Sound Drivers/PCM/SFX/Unknown (Final Boss).asm"
 	even
 SFX_Future:
 	include	"Sound Drivers/PCM/SFX/Future.asm"
@@ -117,13 +115,13 @@ SFX_Yeah:
 	include	"Sound Drivers/PCM/SFX/Yeah.asm"
 	even
 SFX_AmyGiggle:
-	include	"Sound Drivers/PCM/SFX/Amy Giggle.asm"
+	include	"Sound Drivers/PCM/SFX/Blank 1.asm"
 	even
 SFX_AmyYelp:
-	include	"Sound Drivers/PCM/SFX/Amy Yelp.asm"
+	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
 	even
 SFX_MechStomp:
-	include	"Sound Drivers/PCM/SFX/Mech Stomp.asm"
+	include	"Sound Drivers/PCM/SFX/Mech Stomp (Boss).asm"
 	even
 SFX_Bumper:
 	include	"Sound Drivers/PCM/SFX/Blank 1.asm"
@@ -135,75 +133,43 @@ SFX_Bumper:
 
 SampleIndex:
 	SAMPTBLSTART
-	SAMPPTR	DrumLoop
-	SAMPPTR	Bass
-	SAMPPTR	Flute
-	SAMPPTR	Piano
-	SAMPPTR	TomDrum
-	SAMPPTR	ElecPianoLow
-	SAMPPTR	ElecPianoHigh
-	SAMPPTR	Strings
+	SAMPPTR	LoopR
+	SAMPPTR	LoopL
 	SAMPPTR	Future
 	SAMPPTR	Past
-	SAMPPTR	MechStomp
-	SAMPPTR	AmyGiggle
-	SAMPPTR	AmyYelp
 	SAMPPTR	Alright
 	SAMPPTR	OuttaHere
 	SAMPPTR	Yes
 	SAMPPTR	Yeah
+	SAMPPTR	MechStomp
 	SAMPTBLEND
 
 ; -------------------------------------------------------------------------
 ; Sample metadata
 ; -------------------------------------------------------------------------
 
-	SAMPLE	DrumLoop,	$0000, 0, 0, 0
-	SAMPLE	Bass,		$0000, 0, 0, 0
-	SAMPLE	Flute,		$0FA3, 0, 0, 0
-	SAMPLE	Piano,		$22CD, 0, 0, 0
-	SAMPLE	TomDrum,	$0000, 0, 0, 0
-	SAMPLE	ElecPianoLow,	$2EE9, 0, 0, 0
-	SAMPLE	ElecPianoHigh,	$3240, 0, 0, 0
-	SAMPLE	Strings,	$06CC, 0, 0, 0
+	SAMPLE	LoopR,		$0000, 0, 0, 0
+	SAMPLE	LoopL,		$0000, 0, 0, 0
 	SAMPLE	Future,		$0000, 0, 0, 0
 	SAMPLE	Past,		$0000, 0, 0, 0
-	SAMPLE	MechStomp,	$0000, 0, 0, 0
-	SAMPLE	AmyGiggle,	$0000, 0, 0, 0
-	SAMPLE	AmyYelp,	$0000, 0, 0, 0
 	SAMPLE	Alright,	$0000, 0, 0, 0
 	SAMPLE	OuttaHere,	$0000, 0, 0, 0
 	SAMPLE	Yes,		$0000, 0, 0, 0
 	SAMPLE	Yeah,		$0000, 0, 0, 0
+	SAMPLE	MechStomp,	$0000, 0, 0, 0
 
 ; -------------------------------------------------------------------------
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	DrumLoop,	"Sound Drivers/PCM/Samples/Palmtree Panic/Drum Loop.bin"
-	even
-	SAMPDAT	Bass,		"Sound Drivers/PCM/Samples/Palmtree Panic/Bass.bin"
-	even
-	SAMPDAT	Flute,		"Sound Drivers/PCM/Samples/Palmtree Panic/Flute.bin"
-	even
-	SAMPDAT	Piano,		"Sound Drivers/PCM/Samples/Palmtree Panic/Piano.bin"
-	even
-	SAMPDAT	TomDrum,	"Sound Drivers/PCM/Samples/Palmtree Panic/Tom Drum.bin"
-	even
-	SAMPDAT	ElecPianoLow,	"Sound Drivers/PCM/Samples/Palmtree Panic/Electric Piano (Low).bin"
-	even
-	SAMPDAT	ElecPianoHigh,	"Sound Drivers/PCM/Samples/Palmtree Panic/Electric Piano (High).bin"
-	even
-	SAMPDAT	Strings,	"Sound Drivers/PCM/Samples/Palmtree Panic/Strings.bin"
-	even
+	SAMPDAT	LoopR,		"Sound Drivers/PCM/Samples/Final Boss/Loop (Right).bin"
+	SAMPDAT	LoopL,		"Sound Drivers/PCM/Samples/Final Boss/Loop (Left).bin"
 	SAMPDAT	Future,		"Sound Drivers/PCM/Samples/Future.bin"
 	SAMPDAT	Past,		"Sound Drivers/PCM/Samples/Past.bin"
-	SAMPDAT	MechStomp,	"Sound Drivers/PCM/Samples/Mech Stomp.bin"
-	SAMPDAT	AmyGiggle,	"Sound Drivers/PCM/Samples/Amy Giggle.bin"
-	SAMPDAT	AmyYelp,	"Sound Drivers/PCM/Samples/Amy Yelp.bin"
 	SAMPDAT	Alright,	"Sound Drivers/PCM/Samples/Alright.bin"
 	SAMPDAT	OuttaHere,	"Sound Drivers/PCM/Samples/Outta Here.bin"
 	SAMPDAT	Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
 	SAMPDAT	Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
-
+	SAMPDAT	MechStomp,	"Sound Drivers/PCM/Samples/Mech Stomp.bin"
+	
 ; -------------------------------------------------------------------------

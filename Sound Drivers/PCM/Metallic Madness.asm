@@ -13,6 +13,8 @@
 ; Driver
 ; -------------------------------------------------------------------------
 
+BOSS	EQU	0
+
 	org	PCMDriver
 	dc.b	"SNCBNK32.S28    "
 	include	"Sound Drivers/PCM/_Driver.asm"
@@ -31,7 +33,7 @@ SFXIndex:
 	dc.l	SFX_Yeah
 	dc.l	SFX_AmyGiggle
 	dc.l	SFX_AmyYelp
-	dc.l	SFX_BossStomp
+	dc.l	SFX_MechStomp
 	dc.l	SFX_Bumper
 
 ; -------------------------------------------------------------------------
@@ -56,7 +58,7 @@ SFXPriorities:
 	dc.b	$70				; "Yeah"
 	dc.b	$70				; Amy giggle
 	dc.b	$70				; Amy yelp
-	dc.b	$70				; Boss stomp
+	dc.b	$70				; Mech stomp
 	dc.b	$70				; Bumper
 	even
 
@@ -118,8 +120,8 @@ SFX_AmyGiggle:
 SFX_AmyYelp:
 	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
 	even
-SFX_BossStomp:
-	include	"Sound Drivers/PCM/SFX/Boss Stomp.asm"
+SFX_MechStomp:
+	include	"Sound Drivers/PCM/SFX/Mech Stomp.asm"
 	even
 SFX_Bumper:
 	include	"Sound Drivers/PCM/SFX/Bumper (Metallic Madness).asm"
@@ -153,7 +155,7 @@ SampleIndex:
 	SAMPPTR	OuttaHere
 	SAMPPTR	Yes
 	SAMPPTR	Yeah
-	SAMPPTR	BossStomp
+	SAMPPTR	MechStomp
 	SAMPPTR	Bumper
 	SAMPTBLEND
 
@@ -183,7 +185,7 @@ SampleIndex:
 	SAMPLE	OuttaHere,	$0000, 0, 0, 0
 	SAMPLE	Yes,		$0000, 0, 0, 0
 	SAMPLE	Yeah,		$0000, 0, 0, 0
-	SAMPLE	BossStomp,	$0000, 0, 0, 0
+	SAMPLE	MechStomp,	$0000, 0, 0, 0
 	SAMPLE	Bumper,		$0000, 0, 0, 0
 
 ; -------------------------------------------------------------------------
@@ -212,7 +214,7 @@ SampleIndex:
 	SAMPDAT	OuttaHere,	"Sound Drivers/PCM/Samples/Outta Here.bin"
 	SAMPDAT	Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
 	SAMPDAT	Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
-	SAMPDAT	BossStomp,	"Sound Drivers/PCM/Samples/Boss Stomp.bin"
+	SAMPDAT	MechStomp,	"Sound Drivers/PCM/Samples/Mech Stomp.bin"
 	SAMPDAT	Bumper,		"Sound Drivers/PCM/Samples/Bumper.bin"
 	
 ; -------------------------------------------------------------------------

@@ -73,7 +73,8 @@ pdrvOn		rs.b	1			; Channels on/off array
 pdrvSFXPrio	rs.b	1			; Saved SFX priority level
 pdrvCommFlag	rs.b	1			; Communication flag
 pdrvCDDALoop	rs.b	1			; CDDA music loop flag
-		rs.b	3
+pdrvUnkCounter	rs.b	1			; Unknown counter
+		rs.b	2
 pdrvSndPlay	rs.b	1			; Sound play queue
 pdrvQueue	rs.b	4			; Sound queue slots
 pdrvSFXMode	rs.b	1			; SFX mode
