@@ -893,7 +893,7 @@ PlayCDDAMusic:
 	dc.w	PlayFinalMusic-.Index
 	dc.w	PlayDAGardenMusic-.Index
 	dc.w	PlayGameOverMusic-.Index
-	dc.w	PlayLevelEndMusic-.Index
+	dc.w	PlayResultsMusic-.Index
 	dc.w	PlayBossMusic-.Index
 	dc.w	PlayInvincMusic-.Index
 	dc.w	PlayShoesMusic-.Index
@@ -1118,8 +1118,8 @@ PlayTimeAtkMusic:
 ; Play level end music
 ; -------------------------------------------------------------------------
 
-PlayLevelEndMusic:
-	lea	MusID_LevelEnd(pc),a0
+PlayResultsMusic:
+	lea	MusID_Results(pc),a0
 	bra.s	LoopCDDA
 
 ; -------------------------------------------------------------------------
@@ -1240,8 +1240,8 @@ MusID_Title:
 	dc.w	CDDA_TITLE			; Title screen
 MusID_TimeAttack:
 	dc.w	CDDA_TMATK			; Time attack menu
-MusID_LevelEnd:
-	dc.w	CDDA_LVLEND			; Level end
+MusID_Results:
+	dc.w	CDDA_RESULTS			; Results
 MusID_Shoes:
 	dc.w	CDDA_SHOES			; Speed shoes
 MusID_Invinc:

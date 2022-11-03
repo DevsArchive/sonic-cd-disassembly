@@ -306,8 +306,8 @@ waterSlideFlag 		rs.b	1		; Water slide flag
 ctrlLocked 		rs.b	1		; Controls locked flag
 			rs.b	3
 scoreChain		rs.w	1		; Score chain
-bonusCount1		rs.w	1		; Bonus countdown 1
-bonusCount2		rs.w	1		; Bonus countdown 2
+timeBonus		rs.w	1		; Time bonus
+ringBonus		rs.w	1		; Ring bonus
 updateHUDBonus		rs.b	1		; Update results bonus flag
 			rs.b	3
 savedSR 		rs.w	1		; Saved status register

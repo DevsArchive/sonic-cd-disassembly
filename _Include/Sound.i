@@ -59,7 +59,7 @@ CDDA_BOSS	rs.b	1			; Boss
 CDDA_FINAL	rs.b	1			; Final boss
 CDDA_TITLE	rs.b	1			; Title screen
 CDDA_TMATK	rs.b	1			; Time attack menu
-CDDA_LVLEND	rs.b	1			; Level end
+CDDA_RESULTS	rs.b	1			; Results
 CDDA_SHOES	rs.b	1			; Speed shoes
 CDDA_INVINC	rs.b	1			; Invincibility
 CDDA_GAMEOVER	rs.b	1			; Game over

@@ -1,28 +1,33 @@
-MapSpr_Results1:
-	dc.w	unk_20F4FC-MapSpr_Results1
-	dc.w	unk_20F6B2-MapSpr_Results1
-	dc.w	unk_20F526-MapSpr_Results1
-	dc.w	unk_20F55A-MapSpr_Results1
-	dc.w	unk_20F58E-MapSpr_Results1
-MapSpr_Results2:
-	dc.w	unk_20F4FC-MapSpr_Results2
-	dc.w	unk_20F6FA-MapSpr_Results2
-	dc.w	unk_20F526-MapSpr_Results2
-	dc.w	unk_20F55A-MapSpr_Results2
-	dc.w	unk_20F58E-MapSpr_Results2
-MapSpr_Results3:
-	dc.w	unk_20F5C2-MapSpr_Results3
-	dc.w	unk_20F6B2-MapSpr_Results3
-	dc.w	unk_20F60A-MapSpr_Results3
-	dc.w	unk_20F642-MapSpr_Results3
-	dc.w	unk_20F67A-MapSpr_Results3
-MapSpr_Results4:
-	dc.w	unk_20F5C2-MapSpr_Results4
-	dc.w	unk_20F6FA-MapSpr_Results4
-	dc.w	unk_20F60A-MapSpr_Results4
-	dc.w	unk_20F642-MapSpr_Results4
-	dc.w	unk_20F67A-MapSpr_Results4
-unk_20F4FC:	dc.b	  8
+MapSpr_ResultsBad:
+	dc.w	unk_20F4FC-MapSpr_ResultsBad
+	dc.w	unk_20F6B2-MapSpr_ResultsBad
+	dc.w	unk_20F526-MapSpr_ResultsBad
+	dc.w	unk_20F55A-MapSpr_ResultsBad
+	dc.w	unk_20F58E-MapSpr_ResultsBad
+
+MapSpr_ResultsBadSSZ3:
+	dc.w	unk_20F4FC-MapSpr_ResultsBadSSZ3
+	dc.w	unk_20F6FA-MapSpr_ResultsBadSSZ3
+	dc.w	unk_20F526-MapSpr_ResultsBadSSZ3
+	dc.w	unk_20F55A-MapSpr_ResultsBadSSZ3
+	dc.w	unk_20F58E-MapSpr_ResultsBadSSZ3
+
+MapSpr_ResultsGood:
+	dc.w	unk_20F5C2-MapSpr_ResultsGood
+	dc.w	unk_20F6B2-MapSpr_ResultsGood
+	dc.w	unk_20F60A-MapSpr_ResultsGood
+	dc.w	unk_20F642-MapSpr_ResultsGood
+	dc.w	unk_20F67A-MapSpr_ResultsGood
+
+MapSpr_ResultsGoodSSZ3:
+	dc.w	unk_20F5C2-MapSpr_ResultsGoodSSZ3
+	dc.w	unk_20F6FA-MapSpr_ResultsGoodSSZ3
+	dc.w	unk_20F60A-MapSpr_ResultsGoodSSZ3
+	dc.w	unk_20F642-MapSpr_ResultsGoodSSZ3
+	dc.w	unk_20F67A-MapSpr_ResultsGoodSSZ3
+
+unk_20F4FC:
+	dc.b	  8
 	dc.b	$EC ; ì
 	dc.b	  5
 	dc.b	  0
@@ -64,7 +69,9 @@ unk_20F4FC:	dc.b	  8
 	dc.b	$16
 	dc.b	$34 ; 4
 	dc.b	  0
-unk_20F526:	dc.b	 $A
+
+unk_20F526:
+	dc.b	 $A
 	dc.b	  4
 	dc.b	  5
 	dc.b	  0
@@ -116,7 +123,9 @@ unk_20F526:	dc.b	 $A
 	dc.b	$34 ; 4
 	dc.b	$5C ; \
 	dc.b	  0
-unk_20F55A:	dc.b	 $A
+
+unk_20F55A:
+	dc.b	 $A
 	dc.b	  4
 	dc.b	  5
 	dc.b	  0
@@ -168,7 +177,9 @@ unk_20F55A:	dc.b	 $A
 	dc.b	$4A ; J
 	dc.b	$5C ; \
 	dc.b	  0
-unk_20F58E:	dc.b	 $A
+
+unk_20F58E:
+	dc.b	 $A
 	dc.b	  4
 	dc.b	  5
 	dc.b	  0
@@ -220,7 +231,9 @@ unk_20F58E:	dc.b	 $A
 	dc.b	$4E ; N
 	dc.b	$5C ; \
 	dc.b	  0
-unk_20F5C2:	dc.b	 $E
+
+unk_20F5C2:
+	dc.b	 $E
 	dc.b	$EC ; ì
 	dc.b	  5
 	dc.b	  0
@@ -292,7 +305,9 @@ unk_20F5C2:	dc.b	 $E
 	dc.b	$3E ; >
 	dc.b	$70 ; p
 	dc.b	  0
-unk_20F60A:	dc.b	 $B
+
+unk_20F60A:
+	dc.b	 $B
 	dc.b	  4
 	dc.b	  5
 	dc.b	  0
@@ -348,7 +363,9 @@ unk_20F60A:	dc.b	 $B
 	dc.b	  0
 	dc.b	$34 ; 4
 	dc.b	$68 ; h
-unk_20F642:	dc.b	 $B
+
+unk_20F642:
+	dc.b	 $B
 	dc.b	  4
 	dc.b	  5
 	dc.b	  0
@@ -404,7 +421,9 @@ unk_20F642:	dc.b	 $B
 	dc.b	  0
 	dc.b	$4A ; J
 	dc.b	$68 ; h
-unk_20F67A:	dc.b	 $B
+
+unk_20F67A:
+	dc.b	 $B
 	dc.b	  4
 	dc.b	  5
 	dc.b	  0
@@ -460,7 +479,9 @@ unk_20F67A:	dc.b	 $B
 	dc.b	  0
 	dc.b	$4E ; N
 	dc.b	$68 ; h
-unk_20F6B2:	dc.b	 $E
+
+unk_20F6B2:
+	dc.b	 $E
 	dc.b	$E0 ; à
 	dc.b	 $D
 	dc.b	  0
@@ -532,7 +553,9 @@ unk_20F6B2:	dc.b	 $E
 	dc.b	$C5 ; Å
 	dc.b	$60 ; `
 	dc.b	  0
-unk_20F6FA:	dc.b	 $E
+
+unk_20F6FA:
+	dc.b	 $E
 	dc.b	$E0 ; à
 	dc.b	 $D
 	dc.b	  0
@@ -604,3 +627,4 @@ unk_20F6FA:	dc.b	 $E
 	dc.b	$97 ; —
 	dc.b	$60 ; `
 	dc.b	  0
+	

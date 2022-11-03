@@ -22,7 +22,7 @@ DestroyOnGoodFuture:
 	move.b	#$18,oID(a0)
 	tst.b	oSprFlags(a0)
 	bpl.s	.NoReturn
-	move.w	#FM_9E,d0
+	move.w	#FM_EXPLODE,d0
 	jsr	PlayFMSound
 
 .NoReturn:
@@ -30,7 +30,6 @@ DestroyOnGoodFuture:
 
 .End:
 	rts
-; End of function DestroyOnGoodFuture
 
 ; -------------------------------------------------------------------------
 
@@ -44,18 +43,13 @@ CheckAnimalPrescence:
 	addq.l	#4,sp
 	jmp	CheckObjDespawn
 
-; -------------------------------------------------------------------------
-
 .ChkGoodFuture:
 	tst.b	goodFuture
 	bne.s	.End
 	addq.l	#4,sp
 	jmp	DeleteObject
 
-; -------------------------------------------------------------------------
-
 .End:
 	rts
-; End of function CheckAnimalPrescence
 
 ; -------------------------------------------------------------------------

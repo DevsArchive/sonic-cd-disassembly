@@ -279,7 +279,7 @@ UpdateHUD:
 
 .GotVRAMLoc:
 	moveq	#0,d1
-	move.w	bonusCount1.w,d1
+	move.w	timeBonus.w,d1
 	bsr.w	Hud_Bonus
 	move.l	#$48C00002,d0
 	cmpi.w	#$502,zoneAct
@@ -288,7 +288,7 @@ UpdateHUD:
 
 .NotSSZ3:
 	moveq	#0,d1
-	move.w	bonusCount2.w,d1
+	move.w	ringBonus.w,d1
 	bsr.w	Hud_Bonus
 
 .End:

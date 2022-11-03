@@ -419,7 +419,7 @@ scrollDisable:
 
 TallyScore:
 	if REGION<>EUROPE
-		move.b	#FM_BD,d0		; Play tally sound
+		move.b	#FM_TALLY,d0		; Play tally sound
 		bsr.w	PlayFMSound
 	endif
 	moveq	#20,d0				; Add 20 points

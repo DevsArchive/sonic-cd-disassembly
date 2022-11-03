@@ -287,7 +287,7 @@ ObjSemiBomb_Explode:
 	move.b	#1,oExplodeBadnik(a0)
 	tst.b	oSprFlags(a0)
 	bpl.s	.End
-	move.w	#FM_9E,d0
+	move.w	#FM_EXPLODE,d0
 	jsr	PlayFMSound
 	
 .End:

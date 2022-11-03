@@ -5,306 +5,322 @@
 ; Results object
 ; -------------------------------------------------------------------------
 
-ObjResults:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	move.w	ObjResults_Index(pc,d0.w),d0
-	jmp	ObjResults_Index(pc,d0.w)
-; End of function ObjResults
+oResultsDestX	EQU	oVar2A			; Destination X position
+oResultsTimer	EQU	oVar32			; Timer
 
 ; -------------------------------------------------------------------------
-ObjResults_Index:dc.w	ObjResults_Init-ObjResults_Index
-	dc.w	ObjResults_WaitPLC-ObjResults_Index
-	dc.w	ObjResults_MoveToDest-ObjResults_Index
-	dc.w	ObjResults_BonusCountdown-ObjResults_Index
-	dc.w	ObjResults_NextLevel-ObjResults_Index
+
+ObjResults:
+	moveq	#0,d0				; Run routine
+	move.b	oRoutine(a0),d0
+	move.w	.Index(pc,d0.w),d0
+	jmp	.Index(pc,d0.w)
+
+; -------------------------------------------------------------------------
+
+.Index:
+	dc.w	ObjResults_Init-.Index
+	dc.w	ObjResults_WaitPLC-.Index
+	dc.w	ObjResults_Move-.Index
+	dc.w	ObjResults_Bonus-.Index
+	dc.w	ObjResults_NextLevel-.Index
+
 ; -------------------------------------------------------------------------
 
 ObjResults_Init:
-	subq.b	#1,oVar32(a0)
-	beq.s	.LoadPLC
+	subq.b	#1,oResultsTimer(a0)		; Decrement delay timer
+	beq.s	.LoadPLC			; If it hasn't run out, branch
 	rts
 
-; -------------------------------------------------------------------------
-
 .LoadPLC:
-	moveq	#$10,d0
+	moveq	#$10,d0				; Load PLCs
 	jsr	LoadPLC
-	addq.b	#2,oRoutine(a0)
-; End of function ObjResults_Init
+	addq.b	#2,oRoutine(a0)			; Next routine
 
 ; -------------------------------------------------------------------------
 
 ObjResults_WaitPLC:
-	tst.l	plcBuffer.w
-	bne.s	.End
-	cmpi.w	#$502,zoneAct
-	beq.s	.LoadResults
-	lea	objPlayerSlot.w,a6
+	tst.l	plcBuffer.w			; Have the PLCs loaded?
+	bne.s	.End				; If not, branch
+	cmpi.w	#$502,zoneAct			; Are we in Stardust Speedway Act 3?
+	beq.s	.LoadResults			; If so, branch
+
+	lea	objPlayerSlot.w,a6		; Is the player offscreen?
 	move.w	cameraX.w,d0
-	addi.w	#$150,d0
+	addi.w	#336,d0
 	cmp.w	oX(a6),d0
-	bcs.s	.LoadResults
+	bcs.s	.LoadResults			; If so, branch
 
 .End:
 	rts
 
-; -------------------------------------------------------------------------
-
 .LoadResults:
-	lea	ObjResults_Data,a2
-	moveq	#2,d6
+	lea	ObjResults_InitData,a2		; Get results initialization data
+	moveq	#(ObjResults_InitDataEnd-ObjResults_InitData)/8-1,d6
 	moveq	#0,d1
 	movea.l	a0,a1
-	if REGION=USA
-		move.w	#$1E0,oVar32(a0)
-	else
-		move.w	#$168,oVar32(a0)
-	endif
-	bra.s	.InitLoop
 
-; -------------------------------------------------------------------------
+	if REGION=USA				; Set timer
+		move.w	#480,oResultsTimer(a0)
+	else
+		move.w	#360,oResultsTimer(a0)
+	endif
+	bra.s	.InitLoop			; Start initializing
 
 .Loop:
-	jsr	FindObjSlot
+	jsr	FindObjSlot			; Spawn results object
 
 .InitLoop:
-	if REGION=USA
-		move.w	#$1E0,oVar32(a1)
+	if REGION=USA				; Set timer
+		move.w	#480,oResultsTimer(a1)
 	else
-		move.w	#$168,oVar32(a1)
+		move.w	#360,oResultsTimer(a1)
 	endif
-	move.b	#$3A,oID(a1)
-	move.b	#4,oRoutine(a1)
-	move.w	#$83C4,oTile(a1)
-	cmpi.w	#$502,zoneAct
-	bne.s	.NotSSZ3
-	move.w	#$82F2,oTile(a1)
-	move.l	#MapSpr_Results2,oMap(a1)
+	move.b	#$3A,oID(a1)			; Set results object ID
+	move.b	#4,oRoutine(a1)			; Set routine
+	move.w	#$83C4,oTile(a1)		; Set base tile ID
+
+	cmpi.w	#$502,zoneAct			; Are we in Stardust Speedway Act 3?
+	bne.s	.NotSSZ3			; If not, branch
+
+	move.w	#$82F2,oTile(a1)		; Set base tile ID
+	move.l	#MapSpr_ResultsBadSSZ3,oMap(a1)	; Set mappings
 	tst.b	goodFuture
 	beq.s	.GotMaps
-	move.l	#MapSpr_Results4,oMap(a1)
+	move.l	#MapSpr_ResultsGoodSSZ3,oMap(a1)
 	bra.s	.GotMaps
 
-; -------------------------------------------------------------------------
-
 .NotSSZ3:
-	move.l	#MapSpr_Results1,oMap(a1)
+	move.l	#MapSpr_ResultsBad,oMap(a1)	; Set mappings
 	tst.b	goodFuture
 	beq.s	.GotMaps
-	move.l	#MapSpr_Results3,oMap(a1)
+	move.l	#MapSpr_ResultsGood,oMap(a1)
 
 .GotMaps:
-	move.w	d1,d2
+	move.w	d1,d2				; Get initialization data offset
 	lsl.w	#3,d2
-	move.w	(a2,d2.w),oYScr(a1)
-	move.w	2(a2,d2.w),oX(a1)
-	move.w	4(a2,d2.w),oVar2A(a1)
-	move.b	7(a2,d2.w),oMapFrame(a1)
-	cmpi.b	#2,d1
-	bne.s	.GotFrame
-	move.b	act,d2
+	
+	move.w	(a2,d2.w),oYScr(a1)		; Y position
+	move.w	2(a2,d2.w),oX(a1)		; X position
+	move.w	4(a2,d2.w),oResultsDestX(a1)	; Destination X position 
+	move.b	7(a2,d2.w),oMapFrame(a1)	; Sprite frame ID
+
+	cmpi.b	#2,d1				; Does this line have the act number in it?
+	bne.s	.GotFrame			; If not, branch
+	move.b	act,d2				; If so, display correct act number
 	add.b	d2,oMapFrame(a1)
 
 .GotFrame:
-	addq.b	#1,d1
-	dbf	d6,.Loop
+	addq.b	#1,d1				; Next object
+	dbf	d6,.Loop			; Loop until results are fully spawned
 	rts
-; End of function ObjResults_WaitPLC
 
 ; -------------------------------------------------------------------------
 
-ObjResults_MoveToDest:
-	tst.w	oVar32(a0)
-	beq.s	.TimerDone
-	subq.w	#1,oVar32(a0)
+ObjResults_Move:
+	tst.w	oResultsTimer(a0)		; Has the timer run out?
+	beq.s	.MoveX				; If so, branch
+	subq.w	#1,oResultsTimer(a0)		; Decrement timer
 
-.TimerDone:
-	moveq	#8,d0
-	move.w	oVar2A(a0),d1
+.MoveX:
+	moveq	#8,d0				; Movement speed
+	move.w	oResultsDestX(a0),d1		; Is this object at its destination?
 	cmp.w	oX(a0),d1
-	beq.s	.InPlace
-	bge.s	.GotSpeed
-	neg.w	d0
+	beq.s	.AtDestX			; If so, branch
+	bge.s	.AddX				; If it's left of it, branch
+	neg.w	d0				; If it's right of it, move left
 
-.GotSpeed:
-	add.w	d0,oX(a0)
+.AddX:
+	add.w	d0,oX(a0)			; Move
 
-.TestDisplay:
-	if REGION=USA
-		cmpi.w	#$1D8,oVar32(a0)
+.CheckDraw:
+	if REGION=USA				; Is it time to draw the sprite?
+		cmpi.w	#472,oResultsTimer(a0)
 	else
-		cmpi.w	#$160,oVar32(a0)
+		cmpi.w	#352,oResultsTimer(a0)
 	endif
-	bcc.s	.End
-	jmp	DrawObject
-
-; -------------------------------------------------------------------------
+	bcc.s	.End				; If not, branch
+	jmp	DrawObject			; Draw object
 
 .End:
 	rts
 
-; -------------------------------------------------------------------------
-
-.InPlace:
-	tst.b	oMapFrame(a0)
-	bne.s	.TestDisplay
-	addq.b	#2,oRoutine(a0)
-	bra.s	.TestDisplay
-; End of function ObjResults_MoveToDest
+.AtDestX:
+	tst.b	oMapFrame(a0)			; Is this the main object?
+	bne.s	.CheckDraw			; If not, branch
+	addq.b	#2,oRoutine(a0)			; If so, set next routine
+	bra.s	.CheckDraw
 
 ; -------------------------------------------------------------------------
 
-ObjResults_BonusCountdown:
-	move.b	#1,updateHUDBonus.w
-	moveq	#0,d0
-	tst.w	bonusCount1.w
-	bne.s	.GiveBonus1
-	tst.w	bonusCount2.w
-	bne.s	.GiveBonus2
-	subq.w	#1,oVar32(a0)
+ObjResults_Bonus:
+	move.b	#1,updateHUDBonus.w		; Update bonus counter
+
+	moveq	#0,d0				; Reset number of points to add
+
+	tst.w	timeBonus.w			; Are there still points in the time bonus?
+	bne.s	.TimeBonus			; If so, branch
+	tst.w	ringBonus.w			; Are there still points in the ring bonus?
+	bne.s	.RingBonus			; If so, branch
+
+	subq.w	#1,oResultsTimer(a0)		; Decrement timer
 	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
-		bpl.s	.KeepRout
+		bpl.s	.ChkWarpSound		; If it hasn't run out, branch
 	else
-		bpl.s	.Display
+		bpl.s	.Draw			; If it hasn't run out, branch
 	endif
 	addq.b	#2,oRoutine(a0)
 
-.KeepRout:
+.ChkWarpSound:
 	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
-		cmpi.w	#$1E,oVar32(a0)
-		bne.s	.Display
+		cmpi.w	#30,oResultsTimer(a0)	; Should we play the special stage warp sound?
+		bne.s	.Draw			; If not, branch
 	endif
-	tst.b	specialStage
-	beq.s	.Display
-	move.w	#FM_SSWARP,d0
+	tst.b	specialStage			; Is the special stage flag set?
+	beq.s	.Draw				; If not, branch
+	move.w	#FM_SSWARP,d0			; Play special stage warp sound
 	jsr	PlayFMSound
 
-.Display:
-	jmp	DrawObject
+.Draw:
+	jmp	DrawObject			; Draw sprite
 
-; -------------------------------------------------------------------------
+.TimeBonus:
+	addi.w	#10,d0				; Add time bonus points
+	subi.w	#100,timeBonus.w
+	tst.w	ringBonus.w			; Are there still points in the ring bonus?
+	beq.s	.ChkDone			; If not, branch
 
-.GiveBonus1:
-	addi.w	#10,d0
-	subi.w	#100,bonusCount1.w
-	tst.w	bonusCount2.w
-	beq.s	.ChkDone
-
-.GiveBonus2:
-	addi.w	#10,d0
-	subi.w	#100,bonusCount2.w
+.RingBonus:
+	addi.w	#10,d0				; Add ring bonus points
+	subi.w	#100,ringBonus.w
 
 .ChkDone:
-	move.l	d0,d1
-	tst.w	bonusCount1.w
-	bne.s	.HaveBonus
-	tst.w	bonusCount2.w
-	bne.s	.HaveBonus
+	move.l	d0,d1				; Save points to add
+
+	tst.w	timeBonus.w			; Are there still points in the time bonus?
+	bne.s	.HaveBonus			; If so, branch
+	tst.w	ringBonus.w			; Are there still points in the ring bonus?
+	bne.s	.HaveBonus			; If so, branch
+
 	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
-		jsr	StopZ80
+		jsr	StopZ80			; Play "ka-ching" sound
 		move.b	#FM_KACHING,FMDrvQueue1
 		jsr	StartZ80
-		cmpi.w	#$2D,oVar32(a0)
-		bcc.s	.NoSFX
-		move.w	#$2D,oVar32(a0)
-		bra.s	.NoSFX
+
+		cmpi.w	#45,oResultsTimer(a0)
+		bcc.s	.AddPoints
+		move.w	#45,oResultsTimer(a0)
+		bra.s	.AddPoints
+
 	else
-		move.w	#FM_KACHING,d0
+		move.w	#FM_KACHING,d0		; Play "ka-ching" sound
 		jsr	PlayFMSound
-		bra.s	.NoSFX
+		bra.s	.AddPoints
 	endif
 
-; -------------------------------------------------------------------------
-
 .HaveBonus:
-	tst.w	oVar32(a0)
-	beq.s	.TestSFX
-	subq.w	#1,oVar32(a0)
+	tst.w	oResultsTimer(a0)		; Has the timer run out?
+	beq.s	.PlayTallySound			; If it has, branch
+	subq.w	#1,oResultsTimer(a0)		; Decrement timer
 
-.TestSFX:
-	btst	#0,oVar32(a0)
-	bne.s	.NoSFX
-	move.w	#FM_BD,d0
+.PlayTallySound:
+	btst	#0,oResultsTimer(a0)		; Is this an even frame?
+	bne.s	.AddPoints			; If not, branch
+	move.w	#FM_TALLY,d0			; Play tally sound
 	jsr	PlayFMSound
 
-.NoSFX:
-	move.l	d1,d0
+.AddPoints:
+	move.l	d1,d0				; Add points
 	jsr	AddPoints
-	jmp	DrawObject
-; End of function ObjResults_BonusCountdown
+	jmp	DrawObject			; Draw sprite
 
 ; -------------------------------------------------------------------------
 
 ObjResults_NextLevel:
-	move.w	#2,levelRestart
-	move.b	#0,spawnMode
-	clr.w	sectionID
-	clr.l	flowerCount
-	clr.b	unkLevelFlag
-	clr.b	projDestroyed
-	clr.b	checkpoint
-	tst.b	timeAttackMode
-	beq.s	.NotTimeAttack
-	bclr	#0,plcLoadFlags
+	move.w	#2,levelRestart			; Go to next level
+	move.b	#0,spawnMode			; Spawn from beginning
+
+	clr.w	sectionID			; Reset section ID
+	clr.l	flowerCount			; Reset flower count
+	clr.b	unkLevelFlag			; Clear unknown flag
+	clr.b	projDestroyed			; Reset projector destroyed flag
+	clr.b	checkpoint			; Reset checkpoint ID
+
+	tst.b	timeAttackMode			; Are we in time attack mode?
+	beq.s	.NotTimeAttack			; If not, branch
+	bclr	#0,plcLoadFlags			; Mark PLCs as not loaded
 
 .NotTimeAttack:
-	bclr	#1,plcLoadFlags
-	move.b	#1,timeZone
-	move.w	zoneAct,d0
+	bclr	#1,plcLoadFlags			; Mark title card as not loaded
+
+	move.b	#TIME_PRESENT,timeZone		; Go to the present
+	move.w	zoneAct,d0			; Next act
 	addq.b	#1,d0
-	cmpi.b	#2,d0
-	bne.s	.NotAct3
-	move.b	#2,timeZone
+	cmpi.b	#2,d0				; Are we in act 3?
+	bne.s	.NotAct3			; If not, branch
+	move.b	#TIME_FUTURE,timeZone		; If so, go to the future
 
 .NotAct3:
-	cmpi.b	#3,d0
-	bne.s	.SameZone
-	move.b	#0,d0
-	addi.w	#$100,d0
-	move.b	#0,d0
+	cmpi.b	#3,d0				; Is the zone done?
+	bne.s	.SetLevel			; If not, branch
 
-.SameZone:
-	move.w	d0,zoneAct
-	jsr	ResetSavedObjFlags
-	jsr	FadeOutMusic
-	jsr	DrawObject
-	move.b	act,d0
+	move.b	#0,d0				; Set to act 1
+	addi.w	#$100,d0			; Next zone
+	move.b	#0,d0				; Set to act 1
+
+.SetLevel:
+	move.w	d0,zoneAct			; Set level ID
+
+	jsr	ResetSavedObjFlags		; Reset saved object flags
+	jsr	FadeOutMusic			; Fade music out
+
+	jsr	DrawObject			; Draw sprite
+	move.b	act,d0				; Were we in act 3?
 	subq.b	#1,d0
-	bpl.s	.NotAct1
-	clr.b	goodFutureFlags
+	bpl.s	.CheckGoodFuture		; If not, branch
+	clr.b	goodFutureFlags			; Reset good future flags
 	rts
 
-; -------------------------------------------------------------------------
-
-.NotAct1:
+.CheckGoodFuture:
 	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
-		tst.b	timeAttackMode
-		bne.s	.End
-		cmpi.b	#$7F,timeStones
-		beq.s	.SetGoodFuture
+		tst.b	timeAttackMode		; Are we in time attack mode?
+		bne.s	.End			; If so, branch
+		cmpi.b	#%1111111,timeStones	; Do we have all the time stones?
+		beq.s	.SetGoodFuture		; If so, branch
 	endif
-	tst.b	goodFuture
-	beq.s	.End
-	clr.b	goodFuture
-	bset	d0,goodFutureFlags
-	cmpi.b	#3,goodFutureFlags
-	bne.s	.End
+
+	tst.b	goodFuture			; Is the good future flag set?
+	beq.s	.End				; If not, branch
+
+	clr.b	goodFuture			; Clear good future flag
+	bset	d0,goodFutureFlags		; Mark act as having a good future
+	cmpi.b	#%11,goodFutureFlags		; Were good futures achieved for acts 1 and 2?
+	bne.s	.End				; If not, branch
 
 .SetGoodFuture:
-	move.b	#1,goodFuture
+	move.b	#1,goodFuture			; Set good future flag for act 3
 
 .End:
 	rts
-; End of function ObjResults_NextLevel
+
+; -------------------------------------------------------------------------
+; Results initialization data
+; -------------------------------------------------------------------------
+
+RESOBJ macro x, destx, y, frame
+	dc.w	\y, \x, \destx, \frame
+	endm
 
 ; -------------------------------------------------------------------------
 
-ObjResults_Data:
-	dc.w	$CC, 0, $120, 0
-	dc.w	$110, $200, $F0, 1
-	dc.w	$CC, 0, $120, 2
+ObjResults_InitData:
+	RESOBJ	0,   288, 204, 0		; "SONIC GOT"/"SONIC MADE A GOOD"
+	RESOBJ	512, 240, 272, 1		; Score counters
+	RESOBJ	0,   288, 204, 2		; "THROUGH Zone X"/"FUTURE IN Zone X"
+ObjResults_InitDataEnd:
 
+; -------------------------------------------------------------------------
+; Data
 ; -------------------------------------------------------------------------
 
 	include	"Level/_Objects/Results/Data/Mappings.asm"

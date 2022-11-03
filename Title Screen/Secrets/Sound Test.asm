@@ -321,8 +321,8 @@ SelectFM:
 	dc.b	FM_KACHING			; Ka-ching
 	dc.b	FM_9B				; 9B
 	dc.b	FM_9B				; 9B
-	dc.b	FM_SIGNPOST			; 9D
-	dc.b	FM_9E				; 9E
+	dc.b	FM_SIGNPOST			; Signpost
+	dc.b	FM_EXPLODE			; Explosion
 	dc.b	FM_9F				; 9F
 	dc.b	FM_A0				; A0
 	dc.b	FM_A1				; A1
@@ -339,7 +339,7 @@ SelectFM:
 	dc.b	FM_AC				; AC
 	dc.b	FM_AD				; AD
 	dc.b	FM_CHECKPOINT			; Checkpoint
-	dc.b	FM_AF				; AF
+	dc.b	FM_BIGRING			; Big ring
 	dc.b	FM_B0				; B0
 	dc.b	FM_B1				; B1
 	dc.b	FM_B2				; B2
@@ -353,7 +353,7 @@ SelectFM:
 	dc.b	FM_BA				; BA
 	dc.b	FM_BB				; BB
 	dc.b	FM_BC				; BC
-	dc.b	FM_BD				; BD
+	dc.b	FM_TALLY			; Tally
 	dc.b	FM_BE				; BE
 	dc.b	FM_BF				; BF
 	dc.b	FM_C0				; C0
@@ -499,7 +499,7 @@ SelectCDDA:
 	dc.b	SCMD_FINALMUST			; Final boss music
 	dc.b	SCMD_TITLEMUST			; Title screen music
 	dc.b	SCMD_TMATKMUST			; Time attack music
-	dc.b	SCMD_LVLENDMUST			; Level end music
+	dc.b	SCMD_RESULTMUST			; Results music
 	dc.b	SCMD_SHOESMUST			; Speed shoes music
 	dc.b	SCMD_INVINCMUST			; Invincibility music
 	dc.b	SCMD_GMOVERMUST			; Game over music

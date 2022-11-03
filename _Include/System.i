@@ -249,7 +249,7 @@ SCMD_BOSSMUS	rs.b	1			; Play boss music
 SCMD_FINALMUS	rs.b	1			; Play final boss music
 SCMD_TITLEMUS	rs.b	1			; Play title screen music
 SCMD_TMATKMUS	rs.b	1			; Play time attack menu music
-SCMD_LVLENDMUS	rs.b	1			; Play level end music
+SCMD_RESULTMUS	rs.b	1			; Play results music
 SCMD_SHOESMUS	rs.b	1			; Play speed shoes music
 SCMD_INVINCMUS	rs.b	1			; Play invincibility music
 SCMD_GMOVERMUS	rs.b	1			; Play game over music
@@ -316,7 +316,7 @@ SCMD_BOSSMUST	rs.b	1			; Play boss music (sound test)
 SCMD_FINALMUST	rs.b	1			; Play final boss music (sound test)
 SCMD_TITLEMUST	rs.b	1			; Play title screen music (sound test)
 SCMD_TMATKMUST	rs.b	1			; Play time attack music (sound test)
-SCMD_LVLENDMUST	rs.b	1			; Play level end music (sound test)
+SCMD_RESULTMUST	rs.b	1			; Play results music (sound test)
 SCMD_SHOESMUST	rs.b	1			; Play speed shoes music (sound test)
 SCMD_INVINCMUST	rs.b	1			; Play invincibility music (sound test)
 SCMD_GMOVERMUST	rs.b	1			; Play game over music (sound test)

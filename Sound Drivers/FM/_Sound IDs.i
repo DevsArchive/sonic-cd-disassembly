@@ -22,7 +22,7 @@ FM_KACHING	rs.b	1
 FM_9B		rs.b	1
 FM_9C		rs.b	1
 FM_SIGNPOST	rs.b	1
-FM_9E		rs.b	1
+FM_EXPLODE	rs.b	1			; Explosion
 FM_9F		rs.b	1
 FM_A0		rs.b	1
 FM_A1		rs.b	1
@@ -39,7 +39,7 @@ FM_AB		rs.b	1
 FM_AC		rs.b	1
 FM_AD		rs.b	1
 FM_CHECKPOINT	rs.b	1			; Checkpoint
-FM_AF		rs.b	1
+FM_BIGRING	rs.b	1			; Big ring
 FM_B0		rs.b	1
 FM_B1		rs.b	1
 FM_B2		rs.b	1
@@ -53,7 +53,7 @@ FM_B9		rs.b	1
 FM_BA		rs.b	1
 FM_BB		rs.b	1
 FM_BC		rs.b	1
-FM_BD		rs.b	1
+FM_TALLY	rs.b	1			; Tally
 FM_BE		rs.b	1
 FM_BF		rs.b	1
 FM_C0		rs.b	1

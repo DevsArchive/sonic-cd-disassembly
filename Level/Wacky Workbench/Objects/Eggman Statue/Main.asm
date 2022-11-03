@@ -100,7 +100,7 @@ ObjEggmanStatue_Explode:
 	move.w	oY(a0),oY(a1)
 	add.w	d5,oX(a1)
 	add.w	d6,oY(a1)
-	move.w	#FM_9E,d0
+	move.w	#FM_EXPLODE,d0
 	jsr	PlayFMSound
 	
 .End:
@@ -247,7 +247,7 @@ ObjSpikeBomb_Explode:
 	move.b	#$18,oID(a0)
 	move.b	#0,oRoutine(a0)
 	move.b	#1,oExplodeBadnik(a0)
-	move.w	#FM_9E,d0
+	move.w	#FM_EXPLODE,d0
 	jmp	PlayFMSound
 
 ; -------------------------------------------------------------------------
