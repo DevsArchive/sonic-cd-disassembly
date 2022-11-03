@@ -14,6 +14,7 @@ This is a WIP disassembly of Sonic CD for the Sega CD. Builds a working ISO, as 
     - Palmtree Panic (SNCBNK1B)
     - Collision Chaos (SNCBNK3B)
     - Tidal Tempest (SNCBNK4B)
+    - Quartz Quadrant (SNCBNK5B)
     - Wacky Workbench (SNCBNK6B)
 * Title screen (TITLEM and TITLES)
     - Secrets

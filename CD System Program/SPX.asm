@@ -437,7 +437,7 @@ BuRAMWriteParams:
 	dc.w	SPCmd_PlayFinalMus-.SPCmds	; Play final boss music
 	dc.w	SPCmd_PlayTitleMus-.SPCmds	; Play title screen music
 	dc.w	SPCmd_PlayTimeAtkMus-.SPCmds	; Play time attack menu music
-	dc.w	SPCmd_TestResultsMus-.SPCmds	; Play results music
+	dc.w	SPCmd_PlayResultsMus-.SPCmds	; Play results music
 	dc.w	SPCmd_PlayShoesMus-.SPCmds	; Play speed shoes music
 	dc.w	SPCmd_PlayInvincMus-.SPCmds	; Play invincibility music
 	dc.w	SPCmd_PlayGameOverMus-.SPCmds	; Play game over music

@@ -18,6 +18,7 @@ fc /b _Original\%REGPATH%\WARP__.MMD _Built\Files\WARP__.MMD
 fc /b _Original\%REGPATH%\SNCBNK1B.BIN _Built\Files\SNCBNK1B.BIN
 fc /b _Original\%REGPATH%\SNCBNK3B.BIN _Built\Files\SNCBNK3B.BIN
 fc /b _Original\%REGPATH%\SNCBNK4B.BIN _Built\Files\SNCBNK4B.BIN
+fc /b _Original\%REGPATH%\SNCBNK5B.BIN _Built\Files\SNCBNK5B.BIN
 fc /b _Original\%REGPATH%\SNCBNK6B.BIN _Built\Files\SNCBNK6B.BIN
 fc /b _Original\%REGPATH%\TITLEM.MMD _Built\Files\TITLEM.MMD
 fc /b _Original\%REGPATH%\TITLES.BIN _Built\Files\TITLES.BIN
