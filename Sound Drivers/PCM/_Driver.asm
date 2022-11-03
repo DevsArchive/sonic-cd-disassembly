@@ -108,7 +108,7 @@ UpdateTrack:
 .Update:
 	jsr	UpdateSample(pC)		; Update sample
 
-	; BUG: The developerss removed modulation support and optimized
+	; BUG: The developers removed vibrato support and optimized
 	; this call, but they accidentally left in the stack pointer shift
 	; in the routine. See the routine for more information.
 
