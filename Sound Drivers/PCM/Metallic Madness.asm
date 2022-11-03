@@ -2,7 +2,7 @@
 ; Sonic CD Disassembly
 ; By Ralakimus 2021
 ; -------------------------------------------------------------------------
-; SMPS-PCM driver (Stardust Speedway Zone)
+; SMPS-PCM driver (Metallic Madness Zone)
 ; -------------------------------------------------------------------------
 
 	include	"_Include/Common.i"
@@ -14,7 +14,7 @@
 ; -------------------------------------------------------------------------
 
 	org	PCMDriver
-	dc.b	"SNCBNK31.S28    "
+	dc.b	"SNCBNK32.S28    "
 	include	"Sound Drivers/PCM/_Driver.asm"
 
 ; -------------------------------------------------------------------------
@@ -39,7 +39,7 @@ SFXIndex:
 ; -------------------------------------------------------------------------
 
 SongPriorities:
-	dc.b	$80				; Stardust Speedway Zone Past
+	dc.b	$80				; Metallic Madness Zone Past
 	even
 
 ; -------------------------------------------------------------------------
@@ -77,28 +77,14 @@ CmdPriorities:
 ; -------------------------------------------------------------------------
 
 SongIndex:
-	dc.l	Song_SSZPast
-
-; -------------------------------------------------------------------------
-; Unknown data
-; -------------------------------------------------------------------------
-
-UnkIndex:
-	dc.l	.0-UnkIndex
-	dc.l	.1-UnkIndex
-	
-.0:
-	dc.b	0, 4, 3, $80, $FF, $7F
-	
-.1:
-	dc.b	1, $A, 3, $80, $FF, $7F
+	dc.l	Song_MMZPast
 
 ; -------------------------------------------------------------------------
 ; Songs
 ; -------------------------------------------------------------------------
 
-Song_SSZPast:
-	include	"Sound Drivers/PCM/Music/Stardust Speedway Past.asm"
+Song_MMZPast:
+	include	"Sound Drivers/PCM/Music/Metallic Madness Past.asm"
 	even
 
 ; -------------------------------------------------------------------------
@@ -106,7 +92,7 @@ Song_SSZPast:
 ; -------------------------------------------------------------------------
 
 SFX_Unknown:
-	include	"Sound Drivers/PCM/SFX/Unknown (Stardust Speedway).asm"
+	include	"Sound Drivers/PCM/SFX/Unknown (Metallic Madness).asm"
 	even
 SFX_Future:
 	include	"Sound Drivers/PCM/SFX/Future.asm"
@@ -127,16 +113,16 @@ SFX_Yeah:
 	include	"Sound Drivers/PCM/SFX/Yeah.asm"
 	even
 SFX_AmyGiggle:
-	include	"Sound Drivers/PCM/SFX/Amy Giggle.asm"
+	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
 	even
 SFX_AmyYelp:
-	include	"Sound Drivers/PCM/SFX/Amy Yelp.asm"
+	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
 	even
 SFX_BossStomp:
-	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
+	include	"Sound Drivers/PCM/SFX/Boss Stomp.asm"
 	even
 SFX_Bumper:
-	include	"Sound Drivers/PCM/SFX/Blank 2.asm"
+	include	"Sound Drivers/PCM/SFX/Bumper (Metallic Madness).asm"
 	even
 
 ; -------------------------------------------------------------------------
@@ -145,94 +131,88 @@ SFX_Bumper:
 
 SampleIndex:
 	SAMPTBLSTART
-	SAMPPTR	Kick
-	SAMPPTR	Snare
-	SAMPPTR	HatOpen
-	SAMPPTR	HatClosed
+	SAMPPTR	Fantasia
+	SAMPPTR	Kick1
+	SAMPPTR	Snare1
 	SAMPPTR	Bass
+	SAMPPTR	Snare2
+	SAMPPTR	OrchHit1
+	SAMPPTR	Synth
+	SAMPPTR	Woosh
 	SAMPPTR	PianoChord1
 	SAMPPTR	PianoChord2
-	SAMPPTR	Tom
-	SAMPPTR	HueHueHue
-	SAMPPTR	Saxophone
-	SAMPPTR	VoxClav
-	SAMPPTR	Scratch1
-	SAMPPTR	Scratch2
 	SAMPPTR	Piano
-	SAMPPTR	PadChord1
-	SAMPPTR	PadChord2
-	SAMPPTR	Organ1
-	SAMPPTR	Organ2
+	SAMPPTR	OrchHitCrash
+	SAMPPTR	Pad
+	SAMPPTR	OrchHit2
+	SAMPPTR	Snare3
+	SAMPPTR	Kick2
 	SAMPPTR	Future
 	SAMPPTR	Past
 	SAMPPTR	Alright
 	SAMPPTR	OuttaHere
 	SAMPPTR	Yes
 	SAMPPTR	Yeah
-	SAMPPTR	AmyGiggle
-	SAMPPTR	AmyYelp
+	SAMPPTR	BossStomp
+	SAMPPTR	Bumper
 	SAMPTBLEND
 
 ; -------------------------------------------------------------------------
 ; Sample metadata
 ; -------------------------------------------------------------------------
 
-	SAMPLE	Kick,		$0CA9, 0, 0, 0
-	SAMPLE	Snare,		$08D8, 0, 0, 0
-	SAMPLE	HatOpen,	$0ED0, 0, 0, 0
-	SAMPLE	HatClosed,	$05F3, 0, 0, 0
-	SAMPLE	Bass,		$1815, 0, 0, 0
-	SAMPLE	PianoChord1,	$0000, 0, 0, 0
-	SAMPLE	PianoChord2,	$0000, 0, 0, 0
-	SAMPLE	Tom,		$0FDC, 0, 0, 0
-	SAMPLE	HueHueHue,	$0000, 0, 0, 0
-	SAMPLE	Saxophone,	$0000, 0, 0, 0
-	SAMPLE	VoxClav,	$0000, 0, 0, 0
-	SAMPLE	Scratch1,	$09BB, 0, 0, 0
-	SAMPLE	Scratch2,	$0000, 0, 0, 0
-	SAMPLE	Piano,		$33E0, 0, 0, 0
-	SAMPLE	PadChord1,	$0000, 0, 0, 0
-	SAMPLE	PadChord2,	$3F80, 0, 0, 0
-	SAMPLE	Organ1,		$0950, 0, 0, 0
-	SAMPLE	Organ2,		$09D0, 0, 0, 0
+	SAMPLE	Fantasia,	$30DE, 0, 0, 0
+	SAMPLE	Kick1,		$0B00, 0, 0, 0
+	SAMPLE	Snare1,		$0000, 0, 0, 0
+	SAMPLE	Bass,		$0000, 0, 0, 0
+	SAMPLE	Snare2,		$0F3E, 0, 0, 0
+	SAMPLE	OrchHit1,	$2081, 0, 0, 0
+	SAMPLE	Synth,		$0EFE, 0, 0, 0
+	SAMPLE	Woosh,		$1AD8, 0, 0, 0
+	SAMPLE	PianoChord1,	$1C26, 0, 0, 0
+	SAMPLE	PianoChord2,	$1AC6, 0, 0, 0
+	SAMPLE	Piano,		$1748, 0, 0, 0
+	SAMPLE	OrchHitCrash,	$29B4, 0, 0, 0
+	SAMPLE	Pad,		$1FC5, 0, 0, 0
+	SAMPLE	OrchHit2,	$291E, 0, 0, 0
+	SAMPLE	Snare3,		$08D1, 0, 0, 0
+	SAMPLE	Kick2,		$1E17, 0, 0, 0
 	SAMPLE	Future,		$0000, 0, 0, 0
 	SAMPLE	Past,		$0000, 0, 0, 0
 	SAMPLE	Alright,	$0000, 0, 0, 0
 	SAMPLE	OuttaHere,	$0000, 0, 0, 0
 	SAMPLE	Yes,		$0000, 0, 0, 0
 	SAMPLE	Yeah,		$0000, 0, 0, 0
-	SAMPLE	AmyGiggle,	$0000, 0, 0, 0
-	SAMPLE	AmyYelp,	$0000, 0, 0, 0
+	SAMPLE	BossStomp,	$0000, 0, 0, 0
+	SAMPLE	Bumper,		$0000, 0, 0, 0
 
 ; -------------------------------------------------------------------------
 ; Samples
 ; -------------------------------------------------------------------------
 
-	SAMPDAT	Kick,		"Sound Drivers/PCM/Samples/Stardust Speedway/Kick.bin"
-	SAMPDAT	Snare,		"Sound Drivers/PCM/Samples/Stardust Speedway/Snare.bin"
-	SAMPDAT	HatOpen,	"Sound Drivers/PCM/Samples/Stardust Speedway/Hi-Hat (Open).bin"
-	SAMPDAT	HatClosed,	"Sound Drivers/PCM/Samples/Stardust Speedway/Hi-Hat (Closed).bin"
-	SAMPDAT	Bass,		"Sound Drivers/PCM/Samples/Stardust Speedway/Bass.bin"
-	SAMPDAT	PianoChord1,	"Sound Drivers/PCM/Samples/Stardust Speedway/Piano Chord 1.bin"
-	SAMPDAT	PianoChord2,	"Sound Drivers/PCM/Samples/Stardust Speedway/Piano Chord 2.bin"
-	SAMPDAT	Tom,		"Sound Drivers/PCM/Samples/Stardust Speedway/Tom.bin"
-	SAMPDAT	HueHueHue,	"Sound Drivers/PCM/Samples/Stardust Speedway/Hue Hue Hue.bin"
-	SAMPDAT	Saxophone,	"Sound Drivers/PCM/Samples/Stardust Speedway/Saxophone.bin"
-	SAMPDAT	VoxClav,	"Sound Drivers/PCM/Samples/Stardust Speedway/Vox + Clav.bin"
-	SAMPDAT	Scratch1,	"Sound Drivers/PCM/Samples/Stardust Speedway/Scratch 1.bin"
-	SAMPDAT	Scratch2,	"Sound Drivers/PCM/Samples/Stardust Speedway/Scratch 2.bin"
-	SAMPDAT	Piano,		"Sound Drivers/PCM/Samples/Stardust Speedway/Piano.bin"
-	SAMPDAT	PadChord1,	"Sound Drivers/PCM/Samples/Stardust Speedway/Pad Chord 1.bin"
-	SAMPDAT	PadChord2,	"Sound Drivers/PCM/Samples/Stardust Speedway/Pad Chord 2.bin"
-	SAMPDAT	Organ1,		"Sound Drivers/PCM/Samples/Stardust Speedway/Organ 1.bin"
-	SAMPDAT	Organ2,		"Sound Drivers/PCM/Samples/Stardust Speedway/Organ 2.bin"
+	SAMPDAT	Fantasia,	"Sound Drivers/PCM/Samples/Metallic Madness/Fantasia.bin"
+	SAMPDAT	Kick1,		"Sound Drivers/PCM/Samples/Metallic Madness/Kick 1.bin"
+	SAMPDAT	Snare1,		"Sound Drivers/PCM/Samples/Metallic Madness/Snare 1.bin"
+	SAMPDAT	Bass,		"Sound Drivers/PCM/Samples/Metallic Madness/Bass.bin"
+	SAMPDAT	Snare2,		"Sound Drivers/PCM/Samples/Metallic Madness/Snare 2.bin"
+	SAMPDAT	OrchHit1,	"Sound Drivers/PCM/Samples/Metallic Madness/Orchestra Hit 1.bin"
+	SAMPDAT	Synth,		"Sound Drivers/PCM/Samples/Metallic Madness/Synth.bin"
+	SAMPDAT	Woosh,		"Sound Drivers/PCM/Samples/Metallic Madness/Woosh.bin"
+	SAMPDAT	PianoChord1,	"Sound Drivers/PCM/Samples/Metallic Madness/Piano Chord 1.bin"
+	SAMPDAT	PianoChord2,	"Sound Drivers/PCM/Samples/Metallic Madness/Piano Chord 2.bin"
+	SAMPDAT	Piano,		"Sound Drivers/PCM/Samples/Metallic Madness/Piano.bin"
+	SAMPDAT	OrchHitCrash,	"Sound Drivers/PCM/Samples/Metallic Madness/Orchestra Hit + Crash.bin"
+	SAMPDAT	Pad,		"Sound Drivers/PCM/Samples/Metallic Madness/Pad.bin"
+	SAMPDAT	OrchHit2,	"Sound Drivers/PCM/Samples/Metallic Madness/Orchestra Hit 2.bin"
+	SAMPDAT	Snare3,		"Sound Drivers/PCM/Samples/Metallic Madness/Snare 3.bin"
+	SAMPDAT	Kick2,		"Sound Drivers/PCM/Samples/Metallic Madness/Kick 2.bin"
 	SAMPDAT	Future,		"Sound Drivers/PCM/Samples/Future.bin"
 	SAMPDAT	Past,		"Sound Drivers/PCM/Samples/Past.bin"
 	SAMPDAT	Alright,	"Sound Drivers/PCM/Samples/Alright.bin"
 	SAMPDAT	OuttaHere,	"Sound Drivers/PCM/Samples/Outta Here.bin"
 	SAMPDAT	Yes,		"Sound Drivers/PCM/Samples/Yes.bin"
 	SAMPDAT	Yeah,		"Sound Drivers/PCM/Samples/Yeah.bin"
-	SAMPDAT	AmyGiggle,	"Sound Drivers/PCM/Samples/Amy Giggle.bin"
-	SAMPDAT	AmyYelp,	"Sound Drivers/PCM/Samples/Amy Yelp.bin"
-
+	SAMPDAT	BossStomp,	"Sound Drivers/PCM/Samples/Boss Stomp.bin"
+	SAMPDAT	Bumper,		"Sound Drivers/PCM/Samples/Bumper.bin"
+	
 ; -------------------------------------------------------------------------

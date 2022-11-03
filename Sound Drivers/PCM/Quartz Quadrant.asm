@@ -39,7 +39,7 @@ SFXIndex:
 ; -------------------------------------------------------------------------
 
 SongPriorities:
-	dc.b	$80				; Wacky Workbench Zone Past
+	dc.b	$80				; Quartz Quadrant Zone Past
 	even
 
 ; -------------------------------------------------------------------------
