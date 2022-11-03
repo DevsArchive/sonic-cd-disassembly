@@ -48,6 +48,7 @@ if exist "DA Garden\Track Titles.sym" ( del "DA Garden\Track Titles.sym" > nul )
 %ASM68K% "Sound Drivers\PCM\Tidal Tempest.asm", "_Built\Files\SNCBNK4B.BIN", , "Sound Drivers\PCM\Tidal Tempest.lst"
 %ASM68K% "Sound Drivers\PCM\Quartz Quadrant.asm", "_Built\Files\SNCBNK5B.BIN", , "Sound Drivers\PCM\Quartz Quadrant.lst"
 %ASM68K% "Sound Drivers\PCM\Wacky Workbench.asm", "_Built\Files\SNCBNK6B.BIN", , "Sound Drivers\PCM\Wacky Workbench.lst"
+%ASM68K% "Sound Drivers\PCM\Stardust Speedway.asm", "_Built\Files\SNCBNK7B.BIN", , "Sound Drivers\PCM\Stardust Speedway.lst"
 
 %ASM68K% "Title Screen\Main.asm", "_Built\Files\TITLEM.MMD", , "Title Screen\Main.lst"
 %ASM68K% "Title Screen\Sub.asm", "_Built\Files\TITLES.BIN", , "Title Screen\Sub.lst"
