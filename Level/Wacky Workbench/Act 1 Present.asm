@@ -43,7 +43,7 @@
 	include	"Level/Wacky Workbench/Player Object Collision.asm"
 	include	"Level/Debug Mode.asm"
 	include	"Level/Wacky Workbench/Debug Objects (Act 1 Present).asm"
-	include	"Level/Object Manager.asm"
+	include	"Level/Object Spawner.asm"
 	include	"Level/Wacky Workbench/Object Layout (Act 1).asm"
 	include	"Level/Wacky Workbench/Objects/Goddess Statue/Main.asm"
 	include	"Level/Wacky Workbench/Objects/Freezer/Main.asm"

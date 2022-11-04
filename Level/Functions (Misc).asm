@@ -9,7 +9,7 @@
 ; Check if an object should despawn offscreen (leftover from Sonic 1)
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
-;	a0.l - Object RAM
+;	a0.l - Object slot
 ; -------------------------------------------------------------------------
 
 CheckObjDespawnS1:
@@ -26,8 +26,8 @@ CheckObjDespawnS1:
 
 .NoDraw:
 	lea	savedObjFlags,a2		; Saved object flags table
-	moveq	#0,d0
-	move.b	oSavedFlagsID(a0),d0		; Get table entry ID
+	moveq	#0,d0				; Get table entry ID
+	move.b	oSavedFlagsID(a0),d0
 	beq.s	.NoClear			; If the object doesn't have one, branch
 	bclr	#7,2(a2,d0.w)			; Mark as unloaded
 

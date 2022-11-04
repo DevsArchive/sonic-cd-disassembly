@@ -94,6 +94,19 @@ oPlayerStandObj		EQU	oVar3D		; ID of object being stood on
 oPlayerHangAni		EQU	oVar1F		; Hanging animation timer
 
 ; -------------------------------------------------------------------------
+; Object layout entry structure
+; -------------------------------------------------------------------------
+
+	rsreset
+oeX		rs.w	1			; X position
+oeY		rs.w	1			; Y position/flags
+oeID		rs.b	1			; ID
+oeSubtype	rs.b	1			; Subtype
+oeTimeZones	rs.b	1			; Time zones
+oeSubtype2	rs.b	1			; Subtype 2
+oeSize		rs.b	0			; Size of structure
+
+; -------------------------------------------------------------------------
 ; RAM
 ; -------------------------------------------------------------------------
 
@@ -113,6 +126,7 @@ sonicRecordBuf		rs.b	$100		; Sonic position record buffer
 hscroll 		rs.b	$400		; Horizontal scroll buffer
 
 objects			rs.b	0		; Object pool
+resObjects		rs.b	0		; Reserved objects
 objPlayerSlot 		rs.b	oSize		; Player slot
 objPlayerSlot2 		rs.b	oSize		; Player 2 slot
 objHUDScoreSlot		rs.b	oSize		; HUD (score) slot
@@ -145,9 +159,15 @@ objTimeStar4Slot	rs.b	oSize		; Time warp star 4 slot
 			rs.b	oSize
 			rs.b	oSize
 objHUDIconSlot		rs.b	oSize		; HUD (life icon) slot
+resObjectsEnd		rs.b	0
 
-dynObjects 		rs.b	$60*oSize	; Dynamic object pool
+dynObjects 		rs.b	$60*oSize	; Dynamic objects
+dynObjectsEnd		rs.b	0
 objectsEnd		rs.b	0
+
+OBJCOUNT		EQU	(objectsEnd-objects)/oSize
+RESOBJCOUNT		EQU	(resObjectsEnd-resObjects)/oSize
+DYNOBJCOUNT		EQU	(dynObjectsEnd-dynObjects)/oSize
 
 			rs.b	$A
 fmSndQueue1 		rs.b	1		; FM sound queue 1
@@ -270,11 +290,11 @@ secondaryAngle		rs.b	1		; Secondary angle
 			
 objSpawnRoutine		rs.b	1		; Object spawn routine ID
 			rs.b	1
-objPrevCamX		rs.w	1		; Previous camera X position
-objLoadAddrR		rs.l	1		; Object layout address (right side)
-objLoadAddrL		rs.l	1		; Object layout address (left side)
-objLoadAddr2R		rs.l	1		; Object layout address 2 (right side)
-objLoadAddr2L		rs.l	1		; Object layout address 2 (left side)
+objPrevChunk		rs.w	1		; Previous object layout chunk position
+objChunkRight		rs.l	1		; Object layout right chunk
+objChunkLeft		rs.l	1		; Object layout left chunk
+objChunkNullR		rs.l	1		; Object layout right chunk (null)
+objChunkNullL		rs.l	1		; Object layout left chunk 2  (null)
 boredTimer 		rs.w	1		; Bored timer
 boredTimerP2 		rs.w	1		; Player 2 bored timer
 timeWarpDir		rs.b	1		; Time warp direction

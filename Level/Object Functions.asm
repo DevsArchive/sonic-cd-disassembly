@@ -11,7 +11,7 @@
 
 RunObjects:
 	lea	objects.w,a0			; Prepare objects
-	moveq	#(objectsEnd-objects)/oSize-1,d7
+	moveq	#OBJCOUNT-1,d7
 
 	moveq	#0,d0				; Prepare to get object ID
 

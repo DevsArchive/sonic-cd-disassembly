@@ -44,7 +44,10 @@ endingID		rs.b	1		; Ending ID
 specStageLost		rs.b	1		; Special stage lost flag
 			rs.b	$DA
 unkBuffer 		rs.b	$200		; Unknown level buffer
-savedObjFlags 		rs.b	$2FE		; Saved object flags
+
+OBJFLAGSCNT		EQU	$2FC		; Saved object flags entry count
+savedObjFlags 		rs.b	2+OBJFLAGSCNT	; Saved object flags
+
 			rs.l	1
 levelRestart		rs.w	1		; Level restart flag
 levelFrames 		rs.w	1		; Level frame counter

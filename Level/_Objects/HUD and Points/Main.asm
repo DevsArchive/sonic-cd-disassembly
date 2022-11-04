@@ -5,165 +5,198 @@
 ; Level HUD/points object
 ; -------------------------------------------------------------------------
 
-ObjPoints:
-	moveq	#0,d0
-	move.b	oRoutine(a0),d0
-	move.w	ObjPoints_Index(pc,d0.w),d0
-	jsr	ObjPoints_Index(pc,d0.w)
-	jmp	DrawObject
-; End of function ObjPoints
+; -------------------------------------------------------------------------
+; Points object
+; -------------------------------------------------------------------------
+
+oPntsTimer	EQU	oVar2A			; Timer
 
 ; -------------------------------------------------------------------------
-ObjPoints_Index:dc.w	ObjPoints_Init-ObjPoints_Index
-	dc.w	ObjPoints_Main-ObjPoints_Index
+
+ObjPoints:
+	moveq	#0,d0				; Run routine
+	move.b	oRoutine(a0),d0
+	move.w	.Index(pc,d0.w),d0
+	jsr	.Index(pc,d0.w)
+
+	jmp	DrawObject			; Draw sprite
+
+; -------------------------------------------------------------------------
+
+.Index:
+	dc.w	ObjPoints_Init-.Index
+	dc.w	ObjPoints_Main-.Index
+
+; -------------------------------------------------------------------------
+; Initialization
 ; -------------------------------------------------------------------------
 
 ObjPoints_Init:
-	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oSprFlags(a0)
-	move.w	#$6C6,oTile(a0)
-	move.l	#MapSpr_Points,oMap(a0)
-	move.b	oSubtype(a0),oMapFrame(a0)
+	addq.b	#2,oRoutine(a0)			; Next routine
+	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	move.w	#$6C6,oTile(a0)			; Set base tile ID
+	move.l	#MapSpr_Points,oMap(a0)		; Set mappings
+	move.b	oSubtype(a0),oMapFrame(a0)	; Set sprite frame
 	andi.b	#$7F,oMapFrame(a0)
-	move.b	#$18,oVar2A(a0)
-; End of function ObjPoints_Init
+	move.b	#24,oPntsTimer(a0)		; Set timer
 
+; -------------------------------------------------------------------------
+; Main routine
 ; -------------------------------------------------------------------------
 
 ObjPoints_Main:
-	subq.b	#1,oVar2A(a0)
-	bne.s	.Rise
-	jmp	DeleteObject
-
-; -------------------------------------------------------------------------
+	subq.b	#1,oPntsTimer(a0)		; Decrement timer
+	bne.s	.Rise				; If it hasn't run out, branch
+	jmp	DeleteObject			; Delete ourselves
 
 .Rise:
-	subq.w	#2,oY(a0)
+	subq.w	#2,oY(a0)			; Move up
 	rts
-; End of function ObjPoints_Main
 
 ; -------------------------------------------------------------------------
+; Data
+; -------------------------------------------------------------------------
+
 MapSpr_Points:
 	include	"Level/_Objects/HUD and Points/Data/Mappings (Points).asm"
 	even
+
+; -------------------------------------------------------------------------
+; HUD object
 ; -------------------------------------------------------------------------
 
 ObjHUDPoints:
-	tst.b	oSubtype(a0)
-	bmi.w	ObjPoints
+	tst.b	oSubtype(a0)			; Is this a points object?
+	bmi.w	ObjPoints			; If so, branch
 
 ObjHUD:
-	moveq	#0,d0
+	moveq	#0,d0				; Run routine
 	move.b	oRoutine(a0),d0
-	move.w	ObjHUD_Index(pc,d0.w),d0
-	jmp	ObjHUD_Index(pc,d0.w)
-; End of function ObjHUD_Points
+	move.w	.Index(pc,d0.w),d0
+	jmp	.Index(pc,d0.w)
 
 ; -------------------------------------------------------------------------
-ObjHUD_Index:	dc.w	ObjHUD_Init-ObjHUD_Index
-	dc.w	ObjHUD_Main-ObjHUD_Index
+
+.Index:
+	dc.w	ObjHUD_Init-.Index
+	dc.w	ObjHUD_Main-.Index
+
+; -------------------------------------------------------------------------
+; Initialization
 ; -------------------------------------------------------------------------
 
 ObjHUD_Init:
-	addq.b	#2,oRoutine(a0)
-	move.l	#MapSpr_HUD,oMap(a0)
-	move.w	#$8568,oTile(a0)
-	move.w	#$90,oX(a0)
-	move.w	#$88,oYScr(a0)
-	tst.b	oSubtype2(a0)
-	beq.s	.NotRings
-	move.b	#3,oMapFrame(a0)
+	addq.b	#2,oRoutine(a0)			; Next routine
+	move.l	#MapSpr_HUD,oMap(a0)		; Set mappings
+	move.w	#$8568,oTile(a0)		; Set base tile ID
+	move.w	#16+128,oX(a0)			; Set position
+	move.w	#8+128,oYScr(a0)
+
+	tst.b	oSubtype2(a0)			; Is this the rings counter?
+	beq.s	.NotRings			; If not, branch
+	move.b	#3,oMapFrame(a0)		; Set rings counter sprite frame
 	bra.s	ObjHUD_Main
 
-; -------------------------------------------------------------------------
-
 .NotRings:
-	tst.w	debugCheat
-	beq.s	.NoDebug
-	move.b	#2,oMapFrame(a0)
+	tst.w	debugCheat			; Is debug mode enabled?
+	beq.s	.NoDebug			; If not, branch
+	move.b	#2,oMapFrame(a0)		; Set position tracker sprite frame
 
 .NoDebug:
-	tst.b	oSubtype(a0)
-	beq.s	ObjHUD_Main
-	move.w	#$148,oYScr(a0)
-	move.b	#1,oMapFrame(a0)
-; End of function ObjHUD_Init
+	tst.b	oSubtype(a0)			; Is this the lives counter?
+	beq.s	ObjHUD_Main			; If not, branch
+	move.w	#200+128,oYScr(a0)		; Set lives counter position
+	move.b	#1,oMapFrame(a0)		; Set lives counter sprite frame
 
+; -------------------------------------------------------------------------
+; Main routine
 ; -------------------------------------------------------------------------
 
 ObjHUD_Main:
-	tst.b	oSubtype(a0)
-	bne.s	.Display
-	tst.b	oSubtype2(a0)
-	beq.s	.ChkDebug
-	tst.w	rings
-	beq.s	.ChkFlashRings
-	bclr	#5,oTile(a0)
-	bra.s	.Display
+	tst.b	oSubtype(a0)			; Is this the lives counter?
+	bne.s	.Draw				; If so, branch
+	tst.b	oSubtype2(a0)			; Is this the rings counter?
+	beq.s	.Score				; If not, branch
 
-; -------------------------------------------------------------------------
+.Rings:
+	tst.w	rings				; Do we have any rings?
+	beq.s	.FlashRings			; If not, branch
+	bclr	#5,oTile(a0)			; Stay yellow
+	bra.s	.Draw
 
-.ChkFlashRings:
-	move.b	levelVIntCounter+3,d0
+.FlashRings:
+	move.b	levelVIntCounter+3,d0		; Flash between red and yellow
 	andi.b	#$F,d0
-	bne.s	.Display
+	bne.s	.Draw
 	eori.b	#$20,oTile(a0)
-	bra.s	.Display
+	bra.s	.Draw
+
+.Score:
+	move.b	#0,oMapFrame(a0)		; Set score counter sprite frame
+	tst.w	debugCheat			; Is debug mode enabled?
+	beq.s	.Draw				; If not, branch
+	move.b	#2,oMapFrame(a0)		; Set position tracker sprite frame
+
+.Draw:
+	jmp	DrawObject			; Draw sprite
 
 ; -------------------------------------------------------------------------
-
-.ChkDebug:
-	move.b	#0,oMapFrame(a0)
-	tst.w	debugCheat
-	beq.s	.Display
-	move.b	#2,oMapFrame(a0)
-
-.Display:
-	jmp	DrawObject
-; End of function ObjHUD_Main
-
+; Data
 ; -------------------------------------------------------------------------
+
 MapSpr_HUD:
 	include	"Level/_Objects/HUD and Points/Data/Mappings (HUD).asm"
 	even
+
+; -------------------------------------------------------------------------
+; Add points
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - Number of points to add
 ; -------------------------------------------------------------------------
 
 AddPoints:
-	move.b	#1,updateHUDScore
-	lea	score,a3
+	move.b	#1,updateHUDScore		; Update score counter
+	lea	score,a3			; Add to score
 	add.l	d0,(a3)
-	move.l	#999999,d1
+	
+	move.l	#999999,d1			; Has it reached the maximum score?
 	cmp.l	(a3),d1
-	bhi.s	.CappedScore
-	move.l	d1,(a3)
+	bhi.s	.CappedScore			; If not, branch
+	move.l	d1,(a3)				; If so, cap it
 
 .CappedScore:
-	move.l	(a3),d0
+	move.l	(a3),d0				; Has it reached the next extra life score?
 	cmp.l	nextLifeScore,d0
-	bcs.s	.End
-	addi.l	#5000,nextLifeScore
-	addq.b	#1,lives
-	addq.b	#1,updateHUDLives
-	move.w	#SCMD_YESSFX,d0
+	bcs.s	.End				; If not, branch
+	
+	addi.l	#5000,nextLifeScore		; Set next extra life score
+	addq.b	#1,lives			; Add extra life
+	addq.b	#1,updateHUDLives		; Update lives counter
+	
+	move.w	#SCMD_YESSFX,d0			; Play 1UP sound
 	jmp	SubCPUCmd
-
-; -------------------------------------------------------------------------
 
 .End:
 	rts
-; End of function AddPoints
 
 ; -------------------------------------------------------------------------
-; START	OF FUNCTION CHUNK FOR VInt_Pause
+; Update HUD
+; -------------------------------------------------------------------------
 
 UpdateHUD:
-	tst.w	debugCheat
-	beq.s	.NormalHUD
-	bsr.w	HudDb_XY
-	move.l	#$73600002,d0
-	moveq	#0,d1
+	tst.w	debugCheat			; Is debug mode enabled?
+	beq.s	.NormalHUD			; If not, branch
+
+.DebugHUD:
+	bsr.w	HUD_DrawPos			; Update position tracker
+
+	VDPCMD	move.l,$B360,VRAM,WRITE,d0	; Get VDP command
+
+	moveq	#0,d1				; Get right object chunk's current saved flags entry ID (not displayed)
 	move.b	savedObjFlags,d1
-	move.w	objPlayerSlot+oY.w,d2
+
+	move.w	objPlayerSlot+oY.w,d2		; Get chunk ID the player is on (not displayed)
 	lsr.w	#1,d2
 	andi.w	#$380,d2
 	move.b	objPlayerSlot+oX.w,d1
@@ -173,81 +206,91 @@ UpdateHUD:
 	moveq	#0,d1
 	move.b	(a1,d2.w),d1
 	andi.w	#$7F,d1
-	move.w	debugBlock,d1
+
+	move.w	debugBlock,d1			; Display block ID the player is on
 	andi.w	#$7FF,d1
 	lea	Hud_100,a2
 	moveq	#2,d6
-	bsr.w	Hud_Digits
-	bra.w	.ChkTime
+	bsr.w	HUD_DrawNum
+
+	bra.w	.ChkTime			; Check timer
 
 ; -------------------------------------------------------------------------
 
 .NormalHUD:
-	tst.b	updateHUDScore
-	beq.s	.ChkRings
-	bpl.s	.UpdateScore
-	bsr.w	Hud_Base
+	tst.b	updateHUDScore			; Should we update the score counter?
+	beq.s	.ChkRings			; If not, branch
+	bpl.s	.UpdateScore			; If the score counter is not being reset, branch
+	bsr.w	HUD_ResetScore			; Reset the score counter
 
 .UpdateScore:
-	clr.b	updateHUDScore
-	move.l	#$70600002,d0
+	clr.b	updateHUDScore			; Clear flag
+	VDPCMD	move.l,$B060,VRAM,WRITE,d0	; Draw score counter
 	move.l	score,d1
-	bsr.w	Hud_Score
+	bsr.w	HUD_DrawScore
 
 .ChkRings:
-	tst.b	updateHUDRings
-	beq.s	.ChkTime
-	bpl.s	.UpdateRings
-	bsr.w	Hud_InitRings
+	tst.b	updateHUDRings			; Should we update the rings counter?
+	beq.s	.ChkTime			; If not, branch
+	bpl.s	.UpdateRings			; If the rings counter is not being reset, branch
+	bsr.w	HUD_ResetRings			; Reset the rings counter
 
 .UpdateRings:
-	clr.b	updateHUDRings
-	move.l	#$73600002,d0
+	clr.b	updateHUDRings			; Clear flag
+	VDPCMD	move.l,$B360,VRAM,WRITE,d0	; Draw rings counter
 	moveq	#0,d1
 	move.w	rings,d1
-	cmpi.w	#1000,d1
-	bcs.s	.CappedRings
-	move.w	#999,d1
+	cmpi.w	#1000,d1			; Are there too many rings collected?
+	bcs.s	.CappedRings			; If not, branch
+	move.w	#999,d1				; If so, cap it
 	move.w	d1,rings
 
 .CappedRings:
-	bsr.w	Hud_Rings
+	bsr.w	HUD_DrawRings			; Draw rings counter
+
+; -------------------------------------------------------------------------
 
 .ChkTime:
-	tst.w	debugCheat
-	bne.w	.ChkLives
-	tst.b	updateHUDTime
-	beq.w	.ChkLives
-	tst.w	paused.w
-	bne.w	.ChkLives
-	lea	time,a1
-	cmpi.l	#(9<<16)|(59<<8)|59,(a1)+
-	beq.w	SetTimeOver
-	tst.b	ctrlLocked.w
-	bne.s	.UpdateTimer
-	addq.b	#1,-(a1)
-	cmpi.b	#60,(a1)
-	bcs.s	.UpdateTimer
-	move.b	#0,(a1)
-	addq.b	#1,-(a1)
-	cmpi.b	#60,(a1)
-	bcs.s	.UpdateTimer
-	move.b	#0,(a1)
-	addq.b	#1,-(a1)
-	cmpi.b	#9,(a1)
-	bcs.s	.UpdateTimer
-	move.b	#9,(a1)
+	tst.w	debugCheat			; Is debug mode enabled?
+	bne.w	.ChkLives			; If so, branch
+	tst.b	updateHUDTime			; Is the timer enabled?
+	beq.w	.ChkLives			; If not, branch
+	tst.w	paused.w			; Is the game paused?
+	bne.w	.ChkLives			; If so, branch
+
+	lea	time,a1				; Get time
+	cmpi.l	#(9<<16)|(59<<8)|59,(a1)+	; Are we at the max time?
+	beq.w	.SetTimeOver			; If so, set a time over
+	tst.b	ctrlLocked.w			; Are the player's controls locked?
+	bne.s	.UpdateTimer			; If so, branch
+
+	addq.b	#1,-(a1)			; Tick a frame
+	cmpi.b	#60,(a1)			; Should we tick a second?
+	bcs.s	.UpdateTimer			; If not, branch
+	
+	move.b	#0,(a1)				; Reset frame counter
+	addq.b	#1,-(a1)			; Tick a second
+	cmpi.b	#60,(a1)			; Should we tick a minute?
+	bcs.s	.UpdateTimer			; If not, branch
+	
+	move.b	#0,(a1)				; Reset seconds counter
+	addq.b	#1,-(a1)			; Tick a minute
+	cmpi.b	#9,(a1)				; Are we at the max number of minutes?
+	bcs.s	.UpdateTimer			; If not, branch
+	move.b	#9,(a1)				; If so, cap it
 
 .UpdateTimer:
-	move.l	#$72200002,d0
+	VDPCMD	move.l,$B220,VRAM,WRITE,d0	; Draw minutes
 	moveq	#0,d1
 	move.b	timeMinutes,d1
-	bsr.w	Hud_Mins
-	move.l	#$72600002,d0
+	bsr.w	HUD_DrawMins
+
+	VDPCMD	move.l,$B260,VRAM,WRITE,d0	; Draw seconds
 	moveq	#0,d1
 	move.b	timeSeconds,d1
-	bsr.w	Hud_SecsCentisecs
-	move.l	#$72E00002,d0
+	bsr.w	HUD_DrawSecs
+
+	VDPCMD	move.l,$B2E0,VRAM,WRITE,d0	; Draw frames as centiseconds
 	moveq	#0,d1
 	move.b	timeFrames,d1
 	mulu.w	#100,d1
@@ -255,397 +298,423 @@ UpdateHUD:
 	swap	d1
 	move.w	#0,d1
 	swap	d1
-	cmpi.l	#(9<<16)|(59<<8)|59,time
-	bne.s	.UpdateCentisecs
-	move.w	#99,d1
+	cmpi.l	#(9<<16)|(59<<8)|59,time	; Are we at the max time?
+	bne.s	.UpdateCentisecs		; If not, branch
+	move.w	#99,d1				; If so, set centiseconds to 99
 
 .UpdateCentisecs:
-	bsr.w	Hud_SecsCentisecs
+	bsr.w	HUD_DrawSecs			; Draw centiseconds
 
 .ChkLives:
-	tst.b	updateHUDLives
-	beq.s	.ChkBonus
-	clr.b	updateHUDLives
-	bsr.w	Hud_Lives
+	tst.b	updateHUDLives			; Should we update the lives counter?
+	beq.s	.ChkBonus			; If not, branch
+	clr.b	updateHUDLives			; Clear flag
+	bsr.w	HUD_DrawLives			; Draw lives counter
 
 .ChkBonus:
-	tst.b	updateHUDBonus.w
-	beq.s	.End
-	clr.b	updateHUDBonus.w
-	move.l	#$47800002,d0
-	cmpi.w	#$502,zoneAct
-	bne.s	.GotVRAMLoc
-	move.l	#$6D400001,d0
+	tst.b	updateHUDBonus.w		; Should we update the bonus counters?
+	beq.s	.End				; If not, branch
+	clr.b	updateHUDBonus.w		; Clear flag
 
-.GotVRAMLoc:
+	VDPCMD	move.l,$8780,VRAM,WRITE,d0	; Draw time bonus counter
+	cmpi.w	#$502,zoneAct
+	bne.s	.DrawTimeBonus
+	VDPCMD	move.l,$6D40,VRAM,WRITE,d0
+
+.DrawTimeBonus:
 	moveq	#0,d1
 	move.w	timeBonus.w,d1
-	bsr.w	Hud_Bonus
-	move.l	#$48C00002,d0
+	bsr.w	HUD_DrawBonus
+	
+	VDPCMD	move.l,$88C0,VRAM,WRITE,d0	; Draw ring bonus counter
 	cmpi.w	#$502,zoneAct
-	bne.s	.NotSSZ3
-	move.l	#$6E800001,d0
+	bne.s	.DrawRingBonus
+	VDPCMD	move.l,$6E80,VRAM,WRITE,d0
 
-.NotSSZ3:
+.DrawRingBonus:
 	moveq	#0,d1
 	move.w	ringBonus.w,d1
-	bsr.w	Hud_Bonus
+	bsr.w	HUD_DrawBonus
 
 .End:
 	rts
 
-; -------------------------------------------------------------------------
+.SetTimeOver:
+	btst	#7,timeZone			; Is there a time warp happening?
+	bne.s	.End2				; If so, branch
 
-SetTimeOver:
-	btst	#7,timeZone
-	bne.s	.End2
-	clr.b	updateHUDTime
-	move.l	#0,time
-	lea	objPlayerSlot.w,a0
+	clr.b	updateHUDTime			; Stop updating the timer
+	move.l	#0,time				; Clear timer
+	lea	objPlayerSlot.w,a0		; Kill the player
 	movea.l	a0,a2
 	bsr.w	KillPlayer
-	move.b	#1,timeOver
+	move.b	#1,timeOver			; Set time over flag
 
 .End2:
 	rts
-; END OF FUNCTION CHUNK	FOR VInt_Pause
-; -------------------------------------------------------------------------
-
-Hud_InitRings:
-	move.l	#$73600002,VDPCTRL
-	lea	Hud_TilesRings(pc),a2
-	move.w	#2,d2
-	bra.s	Hud_InitCommon
-; End of function Hud_InitRings
 
 ; -------------------------------------------------------------------------
+; Reset rings in HUD
+; -------------------------------------------------------------------------
 
-Hud_Base:
-	lea	VDPDATA,a6
-	bsr.w	Hud_Lives
-	move.l	#$70600002,VDPCTRL
-	lea	Hud_TilesBase(pc),a2
-	move.w	#6,d2
+HUD_ResetRings:
+	VDPCMD	move.l,$B360,VRAM,WRITE,VDPCTRL	; Reset rings counter
+	lea	HUD_DrawRingsTiles(pc),a2
+	move.w	#(HUD_DrawRingsTilesEnd-HUD_DrawRingsTiles)-1,d2
+	bra.s	HUD_ResetNumber
 
-Hud_InitCommon:
-	lea	Art_HUDNumbers,a1
+; -------------------------------------------------------------------------
+; Reset score in HUD
+; -------------------------------------------------------------------------
 
-.OuterLoop:
-	move.w	#$F,d1
-	move.b	(a2)+,d0
-	bmi.s	.EmptyTile
-	ext.w	d0
+HUD_ResetScore:
+	lea	VDPDATA,a6			; VDP data port
+	bsr.w	HUD_DrawLives			; Draw lives counter
+
+	VDPCMD	move.l,$B060,VRAM,WRITE,VDPCTRL	; Reset score counter
+	lea	HUD_DrawScoreTiles(pc),a2
+	move.w	#(HUD_DrawScoreTilesEnd-HUD_DrawScoreTiles)-1,d2
+
+; -------------------------------------------------------------------------
+; Reset number in HUD
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d2.w - Number of digits (minus 1)
+;	a2.l - Pointer to digit data
+; -------------------------------------------------------------------------
+
+HUD_ResetNumber:
+	lea	Art_HUDNumbers,a1		; HUD numbers art
+
+.Loop:
+	move.w	#$40/4-1,d1			; Size of digit art in bytes
+	move.b	(a2)+,d0			; Get digit to write
+	bmi.s	.BlankSpace			; If it's a blank space, branch
+
+	ext.w	d0				; Draw digit
 	lsl.w	#5,d0
 	lea	(a1,d0.w),a3
 
-.InnerLoop:
+.DrawNumber:
 	move.l	(a3)+,(a6)
-	dbf	d1,.InnerLoop
+	dbf	d1,.DrawNumber
 
 .Next:
-	dbf	d2,.OuterLoop
+	dbf	d2,.Loop			; Loop until digits are drawn
 	rts
 
-; -------------------------------------------------------------------------
-
-.EmptyTile:
-	move.l	#0,(a6)
-	dbf	d1,.EmptyTile
-	bra.s	.Next
-; End of function Hud_Base
+.BlankSpace:
+	move.l	#0,(a6)				; Draw blank digit
+	dbf	d1,.BlankSpace
+	bra.s	.Next				; Loop
 
 ; -------------------------------------------------------------------------
-Hud_TilesBase:	dc.b	$FF, $FF, $FF, $FF, $FF, $FF, 0, 0
-Hud_TilesRings:	dc.b	$FF, $FF, 0, 0
+
+HUD_DrawScoreTiles:
+	dc.b	$FF, $FF, $FF, $FF, $FF, $FF, 0
+HUD_DrawScoreTilesEnd:
+	even
+
+HUD_DrawRingsTiles:
+	dc.b	$FF, $FF, 0
+HUD_DrawRingsTilesEnd:
+	even
+
+; -------------------------------------------------------------------------
+; Draw position tracker
 ; -------------------------------------------------------------------------
 
-HudDb_XY:
-	move.l	#$70E00002,d0
+HUD_DrawPos:
+	VDPCMD	move.l,$B0E0,VRAM,WRITE,d0	; Draw X position
 	moveq	#0,d1
 	move.w	objPlayerSlot+oX.w,d1
-	bsr.w	Hud_Hex
-	move.l	#$72600002,d0
+	bsr.w	HUD_DrawHexNum
+
+	VDPCMD	move.l,$B260,VRAM,WRITE,d0	; Draw Y position
 	move.w	objPlayerSlot+oY.w,d1
-	bra.w	Hud_Hex
-; End of function HudDb_XY
+	bra.w	HUD_DrawHexNum
 
 ; -------------------------------------------------------------------------
+; Draw bonus counter
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - VDP command
+;	d1.l - Number to draw
+; -------------------------------------------------------------------------
 
-Hud_Bonus:
-	lea	Hud_10000,a2
-	moveq	#4,d6
-	moveq	#0,d4
-	lea	Art_HUDNumbers,a1
+HUD_DrawBonus:
+	lea	Hud_10000,a2			; 5 digits
+	moveq	#5-1,d6
 
-.DigitLoop:
-	moveq	#0,d2
-	move.l	(a2)+,d3
+	moveq	#0,d4				; Clear leading digit found flag
+	lea	Art_HUDNumbers,a1		; HUD numbers art
 
 .Loop:
+	moveq	#0,d2				; Get current digit
+	move.l	(a2)+,d3
+
+.FindDigit:
 	sub.l	d3,d1
 	bcs.s	.GotDigit
 	addq.w	#1,d2
-	bra.s	.Loop
-
-; -------------------------------------------------------------------------
+	bra.s	.FindDigit
 
 .GotDigit:
 	add.l	d3,d1
-	tst.w	d2
-	beq.s	.NonzeroDigit
-	move.w	#1,d4
 
-.NonzeroDigit:
-	move.l	d0,4(a6)
-	tst.w	d4
-	bne.s	.DrawDigit
-	tst.w	d6
-	bne.s	.BlankTile
+	tst.w	d2				; Is this digit 0?
+	beq.s	.NonZeroDigit			; If so, branch
+	move.w	#1,d4				; Set leading digit found flag
+
+.NonZeroDigit:
+	move.l	d0,4(a6)			; Set VDP command
+	tst.w	d4				; Has the leading digit been found?
+	bne.s	.DrawDigit			; If so, branch
+	tst.w	d6				; Is this the last digit?
+	bne.s	.BlankTile			; If not, branch
 
 .DrawDigit:
-	lsl.w	#6,d2
+	lsl.w	#6,d2				; Draw digit
 	lea	(a1,d2.w),a3
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
+	rept	$40/4
+		move.l	(a3)+,(a6)
+	endr
 
 .Next:
-	addi.l	#$400000,d0
-	dbf	d6,.DigitLoop
+	addi.l	#$400000,d0			; Next digit slot
+	dbf	d6,.Loop			; Loop until digits are drawn
 	rts
 
-; -------------------------------------------------------------------------
-
 .BlankTile:
-	moveq	#$F,d5
+	moveq	#$40/4-1,d5			; Draw blank digit
 
-.Loop2:
+.BlankTileLoop:
 	move.l	#0,(a6)
-	dbf	d5,.Loop2
-	bra.s	.Next
-; End of function Hud_Bonus
+	dbf	d5,.BlankTileLoop
+	bra.s	.Next				; Next slot
 
 ; -------------------------------------------------------------------------
-
-Hud_Rings:
-	lea	Hud_100,a2
-	moveq	#2,d6
-	bra.s	Hud_LoadArt
-; End of function Hud_Rings
-
+; Draw rings counter
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - VDP command
+;	d1.l - Number to draw
 ; -------------------------------------------------------------------------
 
-Hud_Score:
-	lea	Hud_100000,a2
-	moveq	#5,d6
+HUD_DrawRings:
+	lea	Hud_100,a2			; 3 digits
+	moveq	#3-1,d6
+	bra.s	HUD_DrawCounter
 
-Hud_LoadArt:
-	moveq	#0,d4
-	lea	Art_HUDNumbers,a1
+; -------------------------------------------------------------------------
+; Draw score counter
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - VDP command
+;	d1.l - Number to draw
+; -------------------------------------------------------------------------
 
-.DigitLoop:
-	moveq	#0,d2
-	move.l	(a2)+,d3
+HUD_DrawScore:
+	lea	Hud_100000,a2			; 6 digits
+	moveq	#6-1,d6
+
+; -------------------------------------------------------------------------
+; Draw score or rings counter
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - VDP command
+;	d1.l - Number to draw
+;	d6.w - Number of digits (minus 1)
+;	a2.l - Pointer to digit data
+; -------------------------------------------------------------------------
+
+HUD_DrawCounter:
+	moveq	#0,d4				; Clear leading digit found flag
+	lea	Art_HUDNumbers,a1		; HUD numbers art
 
 .Loop:
+	moveq	#0,d2				; Get current digit
+	move.l	(a2)+,d3
+
+.FindDigit:
 	sub.l	d3,d1
 	bcs.s	.GotDigit
 	addq.w	#1,d2
-	bra.s	.Loop
-
-; -------------------------------------------------------------------------
+	bra.s	.FindDigit
 
 .GotDigit:
 	add.l	d3,d1
-	tst.w	d2
-	beq.s	.ChkDraw
-	move.w	#1,d4
 
-.ChkDraw:
-	tst.w	d4
-	beq.s	.SkipDigit
-	lsl.w	#6,d2
+	tst.w	d2				; Is this digit 0?
+	beq.s	.NonZeroDigit			; If so, branch
+	move.w	#1,d4				; Set leading digit found flag
+
+.NonZeroDigit:
+	tst.w	d4				; Has the leading digit been found?
+	beq.s	.Next				; If not, branch
+
+	lsl.w	#6,d2				; Draw digit
 	move.l	d0,4(a6)
 	lea	(a1,d2.w),a3
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
+	rept	$40/4
+		move.l	(a3)+,(a6)
+	endr
 
-.SkipDigit:
-	addi.l	#$400000,d0
-	dbf	d6,.DigitLoop
+.Next:
+	addi.l	#$400000,d0			; Next digit slot
+	dbf	d6,.Loop			; Loop until digits are drawn
 	rts
-; End of function Hud_Score
 
+; -------------------------------------------------------------------------
+; Draw continue screen counter (leftover from Sonic 1)
 ; -------------------------------------------------------------------------
 
 ContScrCounter:
-	move.l	#$5F800003,VDPCTRL
-	lea	VDPDATA,a6
-	lea	Hud_10,a2
-	moveq	#1,d6
-	moveq	#0,d4
-	lea	Art_HUDNumbers,a1
+	VDPCMD	move.l,$DF80,VRAM,WRITE,VDPCTRL	; Set VDP command
+	lea	VDPDATA,a6			; VDP data port
 
-.DigitLoop:
-	moveq	#0,d2
-	move.l	(a2)+,d3
+	lea	Hud_10,a2			; 2 digits
+	moveq	#1,d6
+
+	moveq	#0,d4				; Clear leading digit found flag
+	lea	Art_HUDNumbers,a1		; HUD numbers art
 
 .Loop:
+	moveq	#0,d2				; Get current digit
+	move.l	(a2)+,d3
+
+.FindDigit:
 	sub.l	d3,d1
 	bcs.s	.GotDigit
 	addq.w	#1,d2
-	bra.s	.Loop
-
-; -------------------------------------------------------------------------
+	bra.s	.FindDigit
 
 .GotDigit:
 	add.l	d3,d1
-	lsl.w	#6,d2
+
+	lsl.w	#6,d2				; Draw digit
 	lea	(a1,d2.w),a3
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	dbf	d6,.DigitLoop
+	rept	$40/4
+		move.l	(a3)+,(a6)
+	endr
+
+	dbf	d6,.Loop			; Loop until digits are drawn
 	rts
-; End of function ContScrCounter
 
 ; -------------------------------------------------------------------------
+; Digits
+; -------------------------------------------------------------------------
+
 Hud_100000:	dc.l	100000
 Hud_10000:	dc.l	10000
 Hud_1000:	dc.l	1000
 Hud_100:	dc.l	100
 Hud_10:		dc.l	10
 Hud_1:		dc.l	1
+
 Hud_1000h:	dc.l	$1000
 Hud_100h:	dc.l	$100
 Hud_10h:	dc.l	$10
 Hud_1h:		dc.l	1
+
+; -------------------------------------------------------------------------
+; Draw hexadecimal number
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - VDP command
+;	d1.l - Number to draw
 ; -------------------------------------------------------------------------
 
-Hud_Hex:
-	moveq	#3,d6
+HUD_DrawHexNum:
+	moveq	#4-1,d6				; 4 digits
 	lea	Hud_1000h,a2
-	bra.s	Hud_Digits
-; End of function Hud_Hex
+	bra.s	HUD_DrawNum			; Draw number
 
 ; -------------------------------------------------------------------------
+; Draw lives counter
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d1.l - Number to draw
+; -------------------------------------------------------------------------
 
-Hud_Lives:
-	move.l	#$74A00002,d0
-	moveq	#0,d1
+HUD_DrawLives:
+	VDPCMD	move.l,$B4A0,VRAM,WRITE,d0	; Get VDP command
+
+	moveq	#0,d1				; Get number of lives
 	move.b	lives,d1
-	cmpi.b	#9,d1
-	bcs.s	.Max9Lives
-	moveq	#9,d1
+	cmpi.b	#9,d1				; Are there too many?
+	bcs.s	.Draw				; If not, branch
+	moveq	#9,d1				; Is so, cap it
 
-.Max9Lives:
-	lea	Hud_1,a2
-	moveq	#0,d6
-	bra.s	Hud_Digits
-; End of function Hud_Lives
-
-; -------------------------------------------------------------------------
-
-Hud_Mins:
-	lea	Hud_1,a2
-	moveq	#0,d6
-	bra.s	Hud_Digits
-; End of function Hud_Mins
+.Draw:
+	lea	Hud_1,a2			; 1 digit
+	moveq	#1-1,d6
+	bra.s	HUD_DrawNum			; Draw number
 
 ; -------------------------------------------------------------------------
-
-Hud_SecsCentisecs:
-	lea	Hud_10,a2
-	moveq	#1,d6
-; End of function Hud_SecsCentisecs
-
+; Draw minutes
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d1.l - Number to draw
 ; -------------------------------------------------------------------------
 
-Hud_Digits:
-	moveq	#0,d4
-	lea	Art_HUDNumbers,a1
+HUD_DrawMins:
+	lea	Hud_1,a2			; 1 digit
+	moveq	#1-1,d6
+	bra.s	HUD_DrawNum			; Draw number
 
-.DigitLoop:
-	moveq	#0,d2
-	move.l	(a2)+,d3
+; -------------------------------------------------------------------------
+; Draw seconds or centiseconds
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d1.l - Number to draw
+; -------------------------------------------------------------------------
+
+HUD_DrawSecs:
+	lea	Hud_10,a2			; 2 digits
+	moveq	#2-1,d6
+
+; -------------------------------------------------------------------------
+; Draw number
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	d0.l - VDP command
+;	d1.l - Number to draw
+;	d6.w - Number of digits (minus 1)
+;	a2.l - Pointer to digit data
+; -------------------------------------------------------------------------
+
+HUD_DrawNum:
+	moveq	#0,d4				; Clear leading digit found flag
+	lea	Art_HUDNumbers,a1		; HUD numbers art
 
 .Loop:
+	moveq	#0,d2				; Get current digit
+	move.l	(a2)+,d3
+
+.FindDigit:
 	sub.l	d3,d1
 	bcs.s	.GotDigit
 	addq.w	#1,d2
-	bra.s	.Loop
-
-; -------------------------------------------------------------------------
+	bra.s	.FindDigit
 
 .GotDigit:
 	add.l	d3,d1
-	tst.w	d2
-	beq.s	.DrawDigit
-	move.w	#1,d4
 
-.DrawDigit:
-	lsl.w	#6,d2
+	tst.w	d2				; Is this digit 0?
+	beq.s	.NonZeroDigit			; If so, branch
+	move.w	#1,d4				; Set leading digit found flag
+
+.NonZeroDigit:
+	lsl.w	#6,d2				; Draw digit
 	move.l	d0,4(a6)
 	lea	(a1,d2.w),a3
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	move.l	(a3)+,(a6)
-	addi.l	#$400000,d0
-	dbf	d6,.DigitLoop
+	rept	$40/4
+		move.l	(a3)+,(a6)
+	endr
+	
+	addi.l	#$400000,d0			; Next digit slot
+	dbf	d6,.Loop			; Loop until digits are drawn
 	rts
-; End of function Hud_Digits
 
 ; -------------------------------------------------------------------------

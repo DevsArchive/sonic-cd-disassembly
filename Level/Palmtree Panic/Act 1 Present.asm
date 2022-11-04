@@ -43,7 +43,7 @@
 	include	"Level/Palmtree Panic/Objects/Effects/Main.asm"
 	include	"Level/Debug Mode.asm"
 	include	"Level/Palmtree Panic/Debug Objects (Act 1 Present).asm"
-	include	"Level/Object Manager.asm"
+	include	"Level/Object Spawner.asm"
 	include	"Level/Palmtree Panic/Object Layout (Act 1).asm"
 	include	"Level/Palmtree Panic/Objects/Scenery/Main.asm"
 	include	"Level/Palmtree Panic/Objects/Log Shadow/Main.asm"
