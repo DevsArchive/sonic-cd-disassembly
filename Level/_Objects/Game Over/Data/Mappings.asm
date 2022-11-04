@@ -1,10 +1,11 @@
-MapSpr_GameOver1:
-	dc.w	unk_20F046-MapSpr_GameOver1
-	dc.w	unk_20F052-MapSpr_GameOver1
-MapSpr_GameOver2:
-	dc.w	unk_20F05E-MapSpr_GameOver2
-	dc.w	unk_20F06A-MapSpr_GameOver2
-unk_20F046:	dc.b	  2
+MapSpr_GameOver:
+	dc.w	unk_20F046-MapSpr_GameOver
+	dc.w	unk_20F052-MapSpr_GameOver
+MapSpr_TimeOver:
+	dc.w	unk_20F05E-MapSpr_TimeOver
+	dc.w	unk_20F06A-MapSpr_TimeOver
+unk_20F046:
+	dc.b	  2
 	dc.b	$F8 ; ø
 	dc.b	 $D
 	dc.b	  0

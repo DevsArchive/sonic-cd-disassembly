@@ -17,11 +17,11 @@ ObjCapsule:
 	move.w	.Index(pc,d0.w),d0
 	jsr	.Index(pc,d0.w)
 
-	tst.b	oRoutine(a0)			; Has the capsule been initialized?
+	tst.b	oRoutine(a0)			; Have we been initialized?
 	beq.s	.End				; If not, branch
 	cmpi.b	#$A,oRoutine(a0)		; Is this a seed?
 	beq.s	.Draw				; If so, branch
-	cmpi.b	#6,oRoutine(a0)			; Has the capsule been destroyed?
+	cmpi.b	#6,oRoutine(a0)			; Have we been destroyed?
 	bcc.s	.End				; If so, branch
 
 .Draw:
@@ -41,6 +41,8 @@ ObjCapsule:
 	dc.w	ObjCapsule_Seed-.Index
 
 ; -------------------------------------------------------------------------
+; Initialization
+; -------------------------------------------------------------------------
 
 ObjCapsule_Init:
 	ori.b	#4,oSprFlags(a0)		; Set sprite flags
@@ -53,12 +55,14 @@ ObjCapsule_Init:
 	move.b	#$18,oYRadius(a0)		; Set height
 
 ; -------------------------------------------------------------------------
+; Main routine
+; -------------------------------------------------------------------------
 
 ObjCapsule_Main:
 	lea	Ani_FlowerCapsule,a1		; Animate sprite
 	jsr	AnimateObject
 
-	lea	objPlayerSlot.w,a6		; Check if the capsule has been hit
+	lea	objPlayerSlot.w,a6		; Check if we have been hit
 	bsr.w	ObjCapsule_CheckHit
 	beq.s	.End				; If there was no collision, branch
 
@@ -67,7 +71,7 @@ ObjCapsule_Main:
 	move.b	#120,oLvlEndTimer(a0)		; Set explosion timer
 	addq.b	#2,oRoutine(a0)			; Start exploding
 
-	move.w	objPlayerSlot+oX.w,d0		; Is the player horizontally outside of the capsule?
+	move.w	objPlayerSlot+oX.w,d0		; Is the player horizontally outside of us?
 	move.b	objPlayerSlot+oXRadius.w,d1
 	ext.w	d1
 	addi.w	#32,d1
@@ -79,14 +83,14 @@ ObjCapsule_Main:
 	bcc.s	.BounceX			; If so, branch
 
 .BounceY:
-	move.w	objPlayerSlot+oYVel.w,d0	; Make the player bounce off the capsule vertically
+	move.w	objPlayerSlot+oYVel.w,d0	; Make the player bounce off us vertically
 	neg.w	d0
 	asr.w	#2,d0
 	move.w	d0,objPlayerSlot+oYVel.w
 	rts
 
 .BounceX:
-	move.w	objPlayerSlot+oXVel.w,d0	; Make the player bounce off the capsule horizontally
+	move.w	objPlayerSlot+oXVel.w,d0	; Make the player bounce off us horizontally
 	neg.w	d0
 	asr.w	#2,d0
 	move.w	d0,objPlayerSlot+oXVel.w
@@ -94,6 +98,8 @@ ObjCapsule_Main:
 .End:
 	rts
 
+; -------------------------------------------------------------------------
+; Explode
 ; -------------------------------------------------------------------------
 
 ObjCapsule_Explode:
@@ -148,6 +154,8 @@ ObjCapsule_Explode:
 	dc.b	 -8, -8
 
 ; -------------------------------------------------------------------------
+; Spawn speeds
+; -------------------------------------------------------------------------
 
 ObjCapsule_SpawnSeeds:
 	moveq	#0,d0				; Restore level palette
@@ -196,6 +204,8 @@ ObjCapsule_SpawnSeeds:
 	dc.w	 $280
 
 ; -------------------------------------------------------------------------
+; Seed
+; -------------------------------------------------------------------------
 
 ObjCapsule_Seed:
 	lea	Ani_FlowerCapsule,a1		; Animate sprite
@@ -213,6 +223,13 @@ ObjCapsule_Seed:
 .End:
 	rts
 
+; -------------------------------------------------------------------------
+; Check if the capsule has been hit
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a6.l  - Player object slot
+; RETURNS:
+;	eq/ne - No collision/Collision
 ; -------------------------------------------------------------------------
 
 ObjCapsule_CheckHit:
@@ -250,7 +267,7 @@ ObjCapsule_CheckHit:
 	rts
 
 ; -------------------------------------------------------------------------
-; Big ring object
+; Big ring flash object
 ; -------------------------------------------------------------------------
 
 ObjBigRingFlash:
@@ -266,8 +283,10 @@ ObjBigRingFlash:
 .Index:
 	dc.w	ObjBigRingFlash_Init-.Index
 	dc.w	ObjBigRingFlash_Animate-.Index
-	dc.w	ObjBigRingFlash_Destroy-.Index
+	dc.w	ObjBigRingFlash_Delete-.Index
 
+; -------------------------------------------------------------------------
+; Initialization
 ; -------------------------------------------------------------------------
 
 ObjBigRingFlash_Init:
@@ -277,16 +296,22 @@ ObjBigRingFlash_Init:
 	move.l	#MapSpr_BigRingFlash,oMap(a0)	; Set mappings
 
 ; -------------------------------------------------------------------------
+; Animate
+; -------------------------------------------------------------------------
 
 ObjBigRingFlash_Animate:
 	lea	Ani_BigRingFlash,a1		; Animate sprite
 	jmp	AnimateObject
 
 ; -------------------------------------------------------------------------
+; Delete
+; -------------------------------------------------------------------------
 
-ObjBigRingFlash_Destroy:
-	jmp	DeleteObject			; Delete object
+ObjBigRingFlash_Delete:
+	jmp	DeleteObject			; Delete ourselves
 
+; -------------------------------------------------------------------------
+; Big ring object
 ; -------------------------------------------------------------------------
 
 ObjBigRing:
@@ -298,10 +323,8 @@ ObjBigRing:
 	if (REGION=USA)|((REGION<>USA)&(DEMO=0))
 		jmp	CheckObjDespawn		; Check despawn
 	else
-		jmp	DeleteObject		; Delete object
+		jmp	DeleteObject		; Delete ourselves
 	endif
-
-; -------------------------------------------------------------------------
 
 .Proceed:
 	moveq	#0,d0				; Run routine
@@ -324,6 +347,8 @@ ObjBigRing:
 	dc.w	ObjBigRing_Animate-.Index
 
 ; -------------------------------------------------------------------------
+; Initialization
+; -------------------------------------------------------------------------
 
 ObjBigRing_Init:
 	cmpi.b	#%1111111,timeStones		; Have all the time stones been collected?
@@ -345,9 +370,11 @@ ObjBigRing_Init:
 	move.b	#$20,oYRadius(a0)		; Set height
 
 ; -------------------------------------------------------------------------
+; Main routine
+; -------------------------------------------------------------------------
 
 ObjBigRing_Main:
-	lea	objPlayerSlot.w,a1		; Check if the player has touched the big ring
+	lea	objPlayerSlot.w,a1		; Check if the player has touched us?
 	bsr.w	ObjBigRing_CheckTouch
 	beq.s	ObjBigRing_Animate		; If not, branch
 
@@ -375,11 +402,20 @@ ObjBigRing_Main:
 	move.b	#1,oSubtype(a1)
 
 ; -------------------------------------------------------------------------
+; Animate
+; -------------------------------------------------------------------------
 
 ObjBigRing_Animate:
 	lea	Ani_BigRing,a1			; Animate sprite
 	jmp	AnimateObject
 
+; -------------------------------------------------------------------------
+; Check if the player has touched the big ring
+; -------------------------------------------------------------------------
+; PARAMETERS:
+;	a1.l  - Player object slot
+; RETURNS:
+;	eq/ne - No collision/Collision
 ; -------------------------------------------------------------------------
 
 ObjBigRing_CheckTouch:
@@ -437,8 +473,10 @@ ObjGoalPost:
 .Index:
 	dc.w	ObjGoalPost_Init-.Index
 	dc.w	ObjGoalPost_Main-.Index
-	dc.w	ObjGoalPost_Null-.Index
+	dc.w	ObjGoalPost_Done-.Index
 
+; -------------------------------------------------------------------------
+; Initialization
 ; -------------------------------------------------------------------------
 
 ObjGoalPost_Init:
@@ -470,6 +508,8 @@ ObjGoalPost_Init:
 	bsr.w	ObjGoalPost_SetBaseTile		; Set base tile ID
 
 ; -------------------------------------------------------------------------
+; Main routine
+; -------------------------------------------------------------------------
 
 ObjGoalPost_Main:
 	move.w	oY(a6),d0			; Check if the player is in range vertically
@@ -479,13 +519,13 @@ ObjGoalPost_Main:
 	cmpi.w	#256,d0
 	bcc.s	.End				; If not, branch
 
-	move.w	oX(a6),d0			; Has the player gone past the goal post?
+	move.w	oX(a6),d0			; Has the player gone past us?
 	cmp.w	oX(a0),d0
 	bcs.s	.End				; If not, branch
 
 	addq.b	#2,oRoutine(a0)			; Next routine
 
-	move.w	cameraX.w,leftBound.w		; Set left boundary at goal post
+	move.w	cameraX.w,leftBound.w		; Set left boundary at our position
 	move.w	cameraX.w,destLeftBound.w
 
 	clr.w	timeWarpTimer.w			; Stop time warp
@@ -499,10 +539,14 @@ ObjGoalPost_Main:
 	rts
 
 ; -------------------------------------------------------------------------
+; Done
+; -------------------------------------------------------------------------
 
-ObjGoalPost_Null:
+ObjGoalPost_Done:
 	rts
 
+; -------------------------------------------------------------------------
+; Set goal post's base tile ID
 ; -------------------------------------------------------------------------
 
 ObjGoalPost_SetBaseTile:
@@ -567,6 +611,8 @@ ObjSignpost:
 	dc.w	ResultsActive-.Index
 
 ; -------------------------------------------------------------------------
+; Initialization
+; -------------------------------------------------------------------------
 
 ObjSignpost_Init:
 	addq.b	#2,oRoutine(a0)			; Next routine
@@ -578,11 +624,13 @@ ObjSignpost_Init:
 	move.w	#$43C,oTile(a0)			; Set base tile ID
 	cmpi.b	#3,zone				; Are we in Quartz Quadrant?
 	beq.s	.NotHighPriority		; If so, branch
-	ori.b	#$80,oTile(a0)			; If not, set high priority on the signpost sprite
+	ori.b	#$80,oTile(a0)			; If not, set high priority on sprite
 
 .NotHighPriority:
 	move.l	#MapSpr_GoalSignpost,oMap(a0)	; Set mappings
 
+; -------------------------------------------------------------------------
+; Main routine
 ; -------------------------------------------------------------------------
 
 ObjSignpost_Main:
@@ -594,7 +642,7 @@ ObjSignpost_Main:
 	cmpi.w	#256,d0
 	bcc.s	.End				; If not, branch
 
-	move.w	oX(a0),d0			; Has the player gone past the signpost?
+	move.w	oX(a0),d0			; Has the player gone past us?
 	cmp.w	oX(a6),d0
 	bcc.s	.End				; If not, branch
 
@@ -615,6 +663,8 @@ ObjSignpost_Main:
 .End:
 	rts
 
+; -------------------------------------------------------------------------
+; Spin
 ; -------------------------------------------------------------------------
 
 ObjSignpost_Spin:
@@ -712,6 +762,8 @@ StartResults:
 .TimeBonusesEnd:
 
 ; -------------------------------------------------------------------------
+; Results active
+; -------------------------------------------------------------------------
 
 ResultsActive:
 	rts
@@ -720,7 +772,7 @@ ResultsActive:
 ; Load flower capsule palette
 ; -------------------------------------------------------------------------
 
-LoadFlowerCapsulePal:
+LoadCapsulePal:
 	move.w	#$20/4-1,d6			; Load palette
 	lea	Pal_FlowerCapsule,a1
 	lea	palette+($10*2).w,a2

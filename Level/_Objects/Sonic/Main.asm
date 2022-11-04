@@ -51,7 +51,7 @@ ObjSonic_ChkBoredom:
 	rts
 
 ; -------------------------------------------------------------------------
-; Main Sonic object code
+; Sonic object
 ; -------------------------------------------------------------------------
 
 ObjSonic:
@@ -92,7 +92,7 @@ ObjSonic:
 	move.b	d0,oPlayerCharge(a0)		; Update the charge time
 
 .RunRoutines:
-	moveq	#0,d0				; Run object routine
+	moveq	#0,d0				; Run routine
 	move.b	oRoutine(a0),d0
 	move.w	.Index(pc,d0.w),d1
 	jmp	.Index(pc,d1.w)

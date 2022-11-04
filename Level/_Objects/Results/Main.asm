@@ -26,6 +26,8 @@ ObjResults:
 	dc.w	ObjResults_NextLevel-.Index
 
 ; -------------------------------------------------------------------------
+; Initialization
+; -------------------------------------------------------------------------
 
 ObjResults_Init:
 	subq.b	#1,oResultsTimer(a0)		; Decrement delay timer
@@ -37,6 +39,8 @@ ObjResults_Init:
 	jsr	LoadPLC
 	addq.b	#2,oRoutine(a0)			; Next routine
 
+; -------------------------------------------------------------------------
+; Wait for PLCs and spawn objects
 ; -------------------------------------------------------------------------
 
 ObjResults_WaitPLC:
@@ -116,6 +120,8 @@ ObjResults_WaitPLC:
 	rts
 
 ; -------------------------------------------------------------------------
+; Move
+; -------------------------------------------------------------------------
 
 ObjResults_Move:
 	tst.w	oResultsTimer(a0)		; Has the timer run out?
@@ -124,11 +130,11 @@ ObjResults_Move:
 
 .MoveX:
 	moveq	#8,d0				; Movement speed
-	move.w	oResultsDestX(a0),d1		; Is this object at its destination?
+	move.w	oResultsDestX(a0),d1		; Are we at our destination?
 	cmp.w	oX(a0),d1
 	beq.s	.AtDestX			; If so, branch
-	bge.s	.AddX				; If it's left of it, branch
-	neg.w	d0				; If it's right of it, move left
+	bge.s	.AddX				; If we're left of it, branch
+	neg.w	d0				; If we're right of it, move left
 
 .AddX:
 	add.w	d0,oX(a0)			; Move
@@ -140,7 +146,7 @@ ObjResults_Move:
 		cmpi.w	#352,oResultsTimer(a0)
 	endif
 	bcc.s	.End				; If not, branch
-	jmp	DrawObject			; Draw object
+	jmp	DrawObject			; Draw sprite
 
 .End:
 	rts
@@ -151,6 +157,8 @@ ObjResults_Move:
 	addq.b	#2,oRoutine(a0)			; If so, set next routine
 	bra.s	.CheckDraw
 
+; -------------------------------------------------------------------------
+; Bonus calculation
 ; -------------------------------------------------------------------------
 
 ObjResults_Bonus:
@@ -234,6 +242,8 @@ ObjResults_Bonus:
 	jsr	AddPoints
 	jmp	DrawObject			; Draw sprite
 
+; -------------------------------------------------------------------------
+; Set next level
 ; -------------------------------------------------------------------------
 
 ObjResults_NextLevel:

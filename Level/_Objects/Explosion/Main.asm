@@ -38,7 +38,7 @@ ObjExplosion_MakePoints:
 ; -------------------------------------------------------------------------
 
 ObjExplosion:
-	moveq	#0,d0				; Run object routine
+	moveq	#0,d0				; Run routine
 	move.b	oRoutine(a0),d0
 	move.w	.Index(pc,d0.w),d0
 	jmp	.Index(pc,d0.w)
@@ -46,12 +46,12 @@ ObjExplosion:
 ; -------------------------------------------------------------------------
 
 .Index:
-	dc.w	ObjExplosion_Init-.Index	; Initialization
-	dc.w	ObjExplosion_Main-.Index	; Main
-	dc.w	ObjExplosion_Done-.Index	; Finished
+	dc.w	ObjExplosion_Init-.Index
+	dc.w	ObjExplosion_Main-.Index
+	dc.w	ObjExplosion_Done-.Index
 
 ; -------------------------------------------------------------------------
-; Explosion initialization routine
+; Initialization
 ; -------------------------------------------------------------------------
 
 ObjExplosion_Init:
@@ -78,7 +78,7 @@ ObjExplosion_Init:
 	move.w	#$100,oAnim(a0)			; If so, use it
 
 ; -------------------------------------------------------------------------
-; Main explosion routine
+; Main routine
 ; -------------------------------------------------------------------------
 
 ObjExplosion_Main:
@@ -87,7 +87,7 @@ ObjExplosion_Main:
 	jmp	DrawObject			; Draw sprite
 
 ; -------------------------------------------------------------------------
-; Explosion finished routine
+; Finished
 ; -------------------------------------------------------------------------
 
 ObjExplosion_Done:

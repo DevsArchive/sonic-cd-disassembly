@@ -10,7 +10,7 @@ oFlowerLoPrio	EQU	oSubtype2		; Low priority sprite flag
 ; -------------------------------------------------------------------------
 
 ObjFlower:
-	moveq	#0,d0				; Run object routine
+	moveq	#0,d0				; Run routine
 	move.b	oRoutine(a0),d0
 	move.w	.Index(pc,d0.w),d0
 	jsr	.Index(pc,d0.w)
@@ -20,14 +20,14 @@ ObjFlower:
 ; -------------------------------------------------------------------------
 
 .Index:
-	dc.w	ObjFlower_Init-.Index		; Initialization
-	dc.w	ObjFlower_Seed-.Index		; Seed
-	dc.w	ObjFlower_Animate-.Index	; Animation
-	dc.w	ObjFlower_Growing-.Index	; Growth
-	dc.w	ObjFlower_Done-.Index		; Finish
+	dc.w	ObjFlower_Init-.Index
+	dc.w	ObjFlower_Seed-.Index
+	dc.w	ObjFlower_Animate-.Index
+	dc.w	ObjFlower_Growing-.Index
+	dc.w	ObjFlower_Done-.Index
 
 ; -------------------------------------------------------------------------
-; Flower initialization routine
+; Initialization
 ; -------------------------------------------------------------------------
 
 ObjFlower_Init:
@@ -58,7 +58,7 @@ ObjFlower_Init:
 	move.w	#$6D7,oTile(a0)			; Set base tile to use palette line 0
 
 ; -------------------------------------------------------------------------
-; Flower seed routine
+; Seed
 ; -------------------------------------------------------------------------
 
 ObjFlower_Seed:
@@ -90,7 +90,7 @@ ObjFlower_Seed:
 	addq.w	#2,oY(a0)			; Fall down slowly
 
 ; -------------------------------------------------------------------------
-; Flower animation routine
+; Animation
 ; -------------------------------------------------------------------------
 
 ObjFlower_Animate:
@@ -145,21 +145,21 @@ ObjFlower_GetPosBuffer:
 	rts
 
 ; -------------------------------------------------------------------------
-; Flower growth routine
+; Growing
 ; -------------------------------------------------------------------------
 
 ObjFlower_Growing:
-	move.w	#$26D7,oTile(a0)		; Set base tile to use palette line 1
-	move.b	#2,oAnim(a0)			; Set animation to growing animation
-	bra.s	ObjFlower_Animate		; Continue to animate sprite
+	move.w	#$26D7,oTile(a0)		; Set to palette line 1
+	move.b	#2,oAnim(a0)			; Set to growing animation
+	bra.s	ObjFlower_Animate
 
 ; -------------------------------------------------------------------------
-; Flower finished routine
+; Finished
 ; -------------------------------------------------------------------------
 
 ObjFlower_Done:
-	move.b	#3,oAnim(a0)			; Set animation to flower animation
-	move.b	#4,oRoutine(a0)			; Set routine to animation
-	bra.s	ObjFlower_Animate		; Continue to animate sprite
+	move.b	#3,oAnim(a0)			; We are now fully grown
+	move.b	#4,oRoutine(a0)
+	bra.s	ObjFlower_Animate
 
 ; -------------------------------------------------------------------------
