@@ -273,7 +273,7 @@ SolidObject:
 	bne.w	.GetOff				; If so, branch
 
 .NotSpring:
-	cmpi.b	#4,d5				; Is the player deep enough in?
+	cmpi.b	#4,d5				; Is the player in deep enough vertically?
 	bls.w	.GetOff				; If not, branch
 
 ; -------------------------------------------------------------------------
