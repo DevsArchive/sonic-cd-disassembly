@@ -201,8 +201,8 @@ SolidObject:
 	bne.w	.GetOff				; If so, branch
 	
 	move.b	oWidth(a0),d1			; Get collision check width
-	ext.w	d1
-	addi.w	#10,d1
+	ext.w	d1				; (Object X radius + 1 + Player X radius)
+	addi.w	#9+1,d1
 	
 	move.w	oX(a1),d0			; Is the player left of us?
 	sub.w	oX(a0),d0
@@ -228,11 +228,11 @@ SolidObject:
 
 .CheckYRange:
 	move.b	oYRadius(a0),d2			; Get collision check height
-	ext.w	d2
+	ext.w	d2				; (Object Y radius + 1 + Player Y radius + 1)
 	move.b	oYRadius(a1),d3
 	ext.w	d3
 	add.w	d2,d3
-	addq.w	#2,d3
+	addq.w	#1+1,d3
 	
 	move.w	oY(a1),d2			; Is the player above us?
 	sub.w	oY(a0),d2
