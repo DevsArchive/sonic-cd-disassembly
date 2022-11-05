@@ -228,11 +228,11 @@ SolidObject:
 
 .CheckYRange:
 	move.b	oYRadius(a0),d2			; Get collision check height
-	ext.w	d2				; (Object Y radius + 1 + Player Y radius + 1)
+	ext.w	d2				; (Object Y radius + 2 + Player Y radius)
 	move.b	oYRadius(a1),d3
 	ext.w	d3
 	add.w	d2,d3
-	addq.w	#1+1,d3
+	addq.w	#2,d3
 	
 	move.w	oY(a1),d2			; Is the player above us?
 	sub.w	oY(a0),d2
