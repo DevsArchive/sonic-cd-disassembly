@@ -114,7 +114,7 @@ ObjSonic_MakeTimeWarpStars:
 	tst.b	objTimeStar1Slot.w		; Are they already loaded?
 	bne.s	.End				; If so, branch
 
-	move.b	#1,timeWarpFlag			; Set time warp flag
+	move.b	#1,timeWarp			; Set time warp flag
 
 	move.b	#3,objTimeStar1Slot.w		; Load time warp stars
 	move.b	#5,objTimeStar1Slot+oAnim.w
@@ -345,7 +345,7 @@ ObjSonic_CheckHangBar:
 	move.w	timeWarpTimer.w,d0		; Get time warp timer
 	beq.s	.NoTimeWarp			; If we weren't time warping, branch
 	clr.w	timeWarpTimer.w			; Stop time warp
-	clr.b	timeWarpFlag
+	clr.b	timeWarp
 	cmpi.w	#90,d0				; Were we just about to warp?
 	bcs.s	.NoTimeWarp			; If not, branch
 	clr.b	timeWarpDir.w			; If so, disable time warping until the next time post is touched
@@ -377,9 +377,9 @@ ObjSonic_CheckElecBeam:
 	beq.w	.End				; If so, branch
 	cmpi.b	#4,oRoutine(a0)			; Are we hurt or dead?
 	bcc.s	.End				; If so, branch
-	tst.b	timeWarpFlag			; Are we time warping?
+	tst.b	timeWarp			; Are we time warping?
 	bne.s	.End				; If so, branch
-	tst.b	invincibleFlag			; Are we invincible?
+	tst.b	invincible			; Are we invincible?
 	bne.s	.End				; If so, branch
 	tst.w	oPlayerHurt(a0)			; Are we invulnerable after getting hurt?
 	bne.s	.End				; If so, branch
@@ -441,9 +441,9 @@ ObjSonic_CheckElecBeam:
 ObjSonic_CheckSparks:
 	cmpi.b	#$2B,oAnim(a0)			; Are we giving up from boredom?
 	beq.w	.End				; If so, branch
-	tst.b	timeWarpFlag			; Are we time warping?
+	tst.b	timeWarp			; Are we time warping?
 	bne.w	.End				; If so, branch
-	tst.b	invincibleFlag			; Are we invincible?
+	tst.b	invincible			; Are we invincible?
 	bne.w	.End				; If so, branch
 	
 	cmpi.w	#$980,oX(a0)			; Are in the boss arena entrance?
@@ -734,7 +734,7 @@ ObjSonic_Display:
 	jsr	DrawObject			; Draw sprite
 
 .SkipDisplay:
-	tst.b	invincibleFlag			; Are we invincible?
+	tst.b	invincible			; Are we invincible?
 	beq.s	.NotInvincible			; If not, branch
 	tst.w	oPlayerInvinc(a0)		; Is the invincibility timer active?
 	beq.s	.NotInvincible			; If not, branch
@@ -742,7 +742,7 @@ ObjSonic_Display:
 	subq.w	#1,oPlayerInvinc(a0)		; Decrement invincibility time
 	bne.s	.NotInvincible			; If it hasn't run out, branch
 
-	tst.b	speedShoesFlag			; Is the speed shoes music playing?
+	tst.b	speedShoes			; Is the speed shoes music playing?
 	bne.s	.StopInvinc			; If so, branch
 	tst.b	bossMusic			; Is the boss music playing?
 	bne.s	.StopInvinc			; If so, branch
@@ -755,10 +755,10 @@ ObjSonic_Display:
 	jsr	PlayLevelMusic			; Play level music
 
 .StopInvinc:
-	move.b	#0,invincibleFlag		; Stop invincibility
+	move.b	#0,invincible			; Stop invincibility
 
 .NotInvincible:
-	tst.b	speedShoesFlag			; Do we have speed shoes?
+	tst.b	speedShoes			; Do we have speed shoes?
 	beq.s	.End				; If not, branch
 	tst.w	oPlayerShoes(a0)		; Is the speed shoes timer active?
 	beq.s	.End				; If not, branch
@@ -770,7 +770,7 @@ ObjSonic_Display:
 	move.w	#$C,sonicAcceleration.w
 	move.w	#$80,sonicDeceleration.w
 
-	tst.b	invincibleFlag			; Is the invincibility music playing?
+	tst.b	invincible			; Is the invincibility music playing?
 	bne.s	.StopSpeedShoes			; If so, branch
 	tst.b	bossMusic			; Is the boss music playing?
 	bne.s	.StopSpeedShoes			; If so, branch
@@ -783,7 +783,7 @@ ObjSonic_Display:
 	jsr	PlayLevelMusic			; Play level music
 
 .StopSpeedShoes:
-	move.b	#0,speedShoesFlag		; Stop speed shoes
+	move.b	#0,speedShoes			; Stop speed shoes
 
 .End:
 	rts
@@ -923,7 +923,7 @@ ObjSonic_TimeWarp:
 	cmp.w	d2,d0				; Are we going fast enough?
 	bcc.w	ObjSonic_MakeTimeWarpStars	; If so, branch
 	clr.w	timeWarpTimer.w			; If not, reset time warping until we go fast again
-	clr.b	timeWarpFlag
+	clr.b	timeWarp
 	rts
 
 .CheckStop:
@@ -933,7 +933,7 @@ ObjSonic_TimeWarp:
 .StopTimeWarp:
 	clr.w	timeWarpTimer.w			; Disable time warping until the next time post is touched
 	clr.b	timeWarpDir.w
-	clr.b	timeWarpFlag
+	clr.b	timeWarp
 
 .End2:
 	rts
@@ -1390,7 +1390,7 @@ ObjSonic_MoveGround:
 	move.w	sonicTopSpeed.w,d1		; Get max charge speed (top speed * 2)
 	move.w	d1,d2
 	asl.w	#1,d1
-	tst.b	speedShoesFlag			; Do we have speed shoes?
+	tst.b	speedShoes			; Do we have speed shoes?
 	beq.s	.NoSpeedShoes			; If not, branch
 	asr.w	#1,d2				; Get max charge speed for speed shoes ((top speed * 2) - (top speed / 2))
 	sub.w	d2,d1
@@ -1438,7 +1438,7 @@ ObjSonic_MoveGround:
 	cmpi.b	#30,oPlayerCharge(a0)		; Have we fully charged the peelout?
 	beq.s	.UnleashPeelout			; If so, branch
 
-	move.w	#FM_AB,d0			; Play charge stop sound
+	move.w	#FM_CHARGESTOP,d0		; Play charge stop sound
 	jsr	PlayFMSound
 	move.b	#0,oPlayerCharge(a0)		; Stop charging
 	move.w	#0,oPlayerGVel(a0)
@@ -1782,7 +1782,7 @@ ObjSonic_MoveRoll:
 	move.w	sonicTopSpeed.w,d1		; Get max charge speed (top speed * 2)
 	move.w	d1,d2
 	asl.w	#1,d1
-	tst.b	speedShoesFlag			; Do we have speed shoes?
+	tst.b	speedShoes			; Do we have speed shoes?
 	beq.s	.NoSpeedShoes			; If not, branch
 	asr.w	#1,d2				; Get max charge speed for speed shoes ((top speed * 2) - (top speed / 2))
 	sub.w	d2,d1
@@ -1818,7 +1818,7 @@ ObjSonic_MoveRoll:
 	rts
 
 .ChargeNotFull:
-	move.w	#FM_AB,d0			; Play charge stop sound
+	move.w	#FM_CHARGESTOP,d0		; Play charge stop sound
 	jsr	PlayFMSound
 
 	move.b	#0,oPlayerCharge(a0)		; Stop charging

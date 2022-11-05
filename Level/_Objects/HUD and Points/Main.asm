@@ -33,7 +33,7 @@ ObjPoints:
 
 ObjPoints_Init:
 	addq.b	#2,oRoutine(a0)			; Next routine
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.w	#$6C6,oTile(a0)			; Set base tile ID
 	move.l	#MapSpr_Points,oMap(a0)		; Set mappings
 	move.b	oSubtype(a0),oMapFrame(a0)	; Set sprite frame

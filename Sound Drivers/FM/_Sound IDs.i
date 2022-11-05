@@ -35,7 +35,7 @@ FM_A7		rs.b	1
 FM_RINGL	rs.b	1			; Ring (left channel)
 FM_A9		rs.b	1
 FM_AA		rs.b	1
-FM_AB		rs.b	1
+FM_CHARGESTOP	rs.b	1			; Charge stop
 FM_AC		rs.b	1
 FM_AD		rs.b	1
 FM_CHECKPOINT	rs.b	1			; Checkpoint

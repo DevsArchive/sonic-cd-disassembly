@@ -58,10 +58,12 @@ oColStatus	rs.b	1			; Collision status
 oFlags		rs.b	1			; Flags
 oSavedFlagsID	rs.b	1			; Saved flags entry ID
 oRoutine	rs.b	1			; Routine ID
+oSolidType	rs.b	0			; Solidity type
 oRoutine2	rs.b	1			; Secondary routine ID
 oAngle		rs.b	1			; Angle
 		rs.b	1			; Object specific variable
 oSubtype	rs.b	1			; Subtype ID
+oLayer		rs.b	0			; Layer ID
 oSubtype2	rs.b	1			; Secondary subtype ID
 
 ; -------------------------------------------------------------------------

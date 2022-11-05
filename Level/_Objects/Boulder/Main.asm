@@ -26,7 +26,7 @@ ObjBoulder:
 
 ObjBoulder_Init:
 	addq.b	#2,oRoutine(a0)			; Next routine
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.b	#4,oPriority(a0)		; Set priority
 	move.l	#MapSpr_Boulder,oMap(a0)	; Set mappings
 	move.b	#$10,oWidth(a0)			; Set width

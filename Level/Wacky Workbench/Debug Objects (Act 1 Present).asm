@@ -8,7 +8,7 @@
 DebugItemIndex:
 	DBSTART
 	DBGITEM	$27, 1, MapSpr_TubeDoor,        $4410, 1, 0, 0,   0
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  8, 0, 0,   $A
+	DBGITEM	$19, 4, MapSpr_MonitorTime, $5A8,  8, 0, 0,   $A
 	DBGITEM	$28, 1, MapSpr_SpinPlatform,    $436A, 0, 0, 0,   0
 	DBGITEM	$22, 1, MapSpr_SpinPlatform,    $236A, 0, 0, 0,   0
 	DBGITEM	$22, 1, MapSpr_SpinPlatform,    $236A, 1, 0, 0,   0
@@ -46,16 +46,16 @@ DebugItemIndex:
 	DBGITEM	$A,  1, MapSpr_Spring1,         $2520, 2, 2, 0,   0
 	DBGITEM	$A,  1, MapSpr_Spring2,         $2520, 6, 0, 0,   0
 	DBGITEM	$A,  1, MapSpr_Spring2,         $2520, 6, 1, 0,   0
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  0, 0, 0,   0
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  1, 0, 0,   1
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  2, 0, 0,   2
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  3, 0, 0,   3
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  4, 0, 0,   4
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  5, 0, 0,   5
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  6, 0, 0,   6
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  7, 0, 0,   7
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  8, 0, 0,   $A
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost, $5A8,  9, 0, 0,   $C
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  0, 0, 0,   0
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  1, 0, 0,   1
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  2, 0, 0,   2
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  3, 0, 0,   3
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  4, 0, 0,   4
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  5, 0, 0,   5
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  6, 0, 0,   6
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  7, 0, 0,   7
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  8, 0, 0,   $A
+	DBGITEM	$19, 4, MapSpr_MonitorTime,     $5A8,  9, 0, 0,   $C
 	DBGITEM	$16, 1, MapSpr_GoalSignpost,    $2E0,  0, 0, 0,   5
 	DBGITEM	$17, 1, MapSpr_GoalSignpost,    $43C,  0, 0, 0,   0
 	DBGITEM	$14, 1, MapSpr_BigRing,         $488,  0, 0, 0,   0

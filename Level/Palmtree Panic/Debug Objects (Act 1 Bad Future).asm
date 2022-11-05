@@ -36,20 +36,20 @@ DebugItemIndex:
 	DBGITEM	$0A, 1, MapSpr_Spring3,           $2490, $A,  2, 0, 0
 	DBGITEM	$0A, 1, MapSpr_Spring3,           $2490, $A,  1, 0, 0
 	DBGITEM	$0A, 1, MapSpr_Spring3,           $2490, $A,  3, 0, 0
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  0,   0, 0, 0
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  1,   0, 0, 1
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  2,   0, 0, 2
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  3,   0, 0, 3
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  3,   0, 0, 4
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  5,   0, 0, 5
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  6,   0, 0, 6
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  7,   0, 0, 7
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  0,   0, 0, 0
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  1,   0, 0, 1
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  2,   0, 0, 2
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  3,   0, 0, 3
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  3,   0, 0, 4
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  5,   0, 0, 5
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  6,   0, 0, 6
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  7,   0, 0, 7
 	DBGITEM	$04, 1, MapSpr_Waterfall,         $40B,  0,   0, 0, 0
 	DBGITEM	$0E, 1, MapSpr_TunnelWaterfall,   $40B,  0,   0, 0, 0
 	DBGITEM	$20, 3, MapSpr_CollapsePlatform1, $44BE, $10, 1, 0, 0
 	DBGITEM	$20, 3, MapSpr_CollapsePlatform1, $44BE, 0,   0, 0, 0
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  8,   0, 0, $A
-	DBGITEM	$19, 4, MapSpr_MonitorTimePost,   $5A8,  9,   0, 0, $C
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  8,   0, 0, $A
+	DBGITEM	$19, 4, MapSpr_MonitorTime,       $5A8,  9,   0, 0, $C
 	DBGITEM	$32, 4, MapSpr_Scenery,           $438,  2,   0, 0, 2
 	DBGITEM	$33, 4, MapSpr_LogShadow,         $428,  1,   0, 0, 1
 	DBGITEM	$34, 3, MapSpr_Powerup,           $544,  0,   0, 0, 1

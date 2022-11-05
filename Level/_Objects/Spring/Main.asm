@@ -111,7 +111,7 @@ ObjSpring2_Index:dc.w	ObjSpring2_Init-ObjSpring2_Index
 ObjSpring2_Init:
 	move.l	#MapSpr_Spring1,oMap(a0)
 	move.w	#$8520,oTile(a0)
-	ori.b	#4,oSprFlags(a0)
+	ori.b	#%00000100,oSprFlags(a0)
 	move.b	#$10,oWidth(a0)
 	move.b	#8,oYRadius(a0)
 	move.b	#4,oPriority(a0)
@@ -188,7 +188,7 @@ ObjSpring_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_Spring1,oMap(a0)
 	move.w	#$520,oTile(a0)
-	ori.b	#4,oSprFlags(a0)
+	ori.b	#%00000100,oSprFlags(a0)
 	move.b	#$10,oWidth(a0)
 	move.b	#8,oYRadius(a0)
 	move.w	oX(a0),oVar36(a0)
@@ -367,7 +367,7 @@ ObjSpring_SolidObject3:
 
 	move.w	oX(a0),d3
 	move.w	oY(a0),d4
-	jmp	SolidObject2
+	jmp	BtmSolidObject
 ; End of function ObjSpring_SolidObject3
 
 ; -------------------------------------------------------------------------

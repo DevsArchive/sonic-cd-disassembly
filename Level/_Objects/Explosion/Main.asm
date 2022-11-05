@@ -6,7 +6,6 @@
 ; -------------------------------------------------------------------------
 
 oExplodeBadnik	EQU	oRoutine2		; Explosion from badnik flag
-oExplodeLoPrio	EQU	oSubtype2		; Low priority sprite flag
 oExplodePoints	EQU	oVar3E			; Sprite ID for points object
 
 ; -------------------------------------------------------------------------
@@ -57,12 +56,12 @@ ObjExplosion:
 ObjExplosion_Init:
 	addq.b	#2,oRoutine(a0)			; Advance routine
 
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.b	#1,oPriority(a0)		; Set priority
 	move.w	#$8680,oTile(a0)		; Set base tile
-	tst.b	oExplodeLoPrio(a0)		; Should our sprite be low priority?
+	tst.b	oLayer(a0)			; Are we on layer 2?
 	beq.s	.HighPriority			; If not, branch
-	andi.b	#$7F,oTile(a0)			; Clear tile priority bit
+	andi.b	#$7F,oTile(a0)			; Set low priority
 
 .HighPriority:
 	move.l	#MapSpr_Explosion,oMap(a0)	; Set mappings

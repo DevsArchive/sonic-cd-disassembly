@@ -274,7 +274,7 @@ ObjSnakeSub_Done:
 	lea	objPlayerSlot.w,a1
 	jsr	SolidObject
 	beq.s	.Done
-	jsr	ClearObjRide
+	jsr	GetOffObject
 	
 .Done:
 	addq.l	#4,sp

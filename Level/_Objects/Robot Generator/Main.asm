@@ -31,7 +31,7 @@ ObjRobotGenerator_Index:
 
 ObjRobotGenerator_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oSprFlags(a0)
+	ori.b	#%00000100,oSprFlags(a0)
 	move.b	#4,oPriority(a0)
 	move.b	#$22,oXRadius(a0)
 	move.b	#$22,oWidth(a0)
@@ -88,7 +88,7 @@ ObjRobotGenerator_Main:
 	lea	objPlayerSlot.w,a1
 	jsr	SolidObject
 	beq.s	.End
-	jsr	ClearObjRide
+	jsr	GetOffObject
 
 .End:
 	rts

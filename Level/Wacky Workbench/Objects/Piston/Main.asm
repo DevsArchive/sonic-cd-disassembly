@@ -81,7 +81,7 @@ ObjPiston_Main:
 	cmpi.b	#$21,oPistonOff(a0)
 	bcs.s	.Solid
 	lea	objPlayerSlot.w,a1
-	jmp	ClearObjRide
+	jmp	GetOffObject
 
 .Solid:
 	jmp	ObjPiston_Solid(pc)

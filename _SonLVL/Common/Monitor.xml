@@ -25,7 +25,7 @@
       <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
       <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="5" startpal="0" />
     </ImageFromMappings>
-    <ImageFromMappings id="bluering">
+    <ImageFromMappings id="combine">
       <ArtFile filename="../Level/_Objects/Monitor and Time Post/Data/Art.nem" />
       <MapFile type="ASM" filename="../Level/_Objects/Monitor and Time Post/Data/Mappings.asm" frame="6" startpal="0" />
     </ImageFromMappings>
@@ -61,7 +61,7 @@
     <Subtype id="03" name="Invincibility" image="invincibility" />
     <Subtype id="04" name="Shoes" image="shoes" />
     <Subtype id="05" name="Stopwatch" image="stopwatch" />
-    <Subtype id="06" name="Blue Ring" image="bluering" />
+    <Subtype id="06" name="Combine Ring" image="combine" />
     <Subtype id="07" name="S" image="s" />
     <Subtype id="08" name="Past Time Post" image="past" />
     <Subtype id="09" name="Future Time Post" image="future" />
@@ -77,7 +77,7 @@
       <EnumMember name="Invincibility" />
       <EnumMember name="Shoes" />
       <EnumMember name="Stopwatch" />
-      <EnumMember name="Blue Ring" />
+      <EnumMember name="Combine Ring" />
       <EnumMember name="S" />
       <EnumMember name="Past Time Post" />
       <EnumMember name="Future Time Post" />

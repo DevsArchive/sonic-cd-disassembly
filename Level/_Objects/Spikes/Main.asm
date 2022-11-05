@@ -20,7 +20,7 @@ ObjSpikes_Index:dc.w	ObjSpikes_Init-ObjSpikes_Index
 ObjSpikes_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_Spikes,oMap(a0)
-	ori.b	#4,oSprFlags(a0)
+	ori.b	#%00000100,oSprFlags(a0)
 	move.b	#3,oPriority(a0)
 	moveq	#$A,d0
 	jsr	SetObjectTileID(pc)
@@ -57,9 +57,9 @@ ObjSpikes_Main:
 	beq.s	.Display
 	btst	#3,oFlags(a0)
 	beq.s	.Display
-	tst.b	timeWarpFlag
+	tst.b	timeWarp
 	bne.s	.Display
-	tst.b	invincibleFlag
+	tst.b	invincible
 	bne.s	.Display
 	move.l	a0,-(sp)
 	movea.l	a0,a2

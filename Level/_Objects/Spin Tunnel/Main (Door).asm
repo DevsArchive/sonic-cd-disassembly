@@ -57,7 +57,7 @@ ObjTunnelDoor_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_TunnelDoor,oMap(a0)
 	move.b	#1,oPriority(a0)
-	ori.b	#4,oSprFlags(a0)
+	ori.b	#%00000100,oSprFlags(a0)
 	move.b	#$2C,oWidth(a0)
 	cmpi.b	#2,oSubtype(a0)
 	bne.s	.NotNarrow
@@ -149,7 +149,7 @@ ObjTunnelDoorSplash_Index:
 
 ObjTunnelDoorSplash_Init:
 	addq.b	#2,oRoutine(a0)
-	move.b	#4,oSprFlags(a0)
+	move.b	#%00000100,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.l	#MapSpr_TunnelDoorSplash,oMap(a0)
 	move.b	oSubtype(a0),oAnim(a0)

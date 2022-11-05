@@ -71,10 +71,10 @@ timeFrames		rs.b	1		; Centiseconds
 score			rs.l	1		; Score
 plcLoadFlags		rs.b	1		; PLC load flags
 palFadeFlags		rs.b	1		; Palette fade flags
-shieldFlag 		rs.b	1		; Shield flag
-invincibleFlag 		rs.b	1		; Invincible flag
-speedShoesFlag 		rs.b	1		; Speed shoes flag
-timeWarpFlag 		rs.b	1		; Time warp flag
+shield			rs.b	1		; Shield flag
+invincible 		rs.b	1		; Invincible flag
+speedShoes 		rs.b	1		; Speed shoes flag
+timeWarp 		rs.b	1		; Time warp flag
 spawnMode		rs.b	1		; Spawn mode flag
 savedSpawnMode		rs.b	1		; Saved spawn mode flag
 savedX 			rs.w	1		; Saved X position
@@ -122,7 +122,7 @@ powerup			rs.b	1		; Powerup ID
 unkLevelFlag 		rs.b	1		; Unknown level flag
 projDestroyed		rs.b	1		; Projector destroyed flag
 specialStage		rs.b	1		; Special stage flag
-blueRing 		rs.b	1		; Blue ring flag
+combineRing 		rs.b	1		; Combine ring flag (leftover)
 warpTime 		rs.l	1		; Time warp time
 sectionID		rs.w	1		; Section ID
 			rs.b	1

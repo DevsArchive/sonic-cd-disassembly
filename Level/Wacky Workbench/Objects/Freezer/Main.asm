@@ -305,9 +305,9 @@ ObjFreezer_ChkSonicFreeze:
 ; -------------------------------------------------------------------------
 
 ObjFreezer_CheckSonic:
-	tst.b	invincibleFlag
+	tst.b	invincible
 	bne.s	.NoFreeze
-	tst.b	timeWarpFlag
+	tst.b	timeWarp
 	bne.s	.NoFreeze
 	cmpi.b	#4,oRoutine(a1)
 	bcc.s	.NoFreeze

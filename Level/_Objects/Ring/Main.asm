@@ -167,7 +167,7 @@ ObjRing_Init:
 	move.b	#2,oPriority(a1)
 
 .NotMMZ:
-	move.b	#4,oSprFlags(a1)
+	move.b	#%00000100,oSprFlags(a1)
 	move.b	#$47,oColType(a1)
 	move.b	#8,oWidth(a1)
 	move.b	#8,oYRadius(a1)
@@ -370,7 +370,7 @@ ObjLostRing_Init:
 	andi.b	#$7F,oTile(a1)
 
 .NotMMZ:
-	move.b	#4,oSprFlags(a1)
+	move.b	#%00000100,oSprFlags(a1)
 	move.b	#$47,oColType(a1)
 	move.b	#8,oWidth(a1)
 	move.b	#8,oYRadius(a1)

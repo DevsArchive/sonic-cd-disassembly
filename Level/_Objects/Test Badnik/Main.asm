@@ -31,7 +31,7 @@ ObjTestBadnik_Init:
 
 	addq.b	#2,oRoutine(a0)			; Advance routine
 
-	move.b	#4,oSprFlags(a0)		; Set sprite flags
+	move.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.b	#1,oPriority(a0)		; Set priority
 	move.l	#MapSpr_Powerup,oMap(a0)	; Set mappings
 	move.w	#$541,oTile(a0)			; Set base tile

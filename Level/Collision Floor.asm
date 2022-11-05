@@ -588,7 +588,7 @@ GetLevelBlock:
 	beq.s	.GetBlock			; If so, branch
 	andi.w	#$7FFF,oTile(a0)		; Set the object's sprite to be low priority
 
-	cmpi.b	#$46,d1				; Is this chunk $28?
+	cmpi.b	#$46,d1				; Is this chunk $46?
 	bne.s	.Not46
 	move.w	#$6A,d1
 	bra.s	.GetBlock

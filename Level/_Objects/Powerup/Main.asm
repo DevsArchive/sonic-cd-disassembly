@@ -22,7 +22,7 @@ ObjPowerup_Index:
 ObjPowerup_Init:
 	addq.b	#2,oRoutine(a0)
 	move.l	#MapSpr_Powerup,oMap(a0)
-	move.b	#4,oSprFlags(a0)
+	move.b	#%00000100,oSprFlags(a0)
 	move.b	#1,oPriority(a0)
 	move.b	#$10,oWidth(a0)
 	move.w	#$544,oTile(a0)
@@ -39,11 +39,11 @@ ObjPowerup_Init:
 ; -------------------------------------------------------------------------
 
 ObjPowerup_Shield:
-	tst.b	shieldFlag
+	tst.b	shield
 	beq.s	.Delete
-	tst.b	timeWarpFlag
+	tst.b	timeWarp
 	bne.s	.End
-	tst.b	invincibleFlag
+	tst.b	invincible
 	bne.s	.End
 	move.w	objPlayerSlot+oX.w,oX(a0)
 	move.w	objPlayerSlot+oY.w,oY(a0)
@@ -73,21 +73,21 @@ ObjPowerup_Shield:
 ; -------------------------------------------------------------------------
 
 ObjPowerup_InvStars:
-	tst.b	timeWarpFlag
+	tst.b	timeWarp
 	beq.s	.NoTimeWarp
 	rts
 
 ; -------------------------------------------------------------------------
 
 .NoTimeWarp:
-	tst.b	invincibleFlag
+	tst.b	invincible
 	bne.s	ObjPowerup_ShowStars
 	jmp	DeleteObject
 
 ; -------------------------------------------------------------------------
 
 ObjPowerup_TimeStars:
-	tst.b	timeWarpFlag
+	tst.b	timeWarp
 	bne.s	ObjPowerup_ShowStars
 	jmp	DeleteObject
 

@@ -30,8 +30,8 @@ ObjectIndex:
 	dc.l	ObjGoalPost			; 16 - Goal post
 	dc.l	ObjSignpost			; 17 - Signpost
 	dc.l	ObjExplosion			; 18 - Explosion
-	dc.l	ObjMonitorTimepost		; 19 - Monitor/Time post
-	dc.l	ObjMonitorContents		; 1A - Monitor contents
+	dc.l	ObjMonitorTimePost		; 19 - Monitor/Time post
+	dc.l	ObjMonitorItem			; 1A - Monitor item
 	dc.l	ObjBoulder			; 1B - Boulder
 	dc.l	ObjHUDPoints			; 1C - HUD/Points
 	dc.l	ObjNull				; 1D - Blank

@@ -115,9 +115,9 @@ Player_TouchMonitor:
 	bcs.s	.End2
 	neg.w	oYVel(a0)
 	move.w	#-$180,oYVel(a1)
-	tst.b	oRoutine2(a1)
+	tst.b	oMonitorFall(a1)
 	bne.s	.End2
-	addq.b	#4,oRoutine2(a1)
+	addq.b	#4,oMonitorFall(a1)
 	rts
 
 ; -------------------------------------------------------------------------
@@ -135,9 +135,9 @@ Player_TouchMonitor:
 ; -------------------------------------------------------------------------
 
 Player_TouchEnemy:
-	tst.b	timeWarpFlag
+	tst.b	timeWarp
 	bne.s	.DamageEnemy
-	tst.b	invincibleFlag
+	tst.b	invincible
 	bne.s	.DamageEnemy
 	cmpi.b	#2,oAnim(a0)
 	bne.w	Player_TouchHazard
@@ -216,9 +216,9 @@ Player_TouchHazard2:
 	bset	#7,oFlags(a1)
 
 Player_TouchHazard:
-	tst.b	timeWarpFlag
+	tst.b	timeWarp
 	bne.s	.NoHurt
-	tst.b	invincibleFlag
+	tst.b	invincible
 	beq.s	.ChkHurt
 
 .NoHurt:
@@ -238,7 +238,7 @@ HurtPlayer:
 	andi.b	#%11100111,oPlayerCtrl(a0)
 	clr.w	oPlayerMoveLock(a0)
 
-	tst.b	shieldFlag
+	tst.b	shield
 	bne.s	.ClearShield
 	tst.w	rings
 	beq.w	.CheckKill
@@ -249,9 +249,9 @@ HurtPlayer:
 	move.w	oY(a0),oY(a1)
 
 .ClearShield:
-	bclr	#0,shieldFlag
+	bclr	#0,shield
 	bne.s	.SetHurt
-	move.b	#0,blueRing
+	move.b	#0,combineRing
 
 .SetHurt:
 	move.b	#4,oRoutine(a0)
@@ -289,7 +289,7 @@ HurtPlayer:
 KillPlayer:
 	tst.w	debugMode
 	bne.s	.End
-	move.b	#0,invincibleFlag
+	move.b	#0,invincible
 	move.b	#6,oRoutine(a0)
 	bsr.w	Player_ResetOnFloor
 	bset	#1,oFlags(a0)

@@ -26,7 +26,7 @@ ObjSpinTunnel_Index:
 
 ObjSpinTunnel_Init:
 	addq.b	#2,oRoutine(a0)
-	ori.b	#4,oSprFlags(a0)
+	ori.b	#%00000100,oSprFlags(a0)
 	move.w	#$544,oTile(a0)
 	move.l	#MapSpr_Powerup,oMap(a0)
 	move.b	oSubtype(a0),oMapFrame(a0)

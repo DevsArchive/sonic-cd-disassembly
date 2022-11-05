@@ -74,7 +74,7 @@ ObjCheckpoint_Init:
 
 	move.l	#MapSpr_Checkpoint,oMap(a0)	; Set mappings
 	move.w	#$6CB,oTile(a0)			; Set base tile
-	move.b	#4,oSprFlags(a0)		; Set sprite flags
+	move.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.b	#8,oWidth(a0)			; Set width
 	move.b	#$18,oYRadius(a0)		; Set Y radius
 	move.b	#4,oPriority(a0)		; Set priority
@@ -87,7 +87,7 @@ ObjCheckpoint_Init:
 	bra.s	.GenBall			; Continue initialization
 
 .Unactivated:
-	move.b	#$E3,oColType(a0)		; Enable collision
+	move.b	#$C0|$23,oColType(a0)		; Enable collision
 
 .GenBall:
 	jsr	FindObjSlot			; Spawn checkpoint ball object
@@ -99,20 +99,20 @@ ObjCheckpoint_Init:
 	addq.b	#2,oRoutine(a1)			; Set ball routine to just animate
 
 .Unactivated2:
-	move.l	#MapSpr_Checkpoint,oMap(a1)	; Set ball mappings
-	move.w	#$6CB,oTile(a1)			; Set ball base tile
-	move.b	#4,oSprFlags(a1)		; Set ball sprite flags
-	move.b	#8,oWidth(a1)			; Set ball width
-	move.b	#8,oYRadius(a1)			; Set ball Y radius
-	move.b	#3,oPriority(a1)		; Set ball priority
-	move.b	#1,oMapFrame(a1)		; Set ball sprite frame
-	move.l	a0,oChkParent(a1)		; Set ball parent object to us
+	move.l	#MapSpr_Checkpoint,oMap(a1)	; Set mappings
+	move.w	#$6CB,oTile(a1)			; Set base tile
+	move.b	#%00000100,oSprFlags(a1)	; Set sprite flags
+	move.b	#8,oWidth(a1)			; Set width
+	move.b	#8,oYRadius(a1)			; Set Y radius
+	move.b	#3,oPriority(a1)		; Set priority
+	move.b	#1,oMapFrame(a1)		; Set sprite frame
+	move.l	a0,oChkParent(a1)		; Set parent object
 
-	move.w	oX(a0),oX(a1)			; Set ball position to our position
+	move.w	oX(a0),oX(a1)			; Set position
 	move.w	oY(a0),oY(a1)
-	subi.w	#32,oY(a1)			; Offset ball Y position up by 32 pixels
+	subi.w	#32,oY(a1)
 
-	move.w	oX(a0),oChkBallX(a1)		; Set ball center position
+	move.w	oX(a0),oChkBallX(a1)		; Set center position
 	move.w	oY(a0),oChkBallY(a1)
 	subi.w	#32-8,oChkBallY(a1)
 	rts

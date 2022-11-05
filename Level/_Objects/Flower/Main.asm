@@ -31,7 +31,7 @@ ObjFlower:
 ; -------------------------------------------------------------------------
 
 ObjFlower_Init:
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.b	#1,oPriority(a0)		; Set priority
 	move.b	#0,oYRadius(a0)			; Set Y radius
 	move.w	#$A6D7,oTile(a0)		; Set base tile

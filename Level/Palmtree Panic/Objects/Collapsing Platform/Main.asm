@@ -80,7 +80,7 @@ ObjCollapsePlatform_Main:
 ; -------------------------------------------------------------------------
 
 .StandOn:
-	jsr	ClearObjRide
+	jsr	GetOffObject
 	move.w	#FM_A3,d0
 	jsr	PlayFMSound
 	addq.b	#2,oRoutine(a0)
@@ -104,7 +104,7 @@ ObjCollapsePlatform_Delay:
 	beq.s	.End
 	tst.w	oVar2A(a0)
 	bne.s	.End
-	jsr	ClearObjRide
+	jsr	GetOffObject
 
 .End:
 	rts
@@ -218,7 +218,7 @@ ObjCollapsePlatform_BreakUp_MultiRow:
 	lea	objPlayerSlot.w,a1
 	jsr	TopSolidObject
 	beq.s	.Delete
-	jsr	ClearObjRide
+	jsr	GetOffObject
 
 .Delete:
 	jmp	DeleteObject
@@ -303,7 +303,7 @@ ObjCollapsePlatform_BreakUp_SingleRow:
 	lea	objPlayerSlot.w,a1
 	jsr	TopSolidObject
 	beq.s	.Delete2
-	jsr	ClearObjRide
+	jsr	GetOffObject
 
 .Delete2:
 	jmp	DeleteObject

@@ -67,7 +67,7 @@ ObjEggmanStatue_Main:
 	lea	objPlayerSlot.w,a1
 	jsr	SolidObject
 	beq.s	.End
-	jsr	ClearObjRide
+	jsr	GetOffObject
 	
 .End:
 	rts

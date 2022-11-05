@@ -39,7 +39,7 @@ ObjFloatBlock:
 
 ObjFloatBlock_Init:
 	addq.b	#2,oRoutine(a0)			; Next routine
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.l	#MapSpr_FloatBlock,oMap(a0)	; Set mappings
 	moveq	#5,d0				; Set base tile ID
 	jsr	SetObjectTileID

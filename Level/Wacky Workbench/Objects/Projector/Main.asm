@@ -121,7 +121,7 @@ ObjProjector_StartExploding:
 	lea	objPlayerSlot.w,a1
 	jsr	SolidObject
 	beq.s	ObjProjector_Exploding
-	jsr	ClearObjRide
+	jsr	GetOffObject
 
 ObjProjector_Exploding:
 	movea.l	oVar2C(a0),a6

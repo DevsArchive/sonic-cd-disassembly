@@ -457,11 +457,11 @@ ObjAmyRose_CheckGrabSonic:
 	bne.s	.NoGrab
 	cmpi.w	#$680,d0
 	bcc.s	.NoGrab
-	tst.b	shieldFlag
+	tst.b	shield
 	bne.s	.NoGrab
-	tst.b	timeWarpFlag
+	tst.b	timeWarp
 	bne.s	.NoGrab
-	tst.b	invincibleFlag
+	tst.b	invincible
 	bne.s	.NoGrab
 	bclr	#2,oFlags(a1)
 	ori.b	#$81,oVar3E(a0)

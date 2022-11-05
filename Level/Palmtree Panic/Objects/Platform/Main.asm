@@ -115,7 +115,7 @@ ObjPlatform_Main:
 
 .Destroy:
 	lea	objPlayerSlot.w,a1
-	jsr	ClearObjRide
+	jsr	GetOffObject
 	bra.w	ObjPlatform_Destroy
 ; End of function ObjPlatform_Main
 
@@ -269,7 +269,7 @@ ObjPlatform_Subtype5X:
 	cmp.w	oY(a0),d0
 	bcc.s	.End
 	lea	objPlayerSlot.w,a1
-	jsr	ClearObjRide
+	jsr	GetOffObject
 	jmp	DeleteObject
 
 ; -------------------------------------------------------------------------

@@ -45,7 +45,7 @@ ObjCapsule:
 ; -------------------------------------------------------------------------
 
 ObjCapsule_Init:
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	addq.b	#2,oRoutine(a0)			; Next routine
 	move.b	#4,oPriority(a0)		; Set priority
 	move.l	#MapSpr_FlowerCapsule,oMap(a0)	; Set mappings
@@ -171,13 +171,13 @@ ObjCapsule_SpawnSeeds:
 	jsr	FindObjSlot			; Spawn seed
 	bne.s	.End
 	move.b	#$15,oID(a1)
-	ori.b	#4,oSprFlags(a1)
-	move.w	oX(a0),oX(a1)
+	ori.b	#%00000100,oSprFlags(a1)	; Set sprite flags
+	move.w	oX(a0),oX(a1)			; Set position
 	move.w	oY(a0),oY(a1)
-	move.b	#$A,oRoutine(a1)
-	move.l	#MapSpr_FlowerCapsule,oMap(a1)
-	move.w	#$2481,oTile(a1)
-	move.b	#1,oAnim(a1)
+	move.b	#$A,oRoutine(a1)		; Set seed routine
+	move.l	#MapSpr_FlowerCapsule,oMap(a1)	; Set mappings
+	move.w	#$2481,oTile(a1)		; Set base tile ID
+	move.b	#1,oAnim(a1)			; Set animation
 
 	move.w	#-$600,oYVel(a1)		; Set speed velocity
 	move.w	.SeedVel(pc,d1.w),oXVel(a1)
@@ -290,7 +290,7 @@ ObjBigRingFlash:
 ; -------------------------------------------------------------------------
 
 ObjBigRingFlash_Init:
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	addq.b	#2,oRoutine(a0)			; Next routine
 	move.w	#$3EF,oTile(a0)			; Set base tile ID
 	move.l	#MapSpr_BigRingFlash,oMap(a0)	; Set mappings
@@ -362,7 +362,7 @@ ObjBigRing_Init:
 
 .Init:
 	addq.b	#2,oRoutine(a0)			; Next routine
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.w	#$2488,oTile(a0)		; Set base tile ID
 	move.l	#MapSpr_BigRing,oMap(a0)	; Set mappings
 	move.b	#$20,oXRadius(a0)		; Set width
@@ -498,7 +498,7 @@ ObjGoalPost_Init:
 
 .Init:
 	addq.b	#2,oRoutine(a0)			; Next routine
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.b	#4,oPriority(a0)		; Set priority
 	move.l	#MapSpr_GoalSignpost,oMap(a0)	; Set mappings
 	move.b	#$10,oXRadius(a0)		; Set width
@@ -530,7 +530,7 @@ ObjGoalPost_Main:
 
 	clr.w	timeWarpTimer.w			; Stop time warp
 	clr.b	timeWarpDir.w
-	clr.b	timeWarpFlag
+	clr.b	timeWarp
 
 	moveq	#$12,d0				; Load signpost and big ring art
 	jmp	LoadPLC
@@ -616,7 +616,7 @@ ObjSignpost:
 
 ObjSignpost_Init:
 	addq.b	#2,oRoutine(a0)			; Next routine
-	ori.b	#4,oSprFlags(a0)		; Set sprite flags
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
 	move.b	#$18,oXRadius(a0)		; Set width
 	move.b	#$18,oWidth(a0)
 	move.b	#$20,oYRadius(a0)		; Set height
@@ -654,8 +654,8 @@ ObjSignpost_Main:
 	move.b	#0,oMapFrame(a0)		; Set to the Robotnik side
 	addq.b	#2,oRoutine(a0)			; Next routine
 
-	clr.b	speedShoesFlag			; Disable speed shoes
-	clr.b	invincibleFlag			; Disable invincibility
+	clr.b	speedShoes			; Disable speed shoes
+	clr.b	invincible			; Disable invincibility
 
 	move.w	#FM_SIGNPOST,d0			; Play signpost sound
 	jmp	PlayFMSound

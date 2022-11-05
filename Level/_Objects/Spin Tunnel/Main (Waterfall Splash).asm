@@ -25,15 +25,15 @@ ObjSpinSplash:
 ObjSpinSplash_Init:
 	addq.b	#2,oRoutine(a0)			; Advance routine
 
-	ori.b	#4,oSprFlags(a0)
-	move.l	#MapSpr_TunnelWaterfall,oMap(a0)
-	move.w	#$3E4,oTile(a0)
+	ori.b	#%00000100,oSprFlags(a0)	; Set sprite flags
+	move.l	#MapSpr_TunnelWaterfall,oMap(a0); Set mappings
+	move.w	#$3E4,oTile(a0)			; Set base tile ID
 	tst.b	timeZone
 	bne.s	.NotPast
 	move.w	#$39E,oTile(a0)
 
 .NotPast:
-	move.b	#1,oPriority(a0)
+	move.b	#1,oPriority(a0)		; Set priority
 
 ; -------------------------------------------------------------------------
 ; Main

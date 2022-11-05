@@ -292,10 +292,10 @@ LevelStart:
 
 .SkipClear:
 	move.b	d0,timeOver			; Clear time over flag
-	move.b	d0,shieldFlag			; Clear shield flag
-	move.b	d0,invincibleFlag		; Clear invincible  flag
-	move.b	d0,speedShoesFlag		; Clear speed shoes flag
-	move.b	d0,timeWarpFlag			; Clear time warp flag
+	move.b	d0,shield			; Clear shield flag
+	move.b	d0,invincible			; Clear invincible  flag
+	move.b	d0,speedShoes			; Clear speed shoes flag
+	move.b	d0,timeWarp			; Clear time warp flag
 	move.w	d0,debugMode			; Clear debug mode flag
 	move.w	d0,levelRestart			; Clear level restart flag
 	move.w	d0,levelFrames			; Reset frame counter
@@ -619,7 +619,7 @@ LoadLifeIcon:
 ; -------------------------------------------------------------------------
 
 PauseMusic:
-	move.w	#FM_AB,d0			; Stop FM sound
+	move.w	#FM_CHARGESTOP,d0		; Play charge stop sound
 	jsr	PlayFMSound
 
 	bset	#7,paused.w			; Set the music as paused
@@ -635,9 +635,9 @@ PauseMusic:
 	jmp	SubCPUCmd
 
 .Past:
-	tst.b	invincibleFlag			; Are we invincible?
+	tst.b	invincible			; Are we invincible?
 	bne.s	.PauseMusic			; If so, pause the invincibility music
-	tst.b	speedShoesFlag			; Do we have speed shoes?
+	tst.b	speedShoes			; Do we have speed shoes?
 	bne.s	.PauseMusic			; If so, pause the speed shoes music
 
 	move.w	#SCMD_PAUSEPCM,d0		; Pause PCM music
@@ -664,9 +664,9 @@ UnpauseMusic:
 	jmp	SubCPUCmd
 
 .Past:
-	tst.b	invincibleFlag			; Are we invincible?
+	tst.b	invincible			; Are we invincible?
 	bne.s	.UnpauseMusic			; If so, unpause the invincibility music
-	tst.b	speedShoesFlag			; Do we have speed shoes?
+	tst.b	speedShoes			; Do we have speed shoes?
 	bne.s	.UnpauseMusic			; If so, unpause the speed shoes music
 
 	move.w	#SCMD_UNPAUSEPCM,d0		; Unpause PCM music
