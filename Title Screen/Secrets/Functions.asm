@@ -1016,13 +1016,13 @@ SubCPUCmd:
 	rts
 	
 ; -------------------------------------------------------------------------
-; Unused function to send some kind of command ID to the Sub CPU
+; Unused function to send a Backup RAM command to the Sub CPU
 ; -------------------------------------------------------------------------
 ; PARAMETERS:
 ;	d0.w - Command ID
 ; -------------------------------------------------------------------------
 
-UnkSubCPUCmd:
+SubBuRAMCmd:
 	move.w	d0,GACOMCMD2			; Send command
 
 .WaitSubCPU:
